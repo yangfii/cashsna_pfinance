@@ -1,7 +1,9 @@
-import { useState } from "react";
-import { Outlet, NavLink, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 import { 
   LayoutDashboard, 
   ArrowLeftRight, 
@@ -9,7 +11,9 @@ import {
   BarChart3, 
   Settings,
   Menu,
-  X
+  X,
+  LogOut,
+  User
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -24,8 +28,41 @@ const navItems = [
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, loading, signOut } = useAuth();
 
   const closeSidebar = () => setSidebarOpen(false);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/auth');
+    }
+  }, [user, loading, navigate]);
+
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast.error('Error signing out');
+    } else {
+      toast.success('Signed out successfully');
+      navigate('/auth');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
@@ -42,7 +79,12 @@ export default function Layout() {
           </Button>
           <h1 className="text-lg font-semibold text-gradient">Cashsnap Finances Tracking</h1>
         </div>
-        <ThemeToggle />
+        <div className="flex items-center space-x-2">
+          <ThemeToggle />
+          <Button variant="ghost" size="sm" onClick={handleSignOut}>
+            <LogOut className="h-4 w-4" />
+          </Button>
+        </div>
       </header>
 
       <div className="flex">
@@ -50,7 +92,12 @@ export default function Layout() {
         <aside className="hidden lg:flex flex-col w-64 bg-card/60 backdrop-blur-md border-r border-border/50 h-screen sticky top-0">
           <div className="flex items-center justify-between p-6 border-b border-border/50">
             <h1 className="text-xl font-bold text-gradient">Cashsnap Finances Tracking</h1>
-            <ThemeToggle />
+            <div className="flex items-center space-x-2">
+              <ThemeToggle />
+              <Button variant="ghost" size="sm" onClick={handleSignOut} title="Sign Out">
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
           
           <nav className="flex-1 px-4 py-6 space-y-2">
@@ -105,6 +152,24 @@ export default function Layout() {
                   </NavLink>
                 ))}
               </nav>
+              
+              <div className="px-4 py-4 border-t border-border/50 mt-auto">
+                <div className="flex items-center space-x-3 px-4 py-2 rounded-xl bg-accent/50">
+                  <User className="h-4 w-4 text-accent-foreground" />
+                  <span className="text-sm text-accent-foreground truncate">
+                    {user?.email}
+                  </span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSignOut}
+                  className="w-full justify-start mt-2 text-muted-foreground hover:text-destructive"
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </Button>
+              </div>
             </aside>
           </div>
         )}
