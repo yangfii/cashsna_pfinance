@@ -1,4 +1,5 @@
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,51 +15,105 @@ export default function Auth() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { signIn, signUp, signInWithGoogle } = useAuth();
+  const { signIn, signUp, signInWithGoogle, user } = useAuth();
   const navigate = useNavigate();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    
-    const { error } = await signIn(email, password);
-    
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success('Successfully signed in!');
-      navigate('/');
+    if (!email || !password) {
+      toast.error('Please fill in all fields');
+      return;
     }
     
-    setLoading(false);
+    setLoading(true);
+    
+    try {
+      const { error } = await signIn(email, password);
+      
+      if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          toast.error('Invalid email or password. Please check your credentials.');
+        } else if (error.message.includes('Email not confirmed')) {
+          toast.error('Please check your email and confirm your account before signing in.');
+        } else {
+          toast.error(error.message || 'An error occurred during sign in');
+        }
+      } else {
+        toast.success('Hello, Welcome back!');
+        navigate('/');
+      }
+    } catch (err) {
+      toast.error('An unexpected error occurred. Please try again.');
+      console.error('Sign in error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    
-    const { error } = await signUp(email, password);
-    
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success('Check your email to confirm your account!');
-      navigate('/');
+    if (!email || !password) {
+      toast.error('Please fill in all fields');
+      return;
     }
     
-    setLoading(false);
+    if (password.length < 6) {
+      toast.error('Password must be at least 6 characters long');
+      return;
+    }
+    
+    setLoading(true);
+    
+    try {
+      const { error } = await signUp(email, password);
+      
+      if (error) {
+        if (error.message.includes('User already registered')) {
+          toast.error('An account with this email already exists. Please sign in instead.');
+        } else {
+          toast.error(error.message || 'An error occurred during registration');
+        }
+      } else {
+        toast.success('Check your email to confirm your account!');
+        // Clear form
+        setEmail('');
+        setPassword('');
+      }
+    } catch (err) {
+      toast.error('An unexpected error occurred. Please try again.');
+      console.error('Sign up error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
     
-    const { error } = await signInWithGoogle();
-    
-    if (error) {
-      toast.error(error.message);
+    try {
+      const { error } = await signInWithGoogle();
+      
+      if (error) {
+        if (error.message.includes('Invalid token') || error.message.includes('signature is invalid')) {
+          toast.error('Google authentication is not properly configured. Please contact support or try email/password login.');
+        } else {
+          toast.error(error.message || 'Google sign-in failed');
+        }
+        setLoading(false);
+      }
+      // Don't set loading to false on success - Google redirect will handle it
+    } catch (err) {
+      toast.error('Google sign-in failed. Please try again or use email/password.');
+      console.error('Google sign in error:', err);
       setLoading(false);
     }
-    // Don't set loading to false here - Google redirect will handle it
   };
 
   return (
@@ -71,6 +126,9 @@ export default function Auth() {
           <CardDescription>
             Access your personal finance dashboard
           </CardDescription>
+          <div className="text-xs text-muted-foreground mt-2">
+            Version 1.0.0
+          </div>
         </CardHeader>
         
         <CardContent>
@@ -91,6 +149,7 @@ export default function Auth() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    disabled={loading}
                   />
                 </div>
                 
@@ -104,6 +163,7 @@ export default function Auth() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
+                      disabled={loading}
                     />
                     <Button
                       type="button"
@@ -111,6 +171,7 @@ export default function Auth() {
                       size="sm"
                       className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                       onClick={() => setShowPassword(!showPassword)}
+                      disabled={loading}
                     >
                       {showPassword ? (
                         <EyeOff className="h-4 w-4" />
@@ -175,6 +236,7 @@ export default function Auth() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    disabled={loading}
                   />
                 </div>
                 
@@ -189,6 +251,7 @@ export default function Auth() {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       minLength={6}
+                      disabled={loading}
                     />
                     <Button
                       type="button"
@@ -196,6 +259,7 @@ export default function Auth() {
                       size="sm"
                       className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                       onClick={() => setShowPassword(!showPassword)}
+                      disabled={loading}
                     >
                       {showPassword ? (
                         <EyeOff className="h-4 w-4" />
@@ -252,6 +316,10 @@ export default function Auth() {
               </Button>
             </TabsContent>
           </Tabs>
+          
+          <div className="text-center text-xs text-muted-foreground mt-6">
+            © 2024 Cashsnap Finances Tracking. All rights reserved
+          </div>
         </CardContent>
       </Card>
     </div>
