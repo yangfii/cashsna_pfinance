@@ -101,17 +101,23 @@ export default function Auth() {
       const { error } = await signInWithGoogle();
       
       if (error) {
+        console.error('Google sign-in error details:', error);
+        
         if (error.message.includes('Invalid token') || error.message.includes('signature is invalid')) {
-          toast.error('Google authentication is not properly configured. Please contact support or try email/password login.');
+          toast.error('Google authentication configuration issue. Please check Supabase settings.');
+        } else if (error.message.includes('requested path is invalid')) {
+          toast.error('Invalid redirect URL. Please check your Supabase URL configuration under Authentication > URL Configuration.');
+        } else if (error.message.includes('403')) {
+          toast.error('Access denied. Please check your Google Cloud Console OAuth configuration.');
         } else {
-          toast.error(error.message || 'Google sign-in failed');
+          toast.error(error.message || 'Google sign-in failed. Please try again or use email/password.');
         }
         setLoading(false);
       }
       // Don't set loading to false on success - Google redirect will handle it
     } catch (err) {
-      toast.error('Google sign-in failed. Please try again or use email/password.');
       console.error('Google sign in error:', err);
+      toast.error('Google sign-in failed. Please check your browser console for details.');
       setLoading(false);
     }
   };
@@ -199,8 +205,9 @@ export default function Auth() {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full opacity-50 cursor-not-allowed"
-                disabled={true}
+                className="w-full"
+                onClick={handleGoogleSignIn}
+                disabled={loading}
               >
                 <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                   <path
@@ -220,7 +227,7 @@ export default function Auth() {
                     fill="#EA4335"
                   />
                 </svg>
-                Google Sign-in (Not Configured)
+                {loading ? 'Connecting...' : 'Continue with Google'}
               </Button>
             </TabsContent>
             
@@ -289,8 +296,9 @@ export default function Auth() {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full opacity-50 cursor-not-allowed"
-                disabled={true}
+                className="w-full"
+                onClick={handleGoogleSignIn}
+                disabled={loading}
               >
                 <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                   <path
@@ -310,7 +318,7 @@ export default function Auth() {
                     fill="#EA4335"
                   />
                 </svg>
-                Google Sign-up (Not Configured)
+                {loading ? 'Connecting...' : 'Sign up with Google'}
               </Button>
             </TabsContent>
           </Tabs>
