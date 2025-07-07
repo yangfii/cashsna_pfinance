@@ -30,10 +30,10 @@ export function WelcomeMessage() {
           </Avatar>
           <div>
             <h2 className="text-xl font-semibold text-foreground">
-              Hi! Welcome back{lastName ? ` ${lastName}` : ''}
+              Hello, PRES
             </h2>
             <p className="text-sm text-muted-foreground">
-              Ready to manage your finances today?
+              Welcome back
             </p>
           </div>
         </div>
