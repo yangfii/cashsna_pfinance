@@ -114,16 +114,34 @@ export default function Auth() {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-hero p-4 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-glow/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      </div>
+      
+      {/* Animated Welcome Message */}
+      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 animate-fade-in">
+        <div className="text-center">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 animate-slide-up">
+            🌟 Welcome! 🌟
+          </h1>
+          <p className="text-white/80 text-lg animate-fade-in delay-300">
+            Your Financial Journey Starts Here
+          </p>
+        </div>
+      </div>
+
+      <Card className="w-full max-w-md glass-effect border-white/20 shadow-2xl animate-bounce-in relative z-10">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-gradient">
             Cashsnap Finances Tracking
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-muted-foreground">
             Access your personal finance dashboard
           </CardDescription>
-          <div className="text-xs text-muted-foreground mt-2">
+          <div className="text-xs text-muted-foreground/60 mt-2">
             Version 1.0.0
           </div>
         </CardHeader>
