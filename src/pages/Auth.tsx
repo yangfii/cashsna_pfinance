@@ -114,24 +114,24 @@ export default function Auth() {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/30 p-4">
       <div className="w-full max-w-md space-y-8">
         {/* Professional Header */}
-        <div className="text-center space-y-2">
-          <h1 className="text-2xl font-semibold text-foreground">
+        <div className="text-center space-y-3">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
             សូមស្វាគមន៍
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-base text-muted-foreground font-medium">
             Sign in to your account to continue
           </p>
         </div>
 
-        <Card className="border shadow-sm">
-          <CardHeader className="text-center">
-            <CardTitle className="text-xl font-semibold text-foreground">
+        <Card className="border shadow-lg bg-gradient-to-br from-card to-card/95">
+          <CardHeader className="text-center pb-4">
+            <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-balance bg-clip-text text-transparent">
               Cashsnap Finances Tracking
             </CardTitle>
-            <CardDescription className="text-muted-foreground">
+            <CardDescription className="text-muted-foreground/80">
               Access your personal finance dashboard
             </CardDescription>
           </CardHeader>
