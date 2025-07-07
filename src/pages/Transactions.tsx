@@ -30,6 +30,7 @@ const expenseCategories = ["អាហារ", "ឆេះប្រេង", "ដ�
 export default function Transactions() {
   const [transactions, setTransactions] = useState(mockTransactions);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState<typeof mockTransactions[0] | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
@@ -93,6 +94,69 @@ export default function Transactions() {
     );
   };
 
+  const handleEditTransaction = (transaction: typeof mockTransactions[0]) => {
+    setEditingTransaction(transaction);
+    setFormData({
+      type: transaction.type,
+      amount: transaction.amount.toString(),
+      category: transaction.category,
+      note: transaction.note,
+      date: new Date(transaction.date)
+    });
+    setDialogOpen(true);
+  };
+
+  const handleDeleteTransaction = (id: number) => {
+    setTransactions(transactions.filter(t => t.id !== id));
+    toast.success('ប្រតិបត្តិការត្រូវបានលុបជោគជ័យ!');
+  };
+
+  const handleUpdateTransaction = () => {
+    if (!editingTransaction) return;
+    
+    console.log('Update transaction button clicked', formData);
+    
+    // Validation
+    if (!formData.amount || parseFloat(formData.amount) <= 0) {
+      console.log('Invalid amount:', formData.amount);
+      toast.error('សូមបញ្ចូលចំនួនទឹកប្រាក់ត្រឹមត្រូវ');
+      return;
+    }
+    
+    if (!formData.category) {
+      console.log('No category selected');
+      toast.error('សូមជ្រើសរើសប្រភេទ');
+      return;
+    }
+    
+    console.log('Validation passed, updating transaction...');
+    
+    const updatedTransaction = {
+      ...editingTransaction,
+      type: formData.type as "income" | "expense",
+      amount: parseFloat(formData.amount),
+      category: formData.category,
+      date: format(formData.date, "yyyy-MM-dd"),
+      note: formData.note || "-"
+    };
+
+    setTransactions(transactions.map(t => 
+      t.id === editingTransaction.id ? updatedTransaction : t
+    ));
+    
+    setFormData({
+      type: "expense",
+      amount: "",
+      category: "",
+      note: "",
+      date: new Date()
+    });
+    setEditingTransaction(null);
+    setDialogOpen(false);
+    
+    toast.success('ប្រតិបត្តិការត្រូវបានកែប្រែជោគជ័យ!');
+  };
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('km-KH', {
       style: 'currency',
@@ -112,14 +176,28 @@ export default function Transactions() {
         
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="gap-2 bg-gradient-primary border-0 hover:shadow-glow transition-smooth">
+            <Button 
+              className="gap-2 bg-gradient-primary border-0 hover:shadow-glow transition-smooth"
+              onClick={() => {
+                setEditingTransaction(null);
+                setFormData({
+                  type: "expense",
+                  amount: "",
+                  category: "",
+                  note: "",
+                  date: new Date()
+                });
+              }}
+            >
               <Plus className="h-4 w-4" />
               បន្ថែមប្រតិបត្តិការ
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>បន្ថែមប្រតិបត្តិការថ្មី</DialogTitle>
+              <DialogTitle>
+                {editingTransaction ? 'កែប្រែប្រតិបត្តិការ' : 'បន្ថែមប្រតិបត្តិការថ្មី'}
+              </DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               {/* Transaction Type */}
@@ -198,13 +276,18 @@ export default function Transactions() {
                 onClick={() => {
                   console.log('Save button clicked - formData:', formData);
                   console.log('Button disabled check:', !formData.amount || !formData.category || parseFloat(formData.amount) <= 0);
-                  handleAddTransaction();
+                  console.log('Editing mode:', !!editingTransaction);
+                  if (editingTransaction) {
+                    handleUpdateTransaction();
+                  } else {
+                    handleAddTransaction();
+                  }
                 }} 
                 className="w-full bg-gradient-primary border-0 hover:shadow-glow transition-smooth gap-2"
                 disabled={!formData.amount || !formData.category || parseFloat(formData.amount) <= 0}
               >
                 <Save className="h-4 w-4" />
-                រក្សា
+                {editingTransaction ? 'កែប្រែ' : 'រក្សា'}
               </Button>
             </div>
           </DialogContent>
@@ -292,14 +375,24 @@ export default function Transactions() {
                         {transaction.type === "income" ? "+" : "-"}{formatCurrency(transaction.amount)}
                       </p>
                     </div>
-                    <div className="flex gap-1">
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                        <Edit className="h-3 w-3" />
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-destructive hover:text-destructive">
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    </div>
+                     <div className="flex gap-1">
+                       <Button 
+                         variant="ghost" 
+                         size="sm" 
+                         className="h-8 w-8 p-0"
+                         onClick={() => handleEditTransaction(transaction)}
+                       >
+                         <Edit className="h-3 w-3" />
+                       </Button>
+                       <Button 
+                         variant="ghost" 
+                         size="sm" 
+                         className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                         onClick={() => handleDeleteTransaction(transaction.id)}
+                       >
+                         <Trash2 className="h-3 w-3" />
+                       </Button>
+                     </div>
                   </div>
                 </div>
               ))
