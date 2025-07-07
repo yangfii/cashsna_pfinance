@@ -27,7 +27,14 @@ export function ProfileCard() {
     });
 
     if (error) {
-      toast.error('Error updating profile');
+      console.error('Profile update error:', error);
+      if (error.message.includes('username_format')) {
+        toast.error('Username can only contain letters, numbers, dots, underscores, and hyphens');
+      } else if (error.message.includes('duplicate')) {
+        toast.error('This username is already taken');
+      } else {
+        toast.error('Error updating profile');
+      }
     } else {
       toast.success('Profile updated successfully');
       setIsEditing(false);
