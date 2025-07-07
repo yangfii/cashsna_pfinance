@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DollarSign, TrendingUp, TrendingDown, Wallet, Plus, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { WelcomeMessage } from '@/components/WelcomeMessage';
+import { ProfileCard } from '@/components/ProfileCard';
 
 // Mock data for demo
 const mockTransactions = [
@@ -38,6 +40,9 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-8 animate-fade-in">
+      {/* Welcome Message */}
+      <WelcomeMessage />
+      
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
@@ -184,35 +189,45 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up">
-        <Card className="stat-card hover:shadow-glow transition-smooth cursor-pointer">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-gradient-income rounded-xl">
-                <TrendingUp className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h3 className="font-semibold">បន្ថែមចំណូល</h3>
-                <p className="text-sm text-muted-foreground">កត់ត្រាចំណូលថ្មី</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Main Dashboard Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="lg:col-span-3 space-y-6">
+          {/* Quick Actions */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up">
+            <Card className="stat-card hover:shadow-glow transition-smooth cursor-pointer">
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-4">
+                  <div className="p-3 bg-gradient-income rounded-xl">
+                    <TrendingUp className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">បន្ថែមចំណូល</h3>
+                    <p className="text-sm text-muted-foreground">កត់ត្រាចំណូលថ្មី</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-        <Card className="stat-card hover:shadow-glow transition-smooth cursor-pointer">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-gradient-expense rounded-xl">
-                <TrendingDown className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h3 className="font-semibold">បន្ថែមចំណាយ</h3>
-                <p className="text-sm text-muted-foreground">កត់ត្រាចំណាយថ្មី</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            <Card className="stat-card hover:shadow-glow transition-smooth cursor-pointer">
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-4">
+                  <div className="p-3 bg-gradient-expense rounded-xl">
+                    <TrendingDown className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">បន្ថែមចំណាយ</h3>
+                    <p className="text-sm text-muted-foreground">កត់ត្រាចំណាយថ្មី</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+        
+        {/* Profile Card */}
+        <div className="lg:col-span-1">
+          <ProfileCard />
+        </div>
       </div>
     </div>
   );
