@@ -195,7 +195,11 @@ export default function Transactions() {
               </div>
 
               <Button 
-                onClick={handleAddTransaction} 
+                onClick={() => {
+                  console.log('Save button clicked - formData:', formData);
+                  console.log('Button disabled check:', !formData.amount || !formData.category || parseFloat(formData.amount) <= 0);
+                  handleAddTransaction();
+                }} 
                 className="w-full bg-gradient-primary border-0 hover:shadow-glow transition-smooth gap-2"
                 disabled={!formData.amount || !formData.category || parseFloat(formData.amount) <= 0}
               >
