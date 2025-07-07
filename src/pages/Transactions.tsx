@@ -9,9 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Calendar as CalendarIcon, Filter, Search, Edit, Trash2 } from "lucide-react";
+import { Plus, Calendar as CalendarIcon, Filter, Search, Edit, Trash2, Save } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const mockTransactions = [
   { id: 1, type: "income", amount: 1500, category: "ប្រាក់ខែ", date: "2024-07-01", note: "ប្រាក់ខែខុបម្ភៈ" },
@@ -48,7 +49,16 @@ export default function Transactions() {
   });
 
   const handleAddTransaction = () => {
-    if (!formData.amount || !formData.category) return;
+    // Validation
+    if (!formData.amount || parseFloat(formData.amount) <= 0) {
+      toast.error('សូមបញ្ចូលចំនួនទឹកប្រាក់ត្រឹមត្រូវ');
+      return;
+    }
+    
+    if (!formData.category) {
+      toast.error('សូមជ្រើសរើសប្រភេទ');
+      return;
+    }
     
     const newTransaction = {
       id: Date.now(),
@@ -68,6 +78,13 @@ export default function Transactions() {
       date: new Date()
     });
     setDialogOpen(false);
+    
+    // Success message
+    toast.success(
+      formData.type === "income" 
+        ? 'បានបន្ថែមចំណូលជោគជ័យ!' 
+        : 'បានបន្ថែមចំណាយជោគជ័យ!'
+    );
   };
 
   const formatCurrency = (amount: number) => {
@@ -171,8 +188,13 @@ export default function Transactions() {
                 />
               </div>
 
-              <Button onClick={handleAddTransaction} className="w-full bg-gradient-primary border-0">
-                រក្សាទុក
+              <Button 
+                onClick={handleAddTransaction} 
+                className="w-full bg-gradient-primary border-0 hover:shadow-glow transition-smooth gap-2"
+                disabled={!formData.amount || !formData.category || parseFloat(formData.amount) <= 0}
+              >
+                <Save className="h-4 w-4" />
+                រក្សា
               </Button>
             </div>
           </DialogContent>
