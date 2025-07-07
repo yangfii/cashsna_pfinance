@@ -9,7 +9,6 @@ interface AuthContextType {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signUp: (email: string, password: string) => Promise<{ error: any }>;
-  signInWithGoogle: () => Promise<{ error: any }>;
   signOut: () => Promise<{ error: any }>;
 }
 
@@ -76,20 +75,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const signInWithGoogle = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: 'https://cashsnapyangdreammore.com/'
-        }
-      });
-      return { error };
-    } catch (err) {
-      console.error('Google sign in error:', err);
-      return { error: err };
-    }
-  };
 
   const signOut = async () => {
     try {
@@ -107,7 +92,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loading,
     signIn,
     signUp,
-    signInWithGoogle,
     signOut,
   };
 
