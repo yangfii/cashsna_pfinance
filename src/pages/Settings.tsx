@@ -21,6 +21,7 @@ import {
   User
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { ProfileCard } from "@/components/ProfileCard";
 
 export default function Settings() {
   const { theme, setTheme } = useTheme();
@@ -69,6 +70,9 @@ export default function Settings() {
           <p className="text-muted-foreground">គ្រប់គ្រងការកំណត់និងចំណាត់ចម្រៀងរបស់អ្នក</p>
         </div>
       </div>
+
+      {/* Profile Information */}
+      <ProfileCard />
 
       {/* Appearance Settings */}
       <Card className="stat-card animate-bounce-in">

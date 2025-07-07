@@ -15,6 +15,7 @@ export function ProfileCard() {
   const [isEditing, setIsEditing] = useState(false);
   const [firstName, setFirstName] = useState(profile?.first_name || '');
   const [lastName, setLastName] = useState(profile?.last_name || '');
+  const [username, setUsername] = useState(profile?.username || '');
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -22,6 +23,7 @@ export function ProfileCard() {
     const { error } = await updateProfile({
       first_name: firstName,
       last_name: lastName,
+      username: username,
     });
 
     if (error) {
@@ -131,26 +133,47 @@ export function ProfileCard() {
 
         {/* Profile Form */}
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="firstName">First Name</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
-                id="firstName"
-                value={isEditing ? firstName : (profile?.first_name || '')}
-                onChange={(e) => setFirstName(e.target.value)}
-                disabled={!isEditing}
-                placeholder="Enter first name"
+                id="email"
+                value={user?.email || ''}
+                disabled
+                className="bg-muted"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lastName">Last Name</Label>
+              <Label htmlFor="username">Username</Label>
               <Input
-                id="lastName"
-                value={isEditing ? lastName : (profile?.last_name || '')}
-                onChange={(e) => setLastName(e.target.value)}
+                id="username"
+                value={isEditing ? username : (profile?.username || '')}
+                onChange={(e) => setUsername(e.target.value)}
                 disabled={!isEditing}
-                placeholder="Enter last name"
+                placeholder="Enter username"
               />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="firstName">First Name</Label>
+                <Input
+                  id="firstName"
+                  value={isEditing ? firstName : (profile?.first_name || '')}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  disabled={!isEditing}
+                  placeholder="Enter first name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input
+                  id="lastName"
+                  value={isEditing ? lastName : (profile?.last_name || '')}
+                  onChange={(e) => setLastName(e.target.value)}
+                  disabled={!isEditing}
+                  placeholder="Enter last name"
+                />
+              </div>
             </div>
           </div>
 
@@ -167,6 +190,7 @@ export function ProfileCard() {
                     setIsEditing(false);
                     setFirstName(profile?.first_name || '');
                     setLastName(profile?.last_name || '');
+                    setUsername(profile?.username || '');
                   }}
                 >
                   Cancel
