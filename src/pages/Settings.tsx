@@ -37,6 +37,9 @@ export default function Settings() {
   });
 
   const handleSaveSettings = () => {
+    console.log('Saving settings:', settings);
+    // Store language preference in localStorage
+    localStorage.setItem('language', settings.language);
     toast({
       title: "ការកំណត់ត្រូវបានរក្សាទុក",
       description: "ការកែប្រែរបស់អ្នកត្រូវបានអនុវត្តដោយជោគជ័យ។",
@@ -121,9 +124,10 @@ export default function Settings() {
                 ជ្រើសរើសភាសាកម្មវិធី
               </p>
             </div>
-            <Select value={settings.language} onValueChange={(value) => 
-              setSettings({...settings, language: value})
-            }>
+            <Select value={settings.language} onValueChange={(value) => {
+              console.log('Language changed to:', value);
+              setSettings({...settings, language: value});
+            }}>
               <SelectTrigger className="w-48">
                 <SelectValue />
               </SelectTrigger>
