@@ -119,7 +119,7 @@ export default function Auth() {
         {/* Professional Header */}
         <div className="text-center space-y-3">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-            សូមស្វាគមន៍
+            សូមស្វាគមន៍!
           </h1>
           <p className="text-base text-muted-foreground font-medium">
             Sign in to your account to continue
