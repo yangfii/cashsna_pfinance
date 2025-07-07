@@ -103,11 +103,34 @@ export function useProfile() {
     }
   };
 
+  const checkUsernameAvailability = async (username: string) => {
+    if (!username) return { available: true };
+    
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('username', username)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error checking username:', error);
+        return { available: false, error };
+      }
+
+      return { available: !data, error: null };
+    } catch (err) {
+      console.error('Error checking username:', err);
+      return { available: false, error: err };
+    }
+  };
+
   return {
     profile,
     loading,
     updateProfile,
     uploadAvatar,
+    checkUsernameAvailability,
     refetch: fetchProfile,
   };
 }

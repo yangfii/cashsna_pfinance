@@ -11,7 +11,7 @@ import { Camera, Save, User } from 'lucide-react';
 
 export function ProfileCard() {
   const { user } = useAuth();
-  const { profile, updateProfile, uploadAvatar, loading } = useProfile();
+  const { profile, updateProfile, uploadAvatar, loading, checkUsernameAvailability } = useProfile();
   const [isEditing, setIsEditing] = useState(false);
   const [firstName, setFirstName] = useState(profile?.first_name || '');
   const [lastName, setLastName] = useState(profile?.last_name || '');
@@ -20,6 +20,19 @@ export function ProfileCard() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSave = async () => {
+    // Check username availability before saving
+    if (username && username !== profile?.username) {
+      const { available, error: checkError } = await checkUsernameAvailability(username);
+      if (checkError) {
+        toast.error('Error checking username availability');
+        return;
+      }
+      if (!available) {
+        toast.error(`Username "${username}" is already taken. Please choose a different one.`);
+        return;
+      }
+    }
+
     const { error } = await updateProfile({
       first_name: firstName,
       last_name: lastName,
@@ -30,8 +43,8 @@ export function ProfileCard() {
       console.error('Profile update error:', error);
       if (error.message.includes('username_format')) {
         toast.error('Username can only contain letters, numbers, dots, underscores, and hyphens');
-      } else if (error.message.includes('duplicate')) {
-        toast.error('This username is already taken');
+      } else if (error.message.includes('duplicate') || error.code === '23505') {
+        toast.error(`Username "${username}" is already taken. Please choose a different one.`);
       } else {
         toast.error('Error updating profile');
       }
