@@ -138,7 +138,7 @@ export default function Auth() {
             <div className="mt-6">
               <Button 
                 onClick={handleGoogleSignIn}
-                variant="outline" 
+                variant="google" 
                 className="w-full"
                 disabled={loading}
               >
