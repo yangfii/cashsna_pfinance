@@ -125,7 +125,7 @@ export default function Auth() {
       <div className="absolute top-8 left-1/2 transform -translate-x-1/2 animate-fade-in">
         <div className="text-center max-w-4xl px-4">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 animate-slide-up shadow-glow">
-            🌟 សូមស្វាគមន៍មកកាន់កម្មវិធីកត់ត្រាចំណូល-ចំណាយផ្ទាល់ខ្លួនរបស់អ្នក! 🌟
+            🌟 សូមស្វាគមន៍! 🌟
           </h1>
           <p className="text-white/90 text-lg md:text-xl animate-fade-in delay-300 font-medium">
             Your Personal Finance Journey Starts Here
