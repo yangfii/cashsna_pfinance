@@ -22,6 +22,17 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ProfileCard } from "@/components/ProfileCard";
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function Settings() {
   const { theme, setTheme } = useTheme();
@@ -54,11 +65,45 @@ export default function Settings() {
   };
 
   const handleDeleteAllData = () => {
-    toast({
-      title: "លុបទិន្នន័យទាំងអស់",
-      description: "សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។ សូមប្រយ័ត្ន!",
-      variant: "destructive",
-    });
+    try {
+      // Clear localStorage data
+      localStorage.removeItem('transactions');
+      localStorage.removeItem('categories');  
+      localStorage.removeItem('settings');
+      localStorage.removeItem('monthlyBudget');
+      
+      // Reset current settings to defaults
+      setSettings({
+        currency: "USD",
+        language: "khmer", 
+        notifications: true,
+        monthlyBudget: "2000",
+        categories: true,
+        autoBackup: true,
+        darkMode: theme === "dark"
+      });
+      
+      console.log('All data cleared successfully');
+      
+      toast({
+        title: "ទិន្នន័យត្រូវបានលុបជោគជ័យ",
+        description: "ទិន្នន័យទាំងអស់ត្រូវបានលុបចេញពីគណនីរបស់អ្នក។",
+        variant: "destructive",
+      });
+      
+      // Optionally reload the page to reset everything
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Error clearing data:', error);
+      toast({
+        title: "កំហុសក្នុងការលុបទិន្នន័យ",
+        description: "មានបញ្ហាក្នុងការលុបទិន្នន័យ។ សូមព្យាយាមម្តងទៀត។",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -291,14 +336,34 @@ export default function Settings() {
                 លុបប្រតិបត្តិការនិងការកំណត់ទាំងអស់
               </p>
             </div>
-            <Button 
-              variant="destructive" 
-              onClick={handleDeleteAllData}
-              className="gap-2"
-            >
-              <Trash2 className="h-4 w-4" />
-              លុបទាំងអស់
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="destructive" 
+                  className="gap-2"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  លុបទាំងអស់
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>តើអ្នកប្រាកដជាចង់លុបទិន្នន័យទាំងអស់មែនទេ?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។ វានឹងលុបប្រតិបត្តិការ ការកំណត់ និងទិន្នន័យផ្ទាល់ខ្លួនទាំងអស់។
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>បោះបង់</AlertDialogCancel>
+                  <AlertDialogAction 
+                    onClick={handleDeleteAllData}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    បាទ/ចាស លុបទាំងអស់
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </CardContent>
       </Card>
