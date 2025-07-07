@@ -114,37 +114,27 @@ export default function Auth() {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-hero p-4 relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-glow/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-      </div>
-      
-      {/* Animated Welcome Message */}
-      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 animate-fade-in">
-        <div className="text-center max-w-4xl px-4">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 animate-slide-up shadow-glow">
-            🌟 សូមស្វាគមន៍! 🌟
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="w-full max-w-md space-y-8">
+        {/* Professional Header */}
+        <div className="text-center space-y-2">
+          <h1 className="text-2xl font-semibold text-foreground">
+            សូមស្វាគមន៍
           </h1>
-          <p className="text-white/90 text-lg md:text-xl animate-fade-in delay-300 font-medium">
-            Your Personal Finance Journey Starts Here
+          <p className="text-sm text-muted-foreground">
+            Sign in to your account to continue
           </p>
         </div>
-      </div>
 
-      <Card className="w-full max-w-md glass-effect border-white/20 shadow-2xl animate-bounce-in relative z-10">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-gradient">
-            Cashsnap Finances Tracking
-          </CardTitle>
-          <CardDescription className="text-muted-foreground">
-            Access your personal finance dashboard
-          </CardDescription>
-          <div className="text-xs text-muted-foreground/60 mt-2">
-            Version 1.0.0
-          </div>
-        </CardHeader>
+        <Card className="border shadow-sm">
+          <CardHeader className="text-center">
+            <CardTitle className="text-xl font-semibold text-foreground">
+              Cashsnap Finances Tracking
+            </CardTitle>
+            <CardDescription className="text-muted-foreground">
+              Access your personal finance dashboard
+            </CardDescription>
+          </CardHeader>
         
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
@@ -282,11 +272,12 @@ export default function Auth() {
             </TabsContent>
           </Tabs>
           
-          <div className="text-center text-xs text-muted-foreground mt-6">
-            © 2024 Cashsnap Finances Tracking. All rights reserved
+          <div className="text-center text-xs text-muted-foreground/60 mt-4 pt-4 border-t">
+            © 2024 Cashsnap Finances. All rights reserved.
           </div>
         </CardContent>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 }
