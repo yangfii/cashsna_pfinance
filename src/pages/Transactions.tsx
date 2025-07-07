@@ -49,16 +49,22 @@ export default function Transactions() {
   });
 
   const handleAddTransaction = () => {
+    console.log('Add transaction button clicked', formData);
+    
     // Validation
     if (!formData.amount || parseFloat(formData.amount) <= 0) {
+      console.log('Invalid amount:', formData.amount);
       toast.error('សូមបញ្ចូលចំនួនទឹកប្រាក់ត្រឹមត្រូវ');
       return;
     }
     
     if (!formData.category) {
+      console.log('No category selected');
       toast.error('សូមជ្រើសរើសប្រភេទ');
       return;
     }
+    
+    console.log('Validation passed, creating transaction...');
     
     const newTransaction = {
       id: Date.now(),
