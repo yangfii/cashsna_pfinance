@@ -13,7 +13,8 @@ import {
   Menu,
   X,
   LogOut,
-  User
+  User,
+  Target
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +22,7 @@ const navItems = [
   { to: "/", icon: LayoutDashboard, label: "ការសង្ខេបហិរញ្ញវត្ថុ", key: "dashboard" },
   { to: "/transactions", icon: ArrowLeftRight, label: "ប្រតិបត្តិការ", key: "transactions" },
   { to: "/categories", icon: FolderOpen, label: "ប្រភេទចំណូល/ចំណាយ", key: "categories" },
+  { to: "/planning", icon: Target, label: "ការរៀបចំគំរោង", key: "planning" },
   { to: "/reports", icon: BarChart3, label: "របាយការណ៍ហិរញ្ញវត្ថុ", key: "reports" },
   { to: "/settings", icon: Settings, label: "ការកំណត់", key: "settings" }
 ];
