@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,24 +13,30 @@ import { Plus, Calendar as CalendarIcon, Filter, Search, Edit, Trash2, Save } fr
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
-const mockTransactions = [
-  { id: 1, type: "income", amount: 1500, category: "ប្រាក់ខែ", date: "2024-07-01", note: "ប្រាក់ខែខុបម្ភៈ" },
-  { id: 2, type: "expense", amount: 50, category: "អាហារ", date: "2024-07-02", note: "អាហារពេលល្ងាច" },
-  { id: 3, type: "expense", amount: 30, category: "ឆេះប្រេង", date: "2024-07-02", note: "ចាក់ប្រេងម៉ូតូ" },
-  { id: 4, type: "income", amount: 200, category: "បន្ថែម", date: "2024-07-03", note: "ចំណូលបន្ថែម" },
-  { id: 5, type: "expense", amount: 25, category: "ដឹកជញ្ជូន", date: "2024-07-03", note: "តាក់ស៊ី" },
-  { id: 6, type: "expense", amount: 120, category: "សុខភាព", date: "2024-07-04", note: "ពេទ្យ" },
-  { id: 7, type: "income", amount: 80, category: "លក់របស់", date: "2024-07-04", note: "លក់វត្ថុចាស់" },
-];
+type Transaction = {
+  id: string;
+  user_id: string;
+  type: "income" | "expense";
+  amount: number;
+  category: string;
+  note: string | null;
+  date: string;
+  created_at: string;
+  updated_at: string;
+};
 
 const incomeCategories = ["ប្រាក់ខែ", "បន្ថែម", "លក់របស់", "ការដាក់វិនិយោគ"];
 const expenseCategories = ["អាហារ", "ឆេះប្រេង", "ដឹកជញ្ជូន", "សុខភាព", "កម្សាន្ត", "សំលៀកបំពាក់"];
 
 export default function Transactions() {
-  const [transactions, setTransactions] = useState(mockTransactions);
+  const { user } = useAuth();
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingTransaction, setEditingTransaction] = useState<typeof mockTransactions[0] | null>(null);
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
@@ -42,14 +48,46 @@ export default function Transactions() {
     date: new Date()
   });
 
+  // Fetch transactions on mount
+  useEffect(() => {
+    fetchTransactions();
+  }, [user]);
+
+  const fetchTransactions = async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('date', { ascending: false });
+
+      if (error) throw error;
+      // Cast the data to match our Transaction type
+      setTransactions((data || []).map(item => ({
+        ...item,
+        type: item.type as "income" | "expense"
+      })));
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+      toast.error('មានបញ្ហាក្នុងការទាញយកទិន្នន័យ');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const filteredTransactions = transactions.filter(transaction => {
+    const searchInNote = transaction.note || "";
     const matchesSearch = transaction.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         transaction.note.toLowerCase().includes(searchTerm.toLowerCase());
+                         searchInNote.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === "all" || transaction.type === filterType;
     return matchesSearch && matchesType;
   });
 
-  const handleAddTransaction = () => {
+  const handleAddTransaction = async () => {
+    if (!user) return;
+    
     console.log('Add transaction button clicked', formData);
     
     // Validation
@@ -67,52 +105,75 @@ export default function Transactions() {
     
     console.log('Validation passed, creating transaction...');
     
-    const newTransaction = {
-      id: Date.now(),
-      type: formData.type as "income" | "expense",
-      amount: parseFloat(formData.amount),
-      category: formData.category,
-      date: format(formData.date, "yyyy-MM-dd"),
-      note: formData.note || "-"
-    };
+    try {
+      const { data, error } = await supabase
+        .from('transactions')
+        .insert([{
+          user_id: user.id,
+          type: formData.type as "income" | "expense",
+          amount: parseFloat(formData.amount),
+          category: formData.category,
+          date: format(formData.date, "yyyy-MM-dd"),
+          note: formData.note || null
+        }])
+        .select()
+        .single();
 
-    setTransactions([newTransaction, ...transactions]);
-    setFormData({
-      type: "expense",
-      amount: "",
-      category: "",
-      note: "",
-      date: new Date()
-    });
-    setDialogOpen(false);
-    
-    // Success message
-    toast.success(
-      formData.type === "income" 
-        ? 'បានបន្ថែមចំណូលជោគជ័យ!' 
-        : 'បានបន្ថែមចំណាយជោគជ័យ!'
-    );
+      if (error) throw error;
+
+      setTransactions([{...data, type: data.type as "income" | "expense"}, ...transactions]);
+      setFormData({
+        type: "expense",
+        amount: "",
+        category: "",
+        note: "",
+        date: new Date()
+      });
+      setDialogOpen(false);
+      
+      // Success message
+      toast.success(
+        formData.type === "income" 
+          ? 'បានបន្ថែមចំណូលជោគជ័យ!' 
+          : 'បានបន្ថែមចំណាយជោគជ័យ!'
+      );
+    } catch (error) {
+      console.error('Error adding transaction:', error);
+      toast.error('មានបញ្ហាក្នុងការរក្សាទុកទិន្នន័យ');
+    }
   };
 
-  const handleEditTransaction = (transaction: typeof mockTransactions[0]) => {
+  const handleEditTransaction = (transaction: Transaction) => {
     setEditingTransaction(transaction);
     setFormData({
       type: transaction.type,
       amount: transaction.amount.toString(),
       category: transaction.category,
-      note: transaction.note,
+      note: transaction.note || "",
       date: new Date(transaction.date)
     });
     setDialogOpen(true);
   };
 
-  const handleDeleteTransaction = (id: number) => {
-    setTransactions(transactions.filter(t => t.id !== id));
-    toast.success('ប្រតិបត្តិការត្រូវបានលុបជោគជ័យ!');
+  const handleDeleteTransaction = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('transactions')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setTransactions(transactions.filter(t => t.id !== id));
+      toast.success('ប្រតិបត្តិការត្រូវបានលុបជោគជ័យ!');
+    } catch (error) {
+      console.error('Error deleting transaction:', error);
+      toast.error('មានបញ្ហាក្នុងការលុបទិន្នន័យ');
+    }
   };
 
-  const handleUpdateTransaction = () => {
-    if (!editingTransaction) return;
+  const handleUpdateTransaction = async () => {
+    if (!editingTransaction || !user) return;
     
     console.log('Update transaction button clicked', formData);
     
@@ -131,30 +192,41 @@ export default function Transactions() {
     
     console.log('Validation passed, updating transaction...');
     
-    const updatedTransaction = {
-      ...editingTransaction,
-      type: formData.type as "income" | "expense",
-      amount: parseFloat(formData.amount),
-      category: formData.category,
-      date: format(formData.date, "yyyy-MM-dd"),
-      note: formData.note || "-"
-    };
+    try {
+      const { data, error } = await supabase
+        .from('transactions')
+        .update({
+          type: formData.type as "income" | "expense",
+          amount: parseFloat(formData.amount),
+          category: formData.category,
+          date: format(formData.date, "yyyy-MM-dd"),
+          note: formData.note || null
+        })
+        .eq('id', editingTransaction.id)
+        .select()
+        .single();
 
-    setTransactions(transactions.map(t => 
-      t.id === editingTransaction.id ? updatedTransaction : t
-    ));
-    
-    setFormData({
-      type: "expense",
-      amount: "",
-      category: "",
-      note: "",
-      date: new Date()
-    });
-    setEditingTransaction(null);
-    setDialogOpen(false);
-    
-    toast.success('ប្រតិបត្តិការត្រូវបានកែប្រែជោគជ័យ!');
+      if (error) throw error;
+
+      setTransactions(transactions.map(t => 
+        t.id === editingTransaction.id ? {...data, type: data.type as "income" | "expense"} : t
+      ));
+      
+      setFormData({
+        type: "expense",
+        amount: "",
+        category: "",
+        note: "",
+        date: new Date()
+      });
+      setEditingTransaction(null);
+      setDialogOpen(false);
+      
+      toast.success('ប្រតិបត្តិការត្រូវបានកែប្រែជោគជ័យ!');
+    } catch (error) {
+      console.error('Error updating transaction:', error);
+      toast.error('មានបញ្ហាក្នុងការកែប្រែទិន្នន័យ');
+    }
   };
 
   const formatCurrency = (amount: number) => {
@@ -332,75 +404,81 @@ export default function Transactions() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            {filteredTransactions.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <p>រកមិនឃើញប្រតិបត្តិការ</p>
-              </div>
-            ) : (
-              filteredTransactions.map((transaction, index) => (
-                <div
-                  key={transaction.id}
-                  className="flex items-center justify-between p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-smooth animate-slide-up"
-                  style={{animationDelay: `${index * 0.05}s`}}
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className={cn(
-                      "w-3 h-10 rounded-full",
-                      transaction.type === "income" ? "bg-gradient-income" : "bg-gradient-expense"
-                    )} />
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <p className="font-medium">{transaction.category}</p>
-                        <Badge 
-                          variant={transaction.type === "income" ? "secondary" : "destructive"}
-                          className={cn(
-                            "text-xs",
-                            transaction.type === "income" 
-                              ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" 
-                              : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-                          )}
-                        >
-                          {transaction.type === "income" ? "ចំណូល" : "ចំណាយ"}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground">{transaction.note}</p>
-                      <p className="text-xs text-muted-foreground">{transaction.date}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="text-right">
-                      <p className={cn(
-                        "font-bold text-lg",
-                        transaction.type === "income" ? "text-emerald-600" : "text-red-600"
-                      )}>
-                        {transaction.type === "income" ? "+" : "-"}{formatCurrency(transaction.amount)}
-                      </p>
-                    </div>
-                     <div className="flex gap-1">
-                       <Button 
-                         variant="ghost" 
-                         size="sm" 
-                         className="h-8 w-8 p-0"
-                         onClick={() => handleEditTransaction(transaction)}
-                       >
-                         <Edit className="h-3 w-3" />
-                       </Button>
-                       <Button 
-                         variant="ghost" 
-                         size="sm" 
-                         className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                         onClick={() => handleDeleteTransaction(transaction.id)}
-                       >
-                         <Trash2 className="h-3 w-3" />
-                       </Button>
-                     </div>
-                  </div>
+          {loading ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <p>កំពុងទាញយកទិន្នន័យ...</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {filteredTransactions.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <p>រកមិនឃើញប្រតិបត្តិការ</p>
                 </div>
-              ))
-            )}
-          </div>
+              ) : (
+                filteredTransactions.map((transaction, index) => (
+                  <div
+                    key={transaction.id}
+                    className="flex items-center justify-between p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-smooth animate-slide-up"
+                    style={{animationDelay: `${index * 0.05}s`}}
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className={cn(
+                        "w-3 h-10 rounded-full",
+                        transaction.type === "income" ? "bg-gradient-income" : "bg-gradient-expense"
+                      )} />
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="font-medium">{transaction.category}</p>
+                          <Badge 
+                            variant={transaction.type === "income" ? "secondary" : "destructive"}
+                            className={cn(
+                              "text-xs",
+                              transaction.type === "income" 
+                                ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" 
+                                : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                            )}
+                          >
+                            {transaction.type === "income" ? "ចំណូល" : "ចំណាយ"}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground">{transaction.note}</p>
+                        <p className="text-xs text-muted-foreground">{transaction.date}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <p className={cn(
+                          "font-bold text-lg",
+                          transaction.type === "income" ? "text-emerald-600" : "text-red-600"
+                        )}>
+                          {transaction.type === "income" ? "+" : "-"}{formatCurrency(transaction.amount)}
+                        </p>
+                      </div>
+                       <div className="flex gap-1">
+                         <Button 
+                           variant="ghost" 
+                           size="sm" 
+                           className="h-8 w-8 p-0"
+                           onClick={() => handleEditTransaction(transaction)}
+                         >
+                           <Edit className="h-3 w-3" />
+                         </Button>
+                         <Button 
+                           variant="ghost" 
+                           size="sm" 
+                           className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                           onClick={() => handleDeleteTransaction(transaction.id)}
+                         >
+                           <Trash2 className="h-3 w-3" />
+                         </Button>
+                       </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
