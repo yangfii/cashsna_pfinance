@@ -233,6 +233,10 @@
   .transition-bounce {
     transition: var(--transition-bounce);
   }
+
+  .bg-gradient-primary {
+    background: var(--gradient-primary);
+  }
 }
 
 /* Custom keyframes for animations */
