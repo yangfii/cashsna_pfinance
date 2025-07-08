@@ -326,7 +326,10 @@ export default function Transactions() {
       {/* Transactions List */}
       <Card className="stat-card">
         <CardHeader>
-          <CardTitle>បញ្ជីប្រតិបត្តិការ ({filteredTransactions.length})</CardTitle>
+          <CardTitle>
+            បញ្ជីប្រតិបត្តិការ ({filteredTransactions.length}
+            {filteredTransactions.length !== transactions.length && ` ចេញពី ${transactions.length}`})
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
