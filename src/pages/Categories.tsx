@@ -164,7 +164,7 @@ export default function Categories() {
                   disabled={!!editingCategory}
                 >
                   <SelectTrigger>
-                    <SelectValue />
+                    <SelectValue placeholder="ជ្រើសរើសប្រភេទ" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="income">ចំណូល</SelectItem>
