@@ -35,6 +35,8 @@ export default function Categories() {
     color: "blue"
   });
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [transactionCounts, setTransactionCounts] = useState<Record<string, number>>({});
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -44,8 +46,34 @@ export default function Categories() {
     "violet", "purple", "fuchsia", "pink", "rose"
   ];
 
+  // Fetch transaction counts for categories
+  const fetchTransactionCounts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('category, id')
+        .order('category');
+
+      if (error) throw error;
+
+      const counts: Record<string, number> = {};
+      data?.forEach(transaction => {
+        counts[transaction.category] = (counts[transaction.category] || 0) + 1;
+      });
+      
+      setTransactionCounts(counts);
+    } catch (error) {
+      console.error('Error fetching transaction counts:', error);
+    }
+  };
+
   useEffect(() => {
-    fetchCategories();
+    const loadData = async () => {
+      setLoading(true);
+      await Promise.all([fetchCategories(), fetchTransactionCounts()]);
+      setLoading(false);
+    };
+    loadData();
   }, []);
 
   const fetchCategories = async () => {
@@ -70,13 +98,29 @@ export default function Categories() {
         description: "Failed to load categories",
         variant: "destructive"
       });
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleSaveCategory = async () => {
-    if (!formData.name.trim()) return;
+    if (!formData.name.trim()) {
+      toast({
+        title: "Error",
+        description: "Category name is required",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!user?.id) {
+      toast({
+        title: "Error", 
+        description: "User not authenticated",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setSaving(true);
 
     try {
       if (editingCategory) {
@@ -84,10 +128,12 @@ export default function Categories() {
         const { error } = await supabase
           .from('categories')
           .update({
-            name: formData.name,
-            color: formData.color
+            name: formData.name.trim(),
+            color: formData.color,
+            updated_at: new Date().toISOString()
           })
-          .eq('id', editingCategory.id);
+          .eq('id', editingCategory.id)
+          .eq('user_id', user.id); // Ensure user can only edit their own categories
 
         if (error) throw error;
 
@@ -100,29 +146,32 @@ export default function Categories() {
         const { error } = await supabase
           .from('categories')
           .insert({
-            name: formData.name,
-            type: formData.type,
+            name: formData.name.trim(),
+            type: formData.type as 'income' | 'expense',
             color: formData.color,
-            user_id: user?.id
+            user_id: user.id
           });
 
         if (error) throw error;
 
         toast({
-          title: "Success",
+          title: "Success", 
           description: "Category created successfully"
         });
       }
 
-      await fetchCategories();
+      // Refresh data to ensure accuracy
+      await Promise.all([fetchCategories(), fetchTransactionCounts()]);
       resetForm();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving category:', error);
       toast({
         title: "Error",
-        description: "Failed to save category",
+        description: error.message || "Failed to save category",
         variant: "destructive"
       });
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -150,7 +199,8 @@ export default function Categories() {
         description: "Category deleted successfully"
       });
 
-      await fetchCategories();
+      // Refresh data to ensure accuracy
+      await Promise.all([fetchCategories(), fetchTransactionCounts()]);
     } catch (error) {
       console.error('Error deleting category:', error);
       toast({
@@ -168,9 +218,7 @@ export default function Categories() {
   };
 
   const getTransactionCount = (categoryName: string) => {
-    // This would be calculated from actual transactions
-    // For now, return 0 as placeholder
-    return 0;
+    return transactionCounts[categoryName] || 0;
   };
 
   if (loading) {
@@ -236,6 +284,7 @@ export default function Categories() {
                   placeholder="បញ្ចូលឈ្មោះប្រភេទ"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  disabled={saving}
                 />
               </div>
 
@@ -244,7 +293,7 @@ export default function Categories() {
                 <Select 
                   value={formData.type} 
                   onValueChange={(value) => setFormData({...formData, type: value})}
-                  disabled={!!editingCategory}
+                  disabled={!!editingCategory || saving}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="ជ្រើសរើសប្រភេទ" />
@@ -264,9 +313,11 @@ export default function Categories() {
                       key={color}
                       type="button"
                       onClick={() => setFormData({...formData, color})}
+                      disabled={saving}
                       className={cn(
                         "w-8 h-8 rounded-full border-2 transition-smooth",
                         formData.color === color ? "border-foreground" : "border-transparent",
+                        saving ? "opacity-50 cursor-not-allowed" : "",
                         `bg-${color}-500`
                       )}
                     />
@@ -274,8 +325,12 @@ export default function Categories() {
                 </div>
               </div>
 
-              <Button onClick={handleSaveCategory} className="w-full bg-gradient-primary border-0">
-                {editingCategory ? "រក្សាទុកការកែប្រែ" : "បន្ថែមប្រភេទ"}
+              <Button 
+                onClick={handleSaveCategory} 
+                className="w-full bg-gradient-primary border-0" 
+                disabled={saving}
+              >
+                {saving ? "កំពុងរក្សាទុក..." : editingCategory ? "រក្សាទុកការកែប្រែ" : "បន្ថែមប្រភេទ"}
               </Button>
             </div>
           </DialogContent>
