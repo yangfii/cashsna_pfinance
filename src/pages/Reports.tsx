@@ -253,17 +253,19 @@ export default function Reports() {
           <div className="h-96">
             {chartType === "bar" ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={monthlyData.slice(-6)}>
+                <BarChart data={monthlyData.slice(-6)} layout="horizontal">
                   <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                   <XAxis 
-                    dataKey="month" 
-                    className="text-sm" 
-                    tick={{ fontSize: 12 }}
-                  />
-                  <YAxis 
+                    type="number"
                     className="text-sm" 
                     tick={{ fontSize: 12 }}
                     tickFormatter={(value) => `$${value}`}
+                  />
+                  <YAxis 
+                    type="category"
+                    dataKey="month" 
+                    className="text-sm" 
+                    tick={{ fontSize: 12 }}
                   />
                   <Tooltip 
                     formatter={(value, name) => [
@@ -278,8 +280,8 @@ export default function Reports() {
                       color: 'hsl(var(--foreground))'
                     }}
                   />
-                  <Bar dataKey="income" fill={COLORS.income} radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="expense" fill={COLORS.expense} radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="income" fill={COLORS.income} radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="expense" fill={COLORS.expense} radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
