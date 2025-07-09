@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, PieChart, Download, Calendar, TrendingUp, TrendingDown } from "lucide-react";
+import { BarChart3, PieChart, Download, Calendar, TrendingUp, TrendingDown, FileText, AlertCircle } from "lucide-react";
 
 // Mock data for charts
 const monthlyData = [
@@ -28,6 +28,14 @@ const categoryExpenses = [
 export default function Reports() {
   const [selectedPeriod, setSelectedPeriod] = useState("thisMonth");
   const [chartType, setChartType] = useState("bar");
+  const [isNewUser, setIsNewUser] = useState(false);
+
+  // Check if user is new (no real transactions)
+  useEffect(() => {
+    const transactions = localStorage.getItem('transactions');
+    const hasRealTransactions = transactions && JSON.parse(transactions).length > 0;
+    setIsNewUser(!hasRealTransactions);
+  }, []);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('km-KH', {
@@ -46,8 +54,12 @@ export default function Reports() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">របាយការណ៍ហិរញ្ញវត្ថុ</h1>
-          <p className="text-muted-foreground">វិភាគទិន្នន័យហិរញ្ញវត្ថុរបស់អ្នក</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            {isNewUser ? "របាយការណ៍ហិរញ្ញវត្ថុ" : "របាយការណ៍ហិរញ្ញវត្ថុ"}
+          </h1>
+          <p className="text-muted-foreground">
+            {isNewUser ? "នេះជាគំរូទិន្នន័យហិរញ្ញវត្ថុរបស់អ្នក" : "វិភាគទិន្នន័យហិរញ្ញវត្ថុរបស់អ្នក"}
+          </p>
         </div>
         
         <div className="flex gap-3">
@@ -69,6 +81,64 @@ export default function Reports() {
           </Button>
         </div>
       </div>
+
+      {/* New User Financial Statement */}
+      {isNewUser && (
+        <Card className="stat-card animate-bounce-in border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-primary">
+              <FileText className="h-5 w-5" />
+              របាយការណ៍ហិរញ្ញវត្ថុរបស់អ្នក
+            </CardTitle>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <AlertCircle className="h-4 w-4" />
+              នេះជាគំរូទិន្នន័យ - សូមចាប់ផ្តើមបន្ថែមប្រតិបត្តិការរបស់អ្នក
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <h3 className="font-semibold text-lg">ស្ថានភាពហិរញ្ញវត្ថុ</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>ចំណូលសរុប:</span>
+                    <span className="font-bold text-emerald-600">{formatCurrency(totalIncome)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>ចំណាយសរុប:</span>
+                    <span className="font-bold text-red-600">{formatCurrency(totalExpense)}</span>
+                  </div>
+                  <div className="border-t pt-2">
+                    <div className="flex justify-between">
+                      <span className="font-semibold">ចំណូលសុទ្ធ:</span>
+                      <span className={`font-bold ${totalIncome - totalExpense >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                        {formatCurrency(totalIncome - totalExpense)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <h3 className="font-semibold text-lg">ការវិភាគ</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>អត្រាសន្សំ:</span>
+                    <span className="font-bold text-blue-600">{savingsRate.toFixed(1)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>ចំណាយប្រចាំថ្ងៃ:</span>
+                    <span className="font-medium">{formatCurrency(totalExpense / 30)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>ចំណូលប្រចាំថ្ងៃ:</span>
+                    <span className="font-medium">{formatCurrency(totalIncome / 30)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
