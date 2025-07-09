@@ -222,17 +222,33 @@ export default function Reports() {
         </Card>
       </div>
 
-      {/* Chart Section */}
-      <Card className="stat-card animate-slide-up">
-        <CardHeader>
+      {/* Enhanced Chart Section */}
+      <Card className="stat-card animate-slide-up border-2 border-primary/10 bg-gradient-to-br from-card via-card to-primary/5 shadow-lg hover:shadow-xl transition-all duration-300">
+        <CardHeader className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/5 rounded-t-lg border-b border-primary/20">
           <div className="flex items-center justify-between">
-            <CardTitle>ទិន្នន័យចំណូល vs ចំណាយ</CardTitle>
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gradient-primary rounded-lg shadow-md">
+                <BarChart3 className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  ទិន្នន័យចំណូល vs ចំណាយ
+                </CardTitle>
+                <p className="text-sm text-muted-foreground mt-1">
+                  ការវិភាគទិន្នន័យហិរញ្ញវត្ថុប្រចាំខែ
+                </p>
+              </div>
+            </div>
             <div className="flex gap-2">
               <Button
                 variant={chartType === "bar" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setChartType("bar")}
-                className="gap-2"
+                className={`gap-2 transition-all duration-300 ${
+                  chartType === "bar" 
+                    ? "bg-gradient-primary border-0 shadow-glow" 
+                    : "hover:bg-primary/10 hover:border-primary/30"
+                }`}
               >
                 <BarChart3 className="h-4 w-4" />
                 របារ
@@ -241,7 +257,11 @@ export default function Reports() {
                 variant={chartType === "pie" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setChartType("pie")}
-                className="gap-2"
+                className={`gap-2 transition-all duration-300 ${
+                  chartType === "pie" 
+                    ? "bg-gradient-primary border-0 shadow-glow" 
+                    : "hover:bg-primary/10 hover:border-primary/30"
+                }`}
               >
                 <PieChart className="h-4 w-4" />
                 វង់
@@ -249,23 +269,38 @@ export default function Reports() {
             </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="h-96">
+        <CardContent className="p-6 bg-gradient-to-b from-transparent to-muted/20">
+          <div className="h-96 relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 rounded-lg -z-10"></div>
             {chartType === "bar" ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={monthlyData.slice(-6)} layout="horizontal">
-                  <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                <BarChart data={monthlyData.slice(-6)} layout="horizontal" margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                  <defs>
+                    <linearGradient id="incomeBar" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
+                      <stop offset="100%" stopColor="hsl(var(--chart-1))" stopOpacity={1}/>
+                    </linearGradient>
+                    <linearGradient id="expenseBar" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
+                      <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={1}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted-foreground))" strokeOpacity={0.2} />
                   <XAxis 
                     type="number"
                     className="text-sm fill-muted-foreground" 
                     tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
                     tickFormatter={(value) => `$${value}`}
+                    axisLine={false}
+                    tickLine={false}
                   />
                   <YAxis 
                     type="category"
                     dataKey="month" 
                     className="text-sm fill-muted-foreground" 
                     tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                    axisLine={false}
+                    tickLine={false}
                   />
                   <Tooltip 
                     formatter={(value, name) => [
@@ -276,28 +311,57 @@ export default function Reports() {
                     contentStyle={{
                       backgroundColor: 'hsl(var(--card))',
                       border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px',
-                      color: 'hsl(var(--foreground))'
+                      borderRadius: '12px',
+                      color: 'hsl(var(--foreground))',
+                      boxShadow: '0 10px 30px -10px hsl(var(--primary) / 0.3)',
+                      backdropFilter: 'blur(10px)'
                     }}
                   />
-                  <Bar dataKey="income" fill={COLORS.income} radius={[0, 4, 4, 0]} />
-                  <Bar dataKey="expense" fill={COLORS.expense} radius={[0, 4, 4, 0]} />
+                  <Bar 
+                    dataKey="income" 
+                    fill="url(#incomeBar)" 
+                    radius={[0, 6, 6, 0]} 
+                    stroke="hsl(var(--chart-1))"
+                    strokeWidth={1}
+                  />
+                  <Bar 
+                    dataKey="expense" 
+                    fill="url(#expenseBar)" 
+                    radius={[0, 6, 6, 0]}
+                    stroke="hsl(var(--chart-2))"
+                    strokeWidth={1}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <RechartsPieChart>
+                  <defs>
+                    <linearGradient id="incomeSlice" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="hsl(var(--chart-1))" stopOpacity={1}/>
+                      <stop offset="100%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
+                    </linearGradient>
+                    <linearGradient id="expenseSlice" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={1}/>
+                      <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
+                    </linearGradient>
+                  </defs>
                   <Pie
                     data={getPieData()}
                     cx="50%"
                     cy="50%"
-                    innerRadius={60}
-                    outerRadius={120}
-                    paddingAngle={5}
+                    innerRadius={70}
+                    outerRadius={130}
+                    paddingAngle={8}
                     dataKey="value"
+                    stroke="hsl(var(--background))"
+                    strokeWidth={3}
                   >
                     {getPieData().map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
+                      <Cell 
+                        key={`cell-${index}`} 
+                        fill={index === 0 ? "url(#incomeSlice)" : "url(#expenseSlice)"}
+                      />
                     ))}
                   </Pie>
                   <Tooltip 
@@ -308,8 +372,10 @@ export default function Reports() {
                     contentStyle={{
                       backgroundColor: 'hsl(var(--card))',
                       border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px',
-                      color: 'hsl(var(--foreground))'
+                      borderRadius: '12px',
+                      color: 'hsl(var(--foreground))',
+                      boxShadow: '0 10px 30px -10px hsl(var(--primary) / 0.3)',
+                      backdropFilter: 'blur(10px)'
                     }}
                   />
                 </RechartsPieChart>
