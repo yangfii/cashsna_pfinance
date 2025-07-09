@@ -274,31 +274,46 @@ export default function Reports() {
             <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 rounded-lg -z-10"></div>
             {chartType === "bar" ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={monthlyData.slice(-6)} layout="horizontal" margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                <BarChart data={monthlyData.slice(-6)} margin={{ top: 20, right: 30, left: 40, bottom: 60 }}>
                   <defs>
-                    <linearGradient id="incomeBar" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
-                      <stop offset="100%" stopColor="hsl(var(--chart-1))" stopOpacity={1}/>
+                    <linearGradient id="incomeBar" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(var(--chart-1))" stopOpacity={1}/>
+                      <stop offset="50%" stopColor="hsl(var(--chart-1))" stopOpacity={0.9}/>
+                      <stop offset="100%" stopColor="hsl(var(--chart-1))" stopOpacity={0.7}/>
                     </linearGradient>
-                    <linearGradient id="expenseBar" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
-                      <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={1}/>
+                    <linearGradient id="expenseBar" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={1}/>
+                      <stop offset="50%" stopColor="hsl(var(--chart-2))" stopOpacity={0.9}/>
+                      <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0.7}/>
                     </linearGradient>
+                    <filter id="glow">
+                      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                      <feMerge> 
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                      </feMerge>
+                    </filter>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted-foreground))" strokeOpacity={0.2} />
-                  <XAxis 
-                    type="number"
-                    className="text-sm fill-muted-foreground" 
-                    tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                    tickFormatter={(value) => `$${value}`}
-                    axisLine={false}
-                    tickLine={false}
+                  <CartesianGrid 
+                    strokeDasharray="3 3" 
+                    stroke="hsl(var(--muted-foreground))" 
+                    strokeOpacity={0.1} 
+                    vertical={false}
                   />
-                  <YAxis 
-                    type="category"
+                  <XAxis 
                     dataKey="month" 
                     className="text-sm fill-muted-foreground" 
-                    tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                    tick={{ fontSize: 12, fill: 'hsl(var(--foreground))' }}
+                    axisLine={false}
+                    tickLine={false}
+                    angle={-45}
+                    textAnchor="end"
+                    height={60}
+                  />
+                  <YAxis 
+                    className="text-sm fill-muted-foreground" 
+                    tick={{ fontSize: 12, fill: 'hsl(var(--foreground))' }}
+                    tickFormatter={(value) => `$${value}`}
                     axisLine={false}
                     tickLine={false}
                   />
@@ -313,23 +328,29 @@ export default function Reports() {
                       border: '1px solid hsl(var(--border))',
                       borderRadius: '12px',
                       color: 'hsl(var(--foreground))',
-                      boxShadow: '0 10px 30px -10px hsl(var(--primary) / 0.3)',
+                      boxShadow: '0 20px 40px -10px hsl(var(--primary) / 0.4)',
                       backdropFilter: 'blur(10px)'
+                    }}
+                    cursor={{
+                      fill: 'hsl(var(--muted))',
+                      fillOpacity: 0.1
                     }}
                   />
                   <Bar 
                     dataKey="income" 
                     fill="url(#incomeBar)" 
-                    radius={[0, 6, 6, 0]} 
+                    radius={[4, 4, 0, 0]} 
                     stroke="hsl(var(--chart-1))"
-                    strokeWidth={1}
+                    strokeWidth={0}
+                    filter="url(#glow)"
                   />
                   <Bar 
                     dataKey="expense" 
                     fill="url(#expenseBar)" 
-                    radius={[0, 6, 6, 0]}
+                    radius={[4, 4, 0, 0]}
                     stroke="hsl(var(--chart-2))"
-                    strokeWidth={1}
+                    strokeWidth={0}
+                    filter="url(#glow)"
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -345,17 +366,27 @@ export default function Reports() {
                       <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={1}/>
                       <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
                     </linearGradient>
+                    <filter id="pieGlow">
+                      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                      <feMerge> 
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                      </feMerge>
+                    </filter>
                   </defs>
                   <Pie
                     data={getPieData()}
                     cx="50%"
                     cy="50%"
-                    innerRadius={70}
-                    outerRadius={130}
-                    paddingAngle={8}
+                    innerRadius={60}
+                    outerRadius={120}
+                    paddingAngle={5}
                     dataKey="value"
                     stroke="hsl(var(--background))"
-                    strokeWidth={3}
+                    strokeWidth={4}
+                    animationBegin={0}
+                    animationDuration={1000}
+                    filter="url(#pieGlow)"
                   >
                     {getPieData().map((entry, index) => (
                       <Cell 
@@ -374,10 +405,21 @@ export default function Reports() {
                       border: '1px solid hsl(var(--border))',
                       borderRadius: '12px',
                       color: 'hsl(var(--foreground))',
-                      boxShadow: '0 10px 30px -10px hsl(var(--primary) / 0.3)',
+                      boxShadow: '0 20px 40px -10px hsl(var(--primary) / 0.4)',
                       backdropFilter: 'blur(10px)'
                     }}
                   />
+                  {/* Center text */}
+                  <g>
+                    <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle" 
+                          className="text-sm fill-muted-foreground">
+                      សរុប
+                    </text>
+                    <text x="50%" y="55%" textAnchor="middle" dominantBaseline="middle" 
+                          className="text-lg font-bold fill-foreground">
+                      {formatCurrency(totalIncome + totalExpense)}
+                    </text>
+                  </g>
                 </RechartsPieChart>
               </ResponsiveContainer>
             )}
