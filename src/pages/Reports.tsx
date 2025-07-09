@@ -4,6 +4,18 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3, PieChart, Download, Calendar, TrendingUp, TrendingDown, FileText, AlertCircle } from "lucide-react";
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer,
+  PieChart as RechartsPieChart,
+  Pie,
+  Cell
+} from 'recharts';
 
 // Mock data for charts
 const monthlyData = [
@@ -24,6 +36,22 @@ const categoryExpenses = [
   { category: "សំលៀកបំពាក់", amount: 150, percentage: 10 },
   { category: "ផ្សេងៗ", amount: 50, percentage: 4 }
 ];
+
+// Colors for charts
+const COLORS = {
+  income: '#10b981',
+  expense: '#ef4444',
+  pieChart: ['#10b981', '#ef4444', '#f59e0b', '#8b5cf6', '#06b6d4', '#f97316']
+};
+
+// Format data for pie chart
+const getPieData = () => {
+  const currentMonth = monthlyData[monthlyData.length - 1];
+  return [
+    { name: 'ចំណូល', value: currentMonth.income, color: COLORS.income },
+    { name: 'ចំណាយ', value: currentMonth.expense, color: COLORS.expense }
+  ];
+};
 
 export default function Reports() {
   const [selectedPeriod, setSelectedPeriod] = useState("thisMonth");
@@ -222,29 +250,69 @@ export default function Reports() {
           </div>
         </CardHeader>
         <CardContent>
-          {/* Simple Chart Representation */}
-          <div className="space-y-4">
-            {monthlyData.slice(-6).map((data, index) => (
-              <div key={data.month} className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="font-medium">{data.month}</span>
-                  <div className="flex gap-4">
-                    <span className="text-emerald-600">ចំណូល: {formatCurrency(data.income)}</span>
-                    <span className="text-red-600">ចំណាយ: {formatCurrency(data.expense)}</span>
-                  </div>
-                </div>
-                <div className="flex gap-1 h-6 rounded-lg overflow-hidden bg-muted">
-                  <div 
-                    className="bg-gradient-income transition-all duration-500"
-                    style={{ width: `${(data.income / (data.income + data.expense)) * 100}%` }}
+          <div className="h-96">
+            {chartType === "bar" ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={monthlyData.slice(-6)}>
+                  <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                  <XAxis 
+                    dataKey="month" 
+                    className="text-sm" 
+                    tick={{ fontSize: 12 }}
                   />
-                  <div 
-                    className="bg-gradient-expense transition-all duration-500"
-                    style={{ width: `${(data.expense / (data.income + data.expense)) * 100}%` }}
+                  <YAxis 
+                    className="text-sm" 
+                    tick={{ fontSize: 12 }}
+                    tickFormatter={(value) => `$${value}`}
                   />
-                </div>
-              </div>
-            ))}
+                  <Tooltip 
+                    formatter={(value, name) => [
+                      `${formatCurrency(value as number)}`, 
+                      name === 'income' ? 'ចំណូល' : 'ចំណាយ'
+                    ]}
+                    labelFormatter={(label) => `ខែ: ${label}`}
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px',
+                      color: 'hsl(var(--foreground))'
+                    }}
+                  />
+                  <Bar dataKey="income" fill={COLORS.income} radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="expense" fill={COLORS.expense} radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <RechartsPieChart>
+                  <Pie
+                    data={getPieData()}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={120}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {getPieData().map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    formatter={(value, name) => [
+                      `${formatCurrency(value as number)}`, 
+                      name
+                    ]}
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px',
+                      color: 'hsl(var(--foreground))'
+                    }}
+                  />
+                </RechartsPieChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </CardContent>
       </Card>
