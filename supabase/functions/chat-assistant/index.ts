@@ -53,7 +53,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4.1-2025-04-14',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: message }
@@ -77,7 +77,11 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error in chat-assistant:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    const errorMessage = error.message || 'An unexpected error occurred';
+    return new Response(JSON.stringify({ 
+      error: errorMessage,
+      details: error.toString() 
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
