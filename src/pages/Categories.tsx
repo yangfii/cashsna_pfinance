@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,33 +8,35 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { Plus, Edit, Trash2, FolderOpen, TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
-const defaultCategories = {
-  income: [
-    { id: 1, name: "ប្រាក់ខែ", color: "emerald", count: 12 },
-    { id: 2, name: "បន្ថែម", color: "green", count: 8 },
-    { id: 3, name: "លក់របស់", color: "teal", count: 3 },
-    { id: 4, name: "ការដាក់វិនិយោគ", color: "cyan", count: 2 },
-  ],
-  expense: [
-    { id: 5, name: "អាហារ", color: "red", count: 25 },
-    { id: 6, name: "ឆេះប្រេង", color: "orange", count: 15 },
-    { id: 7, name: "ដឹកជញ្ជូន", color: "amber", count: 18 },
-    { id: 8, name: "សុខភាព", color: "rose", count: 5 },
-    { id: 9, name: "កម្សាន្ត", color: "pink", count: 8 },
-    { id: 10, name: "សំលៀកបំពាក់", color: "purple", count: 6 },
-  ]
-};
+interface Category {
+  id: string;
+  name: string;
+  type: 'income' | 'expense';
+  color: string;
+  user_id: string;
+  created_at: string;
+  updated_at: string;
+}
 
 export default function Categories() {
-  const [categories, setCategories] = useState(defaultCategories);
+  const [categories, setCategories] = useState<{ income: Category[]; expense: Category[] }>({
+    income: [],
+    expense: []
+  });
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<any>(null);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     type: "expense",
     color: "blue"
   });
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+  const { user } = useAuth();
 
   const colors = [
     "red", "orange", "amber", "yellow", "lime", "green", 
@@ -42,54 +44,121 @@ export default function Categories() {
     "violet", "purple", "fuchsia", "pink", "rose"
   ];
 
-  const handleSaveCategory = () => {
-    if (!formData.name.trim()) return;
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
-    if (editingCategory) {
-      // Edit existing category
-      const type = editingCategory.type as keyof typeof categories;
-      setCategories(prev => ({
-        ...prev,
-        [type]: prev[type].map(cat => 
-          cat.id === editingCategory.id 
-            ? { ...cat, name: formData.name, color: formData.color }
-            : cat
-        )
-      }));
-    } else {
-      // Add new category
-      const newCategory = {
-        id: Date.now(),
-        name: formData.name,
-        color: formData.color,
-        count: 0
+  const fetchCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+
+      const categorizedData = {
+        income: (data?.filter(cat => cat.type === 'income') || []) as Category[],
+        expense: (data?.filter(cat => cat.type === 'expense') || []) as Category[]
       };
 
-      const type = formData.type as keyof typeof categories;
-      setCategories(prev => ({
-        ...prev,
-        [type]: [...prev[type], newCategory]
-      }));
+      setCategories(categorizedData);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load categories",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
-
-    resetForm();
   };
 
-  const handleEditCategory = (category: any, type: string) => {
-    setEditingCategory({ ...category, type });
+  const handleSaveCategory = async () => {
+    if (!formData.name.trim()) return;
+
+    try {
+      if (editingCategory) {
+        // Edit existing category
+        const { error } = await supabase
+          .from('categories')
+          .update({
+            name: formData.name,
+            color: formData.color
+          })
+          .eq('id', editingCategory.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Category updated successfully"
+        });
+      } else {
+        // Add new category
+        const { error } = await supabase
+          .from('categories')
+          .insert({
+            name: formData.name,
+            type: formData.type,
+            color: formData.color,
+            user_id: user?.id
+          });
+
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Category created successfully"
+        });
+      }
+
+      await fetchCategories();
+      resetForm();
+    } catch (error) {
+      console.error('Error saving category:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save category",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleEditCategory = (category: Category) => {
+    setEditingCategory(category);
     setFormData({
       name: category.name,
-      type: type,
+      type: category.type,
       color: category.color
     });
     setDialogOpen(true);
   };
 
-  const handleDeleteCategory = (categoryId: number, type: keyof typeof categories) => {
-    setCategories(prev => ({
-      ...prev,
-      [type]: prev[type].filter(cat => cat.id !== categoryId)
-    }));
+  const handleDeleteCategory = async (categoryId: string) => {
+    try {
+      const { error } = await supabase
+        .from('categories')
+        .delete()
+        .eq('id', categoryId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Category deleted successfully"
+      });
+
+      await fetchCategories();
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete category",
+        variant: "destructive"
+      });
+    }
   };
 
   const resetForm = () => {
@@ -97,6 +166,20 @@ export default function Categories() {
     setEditingCategory(null);
     setDialogOpen(false);
   };
+
+  const getTransactionCount = (categoryName: string) => {
+    // This would be calculated from actual transactions
+    // For now, return 0 as placeholder
+    return 0;
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   const getColorClasses = (color: string) => {
     const colorMap: Record<string, string> = {
@@ -234,7 +317,7 @@ export default function Categories() {
                       variant="ghost" 
                       size="sm" 
                       className="h-7 w-7 p-0"
-                      onClick={() => handleEditCategory(category, 'income')}
+                      onClick={() => handleEditCategory(category)}
                     >
                       <Edit className="h-3 w-3" />
                     </Button>
@@ -242,7 +325,7 @@ export default function Categories() {
                       variant="ghost" 
                       size="sm" 
                       className="h-7 w-7 p-0 text-destructive hover:text-destructive"
-                      onClick={() => handleDeleteCategory(category.id, 'income')}
+                      onClick={() => handleDeleteCategory(category.id)}
                     >
                       <Trash2 className="h-3 w-3" />
                     </Button>
@@ -250,7 +333,7 @@ export default function Categories() {
                 </div>
                 <div className="flex items-center justify-between">
                   <Badge className={getColorClasses(category.color)}>
-                    {category.count} ប្រតិបត្តិការ
+                    {getTransactionCount(category.name)} ប្រតិបត្តិការ
                   </Badge>
                 </div>
               </div>
@@ -294,7 +377,7 @@ export default function Categories() {
                       variant="ghost" 
                       size="sm" 
                       className="h-7 w-7 p-0"
-                      onClick={() => handleEditCategory(category, 'expense')}
+                      onClick={() => handleEditCategory(category)}
                     >
                       <Edit className="h-3 w-3" />
                     </Button>
@@ -302,7 +385,7 @@ export default function Categories() {
                       variant="ghost" 
                       size="sm" 
                       className="h-7 w-7 p-0 text-destructive hover:text-destructive"
-                      onClick={() => handleDeleteCategory(category.id, 'expense')}
+                      onClick={() => handleDeleteCategory(category.id)}
                     >
                       <Trash2 className="h-3 w-3" />
                     </Button>
@@ -310,7 +393,7 @@ export default function Categories() {
                 </div>
                 <div className="flex items-center justify-between">
                   <Badge className={getColorClasses(category.color)}>
-                    {category.count} ប្រតិបត្តិការ
+                    {getTransactionCount(category.name)} ប្រតិបត្តិការ
                   </Badge>
                 </div>
               </div>
