@@ -50,6 +50,14 @@
     --balance: 221 83% 53%;
     --balance-foreground: 0 0% 100%;
 
+    /* Chart colors */
+    --chart-1: 142 76% 36%;
+    --chart-2: 0 84% 60%;
+    --chart-3: 43 96% 56%;
+    --chart-4: 262 83% 58%;
+    --chart-5: 196 94% 67%;
+    --chart-6: 31 81% 61%;
+
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(160 84% 39%), hsl(160 70% 60%));
     --gradient-income: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 70% 50%));
@@ -124,6 +132,14 @@
     --expense-foreground: 0 0% 100%;
     --balance: 221 83% 65%;  
     --balance-foreground: 0 0% 100%;
+
+    /* Chart colors (dark theme) */
+    --chart-1: 142 70% 45%;
+    --chart-2: 0 84% 60%;
+    --chart-3: 43 96% 56%;
+    --chart-4: 262 83% 58%;
+    --chart-5: 196 94% 67%;
+    --chart-6: 31 81% 61%;
 
     /* Dark gradients */
     --gradient-primary: linear-gradient(135deg, hsl(160 70% 60%), hsl(160 84% 39%));

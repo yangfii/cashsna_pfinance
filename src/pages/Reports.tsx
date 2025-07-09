@@ -39,9 +39,9 @@ const categoryExpenses = [
 
 // Colors for charts
 const COLORS = {
-  income: '#10b981',
-  expense: '#ef4444',
-  pieChart: ['#10b981', '#ef4444', '#f59e0b', '#8b5cf6', '#06b6d4', '#f97316']
+  income: 'hsl(var(--chart-1))',
+  expense: 'hsl(var(--chart-2))',
+  pieChart: ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--chart-5))', 'hsl(var(--chart-6))']
 };
 
 // Format data for pie chart
@@ -257,15 +257,15 @@ export default function Reports() {
                   <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                   <XAxis 
                     type="number"
-                    className="text-sm" 
-                    tick={{ fontSize: 12 }}
+                    className="text-sm fill-muted-foreground" 
+                    tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
                     tickFormatter={(value) => `$${value}`}
                   />
                   <YAxis 
                     type="category"
                     dataKey="month" 
-                    className="text-sm" 
-                    tick={{ fontSize: 12 }}
+                    className="text-sm fill-muted-foreground" 
+                    tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
                   />
                   <Tooltip 
                     formatter={(value, name) => [
