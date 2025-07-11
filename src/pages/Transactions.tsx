@@ -29,7 +29,7 @@ type Transaction = {
 };
 
 const incomeCategories = ["ប្រាក់ខែ", "បន្ថែម", "លក់របស់", "ការដាក់វិនិយោគ", "Crypto investment"];
-const expenseCategories = ["អាហារ", "ឆេះប្រេង", "ដឹកជញ្ជូន", "សុខភាព", "កម្សាន្ត", "សំលៀកបំពាក់", "គ្រួសារ"];
+const expenseCategories = ["អាហារ", "ឆេះប្រេង", "ដឹកជញ្ជូន", "សុខភាព", "កម្សាន្ត", "សំលៀកបំពាក់", "គ្រួសារ", "ថ្លៃអុីនធ័រណេត"];
 
 export default function Transactions() {
   const { user } = useAuth();
