@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/components/ui/use-toast';
+import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { 
@@ -17,7 +18,10 @@ import {
   TrendingUp, 
   FileText,
   Send,
-  Loader2
+  Loader2,
+  Sparkles,
+  Bot,
+  User
 } from 'lucide-react';
 
 interface ChatMessage {
@@ -30,6 +34,90 @@ interface ChatMessage {
 interface AIAssistantProps {
   initialTab?: string;
 }
+
+const AIFeatureCard = ({ 
+  icon: Icon, 
+  title, 
+  description, 
+  onClick, 
+  isLoading, 
+  variant = "default" 
+}: {
+  icon: any;
+  title: string;
+  description: string;
+  onClick: () => void;
+  isLoading?: boolean;
+  variant?: "default" | "primary";
+}) => (
+  <Card className={`transition-all duration-200 hover:shadow-md cursor-pointer ${
+    variant === "primary" ? "border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10" : ""
+  }`} onClick={onClick}>
+    <CardContent className="p-6">
+      <div className="flex items-start space-x-4">
+        <div className={`p-3 rounded-lg ${
+          variant === "primary" ? "bg-gradient-primary text-white" : "bg-muted"
+        }`}>
+          <Icon className="h-5 w-5" />
+        </div>
+        <div className="flex-1 space-y-2">
+          <h3 className="font-semibold text-sm">{title}</h3>
+          <p className="text-xs text-muted-foreground leading-relaxed">{description}</p>
+          {isLoading && (
+            <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+              <Loader2 className="h-3 w-3 animate-spin" />
+              <span>Processing...</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+);
+
+const MessageBubble = ({ message, onSpeak }: { message: ChatMessage; onSpeak?: (text: string) => void }) => (
+  <div className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
+    <div className={`flex items-start space-x-3 max-w-[85%] ${
+      message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''
+    }`}>
+      <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+        message.sender === 'user' 
+          ? 'bg-gradient-primary text-white' 
+          : 'bg-muted border'
+      }`}>
+        {message.sender === 'user' ? (
+          <User className="h-4 w-4" />
+        ) : (
+          <Bot className="h-4 w-4" />
+        )}
+      </div>
+      <div className={`rounded-2xl px-4 py-3 ${
+        message.sender === 'user'
+          ? 'bg-gradient-primary text-white'
+          : 'bg-muted border'
+      }`}>
+        <p className="text-sm leading-relaxed">{message.content}</p>
+        <div className="flex items-center justify-between mt-2">
+          <p className={`text-xs ${
+            message.sender === 'user' ? 'text-white/70' : 'text-muted-foreground'
+          }`}>
+            {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </p>
+          {message.sender === 'ai' && onSpeak && (
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-6 w-6 p-0 ml-2 hover:bg-white/10"
+              onClick={() => onSpeak(message.content)}
+            >
+              <Volume2 className="h-3 w-3" />
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
   const { user } = useAuth();
@@ -155,7 +243,6 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
         const transcribedText = data.text;
         setInputMessage(transcribedText);
         
-        // Automatically send the transcribed message
         await sendChatMessage(transcribedText);
       };
       reader.readAsArrayBuffer(audioBlob);
@@ -260,102 +347,139 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Brain className="h-5 w-5" />
-          AI Financial Assistant
+    <Card className="w-full animate-fade-in">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-3">
+          <div className="p-2 bg-gradient-primary rounded-lg">
+            <Brain className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold">AI Financial Assistant</h2>
+            <p className="text-sm text-muted-foreground font-normal">
+              Your intelligent companion for financial insights and guidance
+            </p>
+          </div>
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="chat" className="flex items-center gap-2">
+      
+      <CardContent className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-4 h-11">
+            <TabsTrigger value="chat" className="flex items-center gap-2 text-xs">
               <MessageCircle className="h-4 w-4" />
-              Chat
+              <span className="hidden sm:inline">Chat</span>
             </TabsTrigger>
-            <TabsTrigger value="voice" className="flex items-center gap-2">
+            <TabsTrigger value="voice" className="flex items-center gap-2 text-xs">
               <Mic className="h-4 w-4" />
-              Voice
+              <span className="hidden sm:inline">Voice</span>
             </TabsTrigger>
-            <TabsTrigger value="analysis" className="flex items-center gap-2">
+            <TabsTrigger value="analysis" className="flex items-center gap-2 text-xs">
               <TrendingUp className="h-4 w-4" />
-              Analysis
+              <span className="hidden sm:inline">Analysis</span>
             </TabsTrigger>
-            <TabsTrigger value="reports" className="flex items-center gap-2">
+            <TabsTrigger value="reports" className="flex items-center gap-2 text-xs">
               <FileText className="h-4 w-4" />
-              Reports
+              <span className="hidden sm:inline">Reports</span>
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="chat" className="space-y-4">
-            <ScrollArea className="h-96 w-full border rounded-lg p-4">
-              <div className="space-y-4">
-                {chatMessages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div
-                      className={`max-w-[80%] rounded-lg p-3 ${
-                        message.sender === 'user'
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted'
-                      }`}
-                    >
-                      <p className="text-sm">{message.content}</p>
-                      <p className="text-xs opacity-70 mt-1">
-                        {message.timestamp.toLocaleTimeString()}
-                      </p>
+          <TabsContent value="chat" className="space-y-4 mt-6">
+            <div className="space-y-4">
+              <ScrollArea className="h-80 w-full border rounded-lg bg-muted/30">
+                <div className="p-4">
+                  {chatMessages.length === 0 ? (
+                    <div className="text-center py-8 space-y-3">
+                      <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center mx-auto">
+                        <Sparkles className="h-6 w-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-sm">Start a conversation</h3>
+                        <p className="text-xs text-muted-foreground">Ask me anything about your finances!</p>
+                      </div>
                     </div>
-                  </div>
-                ))}
-                {isLoading && (
-                  <div className="flex justify-start">
-                    <div className="bg-muted rounded-lg p-3">
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    chatMessages.map((message) => (
+                      <MessageBubble 
+                        key={message.id} 
+                        message={message} 
+                        onSpeak={speakText}
+                      />
+                    ))
+                  )}
+                  
+                  {isLoading && (
+                    <div className="flex justify-start mb-4">
+                      <div className="flex items-start space-x-3">
+                        <div className="w-8 h-8 rounded-full bg-muted border flex items-center justify-center">
+                          <Bot className="h-4 w-4" />
+                        </div>
+                        <div className="bg-muted border rounded-2xl px-4 py-3">
+                          <div className="flex items-center space-x-2">
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            <span className="text-sm text-muted-foreground">Thinking...</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                )}
-                <div ref={messagesEndRef} />
-              </div>
-            </ScrollArea>
+                  )}
+                  <div ref={messagesEndRef} />
+                </div>
+              </ScrollArea>
 
-            <div className="flex gap-2">
-              <Input
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                placeholder="Ask me anything about your finances..."
-                onKeyPress={(e) => e.key === 'Enter' && sendChatMessage(inputMessage)}
-                disabled={isLoading}
-              />
-              <Button
-                onClick={() => sendChatMessage(inputMessage)}
-                disabled={isLoading || !inputMessage.trim()}
-                size="icon"
-              >
-                <Send className="h-4 w-4" />
-              </Button>
+              <div className="flex gap-2">
+                <Input
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  placeholder="Ask about budgeting, expenses, or financial planning..."
+                  onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && sendChatMessage(inputMessage)}
+                  disabled={isLoading}
+                  className="flex-1"
+                />
+                <Button
+                  onClick={() => sendChatMessage(inputMessage)}
+                  disabled={isLoading || !inputMessage.trim()}
+                  size="icon"
+                  className="bg-gradient-primary hover:shadow-glow transition-smooth"
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </TabsContent>
 
-          <TabsContent value="voice" className="space-y-4">
-            <div className="text-center space-y-4">
-              <div className="flex justify-center gap-4">
+          <TabsContent value="voice" className="space-y-6 mt-6">
+            <div className="text-center space-y-6">
+              <div className="space-y-4">
+                <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center mx-auto">
+                  {isRecording ? (
+                    <div className="w-6 h-6 bg-white rounded-full animate-pulse" />
+                  ) : (
+                    <Mic className="h-8 w-8 text-white" />
+                  )}
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold text-lg">Voice Assistant</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {isRecording ? "Recording... Click stop when finished" : "Click to start voice conversation"}
+                  </p>
+                </div>
+
                 <Button
                   onClick={isRecording ? stopRecording : startRecording}
                   variant={isRecording ? "destructive" : "default"}
                   size="lg"
                   disabled={isLoading}
+                  className={isRecording ? "" : "bg-gradient-primary hover:shadow-glow transition-smooth"}
                 >
                   {isRecording ? (
                     <>
-                      <MicOff className="h-4 w-4 mr-2" />
+                      <MicOff className="h-5 w-5 mr-2" />
                       Stop Recording
                     </>
                   ) : (
                     <>
-                      <Mic className="h-4 w-4 mr-2" />
+                      <Mic className="h-5 w-5 mr-2" />
                       Start Recording
                     </>
                   )}
@@ -363,81 +487,91 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
               </div>
 
               {chatMessages.length > 0 && (
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">Recent messages:</p>
-                  <div className="space-y-2">
-                    {chatMessages.slice(-3).map((message) => (
-                      <div key={message.id} className="flex items-center gap-2">
-                        <Badge variant={message.sender === 'user' ? 'default' : 'secondary'}>
-                          {message.sender === 'user' ? 'You' : 'AI'}
-                        </Badge>
-                        <p className="text-sm">{message.content}</p>
-                        {message.sender === 'ai' && (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => speakText(message.content)}
-                          >
-                            <Volume2 className="h-3 w-3" />
-                          </Button>
-                        )}
-                      </div>
-                    ))}
+                <>
+                  <Separator />
+                  <div className="space-y-3 text-left">
+                    <h4 className="text-sm font-medium">Recent conversations</h4>
+                    <div className="space-y-2">
+                      {chatMessages.slice(-3).map((message) => (
+                        <div key={message.id} className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                          <Badge variant={message.sender === 'user' ? 'default' : 'secondary'} className="mt-1">
+                            {message.sender === 'user' ? 'You' : 'AI'}
+                          </Badge>
+                          <p className="text-sm flex-1">{message.content}</p>
+                          {message.sender === 'ai' && (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => speakText(message.content)}
+                              className="h-8 w-8 p-0"
+                            >
+                              <Volume2 className="h-3 w-3" />
+                            </Button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                </>
               )}
             </div>
           </TabsContent>
 
-          <TabsContent value="analysis" className="space-y-4">
-            <div className="text-center">
-              <Button onClick={runFinancialAnalysis} disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Analyzing...
-                  </>
-                ) : (
-                  <>
-                    <TrendingUp className="h-4 w-4 mr-2" />
-                    Run Analysis
-                  </>
-                )}
-              </Button>
-            </div>
+          <TabsContent value="analysis" className="space-y-6 mt-6">
+            <AIFeatureCard
+              icon={TrendingUp}
+              title="Financial Analysis"
+              description="Get comprehensive insights into your spending patterns, income trends, and financial health with AI-powered analysis."
+              onClick={runFinancialAnalysis}
+              isLoading={isLoading}
+              variant="primary"
+            />
 
             {analysisResult && (
-              <ScrollArea className="h-96 w-full border rounded-lg p-4">
-                <div className="whitespace-pre-wrap text-sm">
-                  {analysisResult}
-                </div>
-              </ScrollArea>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5" />
+                    Analysis Results
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ScrollArea className="h-80 w-full">
+                    <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                      {analysisResult}
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
             )}
           </TabsContent>
 
-          <TabsContent value="reports" className="space-y-4">
-            <div className="text-center">
-              <Button onClick={generateReport} disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Generating...
-                  </>
-                ) : (
-                  <>
-                    <FileText className="h-4 w-4 mr-2" />
-                    Generate Report
-                  </>
-                )}
-              </Button>
-            </div>
+          <TabsContent value="reports" className="space-y-6 mt-6">
+            <AIFeatureCard
+              icon={FileText}
+              title="Financial Report"
+              description="Generate detailed financial reports with insights, recommendations, and actionable steps to improve your financial situation."
+              onClick={generateReport}
+              isLoading={isLoading}
+              variant="primary"
+            />
 
             {reportContent && (
-              <ScrollArea className="h-96 w-full border rounded-lg p-4">
-                <div className="whitespace-pre-wrap text-sm">
-                  {reportContent}
-                </div>
-              </ScrollArea>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <FileText className="h-5 w-5" />
+                    Generated Report
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ScrollArea className="h-80 w-full">
+                    <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                      {reportContent}
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
             )}
           </TabsContent>
         </Tabs>
