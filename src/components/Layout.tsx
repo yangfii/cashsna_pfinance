@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -12,7 +12,9 @@ import {
   Settings,
   LogOut,
   User,
-  Target
+  Target,
+  Brain,
+  X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -30,6 +32,8 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
+import AIAssistant from "@/components/AIAssistant";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "ការសង្ខេបហិរញ្ញវត្ថុ", key: "dashboard" },
@@ -129,6 +133,40 @@ function AppSidebar() {
   );
 }
 
+function AIAssistantFloating() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button
+          size="icon"
+          className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-gradient-primary hover:shadow-glow transition-smooth z-50 shadow-lg"
+          title="AI Assistant"
+        >
+          <Brain className="h-6 w-6 text-white" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden p-0">
+        <div className="flex items-center justify-between p-4 border-b">
+          <h2 className="text-lg font-semibold">AI Financial Assistant</h2>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsOpen(false)}
+            className="h-8 w-8"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+        <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
+          <AIAssistant />
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export default function Layout() {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
@@ -174,6 +212,9 @@ export default function Layout() {
             </div>
           </main>
         </div>
+        
+        {/* Floating AI Assistant */}
+        <AIAssistantFloating />
       </div>
     </SidebarProvider>
   );
