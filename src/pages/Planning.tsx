@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AIAssistant from "@/components/AIAssistant";
 import { 
   Plus, 
   Calendar, 
@@ -14,7 +16,8 @@ import {
   Edit, 
   Trash2,
   CalendarDays,
-  TrendingUp
+  TrendingUp,
+  Brain
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { 
@@ -226,410 +229,430 @@ export default function Planning() {
         </Button>
       </div>
 
-      {/* Add/Edit Goal Form */}
-      {showAddForm && (
-        <Card className="animate-slide-down">
-          <CardHeader>
-            <CardTitle>{editingGoal ? 'កែប្រែគោលដៅ' : 'បន្ថែមគោលដៅថ្មី'}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label className="text-sm font-medium mb-2 block">ប្រភេទគោលដៅ</label>
-              <Select value={newGoal.type} onValueChange={(value: 'weekly' | 'monthly' | 'yearly') => setNewGoal({...newGoal, type: value})}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="weekly">គោលដៅប្រចាំសប្តាហ៍</SelectItem>
-                  <SelectItem value="monthly">គោលដៅប្រចាំខែ</SelectItem>
-                  <SelectItem value="yearly">គោលដៅប្រចាំឆ្នាំ</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+      {/* Main Content Tabs */}
+      <Tabs defaultValue="goals" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="goals" className="flex items-center gap-2">
+            <Target className="h-4 w-4" />
+            គោលដៅ
+          </TabsTrigger>
+          <TabsTrigger value="ai-assistant" className="flex items-center gap-2">
+            <Brain className="h-4 w-4" />
+            ជំនួយការ AI
+          </TabsTrigger>
+        </TabsList>
 
-            <div>
-              <label className="text-sm font-medium mb-2 block">រយៈពេល</label>
-              <Input
-                placeholder={getCurrentPeriod(newGoal.type)}
-                value={newGoal.period}
-                onChange={(e) => setNewGoal({...newGoal, period: e.target.value})}
-              />
-            </div>
+        <TabsContent value="goals" className="mt-6 space-y-6">
+          {/* Add/Edit Goal Form */}
+          {showAddForm && (
+            <Card className="animate-slide-down">
+              <CardHeader>
+                <CardTitle>{editingGoal ? 'កែប្រែគោលដៅ' : 'បន្ថែមគោលដៅថ្មី'}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium mb-2 block">ប្រភេទគោលដៅ</label>
+                  <Select value={newGoal.type} onValueChange={(value: 'weekly' | 'monthly' | 'yearly') => setNewGoal({...newGoal, type: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="weekly">គោលដៅប្រចាំសប្តាហ៍</SelectItem>
+                      <SelectItem value="monthly">គោលដៅប្រចាំខែ</SelectItem>
+                      <SelectItem value="yearly">គោលដៅប្រចាំឆ្នាំ</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-            <div>
-              <label className="text-sm font-medium mb-2 block">ចំណងជើងគោលដៅ</label>
-              <Input
-                placeholder="បញ្ចូលគោលដៅរបស់អ្នក..."
-                value={newGoal.title}
-                onChange={(e) => setNewGoal({...newGoal, title: e.target.value})}
-              />
-            </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">រយៈពេល</label>
+                  <Input
+                    placeholder={getCurrentPeriod(newGoal.type)}
+                    value={newGoal.period}
+                    onChange={(e) => setNewGoal({...newGoal, period: e.target.value})}
+                  />
+                </div>
 
-            <div>
-              <label className="text-sm font-medium mb-2 block">ពិពណ៌នា (ស្រេចចិត្ត)</label>
-              <Textarea
-                placeholder="ពិពណ៌នាលម្អិតអំពីគោលដៅ..."
-                value={newGoal.description}
-                onChange={(e) => setNewGoal({...newGoal, description: e.target.value})}
-              />
-            </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">ចំណងជើងគោលដៅ</label>
+                  <Input
+                    placeholder="បញ្ចូលគោលដៅរបស់អ្នក..."
+                    value={newGoal.title}
+                    onChange={(e) => setNewGoal({...newGoal, title: e.target.value})}
+                  />
+                </div>
 
-            <div>
-              <label className="text-sm font-medium mb-2 block">ជំហានសម្រាប់សម្រេចគោលដៅ</label>
-              <div className="flex gap-2 mb-3">
-                <Input
-                  placeholder="បន្ថែមជំហានថ្មី..."
-                  value={newStep}
-                  onChange={(e) => setNewStep(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && addStep()}
-                />
-                <Button type="button" onClick={addStep} size="sm">
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-              
-              {steps.length > 0 && (
-                <div className="space-y-2">
-                  {steps.map((step, index) => (
-                    <div key={step.id} className="flex items-center gap-2 p-2 border rounded">
-                      <span className="text-sm text-muted-foreground">ជំហាន {index + 1}:</span>
-                      <span className="flex-1">{step.text}</span>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeStep(step.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">ពិពណ៌នា (ស្រេចចិត្ត)</label>
+                  <Textarea
+                    placeholder="ពិពណ៌នាលម្អិតអំពីគោលដៅ..."
+                    value={newGoal.description}
+                    onChange={(e) => setNewGoal({...newGoal, description: e.target.value})}
+                  />
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium mb-2 block">ជំហានសម្រាប់សម្រេចគោលដៅ</label>
+                  <div className="flex gap-2 mb-3">
+                    <Input
+                      placeholder="បន្ថែមជំហានថ្មី..."
+                      value={newStep}
+                      onChange={(e) => setNewStep(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && addStep()}
+                    />
+                    <Button type="button" onClick={addStep} size="sm">
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  
+                  {steps.length > 0 && (
+                    <div className="space-y-2">
+                      {steps.map((step, index) => (
+                        <div key={step.id} className="flex items-center gap-2 p-2 border rounded">
+                          <span className="text-sm text-muted-foreground">ជំហាន {index + 1}:</span>
+                          <span className="flex-1">{step.text}</span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeStep(step.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
                     </div>
+                  )}
+                </div>
+
+                <div className="flex gap-2 pt-4">
+                  <Button onClick={handleSaveGoal} className="flex-1">
+                    {editingGoal ? 'កែប្រែ' : 'រក្សាទុក'}
+                  </Button>
+                  <Button variant="outline" onClick={resetForm}>
+                    បោះបង់
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Goals Display */}
+          <div className="space-y-8">
+            {/* Weekly Goals */}
+            {weeklyGoals.length > 0 && (
+              <div>
+                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                  <Calendar className="h-5 w-5" />
+                  គោលដៅប្រចាំសប្តាហ៍
+                </h2>
+                <div className="grid gap-4">
+                  {weeklyGoals.map((goal) => (
+                    <Card key={goal.id} className="stat-card">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between">
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Badge className={getTypeBadgeColor(goal.type)}>
+                                {getTypeIcon(goal.type)}
+                                <span className="ml-1">សប្តាហ៍</span>
+                              </Badge>
+                              {goal.completed && (
+                                <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
+                                  <CheckCircle2 className="h-3 w-3 mr-1" />
+                                  បានបញ្ចប់
+                                </Badge>
+                              )}
+                            </div>
+                            <CardTitle className="text-lg">{goal.title}</CardTitle>
+                            <p className="text-sm text-muted-foreground">{goal.period}</p>
+                            {goal.description && (
+                              <p className="text-sm text-muted-foreground">{goal.description}</p>
+                            )}
+                          </div>
+                          <div className="flex gap-2">
+                            <Button variant="ghost" size="sm" onClick={() => editGoal(goal)}>
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="ghost" size="sm">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>លុបគោលដៅ</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    តើអ្នកប្រាកដជាចង់លុបគោលដៅនេះមែនទេ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>បោះបង់</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => deleteGoal(goal.id)}>
+                                    លុប
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm">ជំហានដែលត្រូវអនុវត្ត:</h4>
+                          {goal.steps.map((step) => (
+                            <div key={step.id} className="flex items-center gap-2">
+                              <button
+                                onClick={() => toggleStepCompletion(goal.id, step.id)}
+                                className="flex-shrink-0"
+                              >
+                                {step.completed ? (
+                                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                                ) : (
+                                  <Circle className="h-4 w-4 text-muted-foreground" />
+                                )}
+                              </button>
+                              <span className={`text-sm ${step.completed ? 'line-through text-muted-foreground' : ''}`}>
+                                {step.text}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
                   ))}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
-            <div className="flex gap-2 pt-4">
-              <Button onClick={handleSaveGoal} className="flex-1">
-                {editingGoal ? 'កែប្រែ' : 'រក្សាទុក'}
-              </Button>
-              <Button variant="outline" onClick={resetForm}>
-                បោះបង់
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Goals Display */}
-      <div className="space-y-8">
-        {/* Weekly Goals */}
-        {weeklyGoals.length > 0 && (
-          <div>
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <Calendar className="h-5 w-5" />
-              គោលដៅប្រចាំសប្តាហ៍
-            </h2>
-            <div className="grid gap-4">
-              {weeklyGoals.map((goal) => (
-                <Card key={goal.id} className="stat-card">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <Badge className={getTypeBadgeColor(goal.type)}>
-                            {getTypeIcon(goal.type)}
-                            <span className="ml-1">សប្តាហ៍</span>
-                          </Badge>
-                          {goal.completed && (
-                            <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
-                              <CheckCircle2 className="h-3 w-3 mr-1" />
-                              បានបញ្ចប់
-                            </Badge>
-                          )}
-                        </div>
-                        <CardTitle className="text-lg">{goal.title}</CardTitle>
-                        <p className="text-sm text-muted-foreground">{goal.period}</p>
-                        {goal.description && (
-                          <p className="text-sm text-muted-foreground">{goal.description}</p>
-                        )}
-                      </div>
-                      <div className="flex gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => editGoal(goal)}>
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>លុបគោលដៅ</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                តើអ្នកប្រាកដជាចង់លុបគោលដៅនេះមែនទេ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>បោះបង់</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => deleteGoal(goal.id)}>
-                                លុប
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      <h4 className="font-medium text-sm">ជំហានដែលត្រូវអនុវត្ត:</h4>
-                      {goal.steps.map((step) => (
-                        <div key={step.id} className="flex items-center gap-2">
-                          <button
-                            onClick={() => toggleStepCompletion(goal.id, step.id)}
-                            className="flex-shrink-0"
-                          >
-                            {step.completed ? (
-                              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                            ) : (
-                              <Circle className="h-4 w-4 text-muted-foreground" />
+            {/* Monthly Goals */}
+            {monthlyGoals.length > 0 && (
+              <div>
+                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                  <CalendarDays className="h-5 w-5" />
+                  គោលដៅប្រចាំខែ
+                </h2>
+                <div className="grid gap-4">
+                  {monthlyGoals.map((goal) => (
+                    <Card key={goal.id} className="stat-card">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between">
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Badge className={getTypeBadgeColor(goal.type)}>
+                                {getTypeIcon(goal.type)}
+                                <span className="ml-1">ខែ</span>
+                              </Badge>
+                              {goal.completed && (
+                                <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
+                                  <CheckCircle2 className="h-3 w-3 mr-1" />
+                                  បានបញ្ចប់
+                                </Badge>
+                              )}
+                            </div>
+                            <CardTitle className="text-lg">{goal.title}</CardTitle>
+                            <p className="text-sm text-muted-foreground">{goal.period}</p>
+                            {goal.description && (
+                              <p className="text-sm text-muted-foreground">{goal.description}</p>
                             )}
-                          </button>
-                          <span className={`text-sm ${step.completed ? 'line-through text-muted-foreground' : ''}`}>
-                            {step.text}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Monthly Goals */}
-        {monthlyGoals.length > 0 && (
-          <div>
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <CalendarDays className="h-5 w-5" />
-              គោលដៅប្រចាំខែ
-            </h2>
-            <div className="grid gap-4">
-              {monthlyGoals.map((goal) => (
-                <Card key={goal.id} className="stat-card">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <Badge className={getTypeBadgeColor(goal.type)}>
-                            {getTypeIcon(goal.type)}
-                            <span className="ml-1">ខែ</span>
-                          </Badge>
-                          {goal.completed && (
-                            <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
-                              <CheckCircle2 className="h-3 w-3 mr-1" />
-                              បានបញ្ចប់
-                            </Badge>
-                          )}
-                        </div>
-                        <CardTitle className="text-lg">{goal.title}</CardTitle>
-                        <p className="text-sm text-muted-foreground">{goal.period}</p>
-                        {goal.description && (
-                          <p className="text-sm text-muted-foreground">{goal.description}</p>
-                        )}
-                      </div>
-                      <div className="flex gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => editGoal(goal)}>
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <Trash2 className="h-4 w-4" />
+                          </div>
+                          <div className="flex gap-2">
+                            <Button variant="ghost" size="sm" onClick={() => editGoal(goal)}>
+                              <Edit className="h-4 w-4" />
                             </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>លុបគោលដៅ</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                តើអ្នកប្រាកដជាចង់លុបគោលដៅនេះមែនទេ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>បោះបង់</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => deleteGoal(goal.id)}>
-                                លុប
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      <h4 className="font-medium text-sm">ជំហានដែលត្រូវអនុវត្ត:</h4>
-                      {goal.steps.map((step) => (
-                        <div key={step.id} className="flex items-center gap-2">
-                          <button
-                            onClick={() => toggleStepCompletion(goal.id, step.id)}
-                            className="flex-shrink-0"
-                          >
-                            {step.completed ? (
-                              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                            ) : (
-                              <Circle className="h-4 w-4 text-muted-foreground" />
-                            )}
-                          </button>
-                          <span className={`text-sm ${step.completed ? 'line-through text-muted-foreground' : ''}`}>
-                            {step.text}
-                          </span>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="ghost" size="sm">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>លុបគោលដៅ</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    តើអ្នកប្រាកដជាចង់លុបគោលដៅនេះមែនទេ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>បោះបង់</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => deleteGoal(goal.id)}>
+                                    លុប
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
                         </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm">ជំហានដែលត្រូវអនុវត្ត:</h4>
+                          {goal.steps.map((step) => (
+                            <div key={step.id} className="flex items-center gap-2">
+                              <button
+                                onClick={() => toggleStepCompletion(goal.id, step.id)}
+                                className="flex-shrink-0"
+                              >
+                                {step.completed ? (
+                                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                                ) : (
+                                  <Circle className="h-4 w-4 text-muted-foreground" />
+                                )}
+                              </button>
+                              <span className={`text-sm ${step.completed ? 'line-through text-muted-foreground' : ''}`}>
+                                {step.text}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
 
-        {/* Yearly Goals */}
-        {yearlyGoals.length > 0 && (
-          <div>
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <TrendingUp className="h-5 w-5" />
-              គោលដៅប្រចាំឆ្នាំ
-            </h2>
-            <div className="grid gap-4">
-              {yearlyGoals.map((goal) => (
-                <Card key={goal.id} className="stat-card">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <Badge className={getTypeBadgeColor(goal.type)}>
-                            {getTypeIcon(goal.type)}
-                            <span className="ml-1">ឆ្នាំ</span>
-                          </Badge>
-                          {goal.completed && (
-                            <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
-                              <CheckCircle2 className="h-3 w-3 mr-1" />
-                              បានបញ្ចប់
-                            </Badge>
-                          )}
-                        </div>
-                        <CardTitle className="text-lg">{goal.title}</CardTitle>
-                        <p className="text-sm text-muted-foreground">{goal.period}</p>
-                        {goal.description && (
-                          <p className="text-sm text-muted-foreground">{goal.description}</p>
-                        )}
-                      </div>
-                      <div className="flex gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => editGoal(goal)}>
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <Trash2 className="h-4 w-4" />
+            {/* Yearly Goals */}
+            {yearlyGoals.length > 0 && (
+              <div>
+                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  គោលដៅប្រចាំឆ្នាំ
+                </h2>
+                <div className="grid gap-4">
+                  {yearlyGoals.map((goal) => (
+                    <Card key={goal.id} className="stat-card">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between">
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Badge className={getTypeBadgeColor(goal.type)}>
+                                {getTypeIcon(goal.type)}
+                                <span className="ml-1">ឆ្នាំ</span>
+                              </Badge>
+                              {goal.completed && (
+                                <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
+                                  <CheckCircle2 className="h-3 w-3 mr-1" />
+                                  បានបញ្ចប់
+                                </Badge>
+                              )}
+                            </div>
+                            <CardTitle className="text-lg">{goal.title}</CardTitle>
+                            <p className="text-sm text-muted-foreground">{goal.period}</p>
+                            {goal.description && (
+                              <p className="text-sm text-muted-foreground">{goal.description}</p>
+                            )}
+                          </div>
+                          <div className="flex gap-2">
+                            <Button variant="ghost" size="sm" onClick={() => editGoal(goal)}>
+                              <Edit className="h-4 w-4" />
                             </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>លុបគោលដៅ</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                តើអ្នកប្រាកដជាចង់លុបគោលដៅនេះមែនទេ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>បោះបង់</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => deleteGoal(goal.id)}>
-                                លុប
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      <h4 className="font-medium text-sm">ជំហានដែលត្រូវអនុវត្ត:</h4>
-                      {goal.steps.map((step) => (
-                        <div key={step.id} className="flex items-center gap-2">
-                          <button
-                            onClick={() => toggleStepCompletion(goal.id, step.id)}
-                            className="flex-shrink-0"
-                          >
-                            {step.completed ? (
-                              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                            ) : (
-                              <Circle className="h-4 w-4 text-muted-foreground" />
-                            )}
-                          </button>
-                          <span className={`text-sm ${step.completed ? 'line-through text-muted-foreground' : ''}`}>
-                            {step.text}
-                          </span>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="ghost" size="sm">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>លុបគោលដៅ</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    តើអ្នកប្រាកដជាចង់លុបគោលដៅនេះមែនទេ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>បោះបង់</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => deleteGoal(goal.id)}>
+                                    លុប
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
                         </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm">ជំហានដែលត្រូវអនុវត្ត:</h4>
+                          {goal.steps.map((step) => (
+                            <div key={step.id} className="flex items-center gap-2">
+                              <button
+                                onClick={() => toggleStepCompletion(goal.id, step.id)}
+                                className="flex-shrink-0"
+                              >
+                                {step.completed ? (
+                                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                                ) : (
+                                  <Circle className="h-4 w-4 text-muted-foreground" />
+                                )}
+                              </button>
+                              <span className={`text-sm ${step.completed ? 'line-through text-muted-foreground' : ''}`}>
+                                {step.text}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
 
-        {/* Empty State */}
-        {goals.length === 0 && (
-          <Card className="text-center py-12">
+            {/* Empty State */}
+            {goals.length === 0 && (
+              <Card className="text-center py-12">
+                <CardContent>
+                  <Target className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-medium mb-2">មិនទាន់មានគោលដៅ</h3>
+                  <p className="text-muted-foreground mb-4">
+                    ចាប់ផ្តើមដោយការបន្ថែមគោលដៅប្រចាំសប្តាហ៍ ខែ ឬឆ្នាំរបស់អ្នក
+                  </p>
+                  <Button onClick={() => setShowAddForm(true)} className="gap-2">
+                    <Plus className="h-4 w-4" />
+                    បន្ថែមគោលដៅដំបូង
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Tips Card */}
+          <Card className="stat-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="h-5 w-5" />
+                គន្លឹះសម្រាប់សរសេរគោលដៅល្អ
+              </CardTitle>
+            </CardHeader>
             <CardContent>
-              <Target className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">មិនទាន់មានគោលដៅ</h3>
-              <p className="text-muted-foreground mb-4">
-                ចាប់ផ្តើមដោយការបន្ថែមគោលដៅប្រចាំសប្តាហ៍ ខែ ឬឆ្នាំរបស់អ្នក
-              </p>
-              <Button onClick={() => setShowAddForm(true)} className="gap-2">
-                <Plus className="h-4 w-4" />
-                បន្ថែមគោលដៅដំបូង
-              </Button>
+              <ul className="space-y-2 text-sm">
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                  <span>ជ្រើសរើសគោលដៅច្បាស់លាស់ និងជាក់លាក់ (SMART Goals)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                  <span>បំបែកវាទៅជាជំហានដែលអាចធ្វើបាន</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                  <span>ចាប់ផ្តើមតូចៗ ហើយបង្កើនបន្តិចម្តង</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                  <span>ពិនិត្យ និងតាមដានការវិឱ្ឌឍន៍ជាទៀងទាត់</span>
+                </li>
+              </ul>
             </CardContent>
           </Card>
-        )}
-      </div>
+        </TabsContent>
 
-      {/* Tips Card */}
-      <Card className="stat-card">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Target className="h-5 w-5" />
-            គន្លឹះសម្រាប់សរសេរគោលដៅល្អ
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className="space-y-2 text-sm">
-            <li className="flex items-start gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-              <span>ជ្រើសរើសគោលដៅច្បាស់លាស់ និងជាក់លាក់ (SMART Goals)</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-              <span>បំបែកវាទៅជាជំហានដែលអាចធ្វើបាន</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-              <span>ចាប់ផ្តើមតូចៗ ហើយបង្កើនបន្តិចម្តង</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-              <span>ពិនិត្យ និងតាមដានความរីកចម្រើនជាទៀងទាត់</span>
-            </li>
-          </ul>
-        </CardContent>
-      </Card>
+        <TabsContent value="ai-assistant" className="mt-6">
+          <AIAssistant />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
