@@ -30,7 +30,7 @@ export function WelcomeMessage() {
           </Avatar>
           <div>
             <h2 className="text-xl font-semibold text-foreground">
-              Hello, PRES
+              Hello, {profile?.first_name || displayName}
             </h2>
             <p className="text-sm text-muted-foreground">
               Welcome back
