@@ -7,25 +7,71 @@ import { cn } from "@/lib/utils";
 import { WelcomeMessage } from '@/components/WelcomeMessage';
 import { ProfileCard } from '@/components/ProfileCard';
 import AIAssistant from '@/components/AIAssistant';
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
-// Mock data for demo
-const mockTransactions = [
-  { id: 1, type: "income", amount: 1500, category: "ប្រាក់ខែ", date: "2024-07-01", note: "ប្រាក់ខែខុបម្ភៈ" },
-  { id: 2, type: "expense", amount: 50, category: "អាហារ", date: "2024-07-02", note: "អាហារពេលល្ងាច" },
-  { id: 3, type: "expense", amount: 30, category: "ឆេះប្រេង", date: "2024-07-02", note: "ចាក់ប្រេងម៉ូតូ" },
-  { id: 4, type: "income", amount: 200, category: "បន្ថែម", date: "2024-07-03", note: "ចំណូលបន្ថែម" },
-  { id: 5, type: "expense", amount: 25, category: "ដឹកជញ្ជូន", date: "2024-07-03", note: "តាក់ស៊ី" },
-];
+type Transaction = {
+  id: string;
+  user_id: string;
+  type: "income" | "expense";
+  amount: number;
+  category: string;
+  note: string | null;
+  date: string;
+  created_at: string;
+  updated_at: string;
+};
 
 export default function Dashboard() {
   const [currentMonth] = useState("កក្កដា ២០២៤");
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  // Fetch transactions on mount
+  useEffect(() => {
+    fetchTransactions();
+  }, [user]);
+
+  const fetchTransactions = async () => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+    
+    try {
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('date', { ascending: false });
+
+      if (error) throw error;
+      
+      setTransactions((data || []).map(item => ({
+        ...item,
+        type: item.type as "income" | "expense"
+      })));
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load transactions",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
   
-  // Calculate totals
-  const totalIncome = mockTransactions
+  // Calculate totals from real data
+  const totalIncome = transactions
     .filter(t => t.type === "income")
     .reduce((sum, t) => sum + t.amount, 0);
   
-  const totalExpense = mockTransactions
+  const totalExpense = transactions
     .filter(t => t.type === "expense")
     .reduce((sum, t) => sum + t.amount, 0);
   
@@ -138,7 +184,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-xl sm:text-2xl font-bold">
-              {mockTransactions.length}
+              {loading ? "..." : transactions.length}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
               រាយការណ៍ប្រតិបត្តិការ
@@ -158,8 +204,17 @@ export default function Dashboard() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {mockTransactions.slice(0, 5).map((transaction) => (
+          {loading ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <p>កំពុងទាញយកទិន្នន័យ...</p>
+            </div>
+          ) : transactions.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <p>មិនមានប្រតិបត្តិការនៅឡើយទេ</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {transactions.slice(0, 5).map((transaction) => (
               <div
                 key={transaction.id}
                 className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-smooth"
@@ -189,8 +244,9 @@ export default function Dashboard() {
                   <p className="text-xs text-muted-foreground mt-0 sm:mt-1">{transaction.date}</p>
                 </div>
               </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 
