@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -10,13 +10,26 @@ import {
   FolderOpen, 
   BarChart3, 
   Settings,
-  Menu,
-  X,
   LogOut,
   User,
   Target
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+  useSidebar,
+} from "@/components/ui/sidebar";
 
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "ការសង្ខេបហិរញ្ញវត្ថុ", key: "dashboard" },
@@ -27,19 +40,11 @@ const navItems = [
   { to: "/settings", icon: Settings, label: "ការកំណត់", key: "settings" }
 ];
 
-export default function Layout() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const location = useLocation();
+function AppSidebar() {
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const { user, loading, signOut } = useAuth();
-
-  const closeSidebar = () => setSidebarOpen(false);
-
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate('/auth');
-    }
-  }, [user, loading, navigate]);
+  const location = useLocation();
+  const { state } = useSidebar();
 
   const handleSignOut = async () => {
     const { error } = await signOut();
@@ -50,6 +55,89 @@ export default function Layout() {
       navigate('/auth');
     }
   };
+
+  return (
+    <Sidebar variant="inset" collapsible="icon">
+      <SidebarHeader>
+        <div className="flex items-center gap-2 px-2 py-1">
+          <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <LayoutDashboard className="size-4" />
+          </div>
+          <div className="grid flex-1 text-left text-sm leading-tight">
+            <span className="truncate font-semibold text-foreground">
+              Cashsnap
+            </span>
+            <span className="truncate text-xs text-muted-foreground">
+              Finance Tracker
+            </span>
+          </div>
+        </div>
+      </SidebarHeader>
+      
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navItems.map((item) => (
+                <SidebarMenuItem key={item.key}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={location.pathname === item.to}
+                    tooltip={item.label}
+                  >
+                    <NavLink to={item.to}>
+                      <item.icon />
+                      <span>{item.label}</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+      
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <div className="flex items-center gap-2 px-2 py-1">
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-muted">
+                <User className="size-4" />
+              </div>
+              {state === "expanded" && (
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium text-foreground">
+                    {user?.email?.split('@')[0]}
+                  </span>
+                  <span className="truncate text-xs text-muted-foreground">
+                    {user?.email}
+                  </span>
+                </div>
+              )}
+            </div>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton onClick={handleSignOut} tooltip="Sign Out">
+              <LogOut />
+              <span>Sign Out</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+    </Sidebar>
+  );
+}
+
+export default function Layout() {
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/auth');
+    }
+  }, [user, loading, navigate]);
 
   if (loading) {
     return (
@@ -67,122 +155,26 @@ export default function Layout() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      {/* Mobile Header */}
-      <header className="lg:hidden bg-card/80 backdrop-blur-md border-b border-border/50 px-3 sm:px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setSidebarOpen(true)}
-            className="p-2 flex-shrink-0"
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
-          <h1 className="text-sm sm:text-lg font-semibold text-gradient truncate">Cashsnap Finances Tracking</h1>
-        </div>
-        <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
-          <ThemeToggle />
-          <Button variant="ghost" size="sm" onClick={handleSignOut} className="p-2">
-            <LogOut className="h-4 w-4" />
-          </Button>
-        </div>
-      </header>
-
-      <div className="flex">
-        {/* Desktop Sidebar */}
-        <aside className="hidden lg:flex flex-col w-64 bg-card/60 backdrop-blur-md border-r border-border/50 h-screen sticky top-0">
-          <div className="flex items-center justify-between p-6 border-b border-border/50">
-            <h1 className="text-xl font-bold text-gradient">Cashsnap Finances Tracking</h1>
-            <div className="flex items-center space-x-2">
-              <ThemeToggle />
-              <Button variant="ghost" size="sm" onClick={handleSignOut} title="Sign Out">
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-gradient-to-br from-background via-background to-primary/5">
+        <AppSidebar />
+        
+        {/* Header */}
+        <div className="flex-1 flex flex-col">
+          <header className="flex h-14 items-center gap-4 border-b bg-card/50 backdrop-blur-md px-4 lg:px-6">
+            <SidebarTrigger />
+            <div className="flex-1" />
+            <ThemeToggle />
+          </header>
           
-          <nav className="flex-1 px-4 py-6 space-y-2">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.key}
-                to={item.to}
-                className={({ isActive }) =>
-                  cn(
-                    "flex items-center space-x-3 px-4 py-3 rounded-xl transition-smooth font-medium",
-                    isActive
-                      ? "bg-primary text-primary-foreground shadow-soft"
-                      : "text-foreground/80 hover:bg-accent hover:text-accent-foreground"
-                  )
-                }
-              >
-                <item.icon className="h-5 w-5" />
-                <span>{item.label}</span>
-              </NavLink>
-            ))}
-          </nav>
-        </aside>
-
-        {/* Mobile Sidebar Overlay */}
-        {sidebarOpen && (
-          <div className="lg:hidden fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
-            <aside className="w-72 sm:w-80 bg-card h-full border-r border-border/50 animate-slide-in-right">
-              <div className="flex items-center justify-between p-6 border-b border-border/50">
-                <h1 className="text-xl font-bold text-gradient">Cashsnap Finances Tracking</h1>
-                <Button variant="ghost" size="sm" onClick={closeSidebar} className="p-2">
-                  <X className="h-5 w-5" />
-                </Button>
-              </div>
-              
-              <nav className="px-4 py-6 space-y-2">
-                {navItems.map((item) => (
-                  <NavLink
-                    key={item.key}
-                    to={item.to}
-                    onClick={closeSidebar}
-                    className={({ isActive }) =>
-                      cn(
-                        "flex items-center space-x-3 px-4 py-3 rounded-xl transition-smooth font-medium",
-                        isActive
-                          ? "bg-primary text-primary-foreground shadow-soft"
-                          : "text-foreground/80 hover:bg-accent hover:text-accent-foreground"
-                      )
-                    }
-                  >
-                    <item.icon className="h-5 w-5" />
-                    <span>{item.label}</span>
-                  </NavLink>
-                ))}
-              </nav>
-              
-              <div className="px-4 py-4 border-t border-border/50 mt-auto">
-                <div className="flex items-center space-x-3 px-4 py-2 rounded-xl bg-accent/50">
-                  <User className="h-4 w-4 text-accent-foreground" />
-                  <span className="text-sm text-accent-foreground truncate">
-                    {user?.email}
-                  </span>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleSignOut}
-                  className="w-full justify-start mt-2 text-muted-foreground hover:text-destructive"
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Sign Out
-                </Button>
-              </div>
-            </aside>
-          </div>
-        )}
-
-        {/* Main Content */}
-        <main className="flex-1 min-h-screen">
-          <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-6 lg:px-8 lg:py-8 max-w-7xl">
-            <Outlet />
-          </div>
-        </main>
+          {/* Main Content */}
+          <main className="flex-1">
+            <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-6 lg:px-8 lg:py-8 max-w-7xl">
+              <Outlet />
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }
