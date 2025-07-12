@@ -115,11 +115,11 @@ export function ProfileCard() {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Avatar Section */}
-        <div className="flex items-center space-x-4">
-          <div className="relative">
-            <Avatar className="h-20 w-20">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-4">
+          <div className="relative flex-shrink-0">
+            <Avatar className="h-16 w-16 sm:h-20 sm:w-20">
               <AvatarImage src={profile?.avatar_url} alt={displayName} />
-              <AvatarFallback className="text-lg font-semibold bg-primary text-primary-foreground">
+              <AvatarFallback className="text-base sm:text-lg font-semibold bg-primary text-primary-foreground">
                 {initials}
               </AvatarFallback>
             </Avatar>
@@ -140,11 +140,11 @@ export function ProfileCard() {
               className="hidden"
             />
           </div>
-          <div className="flex-1">
-            <h3 className="text-lg font-semibold text-foreground">
+          <div className="flex-1 text-center sm:text-left min-w-0">
+            <h3 className="text-base sm:text-lg font-semibold text-foreground truncate">
               {displayName}
             </h3>
-            <p className="text-sm text-muted-foreground">{user?.email}</p>
+            <p className="text-sm text-muted-foreground truncate">{user?.email}</p>
             {uploading && (
               <p className="text-xs text-primary mt-1">Uploading avatar...</p>
             )}
@@ -173,7 +173,7 @@ export function ProfileCard() {
                 placeholder="Enter username"
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="firstName">First Name</Label>
                 <Input
@@ -197,7 +197,7 @@ export function ProfileCard() {
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             {isEditing ? (
               <>
                 <Button onClick={handleSave} className="flex-1">
@@ -212,6 +212,7 @@ export function ProfileCard() {
                     setLastName(profile?.last_name || '');
                     setUsername(profile?.username || '');
                   }}
+                  className="sm:flex-none"
                 >
                   Cancel
                 </Button>
@@ -220,7 +221,7 @@ export function ProfileCard() {
               <Button 
                 variant="outline" 
                 onClick={() => setIsEditing(true)}
-                className="flex-1"
+                className="w-full"
               >
                 Edit Profile
               </Button>

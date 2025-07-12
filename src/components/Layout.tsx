@@ -69,21 +69,21 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       {/* Mobile Header */}
-      <header className="lg:hidden bg-card/80 backdrop-blur-md border-b border-border/50 px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center space-x-3">
+      <header className="lg:hidden bg-card/80 backdrop-blur-md border-b border-border/50 px-3 sm:px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setSidebarOpen(true)}
-            className="p-2"
+            className="p-2 flex-shrink-0"
           >
             <Menu className="h-5 w-5" />
           </Button>
-          <h1 className="text-lg font-semibold text-gradient">Cashsnap Finances Tracking</h1>
+          <h1 className="text-sm sm:text-lg font-semibold text-gradient truncate">Cashsnap Finances Tracking</h1>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
           <ThemeToggle />
-          <Button variant="ghost" size="sm" onClick={handleSignOut}>
+          <Button variant="ghost" size="sm" onClick={handleSignOut} className="p-2">
             <LogOut className="h-4 w-4" />
           </Button>
         </div>
@@ -126,7 +126,7 @@ export default function Layout() {
         {/* Mobile Sidebar Overlay */}
         {sidebarOpen && (
           <div className="lg:hidden fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
-            <aside className="w-80 bg-card h-full border-r border-border/50 animate-slide-in-right">
+            <aside className="w-72 sm:w-80 bg-card h-full border-r border-border/50 animate-slide-in-right">
               <div className="flex items-center justify-between p-6 border-b border-border/50">
                 <h1 className="text-xl font-bold text-gradient">Cashsnap Finances Tracking</h1>
                 <Button variant="ghost" size="sm" onClick={closeSidebar} className="p-2">
@@ -178,7 +178,7 @@ export default function Layout() {
 
         {/* Main Content */}
         <main className="flex-1 min-h-screen">
-          <div className="container mx-auto px-4 py-6 lg:px-8 lg:py-8">
+          <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-6 lg:px-8 lg:py-8 max-w-7xl">
             <Outlet />
           </div>
         </main>

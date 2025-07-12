@@ -185,7 +185,7 @@
 @layer components {
   /* Finance app specific components */
   .stat-card {
-    @apply bg-gradient-to-br from-card to-card/90 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-glow)] transition-[var(--transition-smooth)];
+    @apply bg-gradient-to-br from-card to-card/90 backdrop-blur-sm border border-border/50 rounded-xl p-4 sm:p-6 shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-glow)] transition-[var(--transition-smooth)];
   }
 
   .income-card {

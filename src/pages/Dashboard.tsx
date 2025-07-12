@@ -45,21 +45,21 @@ export default function Dashboard() {
       <WelcomeMessage />
       
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">ការសង្ខេបហិរញ្ញវត្ថុ</h1>
-          <p className="text-muted-foreground">
+      <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
+        <div className="space-y-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">ការសង្ខេបហិរញ្ញវត្ថុ</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             ស្ថានភាពហិរញ្ញវត្ថុរបស់អ្នកសម្រាប់ខែ {currentMonth}
           </p>
         </div>
-        <div className="flex gap-3">
-          <Button variant="outline" size="sm" className="gap-2">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Button variant="outline" size="sm" className="gap-2 w-full sm:w-auto">
             <Calendar className="h-4 w-4" />
-            ប្រែប្រួលខែ
+            <span className="text-sm">ប្រែប្រួលខែ</span>
           </Button>
-          <Button className="gap-2 bg-gradient-primary border-0 hover:shadow-glow transition-smooth">
+          <Button className="gap-2 bg-gradient-primary border-0 hover:shadow-glow transition-smooth w-full sm:w-auto">
             <Plus className="h-4 w-4" />
-            បន្ថែមប្រតិបត្តិការ
+            <span className="text-sm">បន្ថែមប្រតិបត្តិការ</span>
           </Button>
         </div>
       </div>
@@ -68,7 +68,7 @@ export default function Dashboard() {
       <AIAssistant />
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {/* Total Income */}
         <Card className="income-card stat-card animate-bounce-in">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -78,7 +78,7 @@ export default function Dashboard() {
             <TrendingUp className="h-4 w-4 text-emerald-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-emerald-800 dark:text-emerald-300">
+            <div className="text-xl sm:text-2xl font-bold text-emerald-800 dark:text-emerald-300">
               {formatCurrency(totalIncome)}
             </div>
             <p className="text-xs text-emerald-600 dark:text-emerald-500 mt-1">
@@ -96,7 +96,7 @@ export default function Dashboard() {
             <TrendingDown className="h-4 w-4 text-red-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-800 dark:text-red-300">
+            <div className="text-xl sm:text-2xl font-bold text-red-800 dark:text-red-300">
               {formatCurrency(totalExpense)}
             </div>
             <p className="text-xs text-red-600 dark:text-red-500 mt-1">
@@ -115,7 +115,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className={cn(
-              "text-2xl font-bold",
+              "text-xl sm:text-2xl font-bold",
               netBalance >= 0 
                 ? "text-blue-800 dark:text-blue-300" 
                 : "text-red-800 dark:text-red-300"
@@ -137,7 +137,7 @@ export default function Dashboard() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-xl sm:text-2xl font-bold">
               {mockTransactions.length}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
@@ -150,9 +150,9 @@ export default function Dashboard() {
       {/* Recent Transactions */}
       <Card className="stat-card animate-slide-up">
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-lg">ប្រតិបត្តិការថ្មីៗ</CardTitle>
-            <Button variant="outline" size="sm">
+          <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+            <CardTitle className="text-base sm:text-lg">ប្រតិបត្តិការថ្មីៗ</CardTitle>
+            <Button variant="outline" size="sm" className="w-full sm:w-auto">
               មើលទាំងអស់
             </Button>
           </div>
@@ -162,22 +162,23 @@ export default function Dashboard() {
             {mockTransactions.slice(0, 5).map((transaction) => (
               <div
                 key={transaction.id}
-                className="flex items-center justify-between p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-smooth"
+                className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-smooth"
               >
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
                   <div className={cn(
-                    "w-2 h-8 rounded-full",
+                    "w-2 h-8 rounded-full flex-shrink-0",
                     transaction.type === "income" ? "bg-gradient-income" : "bg-gradient-expense"
                   )} />
-                  <div>
-                    <p className="font-medium">{transaction.category}</p>
-                    <p className="text-sm text-muted-foreground">{transaction.note}</p>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium text-sm sm:text-base truncate">{transaction.category}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground truncate">{transaction.note}</p>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="flex items-center justify-between sm:flex-col sm:items-end sm:text-right">
                   <Badge 
                     variant={transaction.type === "income" ? "secondary" : "destructive"}
                     className={cn(
+                      "text-xs sm:text-sm",
                       transaction.type === "income" 
                         ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" 
                         : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
@@ -185,7 +186,7 @@ export default function Dashboard() {
                   >
                     {transaction.type === "income" ? "+" : "-"}{formatCurrency(transaction.amount)}
                   </Badge>
-                  <p className="text-xs text-muted-foreground mt-1">{transaction.date}</p>
+                  <p className="text-xs text-muted-foreground mt-0 sm:mt-1">{transaction.date}</p>
                 </div>
               </div>
             ))}
@@ -194,33 +195,33 @@ export default function Dashboard() {
       </Card>
 
       {/* Main Dashboard Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div className="lg:col-span-3 space-y-6">
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+        <div className="xl:col-span-3 space-y-6">
           {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 animate-slide-up">
             <Card className="stat-card hover:shadow-glow transition-smooth cursor-pointer">
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-4">
-                  <div className="p-3 bg-gradient-income rounded-xl">
-                    <TrendingUp className="h-6 w-6 text-white" />
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center space-x-3 sm:space-x-4">
+                  <div className="p-2 sm:p-3 bg-gradient-income rounded-xl flex-shrink-0">
+                    <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                   </div>
-                  <div>
-                    <h3 className="font-semibold">បន្ថែមចំណូល</h3>
-                    <p className="text-sm text-muted-foreground">កត់ត្រាចំណូលថ្មី</p>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-sm sm:text-base">បន្ថែមចំណូល</h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground">កត់ត្រាចំណូលថ្មី</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             <Card className="stat-card hover:shadow-glow transition-smooth cursor-pointer">
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-4">
-                  <div className="p-3 bg-gradient-expense rounded-xl">
-                    <TrendingDown className="h-6 w-6 text-white" />
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center space-x-3 sm:space-x-4">
+                  <div className="p-2 sm:p-3 bg-gradient-expense rounded-xl flex-shrink-0">
+                    <TrendingDown className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                   </div>
-                  <div>
-                    <h3 className="font-semibold">បន្ថែមចំណាយ</h3>
-                    <p className="text-sm text-muted-foreground">កត់ត្រាចំណាយថ្មី</p>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-sm sm:text-base">បន្ថែមចំណាយ</h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground">កត់ត្រាចំណាយថ្មី</p>
                   </div>
                 </div>
               </CardContent>
@@ -229,7 +230,7 @@ export default function Dashboard() {
         </div>
         
         {/* Profile Card */}
-        <div className="lg:col-span-1">
+        <div className="xl:col-span-1">
           <ProfileCard />
         </div>
       </div>
