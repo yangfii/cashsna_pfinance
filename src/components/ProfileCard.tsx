@@ -7,11 +7,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
-import { Camera, Save, User } from 'lucide-react';
+import { Camera, Save, User, X } from 'lucide-react';
 
 export function ProfileCard() {
   const { user } = useAuth();
-  const { profile, updateProfile, uploadAvatar, loading, checkUsernameAvailability } = useProfile();
+  const { profile, updateProfile, uploadAvatar, removeAvatar, loading, checkUsernameAvailability } = useProfile();
   const [isEditing, setIsEditing] = useState(false);
   const [firstName, setFirstName] = useState(profile?.first_name || '');
   const [lastName, setLastName] = useState(profile?.last_name || '');
@@ -81,6 +81,18 @@ export function ProfileCard() {
     setUploading(false);
   };
 
+  const handleRemoveAvatar = async () => {
+    setUploading(true);
+    const { error } = await removeAvatar();
+
+    if (error) {
+      toast.error('Failed to remove avatar. Please try again.');
+    } else {
+      toast.success('Avatar removed successfully');
+    }
+    setUploading(false);
+  };
+
   if (loading) {
     return (
       <Card className="glass-effect">
@@ -123,15 +135,28 @@ export function ProfileCard() {
                 {initials}
               </AvatarFallback>
             </Avatar>
-            <Button
-              variant="outline"
-              size="sm"
-              className="absolute -bottom-2 -right-2 h-8 w-8 p-0 rounded-full"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploading}
-            >
-              <Camera className="h-4 w-4" />
-            </Button>
+            <div className="absolute -bottom-2 -right-2 flex gap-1">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 w-8 p-0 rounded-full"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+              >
+                <Camera className="h-4 w-4" />
+              </Button>
+              {profile?.avatar_url && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 w-8 p-0 rounded-full"
+                  onClick={handleRemoveAvatar}
+                  disabled={uploading}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
             <input
               ref={fileInputRef}
               type="file"

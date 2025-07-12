@@ -105,6 +105,18 @@ export function useProfile() {
     }
   };
 
+  const removeAvatar = async () => {
+    if (!user) return { error: 'No user found' };
+
+    try {
+      const { data, error } = await updateProfile({ avatar_url: null });
+      return { data, error };
+    } catch (err) {
+      console.error('Error removing avatar:', err);
+      return { error: err };
+    }
+  };
+
   const checkUsernameAvailability = async (username: string) => {
     if (!username) return { available: true };
     
@@ -132,6 +144,7 @@ export function useProfile() {
     loading,
     updateProfile,
     uploadAvatar,
+    removeAvatar,
     checkUsernameAvailability,
     refetch: fetchProfile,
   };
