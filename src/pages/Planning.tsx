@@ -232,13 +232,13 @@ export default function Planning() {
       {/* Main Content Tabs */}
       <Tabs defaultValue="goals" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="goals" className="flex items-center gap-2">
-            <Target className="h-4 w-4" />
-            គោលដៅ
-          </TabsTrigger>
           <TabsTrigger value="ai-assistant" className="flex items-center gap-2">
             <Brain className="h-4 w-4" />
             ជំនួយការ AI
+          </TabsTrigger>
+          <TabsTrigger value="goals" className="flex items-center gap-2">
+            <Target className="h-4 w-4" />
+            គោលដៅ
           </TabsTrigger>
         </TabsList>
 
