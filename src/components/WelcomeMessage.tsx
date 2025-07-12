@@ -7,6 +7,9 @@ export function WelcomeMessage() {
   const { user } = useAuth();
   const { profile } = useProfile();
 
+  console.log('Profile data:', profile);
+  console.log('User data:', user);
+
   if (!user) return null;
 
   const displayName = profile?.first_name || profile?.last_name 
