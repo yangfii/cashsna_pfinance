@@ -3,6 +3,7 @@ import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/hooks/useAuth";
+import { useProfile } from "@/hooks/useProfile";
 import { toast } from "sonner";
 import { 
   LayoutDashboard, 
@@ -32,6 +33,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import AIAssistant from "@/components/AIAssistant";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
@@ -46,6 +48,7 @@ const navItems = [
 
 function AppSidebar() {
   const { user, signOut } = useAuth();
+  const { profile } = useProfile();
   const navigate = useNavigate();
   const location = useLocation();
   const { state } = useSidebar();
@@ -107,9 +110,12 @@ function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton asChild tooltip="Profile">
               <NavLink to="/settings" className={cn("flex items-center gap-3 p-3", location.pathname === "/settings" ? "bg-accent" : "")}>
-                <div className="flex aspect-square size-10 items-center justify-center rounded-full bg-gradient-primary text-white">
-                  <User className="size-5" />
-                </div>
+                <Avatar className="size-10">
+                  <AvatarImage src={profile?.avatar_url || undefined} alt="Profile picture" />
+                  <AvatarFallback className="bg-gradient-primary text-white">
+                    <User className="size-5" />
+                  </AvatarFallback>
+                </Avatar>
                 {state === "expanded" && (
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold text-foreground">
