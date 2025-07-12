@@ -105,21 +105,23 @@ function AppSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <div className="flex items-center gap-2 px-2 py-1">
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-muted">
-                <User className="size-4" />
-              </div>
-              {state === "expanded" && (
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium text-foreground">
-                    {user?.email?.split('@')[0]}
-                  </span>
-                  <span className="truncate text-xs text-muted-foreground">
-                    {user?.email}
-                  </span>
+            <SidebarMenuButton asChild tooltip="Profile">
+              <NavLink to="/settings" className={cn("flex items-center gap-3 p-3", location.pathname === "/settings" ? "bg-accent" : "")}>
+                <div className="flex aspect-square size-10 items-center justify-center rounded-full bg-gradient-primary text-white">
+                  <User className="size-5" />
                 </div>
-              )}
-            </div>
+                {state === "expanded" && (
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold text-foreground">
+                      {user?.email?.split('@')[0]}
+                    </span>
+                    <span className="truncate text-xs text-muted-foreground">
+                      View Profile
+                    </span>
+                  </div>
+                )}
+              </NavLink>
+            </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={handleSignOut} tooltip="Sign Out">
