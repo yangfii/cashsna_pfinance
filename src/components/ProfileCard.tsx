@@ -74,7 +74,7 @@ export function ProfileCard() {
     const { error } = await uploadAvatar(file);
 
     if (error) {
-      toast.error('Error uploading avatar');
+      toast.error('Failed to upload avatar. Please try again.');
     } else {
       toast.success('Avatar updated successfully');
     }
