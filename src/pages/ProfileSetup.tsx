@@ -19,10 +19,14 @@ export default function ProfileSetup() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect existing users with completed profiles
+  // Redirect existing users with completed profiles, but add protection against loops
   useEffect(() => {
-    if (!profileLoading && profile && profile.first_name && profile.last_name) {
-      navigate('/dashboard');
+    if (!profileLoading && profile?.first_name && profile?.last_name) {
+      // Add a delay to prevent rapid redirects
+      const timer = setTimeout(() => {
+        navigate('/dashboard');
+      }, 100);
+      return () => clearTimeout(timer);
     }
   }, [profile, profileLoading, navigate]);
 

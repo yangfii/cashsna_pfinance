@@ -13,12 +13,16 @@ const Index = () => {
   const { profile, loading: profileLoading } = useProfile();
   const navigate = useNavigate();
 
-  // Redirect new users to profile setup
+  // Redirect new users to profile setup, but only after profile loading is complete
   useEffect(() => {
     if (user && !profileLoading) {
-      // Check if user needs to complete profile setup
+      // Only redirect if we're certain the profile is incomplete
       if (!profile || (!profile.first_name && !profile.last_name)) {
-        navigate('/profile-setup');
+        // Add a small delay to prevent rapid redirects
+        const timer = setTimeout(() => {
+          navigate('/profile-setup');
+        }, 100);
+        return () => clearTimeout(timer);
       }
     }
   }, [user, profile, profileLoading, navigate]);
