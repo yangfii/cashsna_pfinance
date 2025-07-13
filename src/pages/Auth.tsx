@@ -22,7 +22,7 @@ export default function Auth() {
   const navigate = useNavigate();
 
   // Replace with your actual reCAPTCHA site key
-  const RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'; // This is a test key
+  const RECAPTCHA_SITE_KEY = '6Ld3gYErAAAAAK3ZYgE5U2KffYLKJsrRCfwasmPG';
 
   // Redirect if already authenticated
   useEffect(() => {
