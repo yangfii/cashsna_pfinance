@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,9 +15,16 @@ export default function ProfileSetup() {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   
-  const { updateProfile, uploadAvatar } = useProfile();
+  const { profile, loading: profileLoading, updateProfile, uploadAvatar } = useProfile();
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  // Redirect existing users with completed profiles
+  useEffect(() => {
+    if (!profileLoading && profile && profile.first_name && profile.last_name) {
+      navigate('/dashboard');
+    }
+  }, [profile, profileLoading, navigate]);
 
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
