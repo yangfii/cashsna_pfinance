@@ -45,7 +45,7 @@ const Index = () => {
                   <div className="text-center lg:text-left space-y-6">
                     <div className="space-y-3">
                       <h2 className="text-3xl lg:text-4xl font-bold text-gradient">
-                        Welcome to Cashsnap Finance
+                        Welcome to CashSnap Finance
                       </h2>
                       <p className="text-lg text-muted-foreground max-w-2xl">
                         Your intelligent personal finance management dashboard. 
@@ -119,7 +119,7 @@ const Index = () => {
             </div>
             
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg">
-              Cash<span className="text-primary-glow">Snap</span>
+              CashSnap <span className="text-primary-glow">Finance</span>
             </h1>
             
             <h2 className="text-2xl md:text-3xl font-semibold text-white/90 mb-6">
@@ -218,7 +218,7 @@ const Index = () => {
                 </div>
                 <h3 className="text-lg font-semibold mb-3">ផ្តល់ជូនជាភាសាខ្មែរ</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-3">
-                  Cashsnap ត្រូវបានរចនាឡើងសម្រាប់អ្នកប្រើនៅកម្ពុជា ជាមួយនឹងភាសាខ្មែរប្រកបដោយការយល់ងាយ។
+                  CashSnap Finance ត្រូវបានរចនាឡើងសម្រាប់អ្នកប្រើនៅកម្ពុជា ជាមួយនឹងភាសាខ្មែរប្រកបដោយការយល់ងាយ។
                 </p>
                 <div className="flex items-start gap-2">
                   <span className="text-xs text-primary font-medium">💡</span>
