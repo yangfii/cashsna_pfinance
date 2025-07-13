@@ -16,6 +16,8 @@ import {
   Pie,
   Cell
 } from 'recharts';
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 // Mock data for charts
 const monthlyData = [
@@ -57,6 +59,7 @@ export default function Reports() {
   const [selectedPeriod, setSelectedPeriod] = useState("thisMonth");
   const [chartType, setChartType] = useState("bar");
   const [isNewUser, setIsNewUser] = useState(false);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   // Check if user is new (no real transactions)
   useEffect(() => {
@@ -76,6 +79,46 @@ export default function Reports() {
   const totalIncome = monthlyData[monthlyData.length - 1].income;
   const totalExpense = monthlyData[monthlyData.length - 1].expense;
   const savingsRate = ((totalIncome - totalExpense) / totalIncome * 100);
+
+  const handleExportPDF = async () => {
+    setIsGeneratingPDF(true);
+    try {
+      const reportData = {
+        totalIncome,
+        totalExpense,
+        savingsRate: savingsRate.toFixed(1),
+        monthlyData,
+        categoryExpenses,
+        period: selectedPeriod
+      };
+
+      const { data, error } = await supabase.functions.invoke('generate-pdf-report', {
+        body: { reportData, period: selectedPeriod }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      // Create blob and download
+      const blob = new Blob([data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `financial-report-${selectedPeriod}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+
+      toast.success('PDF នាំចេញបានជោគជ័យ!');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast.error('មានបញ្ហាក្នុងការនាំចេញ PDF');
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -103,9 +146,9 @@ export default function Reports() {
               <SelectItem value="thisYear">ឆ្នាំនេះ</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2" onClick={handleExportPDF} disabled={isGeneratingPDF}>
             <Download className="h-4 w-4" />
-            នាំចេញ PDF
+            {isGeneratingPDF ? 'កំពុងបង្កើត...' : 'នាំចេញ PDF'}
           </Button>
         </div>
       </div>
