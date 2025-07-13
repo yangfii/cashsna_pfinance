@@ -38,12 +38,12 @@ import AIAssistant from "@/components/AIAssistant";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 const navItems = [
-  { to: "/", icon: LayoutDashboard, label: "ការសង្ខេបហិរញ្ញវត្ថុ", key: "dashboard" },
-  { to: "/transactions", icon: ArrowLeftRight, label: "ប្រតិបត្តិការ", key: "transactions" },
-  { to: "/categories", icon: FolderOpen, label: "ប្រភេទចំណូល/ចំណាយ", key: "categories" },
-  { to: "/planning", icon: Target, label: "ការរៀបចំគំរោង", key: "planning" },
-  { to: "/reports", icon: BarChart3, label: "របាយការណ៍ហិរញ្ញវត្ថុ", key: "reports" },
-  { to: "/settings", icon: Settings, label: "ការកំណត់", key: "settings" }
+  { to: "/dashboard", icon: LayoutDashboard, label: "ការសង្ខេបហិរញ្ញវត្ថុ", key: "dashboard" },
+  { to: "/dashboard/transactions", icon: ArrowLeftRight, label: "ប្រតិបត្តិការ", key: "transactions" },
+  { to: "/dashboard/categories", icon: FolderOpen, label: "ប្រភេទចំណូល/ចំណាយ", key: "categories" },
+  { to: "/dashboard/planning", icon: Target, label: "ការរៀបចំគំរោង", key: "planning" },
+  { to: "/dashboard/reports", icon: BarChart3, label: "របាយការណ៍ហិរញ្ញវត្ថុ", key: "reports" },
+  { to: "/dashboard/settings", icon: Settings, label: "ការកំណត់", key: "settings" }
 ];
 
 function AppSidebar() {
