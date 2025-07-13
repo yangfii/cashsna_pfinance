@@ -63,9 +63,22 @@ export default function Reports() {
 
   // Check if user is new (no real transactions)
   useEffect(() => {
-    const transactions = localStorage.getItem('transactions');
-    const hasRealTransactions = transactions && JSON.parse(transactions).length > 0;
-    setIsNewUser(!hasRealTransactions);
+    const checkForTransactions = async () => {
+      try {
+        // Check if user has any real transactions in database
+        const { data: transactions } = await supabase
+          .from('transactions')
+          .select('id')
+          .limit(1);
+        
+        setIsNewUser(!transactions || transactions.length === 0);
+      } catch (error) {
+        // If error occurs, assume new user and show demo data
+        setIsNewUser(true);
+      }
+    };
+
+    checkForTransactions();
   }, []);
 
   const formatCurrency = (amount: number) => {
