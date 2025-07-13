@@ -39,9 +39,11 @@ export default function Auth() {
       
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
-          toast.error('Invalid email or password. Please check your credentials.');
+          toast.error('Invalid email or password. If you just signed up, please check your email and confirm your account first.');
         } else if (error.message.includes('Email not confirmed')) {
           toast.error('Please check your email and confirm your account before signing in.');
+        } else if (error.message.includes('signup_disabled')) {
+          toast.error('New signups are currently disabled. Please contact support.');
         } else {
           toast.error(error.message || 'An error occurred during sign in');
         }
@@ -81,7 +83,7 @@ export default function Auth() {
           toast.error(error.message || 'An error occurred during registration');
         }
       } else {
-        toast.success('Check your email to confirm your account!');
+        toast.success('Account created! Please check your email and click the confirmation link before signing in.');
         // Clear form
         setEmail('');
         setPassword('');
