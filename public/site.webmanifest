@@ -1,0 +1,26 @@
+{
+  "name": "Cashsnap Finance",
+  "short_name": "Cashsnap",
+  "description": "Track your income and expenses with ease",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/lovable-uploads/bd670881-e313-41b8-b0eb-23f2fe1fe109.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/lovable-uploads/bd670881-e313-41b8-b0eb-23f2fe1fe109.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "productivity", "utilities"],
+  "lang": "en-US"
+}
