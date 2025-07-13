@@ -1,13 +1,27 @@
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { WelcomeMessage } from '@/components/WelcomeMessage';
 import { ProfileCard } from '@/components/ProfileCard';
 import LandingLayout from '@/layouts/LandingLayout';
+import { useEffect } from 'react';
 
 const Index = () => {
   const { user } = useAuth();
+  const { profile, loading: profileLoading } = useProfile();
+  const navigate = useNavigate();
+
+  // Redirect new users to profile setup
+  useEffect(() => {
+    if (user && !profileLoading) {
+      // Check if user needs to complete profile setup
+      if (!profile || (!profile.first_name && !profile.last_name)) {
+        navigate('/profile-setup');
+      }
+    }
+  }, [user, profile, profileLoading, navigate]);
 
   if (user) {
     return (
