@@ -21,6 +21,7 @@ import {
   User
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/hooks/useLanguage";
 import { ProfileCard } from "@/components/ProfileCard";
 import { 
   AlertDialog,
@@ -37,9 +38,10 @@ import {
 export default function Settings() {
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
+  const { language, setLanguage, t } = useLanguage();
   const [settings, setSettings] = useState({
     currency: "USD",
-    language: "khmer",
+    language: language,
     notifications: true,
     monthlyBudget: "2000",
     categories: true,
@@ -52,8 +54,8 @@ export default function Settings() {
     // Store language preference in localStorage
     localStorage.setItem('language', settings.language);
     toast({
-      title: "ការកំណត់ត្រូវបានរក្សាទុក",
-      description: "ការកែប្រែរបស់អ្នកត្រូវបានអនុវត្តដោយជោគជ័យ។",
+      title: t('settings.saved'),
+      description: t('settings.savedDesc'),
     });
   };
 
@@ -114,8 +116,8 @@ export default function Settings() {
           <SettingsIcon className="h-6 w-6 text-white" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold text-foreground">ការកំណត់</h1>
-          <p className="text-muted-foreground">គ្រប់គ្រងការកំណត់និងចំណាត់ចម្រៀងរបស់អ្នក</p>
+          <h1 className="text-3xl font-bold text-foreground">{t('settings.title')}</h1>
+          <p className="text-muted-foreground">{t('settings.subtitle')}</p>
         </div>
       </div>
 
@@ -127,15 +129,15 @@ export default function Settings() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Moon className="h-5 w-5" />
-            រូបរាងនិងរបៀបបង្ហាញ
+            {t('settings.appearance')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <Label className="text-base">ពន្លឺនិងងងឹត</Label>
+              <Label className="text-base">{t('settings.theme')}</Label>
               <p className="text-sm text-muted-foreground">
-                ប្តូរវិធីបង្ហាញរបស់កម្មវិធី
+                {t('settings.themeDesc')}
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -146,7 +148,7 @@ export default function Settings() {
                 className="gap-2"
               >
                 <Sun className="h-4 w-4" />
-                ពន្លឺ
+                {t('settings.light')}
               </Button>
               <Button
                 variant={theme === "dark" ? "default" : "outline"}
@@ -155,7 +157,7 @@ export default function Settings() {
                 className="gap-2"
               >
                 <Moon className="h-4 w-4" />
-                ងងឹត
+                {t('settings.dark')}
               </Button>
             </div>
           </div>
@@ -164,13 +166,13 @@ export default function Settings() {
 
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <Label className="text-base">ភាសា</Label>
+              <Label className="text-base">{t('settings.language')}</Label>
               <p className="text-sm text-muted-foreground">
-                ជ្រើសរើសភាសាកម្មវិធី
+                {t('settings.languageDesc')}
               </p>
             </div>
-            <Select value={settings.language} onValueChange={(value) => {
-              console.log('Language changed to:', value);
+            <Select value={language} onValueChange={(value) => {
+              setLanguage(value);
               setSettings({...settings, language: value});
             }}>
               <SelectTrigger className="w-48">
@@ -200,15 +202,15 @@ export default function Settings() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <DollarSign className="h-5 w-5" />
-            ការកំណត់ហិរញ្ញវត្ថុ
+            {t('settings.financial')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <Label className="text-base">រូបិយបណ្ណមូលដ្ឋាន</Label>
+              <Label className="text-base">{t('settings.currency')}</Label>
               <p className="text-sm text-muted-foreground">
-                រូបិយបណ្ណសម្រាប់បង្ហាញចំនួន
+                {t('settings.currencyDesc')}
               </p>
             </div>
             <Select value={settings.currency} onValueChange={(value) => 
@@ -228,7 +230,7 @@ export default function Settings() {
           <Separator />
 
           <div className="space-y-2">
-            <Label className="text-base">គោលដៅប្រាក់ចំណាយប្រចាំខែ</Label>
+            <Label className="text-base">{t('settings.monthlyBudget')}</Label>
             <div className="flex items-center gap-4">
               <Input
                 type="number"
@@ -241,7 +243,7 @@ export default function Settings() {
               </Badge>
             </div>
             <p className="text-sm text-muted-foreground">
-              កំណត់ដែនកំណត់ចំណាយប្រចាំខែ
+              {t('settings.monthlyBudgetDesc')}
             </p>
           </div>
         </CardContent>
@@ -252,15 +254,15 @@ export default function Settings() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Bell className="h-5 w-5" />
-            ការជូនដំណឹង
+            {t('settings.notifications')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <Label className="text-base">ការជូនដំណឹងទូទៅ</Label>
+              <Label className="text-base">{t('settings.generalNotifications')}</Label>
               <p className="text-sm text-muted-foreground">
-                ទទួលការជូនដំណឹងអំពីប្រតិបត្តិការថ្មី
+                {t('settings.generalNotificationsDesc')}
               </p>
             </div>
             <Switch
@@ -275,9 +277,9 @@ export default function Settings() {
 
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <Label className="text-base">ការជូនដំណឹងគោលដៅ</Label>
+              <Label className="text-base">{t('settings.budgetNotifications')}</Label>
               <p className="text-sm text-muted-foreground">
-                ជូនដំណឹងពេលដល់ដែនកំណត់ចំណាយ
+                {t('settings.budgetNotificationsDesc')}
               </p>
             </div>
             <Switch
@@ -293,15 +295,15 @@ export default function Settings() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            គ្រប់គ្រងទិន្នន័យ
+            {t('settings.dataManagement')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <Label className="text-base">បេតេកកំមបាំងស្វ័យប្រវត្តិ</Label>
+              <Label className="text-base">{t('settings.autoBackup')}</Label>
               <p className="text-sm text-muted-foreground">
-                បម្រុងទុកទិន្នន័យដោយស្វ័យប្រវត្តិ
+                {t('settings.autoBackupDesc')}
               </p>
             </div>
             <Switch
@@ -316,14 +318,14 @@ export default function Settings() {
 
           <div className="flex items-center justify-between">
             <div className="space-y-1">  
-              <Label className="text-base">នាំចេញទិន្នន័យ</Label>
+              <Label className="text-base">{t('settings.exportData')}</Label>
               <p className="text-sm text-muted-foreground">
-                ទាញយកទិន្នន័យរបស់អ្នកជាឯកសារ
+                {t('settings.exportDataDesc')}
               </p>
             </div>
             <Button variant="outline" onClick={handleExportData} className="gap-2">
               <Download className="h-4 w-4" />
-              នាំចេញ
+              {t('settings.export')}
             </Button>
           </div>
 
@@ -331,9 +333,9 @@ export default function Settings() {
 
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <Label className="text-base text-destructive">លុបទិន្នន័យទាំងអស់</Label>
+              <Label className="text-base text-destructive">{t('settings.deleteAll')}</Label>
               <p className="text-sm text-muted-foreground">
-                លុបប្រតិបត្តិការនិងការកំណត់ទាំងអស់
+                {t('settings.deleteAllDesc')}
               </p>
             </div>
             <AlertDialog>
@@ -343,7 +345,7 @@ export default function Settings() {
                   className="gap-2"
                 >
                   <Trash2 className="h-4 w-4" />
-                  លុបទាំងអស់
+                  {t('settings.deleteAllButton')}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
@@ -373,16 +375,16 @@ export default function Settings() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <User className="h-5 w-5" />
-            ព័ត៌មានគណនី
+            {t('settings.accountInfo')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
             <div>
-              <p className="font-medium">កំណែកម្មវិធី</p>
+              <p className="font-medium">{t('settings.appVersion')}</p>
               <p className="text-sm text-muted-foreground">v1.2.0</p>
             </div>
-            <Badge variant="secondary">បច្ចុប្បន្ន</Badge>
+            <Badge variant="secondary">{t('settings.current')}</Badge>
           </div>
         </CardContent>
       </Card>
@@ -393,7 +395,7 @@ export default function Settings() {
           onClick={handleSaveSettings}
           className="bg-gradient-primary border-0 hover:shadow-glow transition-smooth px-8"
         >
-          រក្សាទុកការកែប្រែ
+          {t('settings.saveChanges')}
         </Button>
       </div>
     </div>
