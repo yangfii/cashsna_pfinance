@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,21 +8,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
-import { Eye, EyeOff, Shield } from 'lucide-react';
-import ReCAPTCHA from 'react-google-recaptcha';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function Auth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const { signIn, signUp, signInWithGoogle, user } = useAuth();
   const navigate = useNavigate();
-
-  // reCAPTCHA site key
-  const RECAPTCHA_SITE_KEY = '6Ld3gYErAAAAAK3ZYgE5U2KffYLKJsrRCfwasmPG';
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -55,17 +49,11 @@ export default function Auth() {
         }
       } else {
         toast.success('Hello, Welcome back!');
-        // Reset reCAPTCHA
-        recaptchaRef.current?.reset();
-        setRecaptchaToken(null);
         navigate('/');
       }
     } catch (err) {
       toast.error('An unexpected error occurred. Please try again.');
       console.error('Sign in error:', err);
-      // Reset reCAPTCHA on error
-      recaptchaRef.current?.reset();
-      setRecaptchaToken(null);
     } finally {
       setLoading(false);
     }
@@ -94,28 +82,19 @@ export default function Auth() {
           toast.error('An account with this email already exists. Please sign in instead.');
         } else if (error.message.includes('Error sending confirmation email') || error.message.includes('SMTP')) {
           toast.success('Account created successfully! You can now sign in directly (email confirmation is temporarily disabled).');
-          // Clear form and reset reCAPTCHA
           setEmail('');
           setPassword('');
-          recaptchaRef.current?.reset();
-          setRecaptchaToken(null);
         } else {
           toast.error(error.message || 'An error occurred during registration');
         }
       } else {
         toast.success('Account created! Please check your email and click the confirmation link before signing in.');
-        // Clear form and reset reCAPTCHA
         setEmail('');
         setPassword('');
-        recaptchaRef.current?.reset();
-        setRecaptchaToken(null);
       }
     } catch (err) {
       toast.error('An unexpected error occurred. Please try again.');
       console.error('Sign up error:', err);
-      // Reset reCAPTCHA on error
-      recaptchaRef.current?.reset();
-      setRecaptchaToken(null);
     } finally {
       setLoading(false);
     }
