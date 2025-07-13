@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { Eye, EyeOff } from 'lucide-react';
@@ -14,8 +15,10 @@ export default function Auth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { signIn, signUp, signInWithGoogle, user } = useAuth();
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const { signIn, signUp, signInWithGoogle, resetPassword, user } = useAuth();
   const navigate = useNavigate();
 
   // Redirect if already authenticated
@@ -35,7 +38,7 @@ export default function Auth() {
     setLoading(true);
     
     try {
-      const { error } = await signIn(email, password);
+      const { error } = await signIn(email, password, rememberMe);
       
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
@@ -118,6 +121,31 @@ export default function Auth() {
     }
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      toast.error('Please enter your email address');
+      return;
+    }
+    
+    setLoading(true);
+    
+    try {
+      const { error } = await resetPassword(email);
+      
+      if (error) {
+        toast.error(error.message || 'An error occurred sending reset email');
+      } else {
+        toast.success('Password reset email sent! Check your inbox.');
+        setShowForgotPassword(false);
+      }
+    } catch (err) {
+      toast.error('An unexpected error occurred. Please try again.');
+      console.error('Password reset error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/30 p-4">
@@ -211,15 +239,37 @@ export default function Auth() {
                       ) : (
                         <Eye className="h-4 w-4" />
                       )}
-                    </Button>
-                  </div>
-                </div>
-                
-                
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? 'Signing in...' : 'Sign In'}
-                </Button>
-              </form>
+                     </Button>
+                   </div>
+                 </div>
+                 
+                 <div className="flex items-center justify-between">
+                   <div className="flex items-center space-x-2">
+                     <Checkbox 
+                       id="remember-me" 
+                       checked={rememberMe}
+                       onCheckedChange={(checked) => setRememberMe(checked === true)}
+                       disabled={loading}
+                     />
+                     <Label htmlFor="remember-me" className="text-sm font-normal">
+                       Remember me
+                     </Label>
+                   </div>
+                   <Button
+                     type="button"
+                     variant="link"
+                     className="px-0 text-sm"
+                     onClick={() => setShowForgotPassword(true)}
+                     disabled={loading}
+                   >
+                     Forgot password?
+                   </Button>
+                 </div>
+                 
+                 <Button type="submit" className="w-full" disabled={loading}>
+                   {loading ? 'Signing in...' : 'Sign In'}
+                 </Button>
+               </form>
               
             </TabsContent>
             
@@ -279,6 +329,40 @@ export default function Auth() {
               
             </TabsContent>
           </Tabs>
+          
+          {/* Forgot Password Modal */}
+          {showForgotPassword && (
+            <div className="mt-6 p-4 border rounded-lg bg-muted/30">
+              <h3 className="font-semibold mb-3">Reset Password</h3>
+              <form onSubmit={handleForgotPassword} className="space-y-3">
+                <div className="space-y-2">
+                  <Label htmlFor="reset-email">Email</Label>
+                  <Input
+                    id="reset-email"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button type="submit" disabled={loading} className="flex-1">
+                    {loading ? 'Sending...' : 'Send Reset Email'}
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => setShowForgotPassword(false)}
+                    disabled={loading}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </div>
+          )}
           
           <div className="text-center text-xs text-muted-foreground/60 mt-4 pt-4 border-t">
             © 2024 Cashsnap Finances. All rights reserved.
