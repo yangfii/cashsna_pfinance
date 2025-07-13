@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { WelcomeMessage } from '@/components/WelcomeMessage';
 import { ProfileCard } from '@/components/ProfileCard';
+import LandingLayout from '@/layouts/LandingLayout';
 
 const Index = () => {
   const { user } = useAuth();
@@ -41,15 +42,15 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 text-gradient">Cashsnap Finances Tracking</h1>
-        <p className="text-xl text-muted-foreground mb-8">Take control of your personal finances</p>
-        <Button asChild size="lg">
+    <LandingLayout>
+      <div className="text-white text-center">
+        <h2 className="text-4xl font-semibold mb-4">Track Your Finances Smarter</h2>
+        <p className="text-lg mb-6">Welcome to Cashsnap — your modern finance dashboard.</p>
+        <Button asChild size="lg" className="bg-teal-500 hover:bg-teal-600 text-white">
           <Link to="/auth">Get Started</Link>
         </Button>
       </div>
-    </div>
+    </LandingLayout>
   );
 };
 
