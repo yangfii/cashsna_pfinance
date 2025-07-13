@@ -21,7 +21,7 @@ export default function Auth() {
   const { signIn, signUp, signInWithGoogle, user } = useAuth();
   const navigate = useNavigate();
 
-  // Replace with your actual reCAPTCHA site key
+  // reCAPTCHA site key
   const RECAPTCHA_SITE_KEY = '6Ld3gYErAAAAAK3ZYgE5U2KffYLKJsrRCfwasmPG';
 
   // Redirect if already authenticated
@@ -35,6 +35,11 @@ export default function Auth() {
     e.preventDefault();
     if (!email || !password) {
       toast.error('Please fill in all fields');
+      return;
+    }
+
+    if (!recaptchaToken) {
+      toast.error('Please complete the reCAPTCHA verification');
       return;
     }
     
@@ -83,6 +88,10 @@ export default function Auth() {
       return;
     }
 
+    if (!recaptchaToken) {
+      toast.error('Please complete the reCAPTCHA verification');
+      return;
+    }
     
     setLoading(true);
     
@@ -236,8 +245,17 @@ export default function Auth() {
                   </div>
                 </div>
                 
+                <div className="flex justify-center">
+                  <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey={RECAPTCHA_SITE_KEY}
+                    onChange={(token) => setRecaptchaToken(token)}
+                    onExpired={() => setRecaptchaToken(null)}
+                    theme="light"
+                  />
+                </div>
                 
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full" disabled={loading || !recaptchaToken}>
                   {loading ? 'Signing in...' : 'Sign In'}
                 </Button>
               </form>
@@ -292,8 +310,17 @@ export default function Auth() {
                   </p>
                 </div>
                 
+                <div className="flex justify-center">
+                  <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey={RECAPTCHA_SITE_KEY}
+                    onChange={(token) => setRecaptchaToken(token)}
+                    onExpired={() => setRecaptchaToken(null)}
+                    theme="light"
+                  />
+                </div>
                 
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full" disabled={loading || !recaptchaToken}>
                   {loading ? 'Creating account...' : 'Sign Up'}
                 </Button>
               </form>
