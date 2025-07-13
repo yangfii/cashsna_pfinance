@@ -109,7 +109,7 @@ function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild tooltip="Profile">
-              <NavLink to="/settings" className={cn("flex items-center gap-3 p-3", location.pathname === "/settings" ? "bg-accent" : "")}>
+              <NavLink to="/dashboard/settings" className={cn("flex items-center gap-3 p-3", location.pathname === "/dashboard/settings" ? "bg-accent" : "")}>
                 <Avatar className="size-10">
                   <AvatarImage src={profile?.avatar_url || undefined} alt="Profile picture" />
                   <AvatarFallback className="bg-gradient-primary text-white">
