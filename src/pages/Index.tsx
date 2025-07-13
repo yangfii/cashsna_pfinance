@@ -7,17 +7,21 @@ import { WelcomeMessage } from '@/components/WelcomeMessage';
 import { ProfileCard } from '@/components/ProfileCard';
 import LandingLayout from '@/layouts/LandingLayout';
 import { useEffect } from 'react';
-
 const Index = () => {
-  const { user } = useAuth();
-  const { profile, loading: profileLoading } = useProfile();
+  const {
+    user
+  } = useAuth();
+  const {
+    profile,
+    loading: profileLoading
+  } = useProfile();
   const navigate = useNavigate();
 
   // Redirect new users to profile setup, but only after profile loading is complete
   useEffect(() => {
     if (user && !profileLoading) {
       // Only redirect if we're certain the profile is incomplete
-      if (!profile || (!profile.first_name && !profile.last_name)) {
+      if (!profile || !profile.first_name && !profile.last_name) {
         // Add a small delay to prevent rapid redirects
         const timer = setTimeout(() => {
           navigate('/profile-setup');
@@ -26,10 +30,8 @@ const Index = () => {
       }
     }
   }, [user, profile, profileLoading, navigate]);
-
   if (user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
+    return <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
         <div className="container mx-auto px-4 py-8 max-w-7xl">
           {/* Welcome Header */}
           <div className="mb-8 animate-fade-in">
@@ -100,15 +102,12 @@ const Index = () => {
             </div>
           </div>
         </div>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen">
+  return <div className="min-h-screen">
       {/* Hero Section with Professional Gradient */}
       <section className="relative overflow-hidden bg-gradient-hero">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary-glow/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary-glow/20 bg-teal-400"></div>
         <div className="relative container mx-auto px-4 py-24 md:py-32 text-center">
           <div className="animate-fade-in">
             <div className="mb-6">
@@ -131,21 +130,13 @@ const Index = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                asChild 
-                size="lg" 
-                className="text-lg px-8 py-6 bg-white text-primary hover:bg-white/90 shadow-glow"
-              >
+              <Button asChild size="lg" className="text-lg px-8 py-6 bg-white text-primary hover:bg-white/90 shadow-glow">
                 <Link to="/auth">
                   ចាប់ផ្តើមប្រើប្រាស់ឥតគិតថ្លៃ
                   <span className="ml-2">→</span>
                 </Link>
               </Button>
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="text-lg px-8 py-6 border-white/30 text-white hover:bg-white/10"
-              >
+              <Button variant="outline" size="lg" className="text-lg px-8 py-6 border-white/30 text-white hover:bg-white/10">
                 មើលរបៀបប្រើប្រាស់
               </Button>
             </div>
@@ -188,7 +179,9 @@ const Index = () => {
             </Card>
 
             {/* Feature 2 */}
-            <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in" style={{animationDelay: '0.1s'}}>
+            <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in" style={{
+            animationDelay: '0.1s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-smooth">
@@ -208,7 +201,9 @@ const Index = () => {
             </Card>
 
             {/* Feature 3 */}
-            <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in" style={{animationDelay: '0.2s'}}>
+            <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in" style={{
+            animationDelay: '0.2s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-smooth">
@@ -228,7 +223,9 @@ const Index = () => {
             </Card>
 
             {/* Feature 4 */}
-            <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in" style={{animationDelay: '0.3s'}}>
+            <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in" style={{
+            animationDelay: '0.3s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-smooth">
@@ -248,7 +245,9 @@ const Index = () => {
             </Card>
 
             {/* Feature 5 */}
-            <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in" style={{animationDelay: '0.4s'}}>
+            <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in" style={{
+            animationDelay: '0.4s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-smooth">
@@ -268,7 +267,9 @@ const Index = () => {
             </Card>
 
             {/* Feature 6 */}
-            <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in" style={{animationDelay: '0.5s'}}>
+            <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in" style={{
+            animationDelay: '0.5s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-smooth">
@@ -288,7 +289,9 @@ const Index = () => {
             </Card>
 
             {/* Feature 7 */}
-            <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in" style={{animationDelay: '0.6s'}}>
+            <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in" style={{
+            animationDelay: '0.6s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-smooth">
@@ -304,7 +307,9 @@ const Index = () => {
             </Card>
 
             {/* Feature 8 - AI Assistance (full width) */}
-            <Card className="lg:col-span-4 group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in bg-gradient-to-r from-primary/5 to-primary-glow/5" style={{animationDelay: '0.7s'}}>
+            <Card className="lg:col-span-4 group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in bg-gradient-to-r from-primary/5 to-primary-glow/5" style={{
+            animationDelay: '0.7s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-smooth">
@@ -414,21 +419,13 @@ const Index = () => {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  asChild 
-                  size="lg" 
-                  className="text-lg px-12 py-6 shadow-glow hover:shadow-primary/20"
-                >
+                <Button asChild size="lg" className="text-lg px-12 py-6 shadow-glow hover:shadow-primary/20">
                   <Link to="/auth">
                     ចាប់ផ្តើមឥឡូវនេះ
                     <span className="ml-2">→</span>
                   </Link>
                 </Button>
-                <Button 
-                  variant="outline" 
-                  size="lg" 
-                  className="text-lg px-12 py-6"
-                >
+                <Button variant="outline" size="lg" className="text-lg px-12 py-6">
                   ស្វែងយល់បន្ថែម
                 </Button>
               </div>
@@ -440,8 +437,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
