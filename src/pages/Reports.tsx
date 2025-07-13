@@ -69,7 +69,7 @@ export default function Reports() {
   }, []);
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('km-KH', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,
