@@ -63,7 +63,7 @@ const Index = () => {
                         </Link>
                       </Button>
                       <Button variant="outline" asChild size="lg" className="shadow-sm">
-                        <Link to="/transactions">
+                        <Link to="/dashboard/transactions">
                           <span>Add Transaction</span>
                         </Link>
                       </Button>
