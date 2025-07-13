@@ -37,11 +37,6 @@ export default function Auth() {
       toast.error('Please fill in all fields');
       return;
     }
-
-    if (!recaptchaToken) {
-      toast.error('Please complete the reCAPTCHA verification');
-      return;
-    }
     
     setLoading(true);
     
@@ -88,10 +83,6 @@ export default function Auth() {
       return;
     }
 
-    if (!recaptchaToken) {
-      toast.error('Please complete the reCAPTCHA verification');
-      return;
-    }
     
     setLoading(true);
     
@@ -245,17 +236,8 @@ export default function Auth() {
                   </div>
                 </div>
                 
-                <div className="flex justify-center">
-                  <ReCAPTCHA
-                    ref={recaptchaRef}
-                    sitekey={RECAPTCHA_SITE_KEY}
-                    onChange={(token) => setRecaptchaToken(token)}
-                    onExpired={() => setRecaptchaToken(null)}
-                    theme="light"
-                  />
-                </div>
                 
-                <Button type="submit" className="w-full" disabled={loading || !recaptchaToken}>
+                <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? 'Signing in...' : 'Sign In'}
                 </Button>
               </form>
@@ -310,17 +292,8 @@ export default function Auth() {
                   </p>
                 </div>
                 
-                <div className="flex justify-center">
-                  <ReCAPTCHA
-                    ref={recaptchaRef}
-                    sitekey={RECAPTCHA_SITE_KEY}
-                    onChange={(token) => setRecaptchaToken(token)}
-                    onExpired={() => setRecaptchaToken(null)}
-                    theme="light"
-                  />
-                </div>
                 
-                <Button type="submit" className="w-full" disabled={loading || !recaptchaToken}>
+                <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? 'Creating account...' : 'Sign Up'}
                 </Button>
               </form>
