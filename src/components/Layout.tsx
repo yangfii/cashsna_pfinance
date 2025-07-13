@@ -54,12 +54,20 @@ function AppSidebar() {
   const { state } = useSidebar();
 
   const handleSignOut = async () => {
-    const { error } = await signOut();
-    if (error) {
-      toast.error('Error signing out');
-    } else {
-      toast.success('Signed out successfully');
-      navigate('/auth');
+    try {
+      console.log('Starting sign out process...');
+      const { error } = await signOut();
+      if (error) {
+        console.error('Sign out error:', error);
+        toast.error(`Error signing out: ${error.message || 'Unknown error'}`);
+      } else {
+        console.log('Sign out successful');
+        toast.success('Signed out successfully');
+        navigate('/auth');
+      }
+    } catch (err) {
+      console.error('Unexpected sign out error:', err);
+      toast.error('Unexpected error during sign out');
     }
   };
 
