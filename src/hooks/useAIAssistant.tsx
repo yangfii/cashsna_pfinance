@@ -21,7 +21,10 @@ export const useAIAssistant = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Chat assistant error:', error);
+        return 'Sorry, the AI assistant is currently not available. Please try again later.';
+      }
       return data.response;
     } catch (error) {
       console.error('Chat error:', error);

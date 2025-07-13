@@ -165,7 +165,17 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Chat assistant error:', error);
+        const aiMessage: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          content: 'Sorry, the AI assistant is currently not configured. Please contact your administrator to set up the required API keys.',
+          sender: 'ai',
+          timestamp: new Date()
+        };
+        setChatMessages(prev => [...prev, aiMessage]);
+        return;
+      }
 
       const aiMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
@@ -238,7 +248,15 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
           }
         });
 
-        if (error) throw error;
+        if (error) {
+          console.error('Voice assistant error:', error);
+          toast({
+            title: "Voice Assistant Error",
+            description: "Voice assistant is currently not configured. Please try text chat instead.",
+            variant: "destructive"
+          });
+          return;
+        }
 
         const transcribedText = data.text;
         setInputMessage(transcribedText);
@@ -268,7 +286,15 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Speech synthesis error:', error);
+        toast({
+          title: "Speech Error",
+          description: "Speech synthesis is currently not configured.",
+          variant: "destructive"
+        });
+        return;
+      }
 
       const audioData = data.audioContent;
       const audioBlob = new Blob([
@@ -304,7 +330,11 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Financial analysis error:', error);
+        setAnalysisResult('Sorry, the financial analysis feature is currently not configured. Please contact your administrator to set up the required API keys.');
+        return;
+      }
 
       setAnalysisResult(data.response);
     } catch (error) {
@@ -331,7 +361,11 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Report generation error:', error);
+        setReportContent('Sorry, the report generation feature is currently not configured. Please contact your administrator to set up the required API keys.');
+        return;
+      }
 
       setReportContent(data.response);
     } catch (error) {
