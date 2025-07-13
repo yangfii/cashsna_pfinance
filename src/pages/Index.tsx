@@ -17,7 +17,7 @@ const Index = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
               <div className="stat-card">
-                <h2 className="text-2xl font-bold mb-4 text-gradient">Welcome to Cashsnap</h2>
+                <h2 className="text-2xl font-bold mb-4 text-gradient">Welcome to Cashsnap Finance</h2>
                 <p className="text-lg text-muted-foreground mb-6">
                   Your personal finance management dashboard
                 </p>
