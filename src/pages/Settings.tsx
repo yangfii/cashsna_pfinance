@@ -380,7 +380,7 @@ export default function Settings() {
           <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
             <div>
               <p className="font-medium">កំណែកម្មវិធី</p>
-              <p className="text-sm text-muted-foreground">2024.1.0</p>
+              <p className="text-sm text-muted-foreground">v1.2.0</p>
             </div>
             <Badge variant="secondary">បច្ចុប្បន្ន</Badge>
           </div>
