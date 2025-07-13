@@ -13,6 +13,8 @@ import Planning from "@/pages/Planning";
 import Reports from "@/pages/Reports";
 import Settings from "@/pages/Settings";
 import Auth from "@/pages/Auth";
+import ProfileSetup from "@/pages/ProfileSetup";
+import Index from "@/pages/Index";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,7 +29,9 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/auth" element={<Auth />} />
-              <Route path="/" element={<Layout />}>
+              <Route path="/profile-setup" element={<ProfileSetup />} />
+              <Route path="/" element={<Index />} />
+              <Route path="/dashboard" element={<Layout />}>
                 <Route index element={<Dashboard />} />
                 <Route path="transactions" element={<Transactions />} />
                 <Route path="categories" element={<Categories />} />

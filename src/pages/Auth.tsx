@@ -21,7 +21,7 @@ export default function Auth() {
   // Redirect if already authenticated
   useEffect(() => {
     if (user) {
-      navigate('/');
+      navigate('/profile-setup');
     }
   }, [user, navigate]);
 
@@ -47,7 +47,7 @@ export default function Auth() {
         }
       } else {
         toast.success('Hello, Welcome back!');
-        navigate('/');
+        navigate('/profile-setup');
       }
     } catch (err) {
       toast.error('An unexpected error occurred. Please try again.');
