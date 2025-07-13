@@ -1,5 +1,6 @@
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import { WelcomeMessage } from '@/components/WelcomeMessage';
 import { ProfileCard } from '@/components/ProfileCard';
@@ -10,30 +11,74 @@ const Index = () => {
 
   if (user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-4">
-        <div className="max-w-4xl mx-auto space-y-6">
-          <WelcomeMessage />
+      <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
+        <div className="container mx-auto px-4 py-8 max-w-7xl">
+          {/* Welcome Header */}
+          <div className="mb-8 animate-fade-in">
+            <WelcomeMessage />
+          </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <div className="stat-card">
-                <h2 className="text-2xl font-bold mb-4 text-gradient">Welcome to Cashsnap Finance</h2>
-                <p className="text-lg text-muted-foreground mb-6">
-                  Your personal finance management dashboard
-                </p>
-                <div className="flex gap-4">
-                  <Button asChild>
-                    <Link to="/dashboard">Go to Dashboard</Link>
-                  </Button>
-                  <Button variant="outline" asChild>
-                    <Link to="/transactions">Add Transaction</Link>
-                  </Button>
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-slide-up">
+            {/* Main Dashboard Area */}
+            <div className="lg:col-span-8 space-y-6">
+              <Card className="stat-card border-0 bg-gradient-to-br from-card via-card to-card/95 shadow-lg">
+                <CardContent className="p-8">
+                  <div className="text-center lg:text-left space-y-6">
+                    <div className="space-y-3">
+                      <h2 className="text-3xl lg:text-4xl font-bold text-gradient">
+                        Welcome to Cashsnap Finance
+                      </h2>
+                      <p className="text-lg text-muted-foreground max-w-2xl">
+                        Your intelligent personal finance management dashboard. 
+                        Track expenses, manage budgets, and achieve your financial goals.
+                      </p>
+                    </div>
+                    
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                      <Button asChild size="lg" className="bg-primary hover:bg-primary/90 shadow-md">
+                        <Link to="/dashboard">
+                          <span>Go to Dashboard</span>
+                        </Link>
+                      </Button>
+                      <Button variant="outline" asChild size="lg" className="shadow-sm">
+                        <Link to="/transactions">
+                          <span>Add Transaction</span>
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* Quick Stats Preview */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="stat-card income-card p-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-constructive">$0.00</div>
+                    <div className="text-sm text-muted-foreground">Total Income</div>
+                  </div>
+                </div>
+                <div className="stat-card expense-card p-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-destructive">$0.00</div>
+                    <div className="text-sm text-muted-foreground">Total Expenses</div>
+                  </div>
+                </div>
+                <div className="stat-card balance-card p-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-balance">$0.00</div>
+                    <div className="text-sm text-muted-foreground">Current Balance</div>
+                  </div>
                 </div>
               </div>
             </div>
             
-            <div>
-              <ProfileCard />
+            {/* Profile Sidebar */}
+            <div className="lg:col-span-4">
+              <div className="animate-bounce-in">
+                <ProfileCard />
+              </div>
             </div>
           </div>
         </div>
