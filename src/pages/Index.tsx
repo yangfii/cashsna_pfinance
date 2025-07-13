@@ -7,6 +7,7 @@ import { WelcomeMessage } from '@/components/WelcomeMessage';
 import { ProfileCard } from '@/components/ProfileCard';
 import LandingLayout from '@/layouts/LandingLayout';
 import { useEffect } from 'react';
+import heroBackground from '@/assets/hero-background.jpg';
 const Index = () => {
   const {
     user
@@ -107,7 +108,12 @@ const Index = () => {
   return <div className="min-h-screen">
       {/* Hero Section with Professional Gradient */}
       <section className="relative overflow-hidden bg-gradient-hero">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary-glow/20 bg-teal-400"></div>
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat" 
+          style={{ backgroundImage: `url(${heroBackground})` }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-primary/20 to-primary-glow/30"></div>
+        </div>
         <div className="relative container mx-auto px-4 py-24 md:py-32 text-center">
           <div className="animate-fade-in">
             <div className="mb-6">
