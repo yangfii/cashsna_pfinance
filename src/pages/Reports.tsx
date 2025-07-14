@@ -105,16 +105,30 @@ export default function Reports() {
         period: selectedPeriod
       };
 
-      const { data, error } = await supabase.functions.invoke('generate-pdf-report', {
-        body: { reportData, period: selectedPeriod }
-      });
-
-      if (error) {
-        throw error;
+      // Get the session to include Authorization header
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        throw new Error('User not authenticated');
       }
 
-      // Create blob and download
-      const blob = new Blob([data], { type: 'application/pdf' });
+      // Make direct fetch call to get binary PDF response
+      const response = await fetch(`https://giziyaymzuydlnbjzhsc.supabase.co/functions/v1/generate-pdf-report`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ reportData, period: selectedPeriod })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      // Get the response as a blob for PDF
+      const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
