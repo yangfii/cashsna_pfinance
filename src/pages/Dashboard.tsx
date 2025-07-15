@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { WelcomeMessage } from '@/components/WelcomeMessage';
 import { ProfileCard } from '@/components/ProfileCard';
 import AIAssistant from '@/components/AIAssistant';
+import CryptoPortfolio from '@/components/CryptoPortfolio';
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -249,6 +250,9 @@ export default function Dashboard() {
           )}
         </CardContent>
       </Card>
+
+      {/* Crypto Portfolio */}
+      <CryptoPortfolio />
 
       {/* Main Dashboard Grid */}
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
