@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Wallet, Key, Globe, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import binanceLogo from "@/assets/bybit-logo.png";
+import bybitLogo from "@/assets/bybit-logo.png";
 
 // Extend Window interface to include ethereum
 declare global {
@@ -197,8 +197,8 @@ export default function WalletConnectionDialog({ onConnect }: WalletConnectionDi
                     >
                       <CardContent className="p-4 text-center">
                         <div className="text-2xl mb-2">
-                          {exchange.id === "binance" ? (
-                            <img src={binanceLogo} alt="Binance" className="h-8 w-8 mx-auto" />
+                          {exchange.id === "bybit" ? (
+                            <img src={bybitLogo} alt="Bybit" className="h-8 w-8 mx-auto" />
                           ) : (
                             exchange.icon
                           )}
