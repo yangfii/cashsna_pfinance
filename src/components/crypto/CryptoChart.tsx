@@ -77,6 +77,14 @@ export default function CryptoChart({ holdings, prices }: CryptoChartProps) {
     'hsl(var(--chart-5))'
   ];
 
+  // Function to get color for specific crypto
+  const getCryptoColor = (symbol: string, index: number) => {
+    if (symbol.toLowerCase() === 'btc' || symbol.toLowerCase() === 'bitcoin') {
+      return '#fbbf24'; // Yellow for Bitcoin
+    }
+    return colors[index % colors.length];
+  };
+
   // Enhanced historical data with ROI tracking
   const performanceData = [
     { date: 'Jan', value: totalValue * 0.7, invested: totalInitialValue * 0.7, roi: ((totalValue * 0.7 - totalInitialValue * 0.7) / (totalInitialValue * 0.7)) * 100 },
@@ -190,7 +198,7 @@ export default function CryptoChart({ holdings, prices }: CryptoChartProps) {
                       label={({ symbol, percent }) => `${symbol} ${(percent * 100).toFixed(1)}%`}
                     >
                       {portfolioData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+                        <Cell key={`cell-${index}`} fill={getCryptoColor(entry.symbol, index)} />
                       ))}
                     </Pie>
                     <Tooltip formatter={(value: number) => formatCurrency(value)} />
@@ -252,7 +260,7 @@ export default function CryptoChart({ holdings, prices }: CryptoChartProps) {
                     dataKey="value"
                   >
                     {portfolioData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+                      <Cell key={`cell-${index}`} fill={getCryptoColor(entry.symbol, index)} />
                     ))}
                   </Pie>
                   <Tooltip formatter={(value: number) => formatCurrency(value)} />
