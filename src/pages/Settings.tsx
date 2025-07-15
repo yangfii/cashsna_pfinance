@@ -290,15 +290,60 @@ export default function Settings() {
         </CardContent>
       </Card>
 
-      {/* Data Management */}
+      {/* Security & Backup */}
       <Card className="stat-card animate-bounce-in" style={{animationDelay: '0.3s'}}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            {t('settings.dataManagement')}
+            {t('settings.securityBackup')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <Label className="text-base">{t('settings.secureLogin')}</Label>
+              <p className="text-sm text-muted-foreground">
+                {t('settings.secureLoginDesc')}
+              </p>
+            </div>
+            <Switch
+              checked={true}
+              onCheckedChange={() => {}}
+            />
+          </div>
+
+          <Separator />
+
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <Label className="text-base">{t('settings.encryptedData')}</Label>
+              <p className="text-sm text-muted-foreground">
+                {t('settings.encryptedDataDesc')}
+              </p>
+            </div>
+            <Switch
+              checked={true}
+              onCheckedChange={() => {}}
+            />
+          </div>
+
+          <Separator />
+
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <Label className="text-base">{t('settings.cloudSync')}</Label>
+              <p className="text-sm text-muted-foreground">
+                {t('settings.cloudSyncDesc')}
+              </p>
+            </div>
+            <Switch
+              checked={true}
+              onCheckedChange={() => {}}
+            />
+          </div>
+
+          <Separator />
+
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <Label className="text-base">{t('settings.autoBackup')}</Label>
