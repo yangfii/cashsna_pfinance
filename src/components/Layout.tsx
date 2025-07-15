@@ -5,58 +5,70 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { toast } from "sonner";
-import { 
-  LayoutDashboard, 
-  ArrowLeftRight, 
-  FolderOpen, 
-  BarChart3, 
-  Settings,
-  LogOut,
-  User,
-  Target,
-  Coins,
-  Brain
-} from "lucide-react";
+import { LayoutDashboard, ArrowLeftRight, FolderOpen, BarChart3, Settings, LogOut, User, Target, Coins, Brain } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-  SidebarTrigger,
-  useSidebar,
-} from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-const navItems = [
-  { to: "/dashboard", icon: LayoutDashboard, label: "ការសង្ខេបហិរញ្ញវត្ថុ", key: "dashboard" },
-  { to: "/dashboard/transactions", icon: ArrowLeftRight, label: "ប្រតិបត្តិការ", key: "transactions" },
-  { to: "/dashboard/categories", icon: FolderOpen, label: "ប្រភេទចំណូល/ចំណាយ", key: "categories" },
-  { to: "/dashboard/portfolio", icon: Coins, label: "Crypto Portfolio", key: "portfolio" },
-  { to: "/dashboard/assistant", icon: Brain, label: "AI Assistant", key: "assistant" },
-  { to: "/dashboard/planning", icon: Target, label: "ការរៀបចំគំរោង", key: "planning" },
-  { to: "/dashboard/reports", icon: BarChart3, label: "របាយការណ៍ហិរញ្ញវត្ថុ", key: "reports" },
-  { to: "/dashboard/settings", icon: Settings, label: "ការកំណត់", key: "settings" }
-];
-
+const navItems = [{
+  to: "/dashboard",
+  icon: LayoutDashboard,
+  label: "ការសង្ខេបហិរញ្ញវត្ថុ",
+  key: "dashboard"
+}, {
+  to: "/dashboard/transactions",
+  icon: ArrowLeftRight,
+  label: "ប្រតិបត្តិការ",
+  key: "transactions"
+}, {
+  to: "/dashboard/categories",
+  icon: FolderOpen,
+  label: "ប្រភេទចំណូល/ចំណាយ",
+  key: "categories"
+}, {
+  to: "/dashboard/portfolio",
+  icon: Coins,
+  label: "Crypto Portfolio",
+  key: "portfolio"
+}, {
+  to: "/dashboard/assistant",
+  icon: Brain,
+  label: "AI Assistant",
+  key: "assistant"
+}, {
+  to: "/dashboard/planning",
+  icon: Target,
+  label: "ការរៀបចំគំរោង",
+  key: "planning"
+}, {
+  to: "/dashboard/reports",
+  icon: BarChart3,
+  label: "របាយការណ៍ហិរញ្ញវត្ថុ",
+  key: "reports"
+}, {
+  to: "/dashboard/settings",
+  icon: Settings,
+  label: "ការកំណត់",
+  key: "settings"
+}];
 function AppSidebar() {
-  const { user, signOut } = useAuth();
-  const { profile } = useProfile();
+  const {
+    user,
+    signOut
+  } = useAuth();
+  const {
+    profile
+  } = useProfile();
   const navigate = useNavigate();
   const location = useLocation();
-  const { state } = useSidebar();
-
+  const {
+    state
+  } = useSidebar();
   const handleSignOut = async () => {
     try {
       console.log('Starting sign out process...');
-      const { error } = await signOut();
+      const {
+        error
+      } = await signOut();
       if (error) {
         console.error('Sign out error:', error);
         toast.error(`Error signing out: ${error.message || 'Unknown error'}`);
@@ -70,9 +82,7 @@ function AppSidebar() {
       toast.error('Unexpected error during sign out');
     }
   };
-
-  return (
-    <Sidebar variant="inset" collapsible="icon">
+  return <Sidebar variant="inset" collapsible="icon" className="my-0 mx-0 px-[28px]">
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-1">
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -94,20 +104,14 @@ function AppSidebar() {
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => (
-                <SidebarMenuItem key={item.key}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={location.pathname === item.to}
-                    tooltip={item.label}
-                  >
+              {navItems.map(item => <SidebarMenuItem key={item.key}>
+                  <SidebarMenuButton asChild isActive={location.pathname === item.to} tooltip={item.label}>
                     <NavLink to={item.to}>
                       <item.icon />
                       <span>{item.label}</span>
                     </NavLink>
                   </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+                </SidebarMenuItem>)}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -124,16 +128,14 @@ function AppSidebar() {
                     <User className="size-5" />
                   </AvatarFallback>
                 </Avatar>
-                {state === "expanded" && (
-                  <div className="grid flex-1 text-left text-sm leading-tight">
+                {state === "expanded" && <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold text-foreground">
                       {user?.email?.split('@')[0]}
                     </span>
                     <span className="truncate text-xs text-muted-foreground">
                       View Profile
                     </span>
-                  </div>
-                )}
+                  </div>}
               </NavLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -145,38 +147,31 @@ function AppSidebar() {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
-    </Sidebar>
-  );
+    </Sidebar>;
 }
-
-
 export default function Layout() {
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
-
+  const {
+    user,
+    loading
+  } = useAuth();
   useEffect(() => {
     if (!loading && !user) {
       navigate('/auth');
     }
   }, [user, loading, navigate]);
-
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5">
+    return <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
           <p className="mt-4 text-muted-foreground">Loading...</p>
         </div>
-      </div>
-    );
+      </div>;
   }
-
   if (!user) {
     return null;
   }
-
-  return (
-    <SidebarProvider>
+  return <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-to-br from-background via-background to-primary/5">
         <AppSidebar />
         
@@ -196,6 +191,5 @@ export default function Layout() {
           </main>
         </div>
       </div>
-    </SidebarProvider>
-  );
+    </SidebarProvider>;
 }
