@@ -6,7 +6,6 @@ import { DollarSign, TrendingUp, TrendingDown, Wallet, Plus, Calendar } from "lu
 import { cn } from "@/lib/utils";
 import { WelcomeMessage } from '@/components/WelcomeMessage';
 import { ProfileCard } from '@/components/ProfileCard';
-import AIAssistant from '@/components/AIAssistant';
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -110,9 +109,6 @@ export default function Dashboard() {
           </Button>
         </div>
       </div>
-
-      {/* AI Assistant */}
-      <AIAssistant />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">

@@ -14,9 +14,8 @@ import {
   LogOut,
   User,
   Target,
-  Brain,
-  X,
-  Coins
+  Coins,
+  Brain
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -35,14 +34,13 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import AIAssistant from "@/components/AIAssistant";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 const navItems = [
   { to: "/dashboard", icon: LayoutDashboard, label: "ការសង្ខេបហិរញ្ញវត្ថុ", key: "dashboard" },
   { to: "/dashboard/transactions", icon: ArrowLeftRight, label: "ប្រតិបត្តិការ", key: "transactions" },
   { to: "/dashboard/categories", icon: FolderOpen, label: "ប្រភេទចំណូល/ចំណាយ", key: "categories" },
   { to: "/dashboard/portfolio", icon: Coins, label: "Crypto Portfolio", key: "portfolio" },
+  { to: "/dashboard/assistant", icon: Brain, label: "AI Assistant", key: "assistant" },
   { to: "/dashboard/planning", icon: Target, label: "ការរៀបចំគំរោង", key: "planning" },
   { to: "/dashboard/reports", icon: BarChart3, label: "របាយការណ៍ហិរញ្ញវត្ថុ", key: "reports" },
   { to: "/dashboard/settings", icon: Settings, label: "ការកំណត់", key: "settings" }
@@ -151,39 +149,6 @@ function AppSidebar() {
   );
 }
 
-function AIAssistantFloating() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button
-          size="icon"
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-gradient-primary hover:shadow-glow transition-smooth z-50 shadow-lg"
-          title="AI Assistant"
-        >
-          <Brain className="h-6 w-6 text-white" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden p-0">
-        <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="text-lg font-semibold">AI Financial Assistant</h2>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsOpen(false)}
-            className="h-8 w-8"
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-        <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
-          <AIAssistant />
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
 
 export default function Layout() {
   const navigate = useNavigate();
@@ -230,9 +195,6 @@ export default function Layout() {
             </div>
           </main>
         </div>
-        
-        {/* Floating AI Assistant */}
-        <AIAssistantFloating />
       </div>
     </SidebarProvider>
   );
