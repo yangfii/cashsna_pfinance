@@ -79,9 +79,26 @@ export default function CryptoChart({ holdings, prices }: CryptoChartProps) {
 
   // Function to get color for specific crypto
   const getCryptoColor = (symbol: string, index: number) => {
-    if (symbol.toLowerCase() === 'btc' || symbol.toLowerCase() === 'bitcoin') {
-      return '#fbbf24'; // Yellow for Bitcoin
+    const symbolLower = symbol.toLowerCase();
+    
+    // Assign specific colors for known cryptocurrencies
+    if (symbolLower === 'btc' || symbolLower === 'bitcoin') {
+      return 'hsl(45, 93%, 58%)'; // Yellow for Bitcoin
     }
+    if (symbolLower === 'eth' || symbolLower === 'ethereum') {
+      return 'hsl(var(--chart-1))'; // Blue for Ethereum
+    }
+    if (symbolLower === 'ada' || symbolLower === 'cardano') {
+      return 'hsl(var(--chart-2))'; // Green for Cardano
+    }
+    if (symbolLower === 'sol' || symbolLower === 'solana') {
+      return 'hsl(var(--chart-3))'; // Purple for Solana
+    }
+    if (symbolLower === 'dot' || symbolLower === 'polkadot') {
+      return 'hsl(var(--chart-4))'; // Pink for Polkadot
+    }
+    
+    // For other cryptocurrencies, use the color array
     return colors[index % colors.length];
   };
 
