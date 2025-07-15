@@ -115,12 +115,12 @@ export default function CryptoPortfolio() {
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
           <CardTitle className="flex items-center gap-2">
             <Coins className="h-5 w-5" />
             Crypto Portfolio
           </CardTitle>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <CurrencySettings onCurrencyChange={handleCurrencyChange} />
             <DataImportExport 
               holdings={holdings}
@@ -146,31 +146,31 @@ export default function CryptoPortfolio() {
           </div>
         ) : (
           <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-6">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="alerts">Alerts</TabsTrigger>
-              <TabsTrigger value="recommendations">AI Recs</TabsTrigger>
-              <TabsTrigger value="rebalancing">Rebalancing</TabsTrigger>
-              <TabsTrigger value="charts">Charts</TabsTrigger>
-              <TabsTrigger value="holdings">Holdings</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+              <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
+              <TabsTrigger value="alerts" className="text-xs sm:text-sm">Alerts</TabsTrigger>
+              <TabsTrigger value="recommendations" className="text-xs sm:text-sm">AI Recs</TabsTrigger>
+              <TabsTrigger value="rebalancing" className="text-xs sm:text-sm">Rebalancing</TabsTrigger>
+              <TabsTrigger value="charts" className="text-xs sm:text-sm">Charts</TabsTrigger>
+              <TabsTrigger value="holdings" className="text-xs sm:text-sm">Holdings</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
               {/* Portfolio Summary */}
-              <div className="grid grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg">
-                <div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg">
+                <div className="text-center sm:text-left">
                   <p className="text-sm text-muted-foreground">Total Value</p>
-                  <p className="text-2xl font-bold">{formatCurrency(portfolioValue)}</p>
+                  <p className="text-xl sm:text-2xl font-bold">{formatCurrency(portfolioValue)}</p>
                 </div>
-                <div>
+                <div className="text-center sm:text-left">
                   <p className="text-sm text-muted-foreground">Total Gain/Loss</p>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center justify-center sm:justify-start gap-1">
                     {isGain ? (
                       <TrendingUp className="h-4 w-4 text-green-500" />
                     ) : (
                       <TrendingDown className="h-4 w-4 text-red-500" />
                     )}
-                    <p className={`text-2xl font-bold ${isGain ? 'text-green-500' : 'text-red-500'}`}>
+                    <p className={`text-xl sm:text-2xl font-bold ${isGain ? 'text-green-500' : 'text-red-500'}`}>
                       {formatCurrency(Math.abs(totalGainLoss))}
                     </p>
                   </div>
@@ -178,7 +178,7 @@ export default function CryptoPortfolio() {
               </div>
 
               {/* Quick Actions */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <PriceMonitor 
                   prices={prices} 
                   onRefresh={fetchCryptoPrices}

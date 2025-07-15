@@ -58,7 +58,7 @@ export function ThemeToggle() {
       variant="ghost"
       size="sm"
       onClick={cycleTheme}
-      className="p-2 hover:bg-accent transition-smooth"
+      className="p-2 hover:bg-accent transition-smooth shrink-0"
       title={getTitle()}
     >
       {getIcon()}

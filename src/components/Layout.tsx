@@ -177,14 +177,14 @@ export default function Layout() {
         
         {/* Header */}
         <div className="flex-1 flex flex-col">
-          <header className="flex h-14 items-center gap-4 border-b bg-card/50 backdrop-blur-md px-4 lg:px-6">
+          <header className="flex h-14 items-center gap-2 sm:gap-4 border-b bg-card/50 backdrop-blur-md px-3 sm:px-4 lg:px-6">
             <SidebarTrigger />
             <div className="flex-1" />
             <ThemeToggle />
           </header>
           
           {/* Main Content */}
-          <main className="flex-1">
+          <main className="flex-1 overflow-auto">
             <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-6 lg:px-8 lg:py-8 max-w-7xl">
               <Outlet />
             </div>
