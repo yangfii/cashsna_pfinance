@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendingUp, TrendingDown, Coins } from "lucide-react";
@@ -12,6 +13,8 @@ import AdvancedAlerts from "@/components/crypto/AdvancedAlerts";
 import NotificationSettings from "@/components/crypto/NotificationSettings";
 import PortfolioAnalytics from "@/components/crypto/PortfolioAnalytics";
 import RealTimePriceMonitor from "@/components/crypto/RealTimePriceMonitor";
+import DataImportExport from "@/components/crypto/DataImportExport";
+import CurrencySettings, { CurrencyRates } from "@/components/crypto/CurrencySettings";
 
 export default function CryptoPortfolio() {
   const {
@@ -30,14 +33,32 @@ export default function CryptoPortfolio() {
     getTopPerformers,
     getWorstPerformers,
     lastPriceUpdate,
-    priceUpdateCount
+    priceUpdateCount,
+    bulkAddHoldings
   } = useCryptoData();
 
+  const [selectedCurrency, setSelectedCurrency] = useState('USD');
+  const [exchangeRates, setExchangeRates] = useState<CurrencyRates>({ USD: 1 });
+
   const formatCurrency = (amount: number) => {
+    const convertedAmount = amount * (exchangeRates[selectedCurrency] || 1);
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
-    }).format(amount);
+      currency: selectedCurrency
+    }).format(convertedAmount);
+  };
+
+  const handleCurrencyChange = (currency: string, rates: CurrencyRates) => {
+    setSelectedCurrency(currency);
+    setExchangeRates(rates);
+  };
+
+  const handleImportHoldings = async (importedHoldings: any[]) => {
+    try {
+      await bulkAddHoldings(importedHoldings);
+    } catch (error) {
+      console.error('Error importing holdings:', error);
+    }
   };
 
   const handleWalletConnection = (connection: { type: string; apiKey?: string; address?: string }) => {
@@ -97,6 +118,11 @@ export default function CryptoPortfolio() {
             Crypto Portfolio
           </CardTitle>
           <div className="flex gap-2">
+            <CurrencySettings onCurrencyChange={handleCurrencyChange} />
+            <DataImportExport 
+              holdings={holdings}
+              onImportHoldings={handleImportHoldings}
+            />
             <WalletConnectionDialog onConnect={handleWalletConnection} />
             <PriceAlertsDialog 
               holdings={holdings}

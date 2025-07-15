@@ -235,6 +235,35 @@ export const useCryptoData = () => {
     }
   };
 
+  const bulkAddHoldings = async (holdings: Omit<CryptoHolding, 'id'>[]) => {
+    try {
+      const holdingsWithUserId = holdings.map(holding => ({
+        user_id: user?.id,
+        ...holding
+      }));
+
+      const { error } = await supabase
+        .from('crypto_holdings')
+        .insert(holdingsWithUserId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `${holdings.length} crypto holdings imported successfully`
+      });
+
+      fetchHoldings();
+    } catch (error) {
+      console.error('Error bulk adding crypto holdings:', error);
+      toast({
+        title: "Error",
+        description: "Failed to import crypto holdings",
+        variant: "destructive"
+      });
+    }
+  };
+
   const deleteHolding = async (id: string) => {
     try {
       const { error } = await supabase
@@ -394,6 +423,7 @@ export const useCryptoData = () => {
     alerts,
     loading,
     addHolding,
+    bulkAddHoldings,
     deleteHolding,
     addAlert,
     fetchHoldings,
