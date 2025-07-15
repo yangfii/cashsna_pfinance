@@ -65,41 +65,53 @@ export default function CryptoChart({ holdings, prices }: CryptoChartProps) {
   const totalInitialValue = portfolioData.reduce((sum, item) => sum + item.initialValue, 0);
   const totalGainLossPercent = totalInitialValue > 0 ? ((totalValue - totalInitialValue) / totalInitialValue) * 100 : 0;
 
-  // Colors for charts using design system tokens
-  const colors = [
-    'hsl(var(--primary))',
-    'hsl(var(--secondary))', 
-    'hsl(var(--accent))',
-    'hsl(var(--chart-1))',
-    'hsl(var(--chart-2))',
-    'hsl(var(--chart-3))',
-    'hsl(var(--chart-4))',
-    'hsl(var(--chart-5))'
+  // Professional crypto-specific color palette
+  const cryptoColorPalette = [
+    '#F7931A', // Bitcoin Orange
+    '#627EEA', // Ethereum Blue  
+    '#0033AD', // Cardano Blue
+    '#9945FF', // Solana Purple
+    '#E6007A', // Polkadot Pink
+    '#00D4AA', // Tether Green
+    '#F3BA2F', // Binance Coin Yellow
+    '#26A17B', // USDC Green
+    '#FF6B35', // Additional Orange
+    '#8B5CF6', // Additional Purple
+    '#06B6D4', // Additional Cyan
+    '#F59E0B'  // Additional Amber
   ];
 
-  // Function to get color for specific crypto
+  // Function to get professional color for crypto
   const getCryptoColor = (symbol: string, index: number) => {
     const symbolLower = symbol.toLowerCase();
     
-    // Assign specific colors for known cryptocurrencies
-    if (symbolLower === 'btc' || symbolLower === 'bitcoin') {
-      return 'hsl(45, 93%, 58%)'; // Yellow for Bitcoin
-    }
-    if (symbolLower === 'eth' || symbolLower === 'ethereum') {
-      return 'hsl(var(--chart-1))'; // Blue for Ethereum
-    }
-    if (symbolLower === 'ada' || symbolLower === 'cardano') {
-      return 'hsl(var(--chart-2))'; // Green for Cardano
-    }
-    if (symbolLower === 'sol' || symbolLower === 'solana') {
-      return 'hsl(var(--chart-3))'; // Purple for Solana
-    }
-    if (symbolLower === 'dot' || symbolLower === 'polkadot') {
-      return 'hsl(var(--chart-4))'; // Pink for Polkadot
-    }
-    
-    // For other cryptocurrencies, use the color array
-    return colors[index % colors.length];
+    // Assign brand-specific colors for known cryptocurrencies
+    const cryptoColors: Record<string, string> = {
+      'btc': '#F7931A',     // Bitcoin Orange
+      'bitcoin': '#F7931A',
+      'eth': '#627EEA',     // Ethereum Blue
+      'ethereum': '#627EEA',
+      'ada': '#0033AD',     // Cardano Blue
+      'cardano': '#0033AD',
+      'sol': '#9945FF',     // Solana Purple
+      'solana': '#9945FF',
+      'dot': '#E6007A',     // Polkadot Pink
+      'polkadot': '#E6007A',
+      'usdt': '#00D4AA',    // Tether Green
+      'tether': '#00D4AA',
+      'bnb': '#F3BA2F',     // Binance Coin Yellow
+      'binance': '#F3BA2F',
+      'usdc': '#26A17B',    // USDC Green
+      'xrp': '#23292F',     // XRP Black
+      'ripple': '#23292F',
+      'matic': '#8247E5',   // Polygon Purple
+      'polygon': '#8247E5',
+      'avax': '#E84142',    // Avalanche Red
+      'avalanche': '#E84142'
+    };
+
+    // Return specific color if found, otherwise use palette rotation
+    return cryptoColors[symbolLower] || cryptoColorPalette[index % cryptoColorPalette.length];
   };
 
   // Enhanced historical data with ROI tracking
