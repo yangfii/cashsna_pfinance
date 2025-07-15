@@ -46,6 +46,7 @@ export default function WalletConnectionDialog({ onConnect }: WalletConnectionDi
     { id: "binance", name: "Binance", icon: "🟡", status: "supported" },
     { id: "coinbase", name: "Coinbase Pro", icon: "🔵", status: "supported" },
     { id: "kraken", name: "Kraken", icon: "🟣", status: "supported" },
+    { id: "bybit", name: "Bybit", icon: "🟠", status: "supported" },
     { id: "kucoin", name: "KuCoin", icon: "🟢", status: "coming_soon" }
   ];
 
