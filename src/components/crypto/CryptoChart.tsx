@@ -68,15 +68,15 @@ export default function CryptoChart({ holdings, prices }: CryptoChartProps) {
   // Colors for charts
   const colors = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', '#ff7c7c', '#8dd1e1', '#d084d0', '#ffc658', '#82ca9d'];
 
-  // Sample historical data (in a real app, this would come from API)
+  // Enhanced historical data with ROI tracking
   const performanceData = [
-    { date: 'Jan', value: totalValue * 0.7, volume: 120000 },
-    { date: 'Feb', value: totalValue * 0.75, volume: 150000 },
-    { date: 'Mar', value: totalValue * 0.8, volume: 180000 },
-    { date: 'Apr', value: totalValue * 0.85, volume: 200000 },
-    { date: 'May', value: totalValue * 0.9, volume: 220000 },
-    { date: 'Jun', value: totalValue * 0.95, volume: 250000 },
-    { date: 'Jul', value: totalValue, volume: 280000 },
+    { date: 'Jan', value: totalValue * 0.7, invested: totalInitialValue * 0.7, roi: ((totalValue * 0.7 - totalInitialValue * 0.7) / (totalInitialValue * 0.7)) * 100 },
+    { date: 'Feb', value: totalValue * 0.75, invested: totalInitialValue * 0.75, roi: ((totalValue * 0.75 - totalInitialValue * 0.75) / (totalInitialValue * 0.75)) * 100 },
+    { date: 'Mar', value: totalValue * 0.8, invested: totalInitialValue * 0.8, roi: ((totalValue * 0.8 - totalInitialValue * 0.8) / (totalInitialValue * 0.8)) * 100 },
+    { date: 'Apr', value: totalValue * 0.85, invested: totalInitialValue * 0.85, roi: ((totalValue * 0.85 - totalInitialValue * 0.85) / (totalInitialValue * 0.85)) * 100 },
+    { date: 'May', value: totalValue * 0.9, invested: totalInitialValue * 0.9, roi: ((totalValue * 0.9 - totalInitialValue * 0.9) / (totalInitialValue * 0.9)) * 100 },
+    { date: 'Jun', value: totalValue * 0.95, invested: totalInitialValue * 0.95, roi: ((totalValue * 0.95 - totalInitialValue * 0.95) / (totalInitialValue * 0.95)) * 100 },
+    { date: 'Jul', value: totalValue, invested: totalInitialValue, roi: totalGainLossPercent },
   ];
 
   // Sample depth chart data
@@ -255,36 +255,86 @@ export default function CryptoChart({ holdings, prices }: CryptoChartProps) {
 
         {/* Performance Tab */}
         <TabsContent value="performance">
-          <Card>
-            <CardHeader>
-              <CardTitle>Historical Performance</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={performanceData}>
-                  <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                  <XAxis dataKey="date" />
-                  <YAxis yAxisId="left" tickFormatter={(value) => formatCurrency(value)} />
-                  <YAxis yAxisId="right" orientation="right" />
-                  <Tooltip 
-                    formatter={(value: number, name: string) => [
-                      name === 'value' ? formatCurrency(value) : value.toLocaleString(), 
-                      name === 'value' ? 'Portfolio Value' : 'Volume'
-                    ]} 
-                  />
-                  <Line 
-                    yAxisId="left"
-                    type="monotone" 
-                    dataKey="value" 
-                    stroke="hsl(var(--primary))" 
-                    strokeWidth={3}
-                    dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 4 }}
-                  />
-                  <Bar yAxisId="right" dataKey="volume" fill="hsl(var(--secondary))" opacity={0.3} />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Portfolio Performance Over Time</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={400}>
+                  <LineChart data={performanceData}>
+                    <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                    <XAxis dataKey="date" />
+                    <YAxis yAxisId="left" tickFormatter={(value) => formatCurrency(value)} />
+                    <YAxis yAxisId="right" orientation="right" tickFormatter={(value) => formatPercent(value)} />
+                    <Tooltip 
+                      formatter={(value: number, name: string) => [
+                        name === 'value' ? formatCurrency(value) : 
+                        name === 'invested' ? formatCurrency(value) : 
+                        formatPercent(value), 
+                        name === 'value' ? 'Current Value' : 
+                        name === 'invested' ? 'Invested' : 'ROI'
+                      ]} 
+                    />
+                    <Line 
+                      yAxisId="left"
+                      type="monotone" 
+                      dataKey="value" 
+                      stroke="hsl(var(--primary))" 
+                      strokeWidth={3}
+                      dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 4 }}
+                      name="Current Value"
+                    />
+                    <Line 
+                      yAxisId="left"
+                      type="monotone" 
+                      dataKey="invested" 
+                      stroke="hsl(var(--secondary))" 
+                      strokeWidth={2}
+                      strokeDasharray="5 5"
+                      dot={{ fill: 'hsl(var(--secondary))', strokeWidth: 2, r: 3 }}
+                      name="Invested"
+                    />
+                    <Line 
+                      yAxisId="right"
+                      type="monotone" 
+                      dataKey="roi" 
+                      stroke="#10b981" 
+                      strokeWidth={2}
+                      dot={{ fill: '#10b981', strokeWidth: 2, r: 3 }}
+                      name="ROI %"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>P&L Analysis</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={portfolioData}>
+                    <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                    <XAxis dataKey="symbol" />
+                    <YAxis tickFormatter={(value) => formatCurrency(value)} />
+                    <Tooltip 
+                      formatter={(value: number) => [formatCurrency(value), 'P&L']}
+                    />
+                    <Bar 
+                      dataKey="gainLoss" 
+                      radius={[4, 4, 0, 0]}
+                    >
+                      {portfolioData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.gainLoss >= 0 ? '#10b981' : '#ef4444'} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         {/* Comparison Tab */}

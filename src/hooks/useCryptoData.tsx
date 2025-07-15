@@ -19,6 +19,8 @@ export interface CryptoPrice {
   [key: string]: {
     usd: number;
     usd_24h_change: number;
+    usd_24h_vol?: number;
+    usd_market_cap?: number;
   };
 }
 
@@ -37,6 +39,8 @@ export const useCryptoData = () => {
   const [prices, setPrices] = useState<CryptoPrice>({});
   const [alerts, setAlerts] = useState<CryptoAlert[]>([]);
   const [loading, setLoading] = useState(true);
+  const [priceUpdateCount, setPriceUpdateCount] = useState(0);
+  const [lastPriceUpdate, setLastPriceUpdate] = useState<Date | null>(null);
   
   const { user } = useAuth();
   const { toast } = useToast();
@@ -51,7 +55,7 @@ export const useCryptoData = () => {
   useEffect(() => {
     if (holdings.length > 0) {
       fetchCryptoPrices();
-      const interval = setInterval(fetchCryptoPrices, 30000); // Update every 30 seconds
+      const interval = setInterval(fetchCryptoPrices, 10000); // Update every 10 seconds for real-time
       return () => clearInterval(interval);
     }
   }, [holdings]);
@@ -100,16 +104,23 @@ export const useCryptoData = () => {
       if (!symbols) return;
       
       const response = await fetch(
-        `https://api.coingecko.com/api/v3/simple/price?ids=${symbols}&vs_currencies=usd&include_24hr_change=true`
+        `https://api.coingecko.com/api/v3/simple/price?ids=${symbols}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true`
       );
       
       if (response.ok) {
         const data = await response.json();
         setPrices(data);
+        setPriceUpdateCount(prev => prev + 1);
+        setLastPriceUpdate(new Date());
         checkAlerts(data);
       }
     } catch (error) {
       console.error('Error fetching crypto prices:', error);
+      toast({
+        title: "Price Update Error",
+        description: "Failed to fetch latest crypto prices",
+        variant: "destructive"
+      });
     }
   };
 
@@ -229,6 +240,63 @@ export const useCryptoData = () => {
     }, 0);
   };
 
+  const calculateROI = () => {
+    const totalInvested = holdings.reduce((total, holding) => 
+      total + (holding.amount * holding.purchase_price), 0
+    );
+    const totalGainLoss = calculateTotalGainLoss();
+    return totalInvested > 0 ? (totalGainLoss / totalInvested) * 100 : 0;
+  };
+
+  const calculatePortfolioMetrics = () => {
+    const totalValue = calculatePortfolioValue();
+    const totalGainLoss = calculateTotalGainLoss();
+    const roi = calculateROI();
+    
+    const holdingMetrics = holdings.map(holding => {
+      const currentPrice = prices[holding.symbol]?.usd || 0;
+      const priceChange24h = prices[holding.symbol]?.usd_24h_change || 0;
+      const currentValue = holding.amount * currentPrice;
+      const purchaseValue = holding.amount * holding.purchase_price;
+      const gainLoss = currentValue - purchaseValue;
+      const gainLossPercent = purchaseValue > 0 ? (gainLoss / purchaseValue) * 100 : 0;
+      
+      return {
+        ...holding,
+        currentPrice,
+        priceChange24h,
+        currentValue,
+        purchaseValue,
+        gainLoss,
+        gainLossPercent,
+        allocation: totalValue > 0 ? (currentValue / totalValue) * 100 : 0
+      };
+    });
+
+    return {
+      totalValue,
+      totalGainLoss,
+      roi,
+      holdingMetrics,
+      lastUpdate: lastPriceUpdate,
+      updateCount: priceUpdateCount
+    };
+  };
+
+  const getTopPerformers = () => {
+    const metrics = calculatePortfolioMetrics();
+    return metrics.holdingMetrics
+      .sort((a, b) => b.gainLossPercent - a.gainLossPercent)
+      .slice(0, 3);
+  };
+
+  const getWorstPerformers = () => {
+    const metrics = calculatePortfolioMetrics();
+    return metrics.holdingMetrics
+      .sort((a, b) => a.gainLossPercent - b.gainLossPercent)
+      .slice(0, 3);
+  };
+
   return {
     holdings,
     prices,
@@ -240,6 +308,12 @@ export const useCryptoData = () => {
     fetchAlerts,
     fetchCryptoPrices,
     calculatePortfolioValue,
-    calculateTotalGainLoss
+    calculateTotalGainLoss,
+    calculateROI,
+    calculatePortfolioMetrics,
+    getTopPerformers,
+    getWorstPerformers,
+    lastPriceUpdate,
+    priceUpdateCount
   };
 };
