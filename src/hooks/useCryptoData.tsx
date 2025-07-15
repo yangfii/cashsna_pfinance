@@ -238,6 +238,7 @@ export const useCryptoData = () => {
     addAlert,
     fetchHoldings,
     fetchAlerts,
+    fetchCryptoPrices,
     calculatePortfolioValue,
     calculateTotalGainLoss
   };

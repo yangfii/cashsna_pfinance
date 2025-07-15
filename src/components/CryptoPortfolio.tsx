@@ -5,6 +5,9 @@ import CryptoChart from "@/components/crypto/CryptoChart";
 import AddHoldingDialog from "@/components/crypto/AddHoldingDialog";
 import PriceAlertsDialog from "@/components/crypto/PriceAlertsDialog";
 import HoldingsList from "@/components/crypto/HoldingsList";
+import WalletConnectionDialog from "@/components/crypto/WalletConnectionDialog";
+import PriceMonitor from "@/components/crypto/PriceMonitor";
+import AdvancedAlerts from "@/components/crypto/AdvancedAlerts";
 
 export default function CryptoPortfolio() {
   const {
@@ -15,6 +18,7 @@ export default function CryptoPortfolio() {
     addHolding,
     addAlert,
     fetchAlerts,
+    fetchCryptoPrices,
     calculatePortfolioValue,
     calculateTotalGainLoss
   } = useCryptoData();
@@ -24,6 +28,31 @@ export default function CryptoPortfolio() {
       style: 'currency',
       currency: 'USD'
     }).format(amount);
+  };
+
+  const handleWalletConnection = (connection: { type: string; apiKey?: string; address?: string }) => {
+    // In a real implementation, this would:
+    // 1. Store the connection details securely
+    // 2. Fetch holdings from the connected wallet/exchange
+    // 3. Add them to the user's portfolio
+    console.log('Wallet connection:', connection);
+    
+    // For demo purposes, we'll show a success message
+    // In production, you'd integrate with exchange APIs or blockchain data
+  };
+
+  const handleAdvancedAlert = (alert: any) => {
+    // Convert advanced alert to basic alert format for now
+    // In production, you'd store the full alert configuration
+    const basicAlert = {
+      symbol: alert.symbol,
+      name: alert.name,
+      alert_type: 'price_above' as const,
+      target_value: alert.conditions[0]?.value || 0,
+      is_active: alert.isActive
+    };
+    
+    addAlert(basicAlert);
   };
 
   if (loading) {
@@ -55,6 +84,7 @@ export default function CryptoPortfolio() {
             Crypto Portfolio
           </CardTitle>
           <div className="flex gap-2">
+            <WalletConnectionDialog onConnect={handleWalletConnection} />
             <PriceAlertsDialog 
               holdings={holdings}
               alerts={alerts}
@@ -93,6 +123,19 @@ export default function CryptoPortfolio() {
                   </p>
                 </div>
               </div>
+            </div>
+
+            {/* Real-time Price Monitor and Advanced Alerts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <PriceMonitor 
+                prices={prices} 
+                onRefresh={fetchCryptoPrices}
+                lastUpdate={new Date()}
+              />
+              <AdvancedAlerts 
+                holdings={holdings}
+                onCreateAlert={handleAdvancedAlert}
+              />
             </div>
 
             {/* Charts */}
