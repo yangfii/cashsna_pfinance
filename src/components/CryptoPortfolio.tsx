@@ -15,6 +15,9 @@ import PortfolioAnalytics from "@/components/crypto/PortfolioAnalytics";
 import RealTimePriceMonitor from "@/components/crypto/RealTimePriceMonitor";
 import DataImportExport from "@/components/crypto/DataImportExport";
 import CurrencySettings, { CurrencyRates } from "@/components/crypto/CurrencySettings";
+import EnhancedPriceAlerts from "@/components/crypto/EnhancedPriceAlerts";
+import BuySellRecommendations from "@/components/crypto/BuySellRecommendations";
+import RebalancingNotifications from "@/components/crypto/RebalancingNotifications";
 
 export default function CryptoPortfolio() {
   const {
@@ -143,10 +146,11 @@ export default function CryptoPortfolio() {
           </div>
         ) : (
           <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="analytics">Analytics</TabsTrigger>
-              <TabsTrigger value="realtime">Real-time</TabsTrigger>
+              <TabsTrigger value="alerts">Alerts</TabsTrigger>
+              <TabsTrigger value="recommendations">AI Recs</TabsTrigger>
+              <TabsTrigger value="rebalancing">Rebalancing</TabsTrigger>
               <TabsTrigger value="charts">Charts</TabsTrigger>
               <TabsTrigger value="holdings">Holdings</TabsTrigger>
             </TabsList>
@@ -191,21 +195,24 @@ export default function CryptoPortfolio() {
               <CryptoChart holdings={holdings} prices={prices} />
             </TabsContent>
 
-            <TabsContent value="analytics">
-              <PortfolioAnalytics 
-                metrics={portfolioMetrics}
-                topPerformers={topPerformers}
-                worstPerformers={worstPerformers}
+            <TabsContent value="alerts" className="space-y-6">
+              <EnhancedPriceAlerts 
+                holdings={holdings}
+                onRefresh={fetchCryptoPrices}
               />
             </TabsContent>
 
-            <TabsContent value="realtime">
-              <RealTimePriceMonitor
-                prices={prices}
+            <TabsContent value="recommendations" className="space-y-6">
+              <BuySellRecommendations 
                 holdings={holdings}
-                onRefresh={fetchCryptoPrices}
-                lastUpdate={lastPriceUpdate}
-                updateCount={priceUpdateCount}
+                prices={prices}
+              />
+            </TabsContent>
+
+            <TabsContent value="rebalancing" className="space-y-6">
+              <RebalancingNotifications 
+                holdings={holdings}
+                prices={prices}
               />
             </TabsContent>
 
