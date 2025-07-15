@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import bybitLogo from "@/assets/bybit-logo.png";
 import coinbaseLogo from "@/assets/coinbase-logo.png";
 import binanceLogo from "@/assets/binance-logo.png";
+import coinbaseWalletLogo from "@/assets/coinbase-wallet-logo.png";
 
 // Extend Window interface to include ethereum
 declare global {
@@ -286,7 +287,13 @@ export default function WalletConnectionDialog({ onConnect }: WalletConnectionDi
                       })}
                     >
                       <CardContent className="p-4 text-center">
-                        <div className="text-2xl mb-2">{wallet.icon}</div>
+                        <div className="text-2xl mb-2">
+                          {wallet.id === "coinbase_wallet" ? (
+                            <img src={coinbaseWalletLogo} alt="Coinbase Wallet" className="h-8 w-8 mx-auto" />
+                          ) : (
+                            wallet.icon
+                          )}
+                        </div>
                         <div className="font-medium">{wallet.name}</div>
                         <Badge variant={wallet.status === 'supported' ? 'default' : 'secondary'} className="mt-2">
                           {wallet.status === 'supported' ? 'Supported' : 'Coming Soon'}
