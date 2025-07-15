@@ -8,6 +8,7 @@ import HoldingsList from "@/components/crypto/HoldingsList";
 import WalletConnectionDialog from "@/components/crypto/WalletConnectionDialog";
 import PriceMonitor from "@/components/crypto/PriceMonitor";
 import AdvancedAlerts from "@/components/crypto/AdvancedAlerts";
+import NotificationSettings from "@/components/crypto/NotificationSettings";
 
 export default function CryptoPortfolio() {
   const {
@@ -125,8 +126,8 @@ export default function CryptoPortfolio() {
               </div>
             </div>
 
-            {/* Real-time Price Monitor and Advanced Alerts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Real-time Price Monitor, Advanced Alerts, and Notification Settings */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <PriceMonitor 
                 prices={prices} 
                 onRefresh={fetchCryptoPrices}
@@ -136,6 +137,7 @@ export default function CryptoPortfolio() {
                 holdings={holdings}
                 onCreateAlert={handleAdvancedAlert}
               />
+              <NotificationSettings />
             </div>
 
             {/* Charts */}

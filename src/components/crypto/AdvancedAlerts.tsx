@@ -28,7 +28,7 @@ interface AlertCondition {
 }
 
 interface AlertAction {
-  type: 'notification' | 'email' | 'sms' | 'webhook';
+  type: 'notification' | 'email' | 'sms' | 'webhook' | 'telegram' | 'push';
   enabled: boolean;
   config?: any;
 }
@@ -46,7 +46,8 @@ export default function AdvancedAlerts({ holdings, onCreateAlert }: AdvancedAler
     actions: [
       { type: 'notification' as const, enabled: true },
       { type: 'email' as const, enabled: false },
-      { type: 'sms' as const, enabled: false }
+      { type: 'telegram' as const, enabled: false },
+      { type: 'push' as const, enabled: false }
     ] as AlertAction[],
     isActive: true
   });
@@ -138,7 +139,8 @@ export default function AdvancedAlerts({ holdings, onCreateAlert }: AdvancedAler
       actions: [
         { type: 'notification', enabled: true },
         { type: 'email', enabled: false },
-        { type: 'sms', enabled: false }
+        { type: 'telegram', enabled: false },
+        { type: 'push', enabled: false }
       ],
       isActive: true
     });
@@ -316,11 +318,14 @@ export default function AdvancedAlerts({ holdings, onCreateAlert }: AdvancedAler
               <div key={action.type} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-2">
                   <span className="capitalize">{action.type}</span>
-                  {action.type === 'email' && (
-                    <Badge variant="secondary">Pro Feature</Badge>
-                  )}
                   {action.type === 'sms' && (
                     <Badge variant="secondary">Pro Feature</Badge>
+                  )}
+                  {action.type === 'telegram' && (
+                    <Badge variant="outline">Setup Required</Badge>
+                  )}
+                  {action.type === 'push' && (
+                    <Badge variant="outline">Browser</Badge>
                   )}
                 </div>
                 <Switch
