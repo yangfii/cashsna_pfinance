@@ -101,7 +101,7 @@ export default function PriceMonitor({ prices, watchlist = [], onRefresh, lastUp
         <div className="mt-4 p-3 bg-muted/30 rounded-lg">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Activity className="h-4 w-4" />
-            <span>Prices update every 2 minutes automatically</span>
+            <span>Prices update every 1 minute automatically</span>
           </div>
         </div>
       </CardContent>
