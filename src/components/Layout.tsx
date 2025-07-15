@@ -82,7 +82,7 @@ function AppSidebar() {
       toast.error('Unexpected error during sign out');
     }
   };
-  return <Sidebar variant="inset" collapsible="icon" className="my-0 mx-0 px-[28px]">
+  return <Sidebar variant="inset" collapsible="icon" className="my-0 mx-0 px-0">
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-1">
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
