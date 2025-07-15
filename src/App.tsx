@@ -10,6 +10,7 @@ import Layout from "@/components/Layout";
 import Dashboard from "@/pages/Dashboard";
 import Transactions from "@/pages/Transactions";
 import Categories from "@/pages/Categories";
+import Portfolio from "@/pages/Portfolio";
 import Planning from "@/pages/Planning";
 import Reports from "@/pages/Reports";
 import Settings from "@/pages/Settings";
@@ -37,6 +38,7 @@ const App = () => (
                   <Route index element={<Dashboard />} />
                   <Route path="transactions" element={<Transactions />} />
                   <Route path="categories" element={<Categories />} />
+                  <Route path="portfolio" element={<Portfolio />} />
                   <Route path="planning" element={<Planning />} />
                   <Route path="reports" element={<Reports />} />
                   <Route path="settings" element={<Settings />} />

@@ -15,7 +15,8 @@ import {
   User,
   Target,
   Brain,
-  X
+  X,
+  Coins
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -41,6 +42,7 @@ const navItems = [
   { to: "/dashboard", icon: LayoutDashboard, label: "ការសង្ខេបហិរញ្ញវត្ថុ", key: "dashboard" },
   { to: "/dashboard/transactions", icon: ArrowLeftRight, label: "ប្រតិបត្តិការ", key: "transactions" },
   { to: "/dashboard/categories", icon: FolderOpen, label: "ប្រភេទចំណូល/ចំណាយ", key: "categories" },
+  { to: "/dashboard/portfolio", icon: Coins, label: "Crypto Portfolio", key: "portfolio" },
   { to: "/dashboard/planning", icon: Target, label: "ការរៀបចំគំរោង", key: "planning" },
   { to: "/dashboard/reports", icon: BarChart3, label: "របាយការណ៍ហិរញ្ញវត្ថុ", key: "reports" },
   { to: "/dashboard/settings", icon: Settings, label: "ការកំណត់", key: "settings" }
