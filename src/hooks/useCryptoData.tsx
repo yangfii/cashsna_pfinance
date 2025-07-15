@@ -16,12 +16,12 @@ export interface CryptoHolding {
 }
 
 export interface CryptoPrice {
-  [key: string]: {
-    usd: number;
-    usd_24h_change: number;
-    usd_24h_vol?: number;
-    usd_market_cap?: number;
-  };
+  symbol: string;
+  price: number;
+  price_change_24h: number;
+  volume_24h: number;
+  market_cap: number;
+  last_updated: string;
 }
 
 export interface CryptoAlert {
@@ -36,7 +36,7 @@ export interface CryptoAlert {
 
 export const useCryptoData = () => {
   const [holdings, setHoldings] = useState<CryptoHolding[]>([]);
-  const [prices, setPrices] = useState<CryptoPrice>({});
+  const [prices, setPrices] = useState<Record<string, CryptoPrice>>({});
   const [alerts, setAlerts] = useState<CryptoAlert[]>([]);
   const [loading, setLoading] = useState(true);
   const [priceUpdateCount, setPriceUpdateCount] = useState(0);
@@ -45,20 +45,55 @@ export const useCryptoData = () => {
   const { user } = useAuth();
   const { toast } = useToast();
 
+  // Set up real-time subscription for crypto prices
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel('crypto-prices-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'crypto_prices'
+        },
+        (payload) => {
+          console.log('New crypto price received:', payload);
+          
+          const newPrice = payload.new as any;
+          const cryptoPrice: CryptoPrice = {
+            symbol: newPrice.symbol,
+            price: parseFloat(newPrice.price?.toString() || '0'),
+            price_change_24h: newPrice.price_change_24h ? parseFloat(newPrice.price_change_24h.toString()) : 0,
+            volume_24h: newPrice.volume_24h ? parseFloat(newPrice.volume_24h.toString()) : 0,
+            market_cap: newPrice.market_cap ? parseFloat(newPrice.market_cap.toString()) : 0,
+            last_updated: newPrice.last_updated || new Date().toISOString()
+          };
+          
+          setPrices(prev => ({
+            ...prev,
+            [newPrice.symbol]: cryptoPrice
+          }));
+          
+          setLastPriceUpdate(new Date());
+          setPriceUpdateCount(prev => prev + 1);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
+
   useEffect(() => {
     if (user) {
       fetchHoldings();
       fetchAlerts();
+      fetchCryptoPrices();
     }
   }, [user]);
-
-  useEffect(() => {
-    if (holdings.length > 0) {
-      fetchCryptoPrices();
-      const interval = setInterval(fetchCryptoPrices, 10000); // Update every 10 seconds for real-time
-      return () => clearInterval(interval);
-    }
-  }, [holdings]);
 
   const fetchHoldings = async () => {
     try {
@@ -98,73 +133,68 @@ export const useCryptoData = () => {
     }
   };
 
-  const fetchCryptoPrices = async (retryCount = 0) => {
+  const fetchCryptoPrices = async () => {
     try {
-      // Map common symbols to CoinGecko IDs
-      const symbolToId: Record<string, string> = {
-        'btc': 'bitcoin',
-        'bitcoin': 'bitcoin',
-        'eth': 'ethereum',
-        'ethereum': 'ethereum',
-        'ada': 'cardano',
-        'cardano': 'cardano',
-        'sol': 'solana',
-        'solana': 'solana',
-        'dot': 'polkadot',
-        'polkadot': 'polkadot',
-        'bnb': 'binancecoin',
-        'binancecoin': 'binancecoin',
-        'usdt': 'tether',
-        'tether': 'tether',
-        'usdc': 'usd-coin',
-        'xrp': 'ripple',
-        'ripple': 'ripple',
-        'matic': 'polygon',
-        'polygon': 'polygon',
-        'avax': 'avalanche-2',
-        'avalanche': 'avalanche-2'
-      };
+      console.log('Fetching crypto prices from database...');
+      
+      // Get unique symbols from holdings
+      const symbols = holdings.map(h => h.symbol);
+      
+      // If no holdings, fetch some default popular cryptocurrencies
+      const defaultSymbols = ['BTC', 'ETH', 'USDT', 'BNB', 'SOL', 'ADA', 'XRP', 'DOT', 'LINK', 'LTC'];
+      const symbolsToFetch = symbols.length > 0 ? symbols : defaultSymbols;
+      
+      const { data: pricesData, error } = await supabase
+        .from('crypto_prices')
+        .select('*')
+        .in('symbol', symbolsToFetch)
+        .order('created_at', { ascending: false });
 
-      const coinIds = holdings
-        .map(h => symbolToId[h.symbol.toLowerCase()] || h.symbol.toLowerCase())
-        .join(',');
-      
-      if (!coinIds) return;
-      
-      console.log('Fetching prices for coin IDs:', coinIds);
-      
-      const response = await fetch(
-        `https://api.coingecko.com/api/v3/simple/price?ids=${coinIds}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true`
-      );
-      
-      if (response.ok) {
-        const data = await response.json();
-        setPrices(data);
-        setPriceUpdateCount(prev => prev + 1);
-        setLastPriceUpdate(new Date());
-        checkAlerts(data);
-      } else if (retryCount < 3) {
-        // Retry after exponential backoff
-        setTimeout(() => fetchCryptoPrices(retryCount + 1), Math.pow(2, retryCount) * 1000);
-      }
-    } catch (error) {
-      console.error('Error fetching crypto prices:', error);
-      if (retryCount < 3) {
-        // Retry after exponential backoff
-        setTimeout(() => fetchCryptoPrices(retryCount + 1), Math.pow(2, retryCount) * 1000);
-      } else {
+      if (error) {
+        console.error('Error fetching crypto prices:', error);
         toast({
-          title: "Price Update Error",
-          description: "Failed to fetch latest crypto prices after multiple attempts",
+          title: "Error",
+          description: "Failed to fetch crypto prices",
           variant: "destructive"
         });
+        return;
       }
+
+      // Group by symbol and take the latest price for each
+      const latestPrices: Record<string, CryptoPrice> = {};
+      
+      pricesData?.forEach(price => {
+        if (!latestPrices[price.symbol]) {
+          latestPrices[price.symbol] = {
+            symbol: price.symbol,
+            price: parseFloat(price.price?.toString() || '0'),
+            price_change_24h: price.price_change_24h ? parseFloat(price.price_change_24h.toString()) : 0,
+            volume_24h: price.volume_24h ? parseFloat(price.volume_24h.toString()) : 0,
+            market_cap: price.market_cap ? parseFloat(price.market_cap.toString()) : 0,
+            last_updated: price.last_updated || new Date().toISOString()
+          };
+        }
+      });
+
+      setPrices(latestPrices);
+      setLastPriceUpdate(new Date());
+      setPriceUpdateCount(prev => prev + 1);
+      
+      console.log(`Updated prices for ${Object.keys(latestPrices).length} cryptocurrencies`);
+      
+    } catch (error) {
+      console.error('Error fetching crypto prices:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch crypto prices",
+        variant: "destructive"
+      });
     }
   };
 
-  const checkAlerts = async (currentPrices: CryptoPrice) => {
+  const checkAlerts = async (currentPrices: Record<string, CryptoPrice>) => {
     for (const alert of alerts) {
-      const currentPrice = currentPrices[alert.symbol]?.usd;
+      const currentPrice = currentPrices[alert.symbol]?.price;
       if (!currentPrice || alert.is_triggered) continue;
 
       let shouldTrigger = false;
@@ -177,7 +207,7 @@ export const useCryptoData = () => {
           shouldTrigger = currentPrice <= alert.target_value;
           break;
         case 'percent_change':
-          const change24h = currentPrices[alert.symbol]?.usd_24h_change || 0;
+          const change24h = currentPrices[alert.symbol]?.price_change_24h || 0;
           shouldTrigger = Math.abs(change24h) >= alert.target_value;
           break;
       }
@@ -318,33 +348,15 @@ export const useCryptoData = () => {
   };
 
   const calculatePortfolioValue = () => {
-    const symbolToId: Record<string, string> = {
-      'btc': 'bitcoin', 'bitcoin': 'bitcoin', 'eth': 'ethereum', 'ethereum': 'ethereum',
-      'ada': 'cardano', 'cardano': 'cardano', 'sol': 'solana', 'solana': 'solana',
-      'dot': 'polkadot', 'polkadot': 'polkadot', 'bnb': 'binancecoin', 'binancecoin': 'binancecoin',
-      'usdt': 'tether', 'tether': 'tether', 'usdc': 'usd-coin', 'xrp': 'ripple', 'ripple': 'ripple',
-      'matic': 'polygon', 'polygon': 'polygon', 'avax': 'avalanche-2', 'avalanche': 'avalanche-2'
-    };
-    
     return holdings.reduce((total, holding) => {
-      const coinId = symbolToId[holding.symbol.toLowerCase()] || holding.symbol.toLowerCase();
-      const currentPrice = prices[coinId]?.usd || 0;
+      const currentPrice = prices[holding.symbol]?.price || 0;
       return total + (holding.amount * currentPrice);
     }, 0);
   };
 
   const calculateTotalGainLoss = () => {
-    const symbolToId: Record<string, string> = {
-      'btc': 'bitcoin', 'bitcoin': 'bitcoin', 'eth': 'ethereum', 'ethereum': 'ethereum',
-      'ada': 'cardano', 'cardano': 'cardano', 'sol': 'solana', 'solana': 'solana',
-      'dot': 'polkadot', 'polkadot': 'polkadot', 'bnb': 'binancecoin', 'binancecoin': 'binancecoin',
-      'usdt': 'tether', 'tether': 'tether', 'usdc': 'usd-coin', 'xrp': 'ripple', 'ripple': 'ripple',
-      'matic': 'polygon', 'polygon': 'polygon', 'avax': 'avalanche-2', 'avalanche': 'avalanche-2'
-    };
-    
     return holdings.reduce((total, holding) => {
-      const coinId = symbolToId[holding.symbol.toLowerCase()] || holding.symbol.toLowerCase();
-      const currentPrice = prices[coinId]?.usd || 0;
+      const currentPrice = prices[holding.symbol]?.price || 0;
       const currentValue = holding.amount * currentPrice;
       const purchaseValue = holding.amount * holding.purchase_price;
       return total + (currentValue - purchaseValue);
@@ -364,18 +376,9 @@ export const useCryptoData = () => {
     const totalGainLoss = calculateTotalGainLoss();
     const roi = calculateROI();
     
-    const symbolToId: Record<string, string> = {
-      'btc': 'bitcoin', 'bitcoin': 'bitcoin', 'eth': 'ethereum', 'ethereum': 'ethereum',
-      'ada': 'cardano', 'cardano': 'cardano', 'sol': 'solana', 'solana': 'solana',
-      'dot': 'polkadot', 'polkadot': 'polkadot', 'bnb': 'binancecoin', 'binancecoin': 'binancecoin',
-      'usdt': 'tether', 'tether': 'tether', 'usdc': 'usd-coin', 'xrp': 'ripple', 'ripple': 'ripple',
-      'matic': 'polygon', 'polygon': 'polygon', 'avax': 'avalanche-2', 'avalanche': 'avalanche-2'
-    };
-    
     const holdingMetrics = holdings.map(holding => {
-      const coinId = symbolToId[holding.symbol.toLowerCase()] || holding.symbol.toLowerCase();
-      const currentPrice = prices[coinId]?.usd || 0;
-      const priceChange24h = prices[coinId]?.usd_24h_change || 0;
+      const currentPrice = prices[holding.symbol]?.price || 0;
+      const priceChange24h = prices[holding.symbol]?.price_change_24h || 0;
       const currentValue = holding.amount * currentPrice;
       const purchaseValue = holding.amount * holding.purchase_price;
       const gainLoss = currentValue - purchaseValue;

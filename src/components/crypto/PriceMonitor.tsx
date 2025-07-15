@@ -6,10 +6,10 @@ import { TrendingUp, TrendingDown, Activity, RefreshCw } from "lucide-react";
 import { CryptoPrice } from "@/hooks/useCryptoData";
 
 interface PriceMonitorProps {
-  prices: CryptoPrice;
+  prices: Record<string, CryptoPrice>;
   watchlist?: string[];
   onRefresh: () => void;
-  lastUpdate?: Date;
+  lastUpdate?: Date | null;
 }
 
 export default function PriceMonitor({ prices, watchlist = [], onRefresh, lastUpdate }: PriceMonitorProps) {
@@ -42,10 +42,7 @@ export default function PriceMonitor({ prices, watchlist = [], onRefresh, lastUp
     return <Activity className="h-4 w-4" />;
   };
 
-  const priceData = Object.entries(prices).map(([symbol, data]) => ({
-    symbol,
-    ...data
-  }));
+  const priceData = Object.values(prices);
 
   return (
     <Card>
@@ -81,19 +78,19 @@ export default function PriceMonitor({ prices, watchlist = [], onRefresh, lastUp
           </div>
         ) : (
           <div className="space-y-3">
-            {priceData.map(({ symbol, usd, usd_24h_change }) => (
-              <div key={symbol} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+            {priceData.map((priceInfo) => (
+              <div key={priceInfo.symbol} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-3">
                   <div>
-                    <div className="font-medium capitalize">{symbol}</div>
-                    <div className="text-sm text-muted-foreground uppercase">{symbol}</div>
+                    <div className="font-medium capitalize">{priceInfo.symbol}</div>
+                    <div className="text-sm text-muted-foreground uppercase">{priceInfo.symbol}</div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="font-medium">{formatPrice(usd)}</div>
-                  <div className={`flex items-center gap-1 text-sm ${getChangeColor(usd_24h_change)}`}>
-                    {getChangeIcon(usd_24h_change)}
-                    {Math.abs(usd_24h_change).toFixed(2)}%
+                  <div className="font-medium">{formatPrice(priceInfo.price)}</div>
+                  <div className={`flex items-center gap-1 text-sm ${getChangeColor(priceInfo.price_change_24h)}`}>
+                    {getChangeIcon(priceInfo.price_change_24h)}
+                    {Math.abs(priceInfo.price_change_24h).toFixed(2)}%
                   </div>
                 </div>
               </div>
@@ -104,7 +101,7 @@ export default function PriceMonitor({ prices, watchlist = [], onRefresh, lastUp
         <div className="mt-4 p-3 bg-muted/30 rounded-lg">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Activity className="h-4 w-4" />
-            <span>Prices update every 30 seconds automatically</span>
+            <span>Prices update every 2 minutes automatically</span>
           </div>
         </div>
       </CardContent>

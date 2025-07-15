@@ -32,7 +32,7 @@ interface TechnicalSignal {
 
 interface BuySellRecommendationsProps {
   holdings: CryptoHolding[];
-  prices: CryptoPrice;
+  prices: Record<string, CryptoPrice>;
 }
 
 export default function BuySellRecommendations({ holdings, prices }: BuySellRecommendationsProps) {
@@ -57,8 +57,8 @@ export default function BuySellRecommendations({ holdings, prices }: BuySellReco
         const priceData = prices[holding.symbol.toLowerCase()];
         if (!priceData) return;
 
-        const currentPrice = priceData.usd;
-        const change24h = priceData.usd_24h_change || 0;
+        const currentPrice = priceData.price;
+        const change24h = priceData.price_change_24h || 0;
         const purchasePrice = holding.purchase_price;
         const currentValue = holding.amount * currentPrice;
         const purchaseValue = holding.amount * purchasePrice;

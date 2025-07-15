@@ -33,7 +33,7 @@ interface RebalancingRule {
 
 interface RebalancingNotificationsProps {
   holdings: CryptoHolding[];
-  prices: CryptoPrice;
+  prices: Record<string, CryptoPrice>;
 }
 
 export default function RebalancingNotifications({ holdings, prices }: RebalancingNotificationsProps) {
@@ -57,7 +57,7 @@ export default function RebalancingNotifications({ holdings, prices }: Rebalanci
     const totalValue = holdings.reduce((sum, holding) => {
       const priceData = prices[holding.symbol.toLowerCase()];
       if (!priceData) return sum;
-      return sum + (holding.amount * priceData.usd);
+      return sum + (holding.amount * priceData.price);
     }, 0);
 
     // Calculate current allocations
@@ -65,7 +65,7 @@ export default function RebalancingNotifications({ holdings, prices }: Rebalanci
       const priceData = prices[holding.symbol.toLowerCase()];
       if (!priceData) return null;
       
-      const currentValue = holding.amount * priceData.usd;
+      const currentValue = holding.amount * priceData.price;
       const currentPercentage = (currentValue / totalValue) * 100;
       
       return {

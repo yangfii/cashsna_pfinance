@@ -22,7 +22,7 @@ import { TrendingUp, TrendingDown, DollarSign, Percent } from "lucide-react";
 
 interface CryptoChartProps {
   holdings: CryptoHolding[];
-  prices: CryptoPrice;
+  prices: Record<string, CryptoPrice>;
 }
 
 export default function CryptoChart({ holdings, prices }: CryptoChartProps) {
@@ -68,9 +68,8 @@ export default function CryptoChart({ holdings, prices }: CryptoChartProps) {
 
   // Calculate data for charts
   const portfolioData = holdings.map(holding => {
-    const coinId = symbolToId[holding.symbol.toLowerCase()] || holding.symbol.toLowerCase();
-    const currentPrice = prices[coinId]?.usd || 0;
-    const priceChange24h = prices[coinId]?.usd_24h_change || 0;
+    const currentPrice = prices[holding.symbol]?.price || 0;
+    const priceChange24h = prices[holding.symbol]?.price_change_24h || 0;
     const currentValue = holding.amount * currentPrice;
     const initialValue = holding.amount * holding.purchase_price;
     const gainLoss = currentValue - initialValue;
@@ -78,12 +77,11 @@ export default function CryptoChart({ holdings, prices }: CryptoChartProps) {
 
     console.log(`Portfolio calculation for ${holding.symbol}:`, {
       symbol: holding.symbol,
-      coinId,
       amount: holding.amount,
       currentPrice,
       currentValue,
       initialValue,
-      priceData: prices[coinId]
+      priceData: prices[holding.symbol]
     });
 
     return {
