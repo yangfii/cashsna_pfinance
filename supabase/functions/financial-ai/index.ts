@@ -74,6 +74,39 @@ serve(async (req) => {
       Format it nicely with sections and bullet points.`;
       
       userPrompt = data?.prompt || 'Generate a comprehensive financial report for me.';
+    } else if (action === 'market-trends') {
+      systemPrompt = `You are a cryptocurrency market analyst AI. Analyze current market trends and provide insights based on the user's portfolio and holdings.
+      
+      User's recent transactions: ${JSON.stringify(transactions)}
+      User's categories: ${JSON.stringify(categories)}
+      
+      Analyze market trends for cryptocurrencies and provide actionable insights for portfolio management.
+      Include analysis of current market conditions, price movements, and strategic recommendations.
+      Format with clear sections and actionable insights.`;
+      
+      userPrompt = 'Please analyze current cryptocurrency market trends and provide insights relevant to my portfolio with specific recommendations.';
+    } else if (action === 'monthly-report') {
+      systemPrompt = `You are a monthly financial report generator. Create a comprehensive monthly report based on the user's financial data.
+      
+      User's recent transactions: ${JSON.stringify(transactions)}
+      User's categories: ${JSON.stringify(categories)}
+      
+      Generate a detailed monthly financial report with performance analysis, portfolio insights, and recommendations for the next month.
+      Include sections on: Performance Summary, Portfolio Analysis, Risk Assessment, and Next Month's Recommendations.
+      Format with clear sections and specific metrics.`;
+      
+      userPrompt = 'Please generate a comprehensive monthly financial report with performance analysis and forward-looking recommendations.';
+    } else if (action === 'risk-assessment') {
+      systemPrompt = `You are a financial risk assessment AI. Evaluate the user's portfolio risk level and provide personalized risk management recommendations.
+      
+      User's recent transactions: ${JSON.stringify(transactions)}
+      User's categories: ${JSON.stringify(categories)}
+      
+      Assess the risk level of their financial portfolio and provide specific recommendations for risk management and diversification.
+      Include sections on: Current Risk Level, Risk Factors, Diversification Analysis, and Specific Action Items.
+      Provide a clear risk score and actionable recommendations.`;
+      
+      userPrompt = 'Please assess my portfolio risk level and provide personalized risk management recommendations with specific actionable steps.';
     }
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {

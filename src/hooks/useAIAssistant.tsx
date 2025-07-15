@@ -214,6 +214,87 @@ export const useAIAssistant = () => {
     }
   }, [user, toast]);
 
+  const analyzeMarketTrends = useCallback(async () => {
+    if (!user) return null;
+
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('financial-ai', {
+        body: {
+          action: 'market-trends',
+          userId: user.id
+        }
+      });
+
+      if (error) throw error;
+      return data.response;
+    } catch (error) {
+      console.error('Market trends analysis error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to analyze market trends. Please try again.",
+        variant: "destructive"
+      });
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user, toast]);
+
+  const generateMonthlyReport = useCallback(async () => {
+    if (!user) return null;
+
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('financial-ai', {
+        body: {
+          action: 'monthly-report',
+          userId: user.id
+        }
+      });
+
+      if (error) throw error;
+      return data.response;
+    } catch (error) {
+      console.error('Monthly report generation error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate monthly report. Please try again.",
+        variant: "destructive"
+      });
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user, toast]);
+
+  const assessRiskStatus = useCallback(async () => {
+    if (!user) return null;
+
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('financial-ai', {
+        body: {
+          action: 'risk-assessment',
+          userId: user.id
+        }
+      });
+
+      if (error) throw error;
+      return data.response;
+    } catch (error) {
+      console.error('Risk assessment error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to assess risk status. Please try again.",
+        variant: "destructive"
+      });
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user, toast]);
+
   return {
     isLoading,
     sendChatMessage,
@@ -222,6 +303,9 @@ export const useAIAssistant = () => {
     categorizeTransaction,
     analyzeFinances,
     generateBudgetPlan,
-    generateReport
+    generateReport,
+    analyzeMarketTrends,
+    generateMonthlyReport,
+    assessRiskStatus
   };
 };

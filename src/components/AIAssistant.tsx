@@ -21,7 +21,11 @@ import {
   Loader2,
   Sparkles,
   Bot,
-  User
+  User,
+  BarChart3,
+  Calendar,
+  Shield,
+  AlertTriangle
 } from 'lucide-react';
 
 interface ChatMessage {
@@ -129,6 +133,9 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
   const [activeTab, setActiveTab] = useState(initialTab);
   const [analysisResult, setAnalysisResult] = useState<string>('');
   const [reportContent, setReportContent] = useState<string>('');
+  const [marketTrendsResult, setMarketTrendsResult] = useState<string>('');
+  const [monthlyReportContent, setMonthlyReportContent] = useState<string>('');
+  const [riskAssessmentResult, setRiskAssessmentResult] = useState<string>('');
   
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -380,6 +387,99 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
     }
   };
 
+  const analyzeMarketTrends = async () => {
+    if (!user) return;
+
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('financial-ai', {
+        body: {
+          action: 'market-trends',
+          userId: user.id
+        }
+      });
+
+      if (error) {
+        console.error('Market trends analysis error:', error);
+        setMarketTrendsResult('Sorry, the market trends analysis feature is currently not configured. Please contact your administrator to set up the required API keys.');
+        return;
+      }
+
+      setMarketTrendsResult(data.response);
+    } catch (error) {
+      console.error('Market trends error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to analyze market trends. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const generateMonthlyReport = async () => {
+    if (!user) return;
+
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('financial-ai', {
+        body: {
+          action: 'monthly-report',
+          userId: user.id
+        }
+      });
+
+      if (error) {
+        console.error('Monthly report generation error:', error);
+        setMonthlyReportContent('Sorry, the monthly report generation feature is currently not configured. Please contact your administrator to set up the required API keys.');
+        return;
+      }
+
+      setMonthlyReportContent(data.response);
+    } catch (error) {
+      console.error('Monthly report error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate monthly report. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const assessRiskStatus = async () => {
+    if (!user) return;
+
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('financial-ai', {
+        body: {
+          action: 'risk-assessment',
+          userId: user.id
+        }
+      });
+
+      if (error) {
+        console.error('Risk assessment error:', error);
+        setRiskAssessmentResult('Sorry, the risk assessment feature is currently not configured. Please contact your administrator to set up the required API keys.');
+        return;
+      }
+
+      setRiskAssessmentResult(data.response);
+    } catch (error) {
+      console.error('Risk assessment error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to assess risk status. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Card className="w-full animate-fade-in">
       <CardHeader className="pb-3">
@@ -552,21 +652,41 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
           </TabsContent>
 
           <TabsContent value="analysis" className="space-y-6 mt-6">
-            <AIFeatureCard
-              icon={TrendingUp}
-              title="Financial Analysis"
-              description="Get comprehensive insights into your spending patterns, income trends, and financial health with AI-powered analysis."
-              onClick={runFinancialAnalysis}
-              isLoading={isLoading}
-              variant="primary"
-            />
+            <div className="grid gap-4 md:grid-cols-2">
+              <AIFeatureCard
+                icon={TrendingUp}
+                title="Financial Analysis"
+                description="Get comprehensive insights into your spending patterns, income trends, and financial health."
+                onClick={runFinancialAnalysis}
+                isLoading={isLoading}
+                variant="primary"
+              />
+              
+              <AIFeatureCard
+                icon={BarChart3}
+                title="Market Trends"
+                description="Analyze crypto market trends and get insights on price movements and market sentiment."
+                onClick={analyzeMarketTrends}
+                isLoading={isLoading}
+                variant="primary"
+              />
+              
+              <AIFeatureCard
+                icon={Shield}
+                title="Risk Assessment"
+                description="Evaluate your portfolio's risk level and get personalized recommendations for risk management."
+                onClick={assessRiskStatus}
+                isLoading={isLoading}
+                variant="primary"
+              />
+            </div>
 
             {analysisResult && (
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
                     <TrendingUp className="h-5 w-5" />
-                    Analysis Results
+                    Financial Analysis Results
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -578,30 +698,95 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
                 </CardContent>
               </Card>
             )}
+
+            {marketTrendsResult && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5" />
+                    Market Trends Analysis
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ScrollArea className="h-80 w-full">
+                    <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                      {marketTrendsResult}
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            )}
+
+            {riskAssessmentResult && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Shield className="h-5 w-5" />
+                    Risk Assessment Report
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ScrollArea className="h-80 w-full">
+                    <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                      {riskAssessmentResult}
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           <TabsContent value="reports" className="space-y-6 mt-6">
-            <AIFeatureCard
-              icon={FileText}
-              title="Financial Report"
-              description="Generate detailed financial reports with insights, recommendations, and actionable steps to improve your financial situation."
-              onClick={generateReport}
-              isLoading={isLoading}
-              variant="primary"
-            />
+            <div className="grid gap-4 md:grid-cols-2">
+              <AIFeatureCard
+                icon={FileText}
+                title="Financial Report"
+                description="Generate detailed financial reports with insights, recommendations, and actionable steps."
+                onClick={generateReport}
+                isLoading={isLoading}
+                variant="primary"
+              />
+              
+              <AIFeatureCard
+                icon={Calendar}
+                title="Monthly Report"
+                description="Generate comprehensive monthly reports with performance analysis and portfolio insights."
+                onClick={generateMonthlyReport}
+                isLoading={isLoading}
+                variant="primary"
+              />
+            </div>
 
             {reportContent && (
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
                     <FileText className="h-5 w-5" />
-                    Generated Report
+                    Financial Report
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ScrollArea className="h-80 w-full">
                     <div className="whitespace-pre-wrap text-sm leading-relaxed">
                       {reportContent}
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            )}
+
+            {monthlyReportContent && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Calendar className="h-5 w-5" />
+                    Monthly Report
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ScrollArea className="h-80 w-full">
+                    <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                      {monthlyReportContent}
                     </div>
                   </ScrollArea>
                 </CardContent>
