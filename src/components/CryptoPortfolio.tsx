@@ -20,6 +20,7 @@ export default function CryptoPortfolio() {
     alerts,
     loading,
     addHolding,
+    deleteHolding,
     addAlert,
     fetchAlerts,
     fetchCryptoPrices,
@@ -189,7 +190,7 @@ export default function CryptoPortfolio() {
             <TabsContent value="holdings">
               <div>
                 <h3 className="text-lg font-semibold mb-4">Your Holdings</h3>
-                <HoldingsList holdings={holdings} prices={prices} />
+                <HoldingsList holdings={holdings} prices={prices} onDeleteHolding={deleteHolding} />
               </div>
             </TabsContent>
           </Tabs>

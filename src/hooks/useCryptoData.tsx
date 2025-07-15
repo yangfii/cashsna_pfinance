@@ -98,7 +98,7 @@ export const useCryptoData = () => {
     }
   };
 
-  const fetchCryptoPrices = async () => {
+  const fetchCryptoPrices = async (retryCount = 0) => {
     try {
       const symbols = holdings.map(h => h.symbol.toLowerCase()).join(',');
       if (!symbols) return;
@@ -113,14 +113,22 @@ export const useCryptoData = () => {
         setPriceUpdateCount(prev => prev + 1);
         setLastPriceUpdate(new Date());
         checkAlerts(data);
+      } else if (retryCount < 3) {
+        // Retry after exponential backoff
+        setTimeout(() => fetchCryptoPrices(retryCount + 1), Math.pow(2, retryCount) * 1000);
       }
     } catch (error) {
       console.error('Error fetching crypto prices:', error);
-      toast({
-        title: "Price Update Error",
-        description: "Failed to fetch latest crypto prices",
-        variant: "destructive"
-      });
+      if (retryCount < 3) {
+        // Retry after exponential backoff
+        setTimeout(() => fetchCryptoPrices(retryCount + 1), Math.pow(2, retryCount) * 1000);
+      } else {
+        toast({
+          title: "Price Update Error",
+          description: "Failed to fetch latest crypto prices after multiple attempts",
+          variant: "destructive"
+        });
+      }
     }
   };
 
@@ -192,6 +200,32 @@ export const useCryptoData = () => {
       toast({
         title: "Error",
         description: "Failed to add crypto holding",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const deleteHolding = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('crypto_holdings')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', user?.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Crypto holding deleted successfully"
+      });
+
+      fetchHoldings();
+    } catch (error) {
+      console.error('Error deleting crypto holding:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete crypto holding",
         variant: "destructive"
       });
     }
@@ -303,6 +337,7 @@ export const useCryptoData = () => {
     alerts,
     loading,
     addHolding,
+    deleteHolding,
     addAlert,
     fetchHoldings,
     fetchAlerts,

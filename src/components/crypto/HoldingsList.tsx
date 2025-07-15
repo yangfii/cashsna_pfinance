@@ -1,13 +1,16 @@
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, TrendingDown, Wallet } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { TrendingUp, TrendingDown, Wallet, Trash2 } from "lucide-react";
 import { CryptoHolding, CryptoPrice } from "@/hooks/useCryptoData";
 
 interface HoldingsListProps {
   holdings: CryptoHolding[];
   prices: CryptoPrice;
+  onDeleteHolding: (id: string) => void;
 }
 
-export default function HoldingsList({ holdings, prices }: HoldingsListProps) {
+export default function HoldingsList({ holdings, prices, onDeleteHolding }: HoldingsListProps) {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -57,11 +60,34 @@ export default function HoldingsList({ holdings, prices }: HoldingsListProps) {
                   <p className="text-sm text-muted-foreground uppercase">{holding.symbol}</p>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="font-semibold text-lg">{formatCurrency(currentValue)}</p>
-                <Badge variant={priceChange24h >= 0 ? "default" : "destructive"} className="text-xs">
-                  {priceChange24h >= 0 ? "+" : ""}{priceChange24h.toFixed(2)}%
-                </Badge>
+              <div className="flex items-center gap-3">
+                <div className="text-right">
+                  <p className="font-semibold text-lg">{formatCurrency(currentValue)}</p>
+                  <Badge variant={priceChange24h >= 0 ? "default" : "destructive"} className="text-xs">
+                    {priceChange24h >= 0 ? "+" : ""}{priceChange24h.toFixed(2)}%
+                  </Badge>
+                </div>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete Holding</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to delete this {holding.name} holding? This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => onDeleteHolding(holding.id)} className="bg-destructive hover:bg-destructive/90">
+                        Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </div>
             
