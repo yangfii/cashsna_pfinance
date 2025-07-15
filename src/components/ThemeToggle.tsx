@@ -32,7 +32,7 @@ export function ThemeToggle() {
   const getIcon = () => {
     switch (theme) {
       case "light":
-        return <Sun className="h-4 w-4 text-yellow-500" />;
+        return <Sun className="h-4 w-4 text-amber-500" />;
       case "dark":
         return <Moon className="h-4 w-4 text-blue-400" />;
       case "system":
@@ -44,12 +44,12 @@ export function ThemeToggle() {
   const getTitle = () => {
     switch (theme) {
       case "light":
-        return "Light Mode";
+        return "Switch to Dark Mode";
       case "dark":
-        return "Dark Mode";
+        return "Switch to System Mode";
       case "system":
       default:
-        return "System Mode";
+        return "Switch to Light Mode";
     }
   };
 
