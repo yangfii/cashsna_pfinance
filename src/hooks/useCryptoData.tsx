@@ -1,0 +1,244 @@
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+
+export interface CryptoHolding {
+  id: string;
+  symbol: string;
+  name: string;
+  amount: number;
+  purchase_price: number;
+  purchase_date: string;
+  notes?: string;
+  wallet_address?: string;
+  wallet_type?: string;
+}
+
+export interface CryptoPrice {
+  [key: string]: {
+    usd: number;
+    usd_24h_change: number;
+  };
+}
+
+export interface CryptoAlert {
+  id: string;
+  symbol: string;
+  name: string;
+  alert_type: 'price_above' | 'price_below' | 'percent_change';
+  target_value: number;
+  is_active: boolean;
+  is_triggered: boolean;
+}
+
+export const useCryptoData = () => {
+  const [holdings, setHoldings] = useState<CryptoHolding[]>([]);
+  const [prices, setPrices] = useState<CryptoPrice>({});
+  const [alerts, setAlerts] = useState<CryptoAlert[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (user) {
+      fetchHoldings();
+      fetchAlerts();
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (holdings.length > 0) {
+      fetchCryptoPrices();
+      const interval = setInterval(fetchCryptoPrices, 30000); // Update every 30 seconds
+      return () => clearInterval(interval);
+    }
+  }, [holdings]);
+
+  const fetchHoldings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('crypto_holdings')
+        .select('*')
+        .eq('user_id', user?.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setHoldings(data || []);
+    } catch (error) {
+      console.error('Error fetching crypto holdings:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch crypto holdings",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchAlerts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('crypto_alerts')
+        .select('*')
+        .eq('user_id', user?.id)
+        .eq('is_active', true)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setAlerts((data || []) as CryptoAlert[]);
+    } catch (error) {
+      console.error('Error fetching crypto alerts:', error);
+    }
+  };
+
+  const fetchCryptoPrices = async () => {
+    try {
+      const symbols = holdings.map(h => h.symbol.toLowerCase()).join(',');
+      if (!symbols) return;
+      
+      const response = await fetch(
+        `https://api.coingecko.com/api/v3/simple/price?ids=${symbols}&vs_currencies=usd&include_24hr_change=true`
+      );
+      
+      if (response.ok) {
+        const data = await response.json();
+        setPrices(data);
+        checkAlerts(data);
+      }
+    } catch (error) {
+      console.error('Error fetching crypto prices:', error);
+    }
+  };
+
+  const checkAlerts = async (currentPrices: CryptoPrice) => {
+    for (const alert of alerts) {
+      const currentPrice = currentPrices[alert.symbol]?.usd;
+      if (!currentPrice || alert.is_triggered) continue;
+
+      let shouldTrigger = false;
+      
+      switch (alert.alert_type) {
+        case 'price_above':
+          shouldTrigger = currentPrice >= alert.target_value;
+          break;
+        case 'price_below':
+          shouldTrigger = currentPrice <= alert.target_value;
+          break;
+        case 'percent_change':
+          const change24h = currentPrices[alert.symbol]?.usd_24h_change || 0;
+          shouldTrigger = Math.abs(change24h) >= alert.target_value;
+          break;
+      }
+
+      if (shouldTrigger) {
+        await triggerAlert(alert, currentPrice);
+      }
+    }
+  };
+
+  const triggerAlert = async (alert: CryptoAlert, currentPrice: number) => {
+    try {
+      await supabase
+        .from('crypto_alerts')
+        .update({ is_triggered: true })
+        .eq('id', alert.id);
+
+      toast({
+        title: "Price Alert Triggered!",
+        description: `${alert.name} has reached your target: $${currentPrice.toFixed(2)}`,
+      });
+
+      setAlerts(prev => prev.map(a => 
+        a.id === alert.id ? { ...a, is_triggered: true } : a
+      ));
+    } catch (error) {
+      console.error('Error triggering alert:', error);
+    }
+  };
+
+  const addHolding = async (holding: Omit<CryptoHolding, 'id'>) => {
+    try {
+      const { error } = await supabase
+        .from('crypto_holdings')
+        .insert({
+          user_id: user?.id,
+          ...holding
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Crypto holding added successfully"
+      });
+
+      fetchHoldings();
+    } catch (error) {
+      console.error('Error adding crypto holding:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add crypto holding",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const addAlert = async (alert: Omit<CryptoAlert, 'id' | 'is_triggered'>) => {
+    try {
+      const { error } = await supabase
+        .from('crypto_alerts')
+        .insert({
+          user_id: user?.id,
+          ...alert
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Price alert created successfully"
+      });
+
+      fetchAlerts();
+    } catch (error) {
+      console.error('Error adding crypto alert:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create price alert",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const calculatePortfolioValue = () => {
+    return holdings.reduce((total, holding) => {
+      const currentPrice = prices[holding.symbol]?.usd || 0;
+      return total + (holding.amount * currentPrice);
+    }, 0);
+  };
+
+  const calculateTotalGainLoss = () => {
+    return holdings.reduce((total, holding) => {
+      const currentPrice = prices[holding.symbol]?.usd || 0;
+      const currentValue = holding.amount * currentPrice;
+      const purchaseValue = holding.amount * holding.purchase_price;
+      return total + (currentValue - purchaseValue);
+    }, 0);
+  };
+
+  return {
+    holdings,
+    prices,
+    alerts,
+    loading,
+    addHolding,
+    addAlert,
+    fetchHoldings,
+    fetchAlerts,
+    calculatePortfolioValue,
+    calculateTotalGainLoss
+  };
+};

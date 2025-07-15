@@ -44,6 +44,45 @@ export type Database = {
         }
         Relationships: []
       }
+      crypto_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string
+          id: string
+          is_active: boolean
+          is_triggered: boolean
+          name: string
+          symbol: string
+          target_value: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_triggered?: boolean
+          name: string
+          symbol: string
+          target_value: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_triggered?: boolean
+          name?: string
+          symbol?: string
+          target_value?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       crypto_holdings: {
         Row: {
           amount: number
@@ -56,6 +95,8 @@ export type Database = {
           symbol: string
           updated_at: string
           user_id: string
+          wallet_address: string | null
+          wallet_type: string | null
         }
         Insert: {
           amount: number
@@ -68,6 +109,8 @@ export type Database = {
           symbol: string
           updated_at?: string
           user_id: string
+          wallet_address?: string | null
+          wallet_type?: string | null
         }
         Update: {
           amount?: number
@@ -80,6 +123,8 @@ export type Database = {
           symbol?: string
           updated_at?: string
           user_id?: string
+          wallet_address?: string | null
+          wallet_type?: string | null
         }
         Relationships: []
       }
