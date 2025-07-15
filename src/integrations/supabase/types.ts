@@ -128,6 +128,39 @@ export type Database = {
         }
         Relationships: []
       }
+      crypto_prices: {
+        Row: {
+          created_at: string | null
+          id: string
+          last_updated: string | null
+          market_cap: number | null
+          price: number
+          price_change_24h: number | null
+          symbol: string
+          volume_24h: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          last_updated?: string | null
+          market_cap?: number | null
+          price: number
+          price_change_24h?: number | null
+          symbol: string
+          volume_24h?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          last_updated?: string | null
+          market_cap?: number | null
+          price?: number
+          price_change_24h?: number | null
+          symbol?: string
+          volume_24h?: number | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -202,7 +235,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_latest_crypto_price: {
+        Args: { crypto_symbol: string }
+        Returns: {
+          symbol: string
+          price: number
+          price_change_24h: number
+          volume_24h: number
+          market_cap: number
+          last_updated: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
