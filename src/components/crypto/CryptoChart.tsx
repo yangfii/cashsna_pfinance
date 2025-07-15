@@ -26,6 +26,10 @@ interface CryptoChartProps {
 }
 
 export default function CryptoChart({ holdings, prices }: CryptoChartProps) {
+  // Debug logging
+  console.log('CryptoChart Debug - Holdings:', holdings);
+  console.log('CryptoChart Debug - Prices:', prices);
+  console.log('CryptoChart Debug - Holdings length:', holdings.length);
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -37,14 +41,50 @@ export default function CryptoChart({ holdings, prices }: CryptoChartProps) {
     return `${value.toFixed(2)}%`;
   };
 
+  // Map symbols to CoinGecko IDs (same as in hook)
+  const symbolToId: Record<string, string> = {
+    'btc': 'bitcoin',
+    'bitcoin': 'bitcoin',
+    'eth': 'ethereum',
+    'ethereum': 'ethereum',
+    'ada': 'cardano',
+    'cardano': 'cardano',
+    'sol': 'solana',
+    'solana': 'solana',
+    'dot': 'polkadot',
+    'polkadot': 'polkadot',
+    'bnb': 'binancecoin',
+    'binancecoin': 'binancecoin',
+    'usdt': 'tether',
+    'tether': 'tether',
+    'usdc': 'usd-coin',
+    'xrp': 'ripple',
+    'ripple': 'ripple',
+    'matic': 'polygon',
+    'polygon': 'polygon',
+    'avax': 'avalanche-2',
+    'avalanche': 'avalanche-2'
+  };
+
   // Calculate data for charts
   const portfolioData = holdings.map(holding => {
-    const currentPrice = prices[holding.symbol.toLowerCase()]?.usd || 0;
-    const priceChange24h = prices[holding.symbol.toLowerCase()]?.usd_24h_change || 0;
+    const coinId = symbolToId[holding.symbol.toLowerCase()] || holding.symbol.toLowerCase();
+    const currentPrice = prices[coinId]?.usd || 0;
+    const priceChange24h = prices[coinId]?.usd_24h_change || 0;
     const currentValue = holding.amount * currentPrice;
     const initialValue = holding.amount * holding.purchase_price;
     const gainLoss = currentValue - initialValue;
     const gainLossPercent = initialValue > 0 ? ((currentValue - initialValue) / initialValue) * 100 : 0;
+
+    console.log(`Portfolio calculation for ${holding.symbol}:`, {
+      symbol: holding.symbol,
+      coinId,
+      amount: holding.amount,
+      currentPrice,
+      currentValue,
+      initialValue,
+      priceData: prices[coinId]
+    });
 
     return {
       name: holding.name,
@@ -59,6 +99,8 @@ export default function CryptoChart({ holdings, prices }: CryptoChartProps) {
       initialValue
     };
   });
+
+  console.log('Final portfolio data for charts:', portfolioData);
 
   const totalValue = portfolioData.reduce((sum, item) => sum + item.value, 0);
   const totalGainLoss = portfolioData.reduce((sum, item) => sum + item.gainLoss, 0);

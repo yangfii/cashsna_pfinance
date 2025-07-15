@@ -100,11 +100,41 @@ export const useCryptoData = () => {
 
   const fetchCryptoPrices = async (retryCount = 0) => {
     try {
-      const symbols = holdings.map(h => h.symbol.toLowerCase()).join(',');
-      if (!symbols) return;
+      // Map common symbols to CoinGecko IDs
+      const symbolToId: Record<string, string> = {
+        'btc': 'bitcoin',
+        'bitcoin': 'bitcoin',
+        'eth': 'ethereum',
+        'ethereum': 'ethereum',
+        'ada': 'cardano',
+        'cardano': 'cardano',
+        'sol': 'solana',
+        'solana': 'solana',
+        'dot': 'polkadot',
+        'polkadot': 'polkadot',
+        'bnb': 'binancecoin',
+        'binancecoin': 'binancecoin',
+        'usdt': 'tether',
+        'tether': 'tether',
+        'usdc': 'usd-coin',
+        'xrp': 'ripple',
+        'ripple': 'ripple',
+        'matic': 'polygon',
+        'polygon': 'polygon',
+        'avax': 'avalanche-2',
+        'avalanche': 'avalanche-2'
+      };
+
+      const coinIds = holdings
+        .map(h => symbolToId[h.symbol.toLowerCase()] || h.symbol.toLowerCase())
+        .join(',');
+      
+      if (!coinIds) return;
+      
+      console.log('Fetching prices for coin IDs:', coinIds);
       
       const response = await fetch(
-        `https://api.coingecko.com/api/v3/simple/price?ids=${symbols}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true`
+        `https://api.coingecko.com/api/v3/simple/price?ids=${coinIds}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true`
       );
       
       if (response.ok) {
@@ -259,15 +289,33 @@ export const useCryptoData = () => {
   };
 
   const calculatePortfolioValue = () => {
+    const symbolToId: Record<string, string> = {
+      'btc': 'bitcoin', 'bitcoin': 'bitcoin', 'eth': 'ethereum', 'ethereum': 'ethereum',
+      'ada': 'cardano', 'cardano': 'cardano', 'sol': 'solana', 'solana': 'solana',
+      'dot': 'polkadot', 'polkadot': 'polkadot', 'bnb': 'binancecoin', 'binancecoin': 'binancecoin',
+      'usdt': 'tether', 'tether': 'tether', 'usdc': 'usd-coin', 'xrp': 'ripple', 'ripple': 'ripple',
+      'matic': 'polygon', 'polygon': 'polygon', 'avax': 'avalanche-2', 'avalanche': 'avalanche-2'
+    };
+    
     return holdings.reduce((total, holding) => {
-      const currentPrice = prices[holding.symbol]?.usd || 0;
+      const coinId = symbolToId[holding.symbol.toLowerCase()] || holding.symbol.toLowerCase();
+      const currentPrice = prices[coinId]?.usd || 0;
       return total + (holding.amount * currentPrice);
     }, 0);
   };
 
   const calculateTotalGainLoss = () => {
+    const symbolToId: Record<string, string> = {
+      'btc': 'bitcoin', 'bitcoin': 'bitcoin', 'eth': 'ethereum', 'ethereum': 'ethereum',
+      'ada': 'cardano', 'cardano': 'cardano', 'sol': 'solana', 'solana': 'solana',
+      'dot': 'polkadot', 'polkadot': 'polkadot', 'bnb': 'binancecoin', 'binancecoin': 'binancecoin',
+      'usdt': 'tether', 'tether': 'tether', 'usdc': 'usd-coin', 'xrp': 'ripple', 'ripple': 'ripple',
+      'matic': 'polygon', 'polygon': 'polygon', 'avax': 'avalanche-2', 'avalanche': 'avalanche-2'
+    };
+    
     return holdings.reduce((total, holding) => {
-      const currentPrice = prices[holding.symbol]?.usd || 0;
+      const coinId = symbolToId[holding.symbol.toLowerCase()] || holding.symbol.toLowerCase();
+      const currentPrice = prices[coinId]?.usd || 0;
       const currentValue = holding.amount * currentPrice;
       const purchaseValue = holding.amount * holding.purchase_price;
       return total + (currentValue - purchaseValue);
@@ -287,9 +335,18 @@ export const useCryptoData = () => {
     const totalGainLoss = calculateTotalGainLoss();
     const roi = calculateROI();
     
+    const symbolToId: Record<string, string> = {
+      'btc': 'bitcoin', 'bitcoin': 'bitcoin', 'eth': 'ethereum', 'ethereum': 'ethereum',
+      'ada': 'cardano', 'cardano': 'cardano', 'sol': 'solana', 'solana': 'solana',
+      'dot': 'polkadot', 'polkadot': 'polkadot', 'bnb': 'binancecoin', 'binancecoin': 'binancecoin',
+      'usdt': 'tether', 'tether': 'tether', 'usdc': 'usd-coin', 'xrp': 'ripple', 'ripple': 'ripple',
+      'matic': 'polygon', 'polygon': 'polygon', 'avax': 'avalanche-2', 'avalanche': 'avalanche-2'
+    };
+    
     const holdingMetrics = holdings.map(holding => {
-      const currentPrice = prices[holding.symbol]?.usd || 0;
-      const priceChange24h = prices[holding.symbol]?.usd_24h_change || 0;
+      const coinId = symbolToId[holding.symbol.toLowerCase()] || holding.symbol.toLowerCase();
+      const currentPrice = prices[coinId]?.usd || 0;
+      const priceChange24h = prices[coinId]?.usd_24h_change || 0;
       const currentValue = holding.amount * currentPrice;
       const purchaseValue = holding.amount * holding.purchase_price;
       const gainLoss = currentValue - purchaseValue;
