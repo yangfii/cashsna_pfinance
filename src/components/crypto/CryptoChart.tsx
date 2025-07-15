@@ -65,8 +65,17 @@ export default function CryptoChart({ holdings, prices }: CryptoChartProps) {
   const totalInitialValue = portfolioData.reduce((sum, item) => sum + item.initialValue, 0);
   const totalGainLossPercent = totalInitialValue > 0 ? ((totalValue - totalInitialValue) / totalInitialValue) * 100 : 0;
 
-  // Colors for charts
-  const colors = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', '#ff7c7c', '#8dd1e1', '#d084d0', '#ffc658', '#82ca9d'];
+  // Colors for charts using design system tokens
+  const colors = [
+    'hsl(var(--primary))',
+    'hsl(var(--secondary))', 
+    'hsl(var(--accent))',
+    'hsl(var(--chart-1))',
+    'hsl(var(--chart-2))',
+    'hsl(var(--chart-3))',
+    'hsl(var(--chart-4))',
+    'hsl(var(--chart-5))'
+  ];
 
   // Enhanced historical data with ROI tracking
   const performanceData = [
