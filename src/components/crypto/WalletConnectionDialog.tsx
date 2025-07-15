@@ -11,6 +11,7 @@ import { Wallet, Key, Globe, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import bybitLogo from "@/assets/bybit-logo.png";
 import coinbaseLogo from "@/assets/coinbase-logo.png";
+import binanceLogo from "@/assets/binance-logo.png";
 
 // Extend Window interface to include ethereum
 declare global {
@@ -202,6 +203,8 @@ export default function WalletConnectionDialog({ onConnect }: WalletConnectionDi
                             <img src={bybitLogo} alt="Bybit" className="h-8 w-8 mx-auto" />
                           ) : exchange.id === "coinbase" ? (
                             <img src={coinbaseLogo} alt="Coinbase Pro" className="h-8 w-8 mx-auto" />
+                          ) : exchange.id === "binance" ? (
+                            <img src={binanceLogo} alt="Binance" className="h-8 w-8 mx-auto" />
                           ) : (
                             exchange.icon
                           )}
