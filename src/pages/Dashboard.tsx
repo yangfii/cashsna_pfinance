@@ -10,6 +10,7 @@ import { ProfileCard } from '@/components/ProfileCard';
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/hooks/useLanguage";
 
 type Transaction = {
   id: string;
@@ -29,6 +30,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   // Fetch transactions on mount
   useEffect(() => {
@@ -93,7 +95,7 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
         <div className="space-y-2">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">ការសង្ខេបហិរញ្ញវត្ថុ</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{t("dashboard.title")}</h1>
           <p className="text-sm sm:text-base text-muted-foreground">
             ស្ថានភាពហិរញ្ញវត្ថុរបស់អ្នកសម្រាប់ខែ {currentMonth}
           </p>
@@ -103,9 +105,9 @@ export default function Dashboard() {
             <Calendar className="h-4 w-4" />
             <span className="text-sm">ប្រែប្រួលខែ</span>
           </Button>
-          <Button className="gap-2 bg-gradient-primary border-0 hover:shadow-glow transition-smooth w-full sm:w-auto">
+            <Button className="gap-2 bg-gradient-primary border-0 hover:shadow-glow transition-smooth w-full sm:w-auto">
             <Plus className="h-4 w-4" />
-            <span className="text-sm">បន្ថែមប្រតិបត្តិការ</span>
+            <span className="text-sm">{t("dashboard.addTransaction")}</span>
           </Button>
         </div>
       </div>
@@ -116,7 +118,7 @@ export default function Dashboard() {
         <Card className="income-card stat-card animate-bounce-in">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
-              ចំណូលសរុប
+              {t("dashboard.totalIncome")}
             </CardTitle>
             <TrendingUp className="h-4 w-4 text-emerald-600" />
           </CardHeader>
@@ -134,7 +136,7 @@ export default function Dashboard() {
         <Card className="expense-card stat-card animate-bounce-in" style={{animationDelay: '0.1s'}}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-red-700 dark:text-red-400">
-              ចំណាយសរុប
+              {t("dashboard.totalExpenses")}
             </CardTitle>
             <TrendingDown className="h-4 w-4 text-red-600" />
           </CardHeader>
@@ -152,7 +154,7 @@ export default function Dashboard() {
         <Card className="balance-card stat-card animate-bounce-in" style={{animationDelay: '0.2s'}}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-400">
-              ចំណុះស្មើនឹង
+              {t("dashboard.currentBalance")}
             </CardTitle>
             <Wallet className="h-4 w-4 text-blue-600" />
           </CardHeader>
@@ -194,7 +196,7 @@ export default function Dashboard() {
       <Card className="stat-card animate-slide-up">
         <CardHeader>
           <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-            <CardTitle className="text-base sm:text-lg">ប្រតិបត្តិការថ្មីៗ</CardTitle>
+            <CardTitle className="text-base sm:text-lg">{t("dashboard.recentTransactions")}</CardTitle>
             <Button variant="outline" size="sm" className="w-full sm:w-auto">
               មើលទាំងអស់
             </Button>
@@ -203,11 +205,11 @@ export default function Dashboard() {
         <CardContent>
           {loading ? (
             <div className="text-center py-8 text-muted-foreground">
-              <p>កំពុងទាញយកទិន្នន័យ...</p>
+              <p>{t("common.loading")}</p>
             </div>
           ) : transactions.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              <p>មិនមានប្រតិបត្តិការនៅឡើយទេ</p>
+              <p>{t("dashboard.noTransactions")}</p>
             </div>
           ) : (
             <div className="space-y-4">

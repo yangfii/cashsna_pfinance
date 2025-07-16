@@ -4,50 +4,51 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
+import { useLanguage } from "@/hooks/useLanguage";
 import { toast } from "sonner";
 import { LayoutDashboard, ArrowLeftRight, FolderOpen, BarChart3, Settings, LogOut, User, Target, Coins, Brain } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-const navItems = [{
+const getNavItems = (t: (key: string) => string) => [{
   to: "/dashboard",
   icon: LayoutDashboard,
-  label: "ការសង្ខេបហិរញ្ញវត្ថុ",
+  label: t("nav.dashboard"),
   key: "dashboard"
 }, {
   to: "/dashboard/transactions",
   icon: ArrowLeftRight,
-  label: "ប្រតិបត្តិការ",
+  label: t("nav.transactions"),
   key: "transactions"
 }, {
   to: "/dashboard/categories",
   icon: FolderOpen,
-  label: "ប្រភេទចំណូល/ចំណាយ",
+  label: t("nav.categories"),
   key: "categories"
 }, {
   to: "/dashboard/portfolio",
   icon: Coins,
-  label: "Crypto Portfolio",
+  label: t("nav.portfolio"),
   key: "portfolio"
 }, {
   to: "/dashboard/assistant",
   icon: Brain,
-  label: "AI Assistant",
+  label: t("nav.assistant"),
   key: "assistant"
 }, {
   to: "/dashboard/planning",
   icon: Target,
-  label: "ការរៀបចំគំរោង",
+  label: t("nav.planning"),
   key: "planning"
 }, {
   to: "/dashboard/reports",
   icon: BarChart3,
-  label: "របាយការណ៍ហិរញ្ញវត្ថុ",
+  label: t("nav.reports"),
   key: "reports"
 }, {
   to: "/dashboard/settings",
   icon: Settings,
-  label: "ការកំណត់",
+  label: t("nav.settings"),
   key: "settings"
 }];
 function AppSidebar() {
@@ -58,11 +59,14 @@ function AppSidebar() {
   const {
     profile
   } = useProfile();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
   const {
     state
   } = useSidebar();
+  
+  const navItems = getNavItems(t);
   const handleSignOut = async () => {
     try {
       console.log('Starting sign out process...');
@@ -133,16 +137,16 @@ function AppSidebar() {
                       {user?.email?.split('@')[0]}
                     </span>
                     <span className="truncate text-xs text-muted-foreground">
-                      View Profile
+                      {t("nav.profile")}
                     </span>
                   </div>}
               </NavLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={handleSignOut} tooltip="Sign Out">
+            <SidebarMenuButton onClick={handleSignOut} tooltip={t("nav.signOut")}>
               <LogOut />
-              <span>Sign Out</span>
+              <span>{t("nav.signOut")}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -151,6 +155,7 @@ function AppSidebar() {
 }
 export default function Layout() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const {
     user,
     loading
@@ -164,7 +169,7 @@ export default function Layout() {
     return <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading...</p>
+          <p className="mt-4 text-muted-foreground">{t("common.loading")}</p>
         </div>
       </div>;
   }

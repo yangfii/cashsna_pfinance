@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/hooks/useLanguage';
 import { toast } from 'sonner';
 import { Eye, EyeOff } from 'lucide-react';
 
@@ -19,6 +20,7 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const { signIn, signUp, signInWithGoogle, resetPassword, user } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   // Redirect if already authenticated
@@ -173,8 +175,8 @@ export default function Auth() {
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsTrigger value="signin">{t("auth.signIn")}</TabsTrigger>
+              <TabsTrigger value="signup">{t("auth.signUp")}</TabsTrigger>
             </TabsList>
             
             <div className="mt-6">
@@ -202,11 +204,11 @@ export default function Auth() {
             <TabsContent value="signin" className="space-y-4">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signin-email">Email</Label>
+                  <Label htmlFor="signin-email">{t("auth.email")}</Label>
                   <Input
                     id="signin-email"
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder={t("auth.email")}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -215,12 +217,12 @@ export default function Auth() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="signin-password">Password</Label>
+                  <Label htmlFor="signin-password">{t("auth.password")}</Label>
                   <div className="relative">
                     <Input
                       id="signin-password"
                       type={showPassword ? 'text' : 'password'}
-                      placeholder="Enter your password"
+                      placeholder={t("auth.password")}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
@@ -251,9 +253,9 @@ export default function Auth() {
                        onCheckedChange={(checked) => setRememberMe(checked === true)}
                        disabled={loading}
                      />
-                     <Label htmlFor="remember-me" className="text-sm font-normal">
-                       Remember me
-                     </Label>
+                      <Label htmlFor="remember-me" className="text-sm font-normal">
+                        {t("auth.rememberMe")}
+                      </Label>
                    </div>
                    <Button
                      type="button"
@@ -262,13 +264,13 @@ export default function Auth() {
                      onClick={() => setShowForgotPassword(true)}
                      disabled={loading}
                    >
-                     Forgot password?
+                     {t("auth.forgotPassword")}
                    </Button>
                  </div>
                  
-                 <Button type="submit" className="w-full" disabled={loading}>
-                   {loading ? 'Signing in...' : 'Sign In'}
-                 </Button>
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? t("common.loading") : t("auth.signIn")}
+                  </Button>
                </form>
               
             </TabsContent>
@@ -276,11 +278,11 @@ export default function Auth() {
             <TabsContent value="signup" className="space-y-4">
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signup-email">Email</Label>
+                  <Label htmlFor="signup-email">{t("auth.email")}</Label>
                   <Input
                     id="signup-email"
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder={t("auth.email")}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -289,12 +291,12 @@ export default function Auth() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="signup-password">Password</Label>
+                  <Label htmlFor="signup-password">{t("auth.password")}</Label>
                   <div className="relative">
                     <Input
                       id="signup-password"
                       type={showPassword ? 'text' : 'password'}
-                      placeholder="Create a password"
+                      placeholder={t("auth.password")}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
@@ -323,7 +325,7 @@ export default function Auth() {
                 
                 
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? 'Creating account...' : 'Sign Up'}
+                  {loading ? t("common.loading") : t("auth.signUp")}
                 </Button>
               </form>
               
