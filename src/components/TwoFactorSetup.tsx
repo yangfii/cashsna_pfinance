@@ -56,7 +56,7 @@ export function TwoFactorSetup() {
       return;
     }
 
-    const result = await enable2FA(secret.base32, verificationCode);
+    const result = await enable2FA(secret.secret, verificationCode);
     
     if (result.error) {
       toast.error(result.error.message || 'Failed to enable 2FA');
@@ -179,14 +179,14 @@ export function TwoFactorSetup() {
                         <div className="flex items-center space-x-2">
                           <Input
                             id="manual-key"
-                            value={secret?.base32 || ''}
+                            value={secret?.secret || ''}
                             readOnly
                             className="font-mono text-xs"
                           />
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => copyToClipboard(secret?.base32 || '')}
+                            onClick={() => copyToClipboard(secret?.secret || '')}
                           >
                             <Copy className="h-4 w-4" />
                           </Button>

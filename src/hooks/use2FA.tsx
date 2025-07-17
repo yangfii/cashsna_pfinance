@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
-import speakeasy from 'speakeasy';
+import { TOTP, Secret } from 'otpauth';
 import QRCode from 'qrcode';
 
 interface TwoFASettings {
@@ -44,10 +44,20 @@ export function use2FA() {
   }, [user]);
 
   const generate2FASecret = useCallback(() => {
-    return speakeasy.generateSecret({
-      name: `CashSnap Finance (${user?.email})`,
+    const secret = new Secret();
+    const totp = new TOTP({
       issuer: 'CashSnap Finance',
+      label: user?.email || 'User',
+      secret: secret,
+      algorithm: 'SHA1',
+      digits: 6,
+      period: 30,
     });
+
+    return {
+      secret: secret.base32,
+      otpauth_url: totp.toString()
+    };
   }, [user?.email]);
 
   const generateQRCode = useCallback(async (secret: string) => {
@@ -66,15 +76,19 @@ export function use2FA() {
     try {
       setLoading(true);
 
-      // Verify the token first
-      const verified = speakeasy.totp.verify({
-        secret: secretKey,
-        encoding: 'base32',
-        token: token,
-        window: 2
+      // Create TOTP instance for verification
+      const secret = Secret.fromBase32(secretKey);
+      const totp = new TOTP({
+        secret: secret,
+        algorithm: 'SHA1',
+        digits: 6,
+        period: 30,
       });
 
-      if (!verified) {
+      // Verify the token
+      const delta = totp.validate({ token, window: 2 });
+      
+      if (delta === null) {
         return { error: 'Invalid verification code' };
       }
 
@@ -157,12 +171,16 @@ export function use2FA() {
       }
 
       // Verify TOTP token
-      const verified = speakeasy.totp.verify({
-        secret: twoFASettings.secret_key,
-        encoding: 'base32',
-        token: token,
-        window: 2
+      const secret = Secret.fromBase32(twoFASettings.secret_key);
+      const totp = new TOTP({
+        secret: secret,
+        algorithm: 'SHA1',
+        digits: 6,
+        period: 30,
       });
+
+      const delta = totp.validate({ token, window: 2 });
+      const verified = delta !== null;
 
       return { verified, usedBackupCode: false };
     } catch (err) {
