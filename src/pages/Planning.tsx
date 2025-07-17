@@ -17,7 +17,12 @@ import {
   Trash2,
   CalendarDays,
   TrendingUp,
-  Brain
+  Brain,
+  Clock,
+  Play,
+  Pause,
+  Square,
+  Timer
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { 
@@ -61,6 +66,14 @@ export default function Planning() {
   });
   const [newStep, setNewStep] = useState('');
   const [steps, setSteps] = useState<Step[]>([]);
+  
+  // Focus time states
+  const [focusTime, setFocusTime] = useState(25); // minutes
+  const [remainingTime, setRemainingTime] = useState(0);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
+  const [showFocusTimer, setShowFocusTimer] = useState(false);
+  
   const { toast } = useToast();
 
   // Load goals from localStorage
@@ -75,6 +88,27 @@ export default function Planning() {
   useEffect(() => {
     localStorage.setItem('planning-goals', JSON.stringify(goals));
   }, [goals]);
+
+  // Focus timer effect
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isTimerRunning && remainingTime > 0) {
+      interval = setInterval(() => {
+        setRemainingTime((time) => {
+          if (time <= 1) {
+            setIsTimerRunning(false);
+            toast({
+              title: "Focus Session Complete!",
+              description: `Great job! You've completed a ${focusTime}-minute focus session${selectedGoal ? ` on "${selectedGoal.title}"` : ''}.`,
+            });
+            return 0;
+          }
+          return time - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isTimerRunning, remainingTime, focusTime, selectedGoal, toast]);
 
   const addStep = () => {
     if (newStep.trim()) {
@@ -189,6 +223,41 @@ export default function Planning() {
     setShowAddForm(true);
   };
 
+  // Focus timer functions
+  const startFocusSession = (goal?: Goal) => {
+    setSelectedGoal(goal || null);
+    setRemainingTime(focusTime * 60);
+    setIsTimerRunning(true);
+    setShowFocusTimer(true);
+    toast({
+      title: "Focus Session Started",
+      description: `Starting ${focusTime}-minute focus session${goal ? ` for "${goal.title}"` : ''}.`,
+    });
+  };
+
+  const pauseTimer = () => {
+    setIsTimerRunning(false);
+  };
+
+  const resumeTimer = () => {
+    if (remainingTime > 0) {
+      setIsTimerRunning(true);
+    }
+  };
+
+  const stopTimer = () => {
+    setIsTimerRunning(false);
+    setRemainingTime(0);
+    setSelectedGoal(null);
+    setShowFocusTimer(false);
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'weekly': return <Calendar className="h-4 w-4" />;
@@ -231,7 +300,7 @@ export default function Planning() {
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="goals" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="ai-assistant" className="flex items-center gap-2">
             <Brain className="h-4 w-4" />
             ជំនួយការ AI
@@ -239,6 +308,10 @@ export default function Planning() {
           <TabsTrigger value="goals" className="flex items-center gap-2">
             <Target className="h-4 w-4" />
             គោលដៅ
+          </TabsTrigger>
+          <TabsTrigger value="focus" className="flex items-center gap-2">
+            <Timer className="h-4 w-4" />
+            ពេលវេលាយកចិត្តទុកដាក់
           </TabsTrigger>
         </TabsList>
 
@@ -651,6 +724,179 @@ export default function Planning() {
 
         <TabsContent value="ai-assistant" className="mt-6">
           <AIAssistant />
+        </TabsContent>
+
+        <TabsContent value="focus" className="mt-6 space-y-6">
+          {/* Focus Timer Section */}
+          <Card className="animate-fade-in">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Timer className="h-5 w-5" />
+                ពេលវេលាយកចិត្តទុកដាក់
+              </CardTitle>
+              <p className="text-muted-foreground">
+                ប្រើបច្ចេកទេស Pomodoro ដើម្បីកំណត់ការយកចិត្តទុកដាក់លើគោលដៅរបស់អ្នក
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {!showFocusTimer ? (
+                <>
+                  {/* Timer Settings */}
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">រយៈពេលយកចិត្តទុកដាក់ (នាទី)</label>
+                      <Select value={focusTime.toString()} onValueChange={(value) => setFocusTime(parseInt(value))}>
+                        <SelectTrigger className="w-48">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="15">១៥ នាទី</SelectItem>
+                          <SelectItem value="25">២៥ នាទី (Pomodoro)</SelectItem>
+                          <SelectItem value="30">៣០ នាទី</SelectItem>
+                          <SelectItem value="45">៤៥ នាទី</SelectItem>
+                          <SelectItem value="60">១ ម៉ោង</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Goal Selection */}
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">ជ្រើសរើសគោលដៅដើម្បីយកចិត្តទុកដាក់ (ស្រេចចិត្ត)</label>
+                      <Select value={selectedGoal?.id || "none"} onValueChange={(value) => {
+                        if (value === "none") {
+                          setSelectedGoal(null);
+                        } else {
+                          const goal = goals.find(g => g.id === value);
+                          setSelectedGoal(goal || null);
+                        }
+                      }}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="ជ្រើសរើសគោលដៅ..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">មិនជ្រើសរើសគោលដៅ</SelectItem>
+                          {goals.map((goal) => (
+                            <SelectItem key={goal.id} value={goal.id}>
+                              {goal.title} ({goal.type})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {selectedGoal && (
+                      <Card className="bg-muted/50">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Badge className={getTypeBadgeColor(selectedGoal.type)}>
+                              {getTypeIcon(selectedGoal.type)}
+                              <span className="ml-1">
+                                {selectedGoal.type === 'weekly' ? 'សប្តាហ៍' : 
+                                 selectedGoal.type === 'monthly' ? 'ខែ' : 'ឆ្នាំ'}
+                              </span>
+                            </Badge>
+                          </div>
+                          <h3 className="font-medium">{selectedGoal.title}</h3>
+                          {selectedGoal.description && (
+                            <p className="text-sm text-muted-foreground mt-1">{selectedGoal.description}</p>
+                          )}
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+
+                  <Button 
+                    onClick={() => startFocusSession(selectedGoal)} 
+                    className="w-full gap-2"
+                    size="lg"
+                  >
+                    <Play className="h-4 w-4" />
+                    ចាប់ផ្តើមការយកចិត្តទុកដាក់ ({focusTime} នាទី)
+                  </Button>
+                </>
+              ) : (
+                <>
+                  {/* Active Timer Display */}
+                  <div className="text-center space-y-6">
+                    <div className="text-6xl font-mono font-bold text-primary">
+                      {formatTime(remainingTime)}
+                    </div>
+                    
+                    {selectedGoal && (
+                      <div>
+                        <p className="text-sm text-muted-foreground">កំពុងយកចិត្តទុកដាក់លើ:</p>
+                        <h3 className="text-xl font-semibold">{selectedGoal.title}</h3>
+                      </div>
+                    )}
+
+                    <div className="w-full bg-muted rounded-full h-2">
+                      <div 
+                        className="bg-primary h-2 rounded-full transition-all duration-1000"
+                        style={{ 
+                          width: `${((focusTime * 60 - remainingTime) / (focusTime * 60)) * 100}%` 
+                        }}
+                      />
+                    </div>
+
+                    <div className="flex gap-4 justify-center">
+                      {isTimerRunning ? (
+                        <Button onClick={pauseTimer} variant="outline" size="lg" className="gap-2">
+                          <Pause className="h-4 w-4" />
+                          ផ្អាក
+                        </Button>
+                      ) : (
+                        <Button onClick={resumeTimer} size="lg" className="gap-2" disabled={remainingTime === 0}>
+                          <Play className="h-4 w-4" />
+                          បន្ត
+                        </Button>
+                      )}
+                      <Button onClick={stopTimer} variant="destructive" size="lg" className="gap-2">
+                        <Square className="h-4 w-4" />
+                        បញ្ឈប់
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Quick Focus Actions for Goals */}
+          {goals.length > 0 && !showFocusTimer && (
+            <Card>
+              <CardHeader>
+                <CardTitle>ការយកចិត្តទុកដាក់រហ័ស</CardTitle>
+                <p className="text-muted-foreground">
+                  ចុចលើគោលដៅណាមួយដើម្បីចាប់ផ្តើមការយកចិត្តទុកដាក់ភ្លាមៗ
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-3">
+                  {goals.slice(0, 5).map((goal) => (
+                    <div key={goal.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <Badge className={getTypeBadgeColor(goal.type)} variant="secondary">
+                          {getTypeIcon(goal.type)}
+                        </Badge>
+                        <div>
+                          <h4 className="font-medium">{goal.title}</h4>
+                          <p className="text-sm text-muted-foreground">{goal.period}</p>
+                        </div>
+                      </div>
+                      <Button 
+                        onClick={() => startFocusSession(goal)}
+                        size="sm"
+                        className="gap-2"
+                      >
+                        <Clock className="h-3 w-3" />
+                        យកចិត្តទុកដាក់
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
       </Tabs>
     </div>
