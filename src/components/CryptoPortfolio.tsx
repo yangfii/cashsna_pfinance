@@ -8,6 +8,7 @@ import AddHoldingDialog from "@/components/crypto/AddHoldingDialog";
 import PriceAlertsDialog from "@/components/crypto/PriceAlertsDialog";
 import DataImportExport from "@/components/crypto/DataImportExport";
 import CurrencySettings, { CurrencyRates } from "@/components/crypto/CurrencySettings";
+import CryptoChart from "@/components/crypto/CryptoChart";
 
 // Asset color mapping for consistent colored circles
 const getAssetColor = (symbol: string) => {
@@ -135,71 +136,80 @@ export default function CryptoPortfolio() {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="portfolio" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3 bg-muted/20">
-          <TabsTrigger value="portfolio" className="text-sm font-medium">PORTFOLIO</TabsTrigger>
-          <TabsTrigger value="holdings" className="text-sm font-medium">HOLDINGS BY CHAIN</TabsTrigger>
-          <TabsTrigger value="archive" className="text-sm font-medium">PORTFOLIO ARCHIVE</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-6 bg-muted/20">
+          <TabsTrigger value="portfolio" className="text-xs font-medium">PORTFOLIO</TabsTrigger>
+          <TabsTrigger value="holdings" className="text-xs font-medium">HOLDINGS BY CHAIN</TabsTrigger>
+          <TabsTrigger value="archive" className="text-xs font-medium">PORTFOLIO ARCHIVE</TabsTrigger>
+          <TabsTrigger value="balances" className="text-xs font-medium">BALANCES HISTORY</TabsTrigger>
+          <TabsTrigger value="token-balances" className="text-xs font-medium">TOKEN BALANCES HISTORY</TabsTrigger>
+          <TabsTrigger value="profit-loss" className="text-xs font-medium">PROFIT & LOSS</TabsTrigger>
         </TabsList>
 
         <TabsContent value="portfolio">
-          <Card className="bg-background/95">
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader>
-                  <TableRow className="border-b border-border/50">
-                    <TableHead className="text-muted-foreground font-medium">ASSET</TableHead>
-                    <TableHead className="text-muted-foreground font-medium">PRICE</TableHead>
-                    <TableHead className="text-muted-foreground font-medium">HOLDINGS</TableHead>
-                    <TableHead className="text-muted-foreground font-medium">VALUE</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {holdings.map((holding) => {
-                    const currentPrice = prices[holding.symbol]?.price || 0;
-                    const currentValue = getHoldingCurrentValue(holding);
-                    const percentChange = getHoldingPercentChange(holding);
-                    const isPositive = percentChange >= 0;
-                    const assetColor = getAssetColor(holding.symbol);
-                    
-                    return (
-                      <TableRow key={holding.id} className="border-b border-border/30 hover:bg-muted/10">
-                        <TableCell className="py-4">
-                          <div className="flex items-center gap-3">
-                            <div 
-                              className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                              style={{ backgroundColor: assetColor }}
-                            >
-                              {holding.symbol.charAt(0)}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="bg-background/95">
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-b border-border/50">
+                      <TableHead className="text-muted-foreground font-medium">ASSET</TableHead>
+                      <TableHead className="text-muted-foreground font-medium">PRICE</TableHead>
+                      <TableHead className="text-muted-foreground font-medium">HOLDINGS</TableHead>
+                      <TableHead className="text-muted-foreground font-medium">VALUE</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {holdings.map((holding) => {
+                      const currentPrice = prices[holding.symbol]?.price || 0;
+                      const currentValue = getHoldingCurrentValue(holding);
+                      const percentChange = getHoldingPercentChange(holding);
+                      const isPositive = percentChange >= 0;
+                      const assetColor = getAssetColor(holding.symbol);
+                      
+                      return (
+                        <TableRow key={holding.id} className="border-b border-border/30 hover:bg-muted/10">
+                          <TableCell className="py-4">
+                            <div className="flex items-center gap-3">
+                              <div 
+                                className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                                style={{ backgroundColor: assetColor }}
+                              >
+                                {holding.symbol.charAt(0)}
+                              </div>
+                              <span className="font-medium text-foreground">{holding.symbol}</span>
                             </div>
-                            <span className="font-medium text-foreground">{holding.symbol}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell className="py-4">
-                          <div className="flex items-center gap-2">
-                            <span className="text-foreground">{formatCurrency(currentPrice)}</span>
-                            <span className={`text-sm font-medium ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
-                              {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell className="py-4">
-                          <span className="text-foreground">{formatHoldings(holding.amount, holding.symbol)}</span>
-                        </TableCell>
-                        <TableCell className="py-4">
-                          <div className="flex items-center gap-2">
-                            <span className="text-foreground">{formatCurrency(currentValue)}</span>
-                            <span className={`text-sm font-medium ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
-                              {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
-                            </span>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+                          </TableCell>
+                          <TableCell className="py-4">
+                            <div className="flex items-center gap-2">
+                              <span className="text-foreground">{formatCurrency(currentPrice)}</span>
+                              <span className={`text-sm font-medium ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                                {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="py-4">
+                            <span className="text-foreground">{formatHoldings(holding.amount, holding.symbol)}</span>
+                          </TableCell>
+                          <TableCell className="py-4">
+                            <div className="flex items-center gap-2">
+                              <span className="text-foreground">{formatCurrency(currentValue)}</span>
+                              <span className={`text-sm font-medium ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                                {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
+                              </span>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+            
+            <div className="space-y-4">
+              <CryptoChart holdings={holdings} prices={prices} />
+            </div>
+          </div>
         </TabsContent>
 
         <TabsContent value="holdings">
@@ -216,6 +226,33 @@ export default function CryptoPortfolio() {
             <CardContent className="p-6">
               <h3 className="font-semibold mb-4">Portfolio Archive</h3>
               <p className="text-muted-foreground">Historical portfolio snapshots coming soon...</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="balances">
+          <Card>
+            <CardContent className="p-6">
+              <h3 className="font-semibold mb-4">Balances History</h3>
+              <p className="text-muted-foreground">Balance history charts coming soon...</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="token-balances">
+          <Card>
+            <CardContent className="p-6">
+              <h3 className="font-semibold mb-4">Token Balances History</h3>
+              <p className="text-muted-foreground">Token balance tracking coming soon...</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="profit-loss">
+          <Card>
+            <CardContent className="p-6">
+              <h3 className="font-semibold mb-4">Profit & Loss</h3>
+              <p className="text-muted-foreground">P&L analysis coming soon...</p>
             </CardContent>
           </Card>
         </TabsContent>
