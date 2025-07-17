@@ -6,6 +6,7 @@ import { DollarSign, TrendingUp, TrendingDown, Wallet, Plus, Calendar } from "lu
 import { cn } from "@/lib/utils";
 import { WelcomeMessage } from '@/components/WelcomeMessage';
 import { ProfileCard } from '@/components/ProfileCard';
+import { useNavigate } from "react-router-dom";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -31,6 +32,7 @@ export default function Dashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   // Fetch transactions on mount
   useEffect(() => {
@@ -105,7 +107,10 @@ export default function Dashboard() {
             <Calendar className="h-4 w-4" />
             <span className="text-sm">ប្រែប្រួលខែ</span>
           </Button>
-            <Button className="gap-2 bg-gradient-primary border-0 hover:shadow-glow transition-smooth w-full sm:w-auto">
+            <Button 
+              className="gap-2 bg-gradient-primary border-0 hover:shadow-glow transition-smooth w-full sm:w-auto"
+              onClick={() => navigate('/dashboard/transactions')}
+            >
             <Plus className="h-4 w-4" />
             <span className="text-sm">{t("dashboard.addTransaction")}</span>
           </Button>
