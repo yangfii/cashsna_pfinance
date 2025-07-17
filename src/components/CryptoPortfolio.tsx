@@ -135,6 +135,40 @@ export default function CryptoPortfolio() {
 
   return (
     <div className="space-y-6">
+      {/* Header with Profile and Total Value */}
+      <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center">
+              <span className="text-2xl font-bold text-primary">CZ</span>
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">Portfolio Dashboard</h1>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-3xl font-bold text-foreground">
+                  {formatCurrency(calculatePortfolioValue())}
+                </span>
+                <span className={`text-lg font-medium ${calculateTotalGainLoss() >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                  {calculateTotalGainLoss() >= 0 ? '+' : ''}{((calculateTotalGainLoss() / calculatePortfolioValue()) * 100).toFixed(2)}%
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="bg-primary/10 border-primary/20 text-primary hover:bg-primary/20">
+              Create Alert +
+            </Button>
+            <Button variant="outline" size="sm" className="bg-primary/10 border-primary/20 text-primary hover:bg-primary/20">
+              Trace Entity
+            </Button>
+            <Button variant="outline" size="sm" className="bg-primary/10 border-primary/20 text-primary hover:bg-primary/20">
+              Visualize
+            </Button>
+          </div>
+        </div>
+      </div>
+
       <Tabs defaultValue="portfolio" className="space-y-6">
         <TabsList className="grid w-full grid-cols-6 bg-muted/20">
           <TabsTrigger value="portfolio" className="text-xs font-medium">PORTFOLIO</TabsTrigger>
@@ -146,68 +180,94 @@ export default function CryptoPortfolio() {
         </TabsList>
 
         <TabsContent value="portfolio">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="bg-background/95">
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="border-b border-border/50">
-                      <TableHead className="text-muted-foreground font-medium">ASSET</TableHead>
-                      <TableHead className="text-muted-foreground font-medium">PRICE</TableHead>
-                      <TableHead className="text-muted-foreground font-medium">HOLDINGS</TableHead>
-                      <TableHead className="text-muted-foreground font-medium">VALUE</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {holdings.map((holding) => {
-                      const currentPrice = prices[holding.symbol]?.price || 0;
-                      const currentValue = getHoldingCurrentValue(holding);
-                      const percentChange = getHoldingPercentChange(holding);
-                      const isPositive = percentChange >= 0;
-                      const assetColor = getAssetColor(holding.symbol);
-                      
-                      return (
-                        <TableRow key={holding.id} className="border-b border-border/30 hover:bg-muted/10">
-                          <TableCell className="py-4">
-                            <div className="flex items-center gap-3">
-                              <div 
-                                className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                                style={{ backgroundColor: assetColor }}
-                              >
-                                {holding.symbol.charAt(0)}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            {/* Holdings Table */}
+            <div className="xl:col-span-2">
+              <Card className="bg-background/95">
+                <CardContent className="p-0">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="border-b border-border/50">
+                        <TableHead className="text-muted-foreground font-medium">ASSET</TableHead>
+                        <TableHead className="text-muted-foreground font-medium">PRICE</TableHead>
+                        <TableHead className="text-muted-foreground font-medium">HOLDINGS</TableHead>
+                        <TableHead className="text-muted-foreground font-medium">VALUE</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {holdings.map((holding) => {
+                        const currentPrice = prices[holding.symbol]?.price || 0;
+                        const currentValue = getHoldingCurrentValue(holding);
+                        const percentChange = getHoldingPercentChange(holding);
+                        const isPositive = percentChange >= 0;
+                        const assetColor = getAssetColor(holding.symbol);
+                        
+                        return (
+                          <TableRow key={holding.id} className="border-b border-border/30 hover:bg-muted/10">
+                            <TableCell className="py-4">
+                              <div className="flex items-center gap-3">
+                                <div 
+                                  className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                                  style={{ backgroundColor: assetColor }}
+                                >
+                                  {holding.symbol.charAt(0)}
+                                </div>
+                                <span className="font-medium text-foreground">{holding.symbol}</span>
                               </div>
-                              <span className="font-medium text-foreground">{holding.symbol}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell className="py-4">
-                            <div className="flex items-center gap-2">
-                              <span className="text-foreground">{formatCurrency(currentPrice)}</span>
-                              <span className={`text-sm font-medium ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
-                                {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
-                              </span>
-                            </div>
-                          </TableCell>
-                          <TableCell className="py-4">
-                            <span className="text-foreground">{formatHoldings(holding.amount, holding.symbol)}</span>
-                          </TableCell>
-                          <TableCell className="py-4">
-                            <div className="flex items-center gap-2">
-                              <span className="text-foreground">{formatCurrency(currentValue)}</span>
-                              <span className={`text-sm font-medium ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
-                                {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
-                              </span>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
+                            </TableCell>
+                            <TableCell className="py-4">
+                              <div className="flex items-center gap-2">
+                                <span className="text-foreground">{formatCurrency(currentPrice)}</span>
+                                <span className={`text-sm font-medium ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                                  {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
+                                </span>
+                              </div>
+                            </TableCell>
+                            <TableCell className="py-4">
+                              <span className="text-foreground">{formatHoldings(holding.amount, holding.symbol)}</span>
+                            </TableCell>
+                            <TableCell className="py-4">
+                              <div className="flex items-center gap-2">
+                                <span className="text-foreground">{formatCurrency(currentValue)}</span>
+                                <span className={`text-sm font-medium ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                                  {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
+                                </span>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </div>
             
-            <div className="space-y-4">
-              <CryptoChart holdings={holdings} prices={prices} />
+            {/* Chart Panel */}
+            <div className="xl:col-span-1">
+              <Card className="bg-background/95">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-foreground">Balance History</h3>
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="sm" className="bg-primary/10 border-primary/20 text-primary">
+                        Choose a token
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 mb-4">
+                    <Button variant="outline" size="sm" className="text-xs">1M</Button>
+                    <Button variant="outline" size="sm" className="text-xs">1W</Button>
+                    <Button variant="outline" size="sm" className="text-xs">3M</Button>
+                    <Button variant="outline" size="sm" className="text-xs">ALL</Button>
+                  </div>
+                  
+                  <div className="h-64">
+                    <CryptoChart holdings={holdings} prices={prices} />
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </TabsContent>
