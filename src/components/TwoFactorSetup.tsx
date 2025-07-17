@@ -154,9 +154,14 @@ export function TwoFactorSetup() {
         </div>
 
         {!twoFASettings?.is_enabled ? (
-          <Dialog open={isSetupOpen} onOpenChange={setIsSetupOpen}>
+          <Dialog open={isSetupOpen} onOpenChange={(open) => {
+            setIsSetupOpen(open);
+            if (open) {
+              handleGenerateSecret();
+            }
+          }}>
             <DialogTrigger asChild>
-              <Button onClick={handleGenerateSecret}>
+              <Button>
                 Enable 2FA
               </Button>
             </DialogTrigger>
