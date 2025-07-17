@@ -1,25 +1,23 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TrendingUp, TrendingDown, Coins } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TrendingUp, TrendingDown, Share, Bell, Plus, MoreHorizontal, Twitter, Link2, Settings } from "lucide-react";
 import { useCryptoData } from "@/hooks/useCryptoData";
+import { useAuth } from "@/hooks/useAuth";
+import { useProfile } from "@/hooks/useProfile";
 import CryptoChart from "@/components/crypto/CryptoChart";
 import AddHoldingDialog from "@/components/crypto/AddHoldingDialog";
 import PriceAlertsDialog from "@/components/crypto/PriceAlertsDialog";
-import HoldingsList from "@/components/crypto/HoldingsList";
-import WalletConnectionDialog from "@/components/crypto/WalletConnectionDialog";
-import PriceMonitor from "@/components/crypto/PriceMonitor";
-import AdvancedAlerts from "@/components/crypto/AdvancedAlerts";
-import NotificationSettings from "@/components/crypto/NotificationSettings";
-import PortfolioAnalytics from "@/components/crypto/PortfolioAnalytics";
-import RealTimePriceMonitor from "@/components/crypto/RealTimePriceMonitor";
 import DataImportExport from "@/components/crypto/DataImportExport";
 import CurrencySettings, { CurrencyRates } from "@/components/crypto/CurrencySettings";
-import EnhancedPriceAlerts from "@/components/crypto/EnhancedPriceAlerts";
-import BuySellRecommendations from "@/components/crypto/BuySellRecommendations";
-import RebalancingNotifications from "@/components/crypto/RebalancingNotifications";
 
 export default function CryptoPortfolio() {
+  const { user } = useAuth();
+  const { profile } = useProfile();
   const {
     holdings,
     prices,
@@ -33,10 +31,7 @@ export default function CryptoPortfolio() {
     calculatePortfolioValue,
     calculateTotalGainLoss,
     calculatePortfolioMetrics,
-    getTopPerformers,
-    getWorstPerformers,
     lastPriceUpdate,
-    priceUpdateCount,
     bulkAddHoldings
   } = useCryptoData();
 
@@ -64,171 +59,289 @@ export default function CryptoPortfolio() {
     }
   };
 
-  const handleWalletConnection = (connection: { type: string; apiKey?: string; address?: string }) => {
-    // In a real implementation, this would:
-    // 1. Store the connection details securely
-    // 2. Fetch holdings from the connected wallet/exchange
-    // 3. Add them to the user's portfolio
-    console.log('Wallet connection:', connection);
-    
-    // For demo purposes, we'll show a success message
-    // In production, you'd integrate with exchange APIs or blockchain data
+  const calculatePercentageChange = (currentValue: number, originalValue: number) => {
+    return ((currentValue - originalValue) / originalValue) * 100;
   };
 
-  const handleAdvancedAlert = (alert: any) => {
-    // Convert advanced alert to basic alert format for now
-    // In production, you'd store the full alert configuration
-    const basicAlert = {
-      symbol: alert.symbol,
-      name: alert.name,
-      alert_type: 'price_above' as const,
-      target_value: alert.conditions[0]?.value || 0,
-      is_active: alert.isActive
-    };
-    
-    addAlert(basicAlert);
+  const getHoldingCurrentValue = (holding: any) => {
+    const currentPrice = prices[holding.symbol]?.price || 0;
+    return currentPrice * holding.amount;
+  };
+
+  const getHoldingGainLoss = (holding: any) => {
+    const currentValue = getHoldingCurrentValue(holding);
+    const originalValue = holding.purchase_price * holding.amount;
+    return currentValue - originalValue;
+  };
+
+  const getHoldingPercentChange = (holding: any) => {
+    const currentValue = getHoldingCurrentValue(holding);
+    const originalValue = holding.purchase_price * holding.amount;
+    return calculatePercentageChange(currentValue, originalValue);
   };
 
   if (loading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Coins className="h-5 w-5" />
-            Crypto Portfolio
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="animate-pulse">Loading portfolio...</div>
-        </CardContent>
-      </Card>
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-pulse text-muted-foreground">Loading portfolio...</div>
+      </div>
     );
   }
 
   const portfolioValue = calculatePortfolioValue();
   const totalGainLoss = calculateTotalGainLoss();
   const isGain = totalGainLoss >= 0;
-  const portfolioMetrics = calculatePortfolioMetrics();
-  const topPerformers = getTopPerformers();
-  const worstPerformers = getWorstPerformers();
+  const portfolioPercentChange = portfolioValue > 0 ? calculatePercentageChange(portfolioValue, portfolioValue - totalGainLoss) : 0;
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-          <CardTitle className="flex items-center gap-2">
-            <Coins className="h-5 w-5" />
-            Crypto Portfolio
-          </CardTitle>
-          <div className="flex flex-wrap gap-2">
-            <CurrencySettings onCurrencyChange={handleCurrencyChange} />
-            <DataImportExport 
-              holdings={holdings}
-              onImportHoldings={handleImportHoldings}
-            />
-            <WalletConnectionDialog onConnect={handleWalletConnection} />
-            <PriceAlertsDialog 
-              holdings={holdings}
-              alerts={alerts}
-              onAddAlert={addAlert}
-              onRefreshAlerts={fetchAlerts}
-            />
-            <AddHoldingDialog onAddHolding={addHolding} />
+    <div className="space-y-6">
+      {/* Profile Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Avatar className="h-16 w-16">
+            <AvatarImage src={profile?.avatar_url || undefined} />
+            <AvatarFallback className="text-lg">
+              {profile?.first_name?.[0] || user?.email?.[0]?.toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold">
+                {profile?.first_name 
+                  ? `${profile.first_name} ${profile.last_name || ''}`.trim()
+                  : user?.email?.split('@')[0] || 'Portfolio'
+                }
+              </h1>
+              <Badge variant="secondary" className="text-xs">
+                Verified
+              </Badge>
+            </div>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-3xl font-bold">{formatCurrency(portfolioValue)}</span>
+              <div className={`flex items-center gap-1 ${isGain ? 'text-green-500' : 'text-red-500'}`}>
+                {isGain ? (
+                  <TrendingUp className="h-4 w-4" />
+                ) : (
+                  <TrendingDown className="h-4 w-4" />
+                )}
+                <span className="text-sm font-medium">
+                  {isGain ? '+' : ''}{portfolioPercentChange.toFixed(2)}%
+                </span>
+              </div>
+            </div>
           </div>
         </div>
-      </CardHeader>
-      <CardContent>
-        {holdings.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            <Coins className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>No crypto holdings yet</p>
-            <p className="text-sm">Add your first cryptocurrency to start tracking your portfolio</p>
-          </div>
-        ) : (
-          <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
-              <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
-              <TabsTrigger value="alerts" className="text-xs sm:text-sm">Alerts</TabsTrigger>
-              <TabsTrigger value="recommendations" className="text-xs sm:text-sm">AI Recs</TabsTrigger>
-              <TabsTrigger value="rebalancing" className="text-xs sm:text-sm">Rebalancing</TabsTrigger>
-              <TabsTrigger value="charts" className="text-xs sm:text-sm">Charts</TabsTrigger>
-              <TabsTrigger value="holdings" className="text-xs sm:text-sm">Holdings</TabsTrigger>
-            </TabsList>
+        
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm">
+            <Twitter className="h-4 w-4 mr-2" />
+            Tweet
+          </Button>
+          <Button variant="outline" size="sm">
+            <Share className="h-4 w-4 mr-2" />
+            Share
+          </Button>
+          <Button variant="outline" size="sm">
+            <Bell className="h-4 w-4 mr-2" />
+            Create Alert
+          </Button>
+          <Button variant="outline" size="sm">
+            <Link2 className="h-4 w-4 mr-2" />
+            Trace Entity
+          </Button>
+          <Button variant="outline" size="sm">
+            <Plus className="h-4 w-4 mr-2" />
+            MORE
+          </Button>
+        </div>
+      </div>
 
-            <TabsContent value="overview" className="space-y-6">
-              {/* Portfolio Summary */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg">
-                <div className="text-center sm:text-left">
-                  <p className="text-sm text-muted-foreground">Total Value</p>
-                  <p className="text-xl sm:text-2xl font-bold">{formatCurrency(portfolioValue)}</p>
+      {/* Portfolio Tags */}
+      <div className="flex flex-wrap gap-2">
+        <Badge variant="outline">Key Opinion Leader</Badge>
+        <Badge variant="outline">Individual</Badge>
+        <Badge variant="outline">High Transacting</Badge>
+        <Badge variant="outline">Owner</Badge>
+      </div>
+
+      {holdings.length === 0 ? (
+        <Card>
+          <CardContent className="text-center py-8 text-muted-foreground">
+            <div className="space-y-4">
+              <p>No crypto holdings yet</p>
+              <p className="text-sm">Add your first cryptocurrency to start tracking your portfolio</p>
+              <AddHoldingDialog onAddHolding={addHolding} />
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <Tabs defaultValue="portfolio" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="portfolio">PORTFOLIO</TabsTrigger>
+            <TabsTrigger value="holdings">HOLDINGS BY CHAIN</TabsTrigger>
+            <TabsTrigger value="archive">PORTFOLIO ARCHIVE</TabsTrigger>
+            <TabsTrigger value="balances">BALANCES HISTORY</TabsTrigger>
+            <TabsTrigger value="tokens">TOKEN BALANCES HISTORY</TabsTrigger>
+            <TabsTrigger value="profit">PROFIT & LOSS</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="portfolio">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Portfolio Table */}
+              <div className="lg:col-span-2">
+                <Card>
+                  <CardContent className="p-0">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-12">#</TableHead>
+                          <TableHead>ASSET</TableHead>
+                          <TableHead>PRICE</TableHead>
+                          <TableHead>HOLDINGS</TableHead>
+                          <TableHead>VALUE</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {holdings.map((holding, index) => {
+                          const currentPrice = prices[holding.symbol]?.price || 0;
+                          const currentValue = getHoldingCurrentValue(holding);
+                          const percentChange = getHoldingPercentChange(holding);
+                          const isPositive = percentChange >= 0;
+                          
+                          return (
+                            <TableRow key={holding.id}>
+                              <TableCell className="font-medium">{index + 1}</TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-2">
+                                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
+                                    <span className="text-xs font-bold">
+                                      {holding.symbol.charAt(0)}
+                                    </span>
+                                  </div>
+                                  <span className="font-medium">{holding.symbol}</span>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-2">
+                                  <span>{formatCurrency(currentPrice)}</span>
+                                  <span className={`text-sm ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                                    {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
+                                  </span>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div>
+                                  <div>{holding.amount.toFixed(4)} {holding.symbol}</div>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-2">
+                                  <span>{formatCurrency(currentValue)}</span>
+                                  <span className={`text-sm ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                                    {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
+                                  </span>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Balance History Chart */}
+              <div className="lg:col-span-1">
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-4">BALANCES HISTORY</h3>
+                    <div className="h-64">
+                      <CryptoChart holdings={holdings} prices={prices} />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="holdings">
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-4">Holdings by Chain</h3>
+                <p className="text-muted-foreground">Chain-specific holdings view coming soon...</p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="archive">
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-4">Portfolio Archive</h3>
+                <p className="text-muted-foreground">Historical portfolio snapshots coming soon...</p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="balances">
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-4">Balance History</h3>
+                <div className="h-96">
+                  <CryptoChart holdings={holdings} prices={prices} />
                 </div>
-                <div className="text-center sm:text-left">
-                  <p className="text-sm text-muted-foreground">Total Gain/Loss</p>
-                  <div className="flex items-center justify-center sm:justify-start gap-1">
-                    {isGain ? (
-                      <TrendingUp className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <TrendingDown className="h-4 w-4 text-red-500" />
-                    )}
-                    <p className={`text-xl sm:text-2xl font-bold ${isGain ? 'text-green-500' : 'text-red-500'}`}>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="tokens">
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-4">Token Balance History</h3>
+                <p className="text-muted-foreground">Individual token balance tracking coming soon...</p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="profit">
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-4">Profit & Loss</h3>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span>Total Gain/Loss:</span>
+                    <span className={`font-bold ${isGain ? 'text-green-500' : 'text-red-500'}`}>
                       {formatCurrency(Math.abs(totalGainLoss))}
-                    </p>
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>Percentage Change:</span>
+                    <span className={`font-bold ${isGain ? 'text-green-500' : 'text-red-500'}`}>
+                      {isGain ? '+' : ''}{portfolioPercentChange.toFixed(2)}%
+                    </span>
                   </div>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      )}
 
-              {/* Quick Actions */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                <PriceMonitor 
-                  prices={prices} 
-                  onRefresh={fetchCryptoPrices}
-                  lastUpdate={lastPriceUpdate}
-                />
-                <AdvancedAlerts 
-                  holdings={holdings}
-                  onCreateAlert={handleAdvancedAlert}
-                />
-                <NotificationSettings />
-              </div>
-
-              {/* Quick Charts */}
-              <CryptoChart holdings={holdings} prices={prices} />
-            </TabsContent>
-
-            <TabsContent value="alerts" className="space-y-6">
-              <EnhancedPriceAlerts 
-                holdings={holdings}
-                onRefresh={fetchCryptoPrices}
-              />
-            </TabsContent>
-
-            <TabsContent value="recommendations" className="space-y-6">
-              <BuySellRecommendations 
-                holdings={holdings}
-                prices={prices}
-              />
-            </TabsContent>
-
-            <TabsContent value="rebalancing" className="space-y-6">
-              <RebalancingNotifications 
-                holdings={holdings}
-                prices={prices}
-              />
-            </TabsContent>
-
-            <TabsContent value="charts">
-              <CryptoChart holdings={holdings} prices={prices} />
-            </TabsContent>
-
-            <TabsContent value="holdings">
-              <div>
-                <h3 className="text-lg font-semibold mb-4">Your Holdings</h3>
-                <HoldingsList holdings={holdings} prices={prices} onDeleteHolding={deleteHolding} />
-              </div>
-            </TabsContent>
-          </Tabs>
-        )}
-      </CardContent>
-    </Card>
+      {/* Action Buttons */}
+      <div className="flex gap-2">
+        <AddHoldingDialog onAddHolding={addHolding} />
+        <PriceAlertsDialog 
+          holdings={holdings}
+          alerts={alerts}
+          onAddAlert={addAlert}
+          onRefreshAlerts={fetchAlerts}
+        />
+        <DataImportExport 
+          holdings={holdings}
+          onImportHoldings={handleImportHoldings}
+        />
+        <CurrencySettings onCurrencyChange={handleCurrencyChange} />
+      </div>
+    </div>
   );
 }
