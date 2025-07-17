@@ -9,11 +9,13 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Shield, ShieldCheck, QrCode, Download, AlertTriangle, Copy } from 'lucide-react';
 import { use2FA } from '@/hooks/use2FA';
+import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { useLanguage } from '@/hooks/useLanguage';
 
 export function TwoFactorSetup() {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const {
     twoFASettings,
     loading,
@@ -24,6 +26,9 @@ export function TwoFactorSetup() {
     disable2FA,
     generateNewBackupCodes
   } = use2FA();
+
+  console.log('2FA Setup - User:', user?.email);
+  console.log('2FA Setup - Settings:', twoFASettings);
 
   const [setupStep, setSetupStep] = useState<'generate' | 'verify'>('generate');
   const [secret, setSecret] = useState<any>(null);
@@ -39,10 +44,14 @@ export function TwoFactorSetup() {
 
   const handleGenerateSecret = async () => {
     try {
+      console.log('Generating 2FA secret...');
       const newSecret = generate2FASecret();
+      console.log('Generated secret:', newSecret);
       setSecret(newSecret);
       
+      console.log('Generating QR code for:', newSecret.otpauth_url);
       const qrCodeUrl = await generateQRCode(newSecret.otpauth_url!);
+      console.log('Generated QR code URL:', qrCodeUrl);
       setQrCode(qrCodeUrl);
       setSetupStep('verify');
     } catch (error) {
