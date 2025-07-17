@@ -39,72 +39,6 @@ export const useAIAssistant = () => {
     }
   }, [user, toast]);
 
-  const transcribeAudio = useCallback(async (audioBlob: Blob) => {
-    setIsLoading(true);
-    try {
-      const reader = new FileReader();
-      return new Promise<string>((resolve, reject) => {
-        reader.onload = async () => {
-          try {
-            const arrayBuffer = reader.result as ArrayBuffer;
-            const base64Audio = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
-
-            const { data, error } = await supabase.functions.invoke('voice-assistant', {
-              body: {
-                action: 'transcribe',
-                audio: base64Audio
-              }
-            });
-
-            if (error) throw error;
-            resolve(data.text);
-          } catch (err) {
-            reject(err);
-          }
-        };
-        reader.readAsArrayBuffer(audioBlob);
-      });
-    } catch (error) {
-      console.error('Transcription error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to transcribe audio. Please try again.",
-        variant: "destructive"
-      });
-      return null;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [toast]);
-
-  const synthesizeSpeech = useCallback(async (text: string, voice: string = 'alloy') => {
-    try {
-      const { data, error } = await supabase.functions.invoke('voice-assistant', {
-        body: {
-          action: 'synthesize',
-          text,
-          voice
-        }
-      });
-
-      if (error) throw error;
-
-      const audioData = data.audioContent;
-      const audioBlob = new Blob([
-        Uint8Array.from(atob(audioData), c => c.charCodeAt(0))
-      ], { type: 'audio/mp3' });
-
-      return audioBlob;
-    } catch (error) {
-      console.error('Speech synthesis error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to synthesize speech. Please try again.",
-        variant: "destructive"
-      });
-      return null;
-    }
-  }, [toast]);
 
   const categorizeTransaction = useCallback(async (transaction: any) => {
     if (!user) return null;
@@ -298,8 +232,6 @@ export const useAIAssistant = () => {
   return {
     isLoading,
     sendChatMessage,
-    transcribeAudio,
-    synthesizeSpeech,
     categorizeTransaction,
     analyzeFinances,
     generateBudgetPlan,

@@ -11,9 +11,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { 
   MessageCircle, 
-  Mic, 
-  MicOff, 
-  Volume2, 
   Brain, 
   TrendingUp, 
   FileText,
@@ -79,7 +76,7 @@ const AIFeatureCard = ({
   </Card>
 );
 
-const MessageBubble = ({ message, onSpeak }: { message: ChatMessage; onSpeak?: (text: string) => void }) => (
+const MessageBubble = ({ message }: { message: ChatMessage }) => (
   <div className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
     <div className={`flex items-start space-x-3 max-w-[85%] ${
       message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''
@@ -107,16 +104,6 @@ const MessageBubble = ({ message, onSpeak }: { message: ChatMessage; onSpeak?: (
           }`}>
             {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </p>
-          {message.sender === 'ai' && onSpeak && (
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-6 w-6 p-0 ml-2 hover:bg-white/10"
-              onClick={() => onSpeak(message.content)}
-            >
-              <Volume2 className="h-3 w-3" />
-            </Button>
-          )}
         </div>
       </div>
     </div>
@@ -129,7 +116,6 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
   const [activeTab, setActiveTab] = useState(initialTab);
   const [analysisResult, setAnalysisResult] = useState<string>('');
   const [reportContent, setReportContent] = useState<string>('');
@@ -137,8 +123,6 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
   const [monthlyReportContent, setMonthlyReportContent] = useState<string>('');
   const [riskAssessmentResult, setRiskAssessmentResult] = useState<string>('');
   
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -204,126 +188,6 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
     }
   };
 
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
-      mediaRecorderRef.current = mediaRecorder;
-      audioChunksRef.current = [];
-
-      mediaRecorder.ondataavailable = (event) => {
-        audioChunksRef.current.push(event.data);
-      };
-
-      mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        await transcribeAudio(audioBlob);
-        stream.getTracks().forEach(track => track.stop());
-      };
-
-      mediaRecorder.start();
-      setIsRecording(true);
-    } catch (error) {
-      console.error('Recording error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to start recording. Please check microphone permissions.",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const stopRecording = () => {
-    if (mediaRecorderRef.current) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-    }
-  };
-
-  const transcribeAudio = async (audioBlob: Blob) => {
-    setIsLoading(true);
-    try {
-      const reader = new FileReader();
-      reader.onload = async () => {
-        const arrayBuffer = reader.result as ArrayBuffer;
-        const base64Audio = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
-
-        const { data, error } = await supabase.functions.invoke('voice-assistant', {
-          body: {
-            action: 'transcribe',
-            audio: base64Audio
-          }
-        });
-
-        if (error) {
-          console.error('Voice assistant error:', error);
-          toast({
-            title: "Voice Assistant Error",
-            description: "Voice assistant is currently not configured. Please try text chat instead.",
-            variant: "destructive"
-          });
-          return;
-        }
-
-        const transcribedText = data.text;
-        setInputMessage(transcribedText);
-        
-        await sendChatMessage(transcribedText);
-      };
-      reader.readAsArrayBuffer(audioBlob);
-    } catch (error) {
-      console.error('Transcription error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to transcribe audio. Please try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const speakText = async (text: string) => {
-    try {
-      const { data, error } = await supabase.functions.invoke('voice-assistant', {
-        body: {
-          action: 'synthesize',
-          text,
-          voice: 'alloy'
-        }
-      });
-
-      if (error) {
-        console.error('Speech synthesis error:', error);
-        toast({
-          title: "Speech Error",
-          description: "Speech synthesis is currently not configured.",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      const audioData = data.audioContent;
-      const audioBlob = new Blob([
-        Uint8Array.from(atob(audioData), c => c.charCodeAt(0))
-      ], { type: 'audio/mp3' });
-
-      const audioUrl = URL.createObjectURL(audioBlob);
-      const audio = new Audio(audioUrl);
-      audio.play();
-
-      audio.onended = () => {
-        URL.revokeObjectURL(audioUrl);
-      };
-    } catch (error) {
-      console.error('Speech synthesis error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to synthesize speech. Please try again.",
-        variant: "destructive"
-      });
-    }
-  };
 
   const runFinancialAnalysis = async () => {
     if (!user) return;
@@ -498,14 +362,10 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
       
       <CardContent className="space-y-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 h-11">
+          <TabsList className="grid w-full grid-cols-3 h-11">
             <TabsTrigger value="chat" className="flex items-center gap-2 text-xs">
               <MessageCircle className="h-4 w-4" />
               <span className="hidden sm:inline">Chat</span>
-            </TabsTrigger>
-            <TabsTrigger value="voice" className="flex items-center gap-2 text-xs">
-              <Mic className="h-4 w-4" />
-              <span className="hidden sm:inline">Voice</span>
             </TabsTrigger>
             <TabsTrigger value="analysis" className="flex items-center gap-2 text-xs">
               <TrendingUp className="h-4 w-4" />
@@ -536,7 +396,6 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
                       <MessageBubble 
                         key={message.id} 
                         message={message} 
-                        onSpeak={speakText}
                       />
                     ))
                   )}
@@ -581,75 +440,6 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
             </div>
           </TabsContent>
 
-          <TabsContent value="voice" className="space-y-6 mt-6">
-            <div className="text-center space-y-6">
-              <div className="space-y-4">
-                <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center mx-auto">
-                  {isRecording ? (
-                    <div className="w-6 h-6 bg-white rounded-full animate-pulse" />
-                  ) : (
-                    <Mic className="h-8 w-8 text-white" />
-                  )}
-                </div>
-                
-                <div>
-                  <h3 className="font-semibold text-lg">Voice Assistant</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {isRecording ? "Recording... Click stop when finished" : "Click to start voice conversation"}
-                  </p>
-                </div>
-
-                <Button
-                  onClick={isRecording ? stopRecording : startRecording}
-                  variant={isRecording ? "destructive" : "default"}
-                  size="lg"
-                  disabled={isLoading}
-                  className={isRecording ? "" : "bg-gradient-primary hover:shadow-glow transition-smooth"}
-                >
-                  {isRecording ? (
-                    <>
-                      <MicOff className="h-5 w-5 mr-2" />
-                      Stop Recording
-                    </>
-                  ) : (
-                    <>
-                      <Mic className="h-5 w-5 mr-2" />
-                      Start Recording
-                    </>
-                  )}
-                </Button>
-              </div>
-
-              {chatMessages.length > 0 && (
-                <>
-                  <Separator />
-                  <div className="space-y-3 text-left">
-                    <h4 className="text-sm font-medium">Recent conversations</h4>
-                    <div className="space-y-2">
-                      {chatMessages.slice(-3).map((message) => (
-                        <div key={message.id} className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
-                          <Badge variant={message.sender === 'user' ? 'default' : 'secondary'} className="mt-1">
-                            {message.sender === 'user' ? 'You' : 'AI'}
-                          </Badge>
-                          <p className="text-sm flex-1">{message.content}</p>
-                          {message.sender === 'ai' && (
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => speakText(message.content)}
-                              className="h-8 w-8 p-0"
-                            >
-                              <Volume2 className="h-3 w-3" />
-                            </Button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-          </TabsContent>
 
           <TabsContent value="analysis" className="space-y-6 mt-6">
             <div className="grid gap-4 md:grid-cols-2">
