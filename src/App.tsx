@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { AuthProvider } from "@/hooks/useAuth";
 import { LanguageProvider } from "@/hooks/useLanguage";
+import { Analytics } from "@vercel/analytics/react";
 import Layout from "@/components/Layout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Dashboard from "@/pages/Dashboard";
@@ -32,6 +33,7 @@ const App = () => (
           <TooltipProvider>
             <Toaster />
             <Sonner />
+            <Analytics />
             <BrowserRouter>
               <Routes>
                 <Route path="/auth" element={<Auth />} />
