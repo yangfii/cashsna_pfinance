@@ -21,6 +21,8 @@ import Settings from "@/pages/Settings";
 import Auth from "@/pages/Auth";
 import ProfileSetup from "@/pages/ProfileSetup";
 import Index from "@/pages/Index";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import TermsOfService from "@/pages/TermsOfService";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +40,8 @@ const App = () => (
               <Routes>
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/profile-setup" element={<ProfileSetup />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/terms-of-service" element={<TermsOfService />} />
                 <Route path="/" element={<Index />} />
                 <Route path="/dashboard" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
                   <Route index element={<Dashboard />} />

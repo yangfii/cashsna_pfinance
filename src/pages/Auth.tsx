@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -366,8 +366,16 @@ export default function Auth() {
             </div>
           )}
           
-          <div className="text-center text-xs text-muted-foreground/60 mt-4 pt-4 border-t">
-            © 2024 Cashsnap Finances. All rights reserved.
+          <div className="text-center text-xs text-muted-foreground/60 mt-4 pt-4 border-t space-y-2">
+            <p>© 2024 Cashsnap Finances. All rights reserved.</p>
+            <div className="flex justify-center gap-4">
+              <Button variant="link" size="sm" className="text-xs p-0 h-auto" asChild>
+                <Link to="/privacy-policy">Privacy Policy</Link>
+              </Button>
+              <Button variant="link" size="sm" className="text-xs p-0 h-auto" asChild>
+                <Link to="/terms-of-service">Terms of Service</Link>
+              </Button>
+            </div>
           </div>
         </CardContent>
         </Card>
