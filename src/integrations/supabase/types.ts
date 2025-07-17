@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      bug_reports: {
+        Row: {
+          created_at: string
+          description: string
+          email: string | null
+          files: Json | null
+          id: string
+          lovable_ticket_id: string | null
+          report_type: string
+          status: string
+          subject: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          email?: string | null
+          files?: Json | null
+          id?: string
+          lovable_ticket_id?: string | null
+          report_type: string
+          status?: string
+          subject: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          email?: string | null
+          files?: Json | null
+          id?: string
+          lovable_ticket_id?: string | null
+          report_type?: string
+          status?: string
+          subject?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           color: string

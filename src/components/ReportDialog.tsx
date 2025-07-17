@@ -7,6 +7,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Bug, Upload, X, FileText, Image } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface ReportDialogProps {
   trigger: React.ReactNode;
@@ -22,7 +24,9 @@ export function ReportDialog({ trigger }: ReportDialogProps) {
   });
   const [files, setFiles] = useState<File[]>([]);
   const [dragActive, setDragActive] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { user } = useAuth();
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -75,21 +79,80 @@ export function ReportDialog({ trigger }: ReportDialogProps) {
     return <FileText className="h-4 w-4" />;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const result = reader.result as string;
+        resolve(result.split(',')[1]); // Remove data:mime/type;base64, prefix
+      };
+      reader.onerror = reject;
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // For now, just show a toast message
-    // In a real app, this would send the report to developers along with files
-    const fileCount = files.length;
-    toast.success(`Report sent successfully${fileCount > 0 ? ` with ${fileCount} file${fileCount > 1 ? 's' : ''}` : ''}! Thank you for your feedback.`);
-    setOpen(false);
-    setFormData({
-      type: "",
-      subject: "",
-      description: "",
-      email: "",
-    });
-    setFiles([]);
+    if (!user) {
+      toast.error("You must be logged in to submit a bug report.");
+      return;
+    }
+
+    if (!formData.type || !formData.subject || !formData.description) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Convert files to base64
+      const processedFiles = await Promise.all(
+        files.map(async (file) => ({
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          content: await fileToBase64(file),
+        }))
+      );
+
+      // Submit the bug report
+      const { data, error } = await supabase.functions.invoke('submit-bug-report', {
+        body: {
+          type: formData.type,
+          subject: formData.subject,
+          description: formData.description,
+          email: formData.email,
+          files: processedFiles,
+        },
+      });
+
+      if (error) {
+        console.error('Error submitting bug report:', error);
+        toast.error("Failed to submit bug report. Please try again.");
+        return;
+      }
+
+      const fileCount = files.length;
+      toast.success(`Bug report submitted successfully${fileCount > 0 ? ` with ${fileCount} file${fileCount > 1 ? 's' : ''}` : ''}! Thank you for your feedback.`);
+      
+      // Reset form
+      setFormData({
+        type: "",
+        subject: "",
+        description: "",
+        email: "",
+      });
+      setFiles([]);
+      setOpen(false);
+
+    } catch (error) {
+      console.error('Error submitting bug report:', error);
+      toast.error("Failed to submit bug report. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -214,8 +277,8 @@ export function ReportDialog({ trigger }: ReportDialogProps) {
             <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1">
               Cancel
             </Button>
-            <Button type="submit" className="flex-1">
-              Send Report
+            <Button type="submit" disabled={isSubmitting} className="flex-1">
+              {isSubmitting ? "Submitting..." : "Send Report"}
             </Button>
           </div>
         </form>
