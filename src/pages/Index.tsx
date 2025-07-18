@@ -112,7 +112,7 @@ const Index = () => {
           className="absolute inset-0 bg-cover bg-center bg-no-repeat" 
           style={{ backgroundImage: `url(${heroBackground})` }}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-primary/20 to-primary-glow/30"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-primary/20 to-primary-glow/30 backdrop-blur-sm"></div>
         </div>
         <div className="relative container mx-auto px-4 py-24 md:py-32 text-center">
           <div className="animate-fade-in">
