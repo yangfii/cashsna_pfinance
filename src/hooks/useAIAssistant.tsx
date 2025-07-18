@@ -16,7 +16,6 @@ export const useAIAssistant = () => {
       const { data, error } = await supabase.functions.invoke('chat-assistant', {
         body: {
           message,
-          userId: user.id,
           context
         }
       });
@@ -47,7 +46,6 @@ export const useAIAssistant = () => {
       const { data, error } = await supabase.functions.invoke('financial-ai', {
         body: {
           action: 'categorize',
-          userId: user.id,
           data: transaction
         }
       });
@@ -72,8 +70,7 @@ export const useAIAssistant = () => {
     try {
       const { data, error } = await supabase.functions.invoke('financial-ai', {
         body: {
-          action: 'analyze',
-          userId: user.id
+          action: 'analyze'
         }
       });
 
@@ -100,7 +97,6 @@ export const useAIAssistant = () => {
       const { data, error } = await supabase.functions.invoke('financial-ai', {
         body: {
           action: 'budget',
-          userId: user.id,
           data: { prompt }
         }
       });
@@ -128,7 +124,6 @@ export const useAIAssistant = () => {
       const { data, error } = await supabase.functions.invoke('financial-ai', {
         body: {
           action: 'report',
-          userId: user.id,
           data: { prompt }
         }
       });
@@ -155,8 +150,7 @@ export const useAIAssistant = () => {
     try {
       const { data, error } = await supabase.functions.invoke('financial-ai', {
         body: {
-          action: 'market-trends',
-          userId: user.id
+          action: 'market-trends'
         }
       });
 
@@ -182,8 +176,7 @@ export const useAIAssistant = () => {
     try {
       const { data, error } = await supabase.functions.invoke('financial-ai', {
         body: {
-          action: 'monthly-report',
-          userId: user.id
+          action: 'monthly-report'
         }
       });
 
@@ -209,8 +202,7 @@ export const useAIAssistant = () => {
     try {
       const { data, error } = await supabase.functions.invoke('financial-ai', {
         body: {
-          action: 'risk-assessment',
-          userId: user.id
+          action: 'risk-assessment'
         }
       });
 

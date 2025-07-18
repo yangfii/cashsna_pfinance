@@ -151,7 +151,6 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
       const { data, error } = await supabase.functions.invoke('chat-assistant', {
         body: {
           message,
-          userId: user.id,
           context: 'General financial assistance'
         }
       });
@@ -196,8 +195,7 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
     try {
       const { data, error } = await supabase.functions.invoke('financial-ai', {
         body: {
-          action: 'analyze',
-          userId: user.id
+          action: 'analyze'
         }
       });
 
@@ -227,8 +225,7 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
     try {
       const { data, error } = await supabase.functions.invoke('financial-ai', {
         body: {
-          action: 'report',
-          userId: user.id
+          action: 'report'
         }
       });
 
@@ -258,8 +255,7 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
     try {
       const { data, error } = await supabase.functions.invoke('financial-ai', {
         body: {
-          action: 'market-trends',
-          userId: user.id
+          action: 'market-trends'
         }
       });
 
@@ -289,8 +285,7 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
     try {
       const { data, error } = await supabase.functions.invoke('financial-ai', {
         body: {
-          action: 'monthly-report',
-          userId: user.id
+          action: 'monthly-report'
         }
       });
 
@@ -320,8 +315,7 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
     try {
       const { data, error } = await supabase.functions.invoke('financial-ai', {
         body: {
-          action: 'risk-assessment',
-          userId: user.id
+          action: 'risk-assessment'
         }
       });
 

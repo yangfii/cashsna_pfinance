@@ -13,12 +13,31 @@ serve(async (req) => {
   }
 
   try {
-    const { action, userId, data } = await req.json();
+    const { action, data } = await req.json();
     
+    // Get the authorization header
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader) {
+      throw new Error('Missing authorization header');
+    }
+
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: { Authorization: authHeader },
+        },
+      }
     );
+
+    // Get the current user from the token
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) {
+      throw new Error('Invalid or expired token');
+    }
+
+    const userId = user.id;
 
     // Get user's transactions and categories
     const { data: transactions } = await supabase
