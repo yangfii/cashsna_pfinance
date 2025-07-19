@@ -60,13 +60,14 @@ function AppSidebar() {
   const {
     profile
   } = useProfile();
-  const { t } = useLanguage();
+  const {
+    t
+  } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
   const {
     state
   } = useSidebar();
-  
   const navItems = getNavItems(t);
   const handleSignOut = async () => {
     try {
@@ -145,14 +146,10 @@ function AppSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <ReportDialog
-              trigger={
-                <SidebarMenuButton tooltip="Report to developers">
+            <ReportDialog trigger={<SidebarMenuButton tooltip="Report to developers">
                   <Bug />
                   <span>Report to developers</span>
-                </SidebarMenuButton>
-              }
-            />
+                </SidebarMenuButton>} />
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={handleSignOut} tooltip={t("nav.signOut")}>
@@ -166,7 +163,9 @@ function AppSidebar() {
 }
 export default function Layout() {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const {
+    t
+  } = useLanguage();
   const {
     user,
     loading
@@ -201,7 +200,7 @@ export default function Layout() {
           
           {/* Main Content */}
           <main className="flex-1 overflow-auto">
-            <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-6 lg:px-8 lg:py-8 max-w-7xl">
+            <div className="container mx-auto sm:px-4 sm:py-6 lg:px-8 lg:py-8 max-w-7xl px-0 py-[22px]">
               <Outlet />
             </div>
           </main>
