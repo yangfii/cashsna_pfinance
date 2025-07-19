@@ -14,10 +14,13 @@ import AddHoldingDialog from "@/components/crypto/AddHoldingDialog";
 import PriceAlertsDialog from "@/components/crypto/PriceAlertsDialog";
 import ExchangeIntegration from "@/components/crypto/ExchangeIntegration";
 import CurrencySettings, { CurrencyRates } from "@/components/crypto/CurrencySettings";
-
 export default function CryptoPortfolio() {
-  const { user } = useAuth();
-  const { profile } = useProfile();
+  const {
+    user
+  } = useAuth();
+  const {
+    profile
+  } = useProfile();
   const {
     holdings,
     prices,
@@ -34,10 +37,10 @@ export default function CryptoPortfolio() {
     lastPriceUpdate,
     bulkAddHoldings
   } = useCryptoData();
-
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
-  const [exchangeRates, setExchangeRates] = useState<CurrencyRates>({ USD: 1 });
-
+  const [exchangeRates, setExchangeRates] = useState<CurrencyRates>({
+    USD: 1
+  });
   const formatCurrency = (amount: number) => {
     const convertedAmount = amount * (exchangeRates[selectedCurrency] || 1);
     return new Intl.NumberFormat('en-US', {
@@ -45,12 +48,10 @@ export default function CryptoPortfolio() {
       currency: selectedCurrency
     }).format(convertedAmount);
   };
-
   const handleCurrencyChange = (currency: string, rates: CurrencyRates) => {
     setSelectedCurrency(currency);
     setExchangeRates(rates);
   };
-
   const handleImportHoldings = async (importedHoldings: any[]) => {
     try {
       await bulkAddHoldings(importedHoldings);
@@ -58,43 +59,33 @@ export default function CryptoPortfolio() {
       console.error('Error importing holdings:', error);
     }
   };
-
   const calculatePercentageChange = (currentValue: number, originalValue: number) => {
-    return ((currentValue - originalValue) / originalValue) * 100;
+    return (currentValue - originalValue) / originalValue * 100;
   };
-
   const getHoldingCurrentValue = (holding: any) => {
     const currentPrice = prices[holding.symbol]?.price || 0;
     return currentPrice * holding.amount;
   };
-
   const getHoldingGainLoss = (holding: any) => {
     const currentValue = getHoldingCurrentValue(holding);
     const originalValue = holding.purchase_price * holding.amount;
     return currentValue - originalValue;
   };
-
   const getHoldingPercentChange = (holding: any) => {
     const currentValue = getHoldingCurrentValue(holding);
     const originalValue = holding.purchase_price * holding.amount;
     return calculatePercentageChange(currentValue, originalValue);
   };
-
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
+    return <div className="flex items-center justify-center h-64">
         <div className="animate-pulse text-muted-foreground">Loading portfolio...</div>
-      </div>
-    );
+      </div>;
   }
-
   const portfolioValue = calculatePortfolioValue();
   const totalGainLoss = calculateTotalGainLoss();
   const isGain = totalGainLoss >= 0;
   const portfolioPercentChange = portfolioValue > 0 ? calculatePercentageChange(portfolioValue, portfolioValue - totalGainLoss) : 0;
-
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       {/* Profile Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -107,10 +98,7 @@ export default function CryptoPortfolio() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-bold">
-                {profile?.first_name 
-                  ? `${profile.first_name} ${profile.last_name || ''}`.trim()
-                  : user?.email?.split('@')[0] || 'Portfolio'
-                }
+                {profile?.first_name ? `${profile.first_name} ${profile.last_name || ''}`.trim() : user?.email?.split('@')[0] || 'Portfolio'}
               </h1>
               <Badge variant="secondary" className="text-xs">
                 Verified
@@ -119,11 +107,7 @@ export default function CryptoPortfolio() {
             <div className="flex items-center gap-2 mt-1">
               <span className="text-3xl font-bold">{formatCurrency(portfolioValue)}</span>
               <div className={`flex items-center gap-1 ${isGain ? 'text-green-500' : 'text-red-500'}`}>
-                {isGain ? (
-                  <TrendingUp className="h-4 w-4" />
-                ) : (
-                  <TrendingDown className="h-4 w-4" />
-                )}
+                {isGain ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
                 <span className="text-sm font-medium">
                   {isGain ? '+' : ''}{portfolioPercentChange.toFixed(2)}%
                 </span>
@@ -164,8 +148,7 @@ export default function CryptoPortfolio() {
         <Badge variant="outline">Owner</Badge>
       </div>
 
-      {holdings.length === 0 ? (
-        <Card>
+      {holdings.length === 0 ? <Card>
           <CardContent className="text-center py-8 text-muted-foreground">
             <div className="space-y-4">
               <p>No crypto holdings yet</p>
@@ -173,9 +156,7 @@ export default function CryptoPortfolio() {
               <AddHoldingDialog onAddHolding={addHolding} />
             </div>
           </CardContent>
-        </Card>
-      ) : (
-        <Tabs defaultValue="portfolio" className="space-y-6">
+        </Card> : <Tabs defaultValue="portfolio" className="space-y-6">
           <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="portfolio">PORTFOLIO</TabsTrigger>
             <TabsTrigger value="holdings">HOLDINGS BY CHAIN</TabsTrigger>
@@ -203,13 +184,11 @@ export default function CryptoPortfolio() {
                       </TableHeader>
                       <TableBody>
                         {holdings.map((holding, index) => {
-                          const currentPrice = prices[holding.symbol]?.price || 0;
-                          const currentValue = getHoldingCurrentValue(holding);
-                          const percentChange = getHoldingPercentChange(holding);
-                          const isPositive = percentChange >= 0;
-                          
-                          return (
-                            <TableRow key={holding.id}>
+                      const currentPrice = prices[holding.symbol]?.price || 0;
+                      const currentValue = getHoldingCurrentValue(holding);
+                      const percentChange = getHoldingPercentChange(holding);
+                      const isPositive = percentChange >= 0;
+                      return <TableRow key={holding.id}>
                               <TableCell className="font-medium">{index + 1}</TableCell>
                               <TableCell>
                                 <div className="flex items-center gap-2">
@@ -242,9 +221,8 @@ export default function CryptoPortfolio() {
                                   </span>
                                 </div>
                               </TableCell>
-                            </TableRow>
-                          );
-                        })}
+                            </TableRow>;
+                    })}
                       </TableBody>
                     </Table>
                   </CardContent>
@@ -254,7 +232,7 @@ export default function CryptoPortfolio() {
               {/* Balance History Chart */}
               <div className="lg:col-span-1">
                 <Card>
-                  <CardContent className="p-6">
+                  <CardContent className="p-6 px-0 py-0 mx-0 my-0">
                     <h3 className="font-semibold mb-4">BALANCES HISTORY</h3>
                     <div className="h-64">
                       <CryptoChart holdings={holdings} prices={prices} />
@@ -324,23 +302,14 @@ export default function CryptoPortfolio() {
               </CardContent>
             </Card>
           </TabsContent>
-        </Tabs>
-      )}
+        </Tabs>}
 
       {/* Action Buttons */}
       <div className="flex gap-2">
         <AddHoldingDialog onAddHolding={addHolding} />
-        <PriceAlertsDialog 
-          holdings={holdings}
-          alerts={alerts}
-          onAddAlert={addAlert}
-          onRefreshAlerts={fetchAlerts}
-        />
-        <ExchangeIntegration 
-          onImportHoldings={handleImportHoldings}
-        />
+        <PriceAlertsDialog holdings={holdings} alerts={alerts} onAddAlert={addAlert} onRefreshAlerts={fetchAlerts} />
+        <ExchangeIntegration onImportHoldings={handleImportHoldings} />
         <CurrencySettings onCurrencyChange={handleCurrencyChange} />
       </div>
-    </div>
-  );
+    </div>;
 }
