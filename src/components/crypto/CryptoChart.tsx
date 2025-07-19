@@ -275,7 +275,7 @@ export default function CryptoChart({
               <CardHeader>
                 <CardTitle>Portfolio Distribution</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-0 py-[240px]">
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie data={portfolioData} cx="50%" cy="50%" innerRadius={60} outerRadius={120} fill="#8884d8" dataKey="value" label={({
