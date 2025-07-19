@@ -118,20 +118,20 @@ export default function CryptoPortfolio() {
         
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm">
-            <Twitter className="h-4 w-4 mr-2" />
-            Tweet
-          </Button>
-          <Button variant="outline" size="sm">
-            <Share className="h-4 w-4 mr-2" />
-            Share
-          </Button>
-          <Button variant="outline" size="sm">
             <Bell className="h-4 w-4 mr-2" />
             Create Alert
           </Button>
           <Button variant="outline" size="sm">
             <Link2 className="h-4 w-4 mr-2" />
             Trace Entity
+          </Button>
+          <Button variant="outline" size="sm">
+            <Share className="h-4 w-4 mr-2" />
+            Share
+          </Button>
+          <Button variant="outline" size="sm">
+            <Twitter className="h-4 w-4 mr-2" />
+            Tweet
           </Button>
           <Button variant="outline" size="sm">
             <Plus className="h-4 w-4 mr-2" />
