@@ -193,7 +193,7 @@ export default function CryptoPortfolio() {
           </CardContent>
         </Card> : <Tabs defaultValue="portfolio" className="space-y-6 px-0 mx-0 my-0">
           <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1">
-            <TabsTrigger value="portfolio" className="text-xs sm:text-sm">
+            <TabsTrigger value="portfolio" className="text-xs sm:text-sm px-px py-[8px] my-0 mx-[36px]">
               <span className="hidden sm:inline">PORTFOLIO</span>
               <span className="sm:hidden">PORT</span>
             </TabsTrigger>
