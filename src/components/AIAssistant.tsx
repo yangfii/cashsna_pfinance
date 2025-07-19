@@ -134,7 +134,12 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
   }, [chatMessages]);
 
   const sendChatMessage = async (message: string) => {
-    if (!user || !message.trim()) return;
+    console.log('sendChatMessage called with:', message);
+    console.log('user:', user);
+    if (!user || !message.trim()) {
+      console.log('Returning early - user:', user, 'message:', message);
+      return;
+    }
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
