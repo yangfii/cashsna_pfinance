@@ -10,7 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { toast } from 'sonner';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Globe } from 'lucide-react';
 
 export default function Auth() {
   const [email, setEmail] = useState('');
@@ -20,7 +20,7 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const { signIn, signUp, signInWithGoogle, resetPassword, user } = useAuth();
-  const { t } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const navigate = useNavigate();
 
   // Redirect if already authenticated
@@ -163,7 +163,16 @@ export default function Auth() {
         </div>
 
         <Card className="border shadow-lg bg-gradient-to-br from-card to-card/95">
-          <CardHeader className="text-center pb-4">
+          <CardHeader className="text-center pb-4 relative">
+            <Button
+              onClick={() => setLanguage(language === 'english' ? 'khmer' : 'english')}
+              variant="ghost"
+              size="sm"
+              className="absolute top-4 right-4 h-8 w-8 p-0"
+              title="Select app language"
+            >
+              <Globe className="h-4 w-4" />
+            </Button>
             <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-balance bg-clip-text text-transparent">
               Cashsnap Finances Tracking
             </CardTitle>
