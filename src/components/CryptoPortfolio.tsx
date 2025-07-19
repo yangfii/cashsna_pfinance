@@ -331,7 +331,7 @@ export default function CryptoPortfolio() {
         </Tabs>}
 
       {/* Action Buttons */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 my-[500px] mx-0 py-0 px-[156px]">
         <AddHoldingDialog onAddHolding={addHolding} />
         <PriceAlertsDialog holdings={holdings} alerts={alerts} onAddAlert={addAlert} onRefreshAlerts={fetchAlerts} />
         <ExchangeIntegration onImportHoldings={handleImportHoldings} />
