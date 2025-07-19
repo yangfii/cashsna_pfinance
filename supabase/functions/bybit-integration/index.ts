@@ -58,9 +58,9 @@ const bybitRequest = async (endpoint: string, credentials: BybitCredentials, par
 
 const fetchBybitPortfolio = async (credentials: BybitCredentials) => {
   try {
-    // Get account balance for spot account
+    // Get account balance for unified account
     const balanceResponse = await bybitRequest('/v5/account/wallet-balance', credentials, {
-      accountType: 'SPOT'
+      accountType: 'UNIFIED'
     });
     
     if (balanceResponse.retCode !== 0) {
