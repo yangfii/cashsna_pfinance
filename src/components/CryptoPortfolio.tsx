@@ -5,9 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { TrendingUp, TrendingDown, Share, Bell, Plus, MoreHorizontal, Twitter, Link2, Settings, Search, Filter } from "lucide-react";
+import { TrendingUp, TrendingDown, Share, Bell, Plus, MoreHorizontal, Twitter, Link2 } from "lucide-react";
 import { useCryptoData } from "@/hooks/useCryptoData";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
@@ -16,14 +14,13 @@ import AddHoldingDialog from "@/components/crypto/AddHoldingDialog";
 import PriceAlertsDialog from "@/components/crypto/PriceAlertsDialog";
 import ExchangeIntegration from "@/components/crypto/ExchangeIntegration";
 import CurrencySettings, { CurrencyRates } from "@/components/crypto/CurrencySettings";
+import AdvancedSearch from "@/components/crypto/AdvancedSearch";
+import AdvancedFilters, { FilterOptions } from "@/components/crypto/AdvancedFilters";
+import AdvancedSorting, { SortOption } from "@/components/crypto/AdvancedSorting";
 
 export default function CryptoPortfolio() {
-  const {
-    user
-  } = useAuth();
-  const {
-    profile
-  } = useProfile();
+  const { user } = useAuth();
+  const { profile } = useProfile();
   const {
     holdings,
     prices,
@@ -40,13 +37,20 @@ export default function CryptoPortfolio() {
     lastPriceUpdate,
     bulkAddHoldings
   } = useCryptoData();
+  
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
-  const [exchangeRates, setExchangeRates] = useState<CurrencyRates>({
-    USD: 1
-  });
+  const [exchangeRates, setExchangeRates] = useState<CurrencyRates>({ USD: 1 });
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('value');
-  const [filterBy, setFilterBy] = useState('all');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [secondarySort, setSecondarySort] = useState<SortOption>();
+  const [filters, setFilters] = useState<FilterOptions>({
+    valueRange: { min: null, max: null },
+    performance: 'all',
+    walletType: [],
+    dateRange: { from: null, to: null },
+    amountRange: { min: null, max: null }
+  });
 
   const formatCurrency = (amount: number) => {
     const convertedAmount = amount * (exchangeRates[selectedCurrency] || 1);
@@ -90,34 +94,133 @@ export default function CryptoPortfolio() {
     return calculatePercentageChange(currentValue, originalValue);
   };
 
+  // Get unique wallet types for filtering
+  const walletTypes = useMemo(() => {
+    const types = holdings
+      .map(h => h.wallet_type)
+      .filter(Boolean)
+      .filter((type, index, arr) => arr.indexOf(type) === index);
+    return types as string[];
+  }, [holdings]);
+
+  // Enhanced filtering and sorting logic
   const filteredAndSortedHoldings = useMemo(() => {
     let filtered = holdings.filter(holding => {
-      const matchesSearch = holding.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           holding.name.toLowerCase().includes(searchTerm.toLowerCase());
+      // Search filter
+      const matchesSearch = !searchTerm || 
+        holding.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        holding.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        holding.wallet_type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        holding.notes?.toLowerCase().includes(searchTerm.toLowerCase());
       
-      if (filterBy === 'gainers') {
-        return matchesSearch && getHoldingPercentChange(holding) > 0;
-      } else if (filterBy === 'losers') {
-        return matchesSearch && getHoldingPercentChange(holding) < 0;
+      if (!matchesSearch) return false;
+
+      // Performance filter
+      if (filters.performance !== 'all') {
+        const percentChange = getHoldingPercentChange(holding);
+        switch (filters.performance) {
+          case 'gainers':
+            if (percentChange <= 0) return false;
+            break;
+          case 'losers':
+            if (percentChange >= 0) return false;
+            break;
+          case 'break_even':
+            if (Math.abs(percentChange) > 5) return false; // Within 5% of break even
+            break;
+        }
       }
-      return matchesSearch;
+
+      // Value range filter
+      if (filters.valueRange.min !== null || filters.valueRange.max !== null) {
+        const currentValue = getHoldingCurrentValue(holding);
+        if (filters.valueRange.min !== null && currentValue < filters.valueRange.min) return false;
+        if (filters.valueRange.max !== null && currentValue > filters.valueRange.max) return false;
+      }
+
+      // Wallet type filter
+      if (filters.walletType.length > 0) {
+        if (!holding.wallet_type || !filters.walletType.includes(holding.wallet_type)) return false;
+      }
+
+      return true;
     });
 
+    // Sort the filtered results
     return filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'value':
-          return getHoldingCurrentValue(b) - getHoldingCurrentValue(a);
-        case 'symbol':
-          return a.symbol.localeCompare(b.symbol);
-        case 'change':
-          return getHoldingPercentChange(b) - getHoldingPercentChange(a);
-        case 'amount':
-          return b.amount - a.amount;
-        default:
-          return 0;
+      const getSortValue = (holding: any, field: string) => {
+        switch (field) {
+          case 'value':
+            return getHoldingCurrentValue(holding);
+          case 'symbol':
+            return holding.symbol;
+          case 'name':
+            return holding.name;
+          case 'change':
+            return getHoldingPercentChange(holding);
+          case 'amount':
+            return holding.amount;
+          case 'purchase_price':
+            return holding.purchase_price;
+          case 'purchase_date':
+            return new Date(holding.purchase_date).getTime();
+          case 'gain_loss':
+            return getHoldingGainLoss(holding);
+          case 'gain_loss_percent':
+            return getHoldingPercentChange(holding);
+          default:
+            return 0;
+        }
+      };
+
+      // Primary sort
+      const aValue = getSortValue(a, sortBy);
+      const bValue = getSortValue(b, sortBy);
+      
+      let primaryComparison = 0;
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        primaryComparison = aValue.localeCompare(bValue);
+      } else {
+        primaryComparison = (aValue as number) - (bValue as number);
       }
+
+      if (sortDirection === 'desc') {
+        primaryComparison = -primaryComparison;
+      }
+
+      // Secondary sort if values are equal
+      if (primaryComparison === 0 && secondarySort) {
+        const aSecondary = getSortValue(a, secondarySort.field);
+        const bSecondary = getSortValue(b, secondarySort.field);
+        
+        let secondaryComparison = 0;
+        if (typeof aSecondary === 'string' && typeof bSecondary === 'string') {
+          secondaryComparison = aSecondary.localeCompare(bSecondary);
+        } else {
+          secondaryComparison = (aSecondary as number) - (bSecondary as number);
+        }
+
+        if (secondarySort.direction === 'desc') {
+          secondaryComparison = -secondaryComparison;
+        }
+
+        return secondaryComparison;
+      }
+
+      return primaryComparison;
     });
-  }, [holdings, searchTerm, filterBy, sortBy, prices]);
+  }, [holdings, searchTerm, filters, sortBy, sortDirection, secondarySort, prices]);
+
+  // Count active filters
+  const activeFiltersCount = useMemo(() => {
+    let count = 0;
+    if (filters.performance !== 'all') count++;
+    if (filters.valueRange.min !== null || filters.valueRange.max !== null) count++;
+    if (filters.walletType.length > 0) count++;
+    if (filters.dateRange.from !== null || filters.dateRange.to !== null) count++;
+    if (filters.amountRange.min !== null || filters.amountRange.max !== null) count++;
+    return count;
+  }, [filters]);
 
   if (loading) {
     return <div className="flex items-center justify-center h-64">
@@ -240,41 +343,46 @@ export default function CryptoPortfolio() {
               <div className="xl:col-span-2">
                 <Card>
                   <CardContent className="p-4">
-                    {/* Search and Filter Controls */}
-                    <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                      <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          placeholder="Search assets..."
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          className="pl-10"
-                        />
+                    {/* Enhanced Search and Filter Controls */}
+                    <div className="space-y-4 mb-6">
+                      {/* Search */}
+                      <AdvancedSearch
+                        holdings={holdings}
+                        onSearch={setSearchTerm}
+                        searchTerm={searchTerm}
+                      />
+                      
+                      {/* Filters and Sorting */}
+                      <div className="flex flex-col lg:flex-row gap-4 lg:items-start">
+                        <div className="flex-1">
+                          <AdvancedFilters
+                            filters={filters}
+                            onFiltersChange={setFilters}
+                            walletTypes={walletTypes}
+                            activeFiltersCount={activeFiltersCount}
+                          />
+                        </div>
+                        
+                        <div className="lg:w-auto">
+                          <AdvancedSorting
+                            sortBy={sortBy}
+                            sortDirection={sortDirection}
+                            onSortChange={(field, direction) => {
+                              setSortBy(field);
+                              setSortDirection(direction);
+                            }}
+                            secondarySort={secondarySort}
+                            onSecondarySortChange={setSecondarySort}
+                          />
+                        </div>
                       </div>
-                      <div className="flex gap-2">
-                        <Select value={filterBy} onValueChange={setFilterBy}>
-                          <SelectTrigger className="w-32">
-                            <Filter className="h-4 w-4 mr-2" />
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="all">All</SelectItem>
-                            <SelectItem value="gainers">Gainers</SelectItem>
-                            <SelectItem value="losers">Losers</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <Select value={sortBy} onValueChange={setSortBy}>
-                          <SelectTrigger className="w-32">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="value">Value</SelectItem>
-                            <SelectItem value="symbol">Symbol</SelectItem>
-                            <SelectItem value="change">Change</SelectItem>
-                            <SelectItem value="amount">Amount</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
+
+                      {/* Results Count */}
+                      {filteredAndSortedHoldings.length !== holdings.length && (
+                        <div className="text-sm text-muted-foreground">
+                          Showing {filteredAndSortedHoldings.length} of {holdings.length} assets
+                        </div>
+                      )}
                     </div>
                     
                     <div className="overflow-x-auto">
@@ -289,49 +397,64 @@ export default function CryptoPortfolio() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {filteredAndSortedHoldings.map((holding, index) => {
-                      const currentPrice = prices[holding.symbol]?.price || 0;
-                      const currentValue = getHoldingCurrentValue(holding);
-                      const percentChange = getHoldingPercentChange(holding);
-                      const isPositive = percentChange >= 0;
-                      return <TableRow key={holding.id}>
-                              <TableCell className="font-medium text-xs sm:text-sm">{index + 1}</TableCell>
-                              <TableCell>
-                                <div className="flex items-center gap-1 sm:gap-2">
-                                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary/20 flex items-center justify-center">
-                                    <span className="text-xs font-bold">
-                                      {holding.symbol.charAt(0)}
-                                    </span>
-                                  </div>
-                                  <span className="font-medium text-xs sm:text-sm">{holding.symbol}</span>
-                                </div>
-                              </TableCell>
-                              <TableCell className="hidden sm:table-cell">
-                                <div className="flex flex-col sm:flex-row sm:items-center gap-1">
-                                  <span className="text-xs sm:text-sm">{formatCurrency(currentPrice)}</span>
-                                  <span className={`text-xs ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
-                                    {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
-                                  </span>
-                                </div>
-                              </TableCell>
-                              <TableCell>
-                                <div className="text-xs sm:text-sm">
-                                  <div>{holding.amount.toFixed(4)}</div>
-                                  <div className="text-xs text-muted-foreground sm:hidden">
-                                    {formatCurrency(currentPrice)}
-                                  </div>
-                                </div>
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex flex-col gap-1">
-                                  <span className="text-xs sm:text-sm font-medium">{formatCurrency(currentValue)}</span>
-                                  <span className={`text-xs ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
-                                    {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
-                                  </span>
-                                </div>
-                              </TableCell>
-                            </TableRow>;
-                    })}
+                        {filteredAndSortedHoldings.length === 0 ? (
+                          <TableRow>
+                            <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                              No assets match your current filters
+                            </TableCell>
+                          </TableRow>
+                        ) : (
+                          filteredAndSortedHoldings.map((holding, index) => {
+                            const currentPrice = prices[holding.symbol]?.price || 0;
+                            const currentValue = getHoldingCurrentValue(holding);
+                            const percentChange = getHoldingPercentChange(holding);
+                            const isPositive = percentChange >= 0;
+                            return <TableRow key={holding.id}>
+                                    <TableCell className="font-medium text-xs sm:text-sm">{index + 1}</TableCell>
+                                    <TableCell>
+                                      <div className="flex items-center gap-1 sm:gap-2">
+                                        <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary/20 flex items-center justify-center">
+                                          <span className="text-xs font-bold">
+                                            {holding.symbol.charAt(0)}
+                                          </span>
+                                        </div>
+                                        <div>
+                                          <span className="font-medium text-xs sm:text-sm">{holding.symbol}</span>
+                                          {holding.wallet_type && (
+                                            <div className="text-xs text-muted-foreground capitalize">
+                                              {holding.wallet_type}
+                                            </div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </TableCell>
+                                    <TableCell className="hidden sm:table-cell">
+                                      <div className="flex flex-col sm:flex-row sm:items-center gap-1">
+                                        <span className="text-xs sm:text-sm">{formatCurrency(currentPrice)}</span>
+                                        <span className={`text-xs ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                                          {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
+                                        </span>
+                                      </div>
+                                    </TableCell>
+                                    <TableCell>
+                                      <div className="text-xs sm:text-sm">
+                                        <div>{holding.amount.toFixed(4)}</div>
+                                        <div className="text-xs text-muted-foreground sm:hidden">
+                                          {formatCurrency(currentPrice)}
+                                        </div>
+                                      </div>
+                                    </TableCell>
+                                    <TableCell>
+                                      <div className="flex flex-col gap-1">
+                                        <span className="text-xs sm:text-sm font-medium">{formatCurrency(currentValue)}</span>
+                                        <span className={`text-xs ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                                          {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
+                                        </span>
+                                      </div>
+                                    </TableCell>
+                                  </TableRow>;
+                          })
+                        )}
                       </TableBody>
                     </Table>
                     </div>
