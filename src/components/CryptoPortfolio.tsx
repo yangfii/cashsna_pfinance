@@ -87,7 +87,7 @@ export default function CryptoPortfolio() {
   const portfolioPercentChange = portfolioValue > 0 ? calculatePercentageChange(portfolioValue, portfolioValue - totalGainLoss) : 0;
   return <div className="space-y-6">
       {/* Profile Header */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mx-0 my-[32px] py-0 px-[2px]">
         <div className="flex items-center gap-4">
           <Avatar className="h-12 w-12 lg:h-16 lg:w-16">
             <AvatarImage src={profile?.avatar_url || undefined} />
