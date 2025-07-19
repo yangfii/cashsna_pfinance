@@ -81,12 +81,9 @@ export default function CryptoPortfolio() {
     const originalValue = holding.purchase_price * holding.amount;
     return calculatePercentageChange(currentValue, originalValue);
   };
-
   const filteredAndSortedHoldings = useMemo(() => {
     let filtered = holdings.filter(holding => {
-      const matchesSearch = holding.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           holding.name.toLowerCase().includes(searchTerm.toLowerCase());
-      
+      const matchesSearch = holding.symbol.toLowerCase().includes(searchTerm.toLowerCase()) || holding.name.toLowerCase().includes(searchTerm.toLowerCase());
       if (filterBy === 'gainers') {
         return matchesSearch && getHoldingPercentChange(holding) > 0;
       } else if (filterBy === 'losers') {
@@ -94,7 +91,6 @@ export default function CryptoPortfolio() {
       }
       return matchesSearch;
     });
-
     return filtered.sort((a, b) => {
       switch (sortBy) {
         case 'value':
@@ -233,12 +229,7 @@ export default function CryptoPortfolio() {
                     <div className="flex flex-col sm:flex-row gap-4 mb-6">
                       <div className="relative flex-1">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          placeholder="Search assets..."
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          className="pl-10"
-                        />
+                        <Input placeholder="Search assets..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" />
                       </div>
                       <div className="flex gap-2">
                         <Select value={filterBy} onValueChange={setFilterBy}>
@@ -279,11 +270,11 @@ export default function CryptoPortfolio() {
                       </TableHeader>
                       <TableBody>
                         {filteredAndSortedHoldings.map((holding, index) => {
-                      const currentPrice = prices[holding.symbol]?.price || 0;
-                      const currentValue = getHoldingCurrentValue(holding);
-                      const percentChange = getHoldingPercentChange(holding);
-                      const isPositive = percentChange >= 0;
-                      return <TableRow key={holding.id}>
+                        const currentPrice = prices[holding.symbol]?.price || 0;
+                        const currentValue = getHoldingCurrentValue(holding);
+                        const percentChange = getHoldingPercentChange(holding);
+                        const isPositive = percentChange >= 0;
+                        return <TableRow key={holding.id}>
                               <TableCell className="font-medium text-xs sm:text-sm">{index + 1}</TableCell>
                               <TableCell>
                                 <div className="flex items-center gap-1 sm:gap-2">
@@ -320,7 +311,7 @@ export default function CryptoPortfolio() {
                                 </div>
                               </TableCell>
                             </TableRow>;
-                    })}
+                      })}
                       </TableBody>
                     </Table>
                     </div>
@@ -362,7 +353,7 @@ export default function CryptoPortfolio() {
 
           <TabsContent value="balances">
             <Card>
-              <CardContent className="p-6">
+              <CardContent className="p-6 py-0 px-0">
                 <h3 className="font-semibold mb-4">Balance History</h3>
                 <div className="h-96">
                   <CryptoChart holdings={holdings} prices={prices} />
@@ -404,15 +395,11 @@ export default function CryptoPortfolio() {
         </Tabs>}
 
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row sm:justify-center gap-3 mt-8 mb-6 px-4">
-        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-          <AddHoldingDialog onAddHolding={addHolding} />
-          <ExchangeIntegration onImportHoldings={handleImportHoldings} />
-        </div>
-        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-          <PriceAlertsDialog holdings={holdings} alerts={alerts} onAddAlert={addAlert} onRefreshAlerts={fetchAlerts} />
-          <CurrencySettings onCurrencyChange={handleCurrencyChange} />
-        </div>
+      <div className="flex flex-wrap gap-2 my-[500px] mx-0 py-0 px-[156px]">
+        <AddHoldingDialog onAddHolding={addHolding} />
+        <PriceAlertsDialog holdings={holdings} alerts={alerts} onAddAlert={addAlert} onRefreshAlerts={fetchAlerts} />
+        <ExchangeIntegration onImportHoldings={handleImportHoldings} />
+        <CurrencySettings onCurrencyChange={handleCurrencyChange} />
       </div>
     </div>;
 }
