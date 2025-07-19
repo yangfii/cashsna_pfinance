@@ -215,9 +215,14 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
         }
       });
 
-      if (error) throw error;
+      console.log('Bybit connection response:', { data, error });
 
-      if (data.success) {
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
+      }
+
+      if (data?.success) {
         // Save to database
         const savedAccount = await saveAccount('bybit', bybitAccountName, bybitApiKey, bybitSecret);
         
