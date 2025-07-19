@@ -6,7 +6,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { WelcomeMessage } from '@/components/WelcomeMessage';
 import { ProfileCard } from '@/components/ProfileCard';
 import LandingLayout from '@/layouts/LandingLayout';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useEffect } from 'react';
+import { Globe } from 'lucide-react';
 import heroBackground from '@/assets/hero-background.jpg';
 const Index = () => {
   const {
@@ -16,6 +19,7 @@ const Index = () => {
     profile,
     loading: profileLoading
   } = useProfile();
+  const { language, setLanguage } = useLanguage();
   const navigate = useNavigate();
 
   // Redirect new users to profile setup, but only after profile loading is complete
@@ -114,7 +118,24 @@ const Index = () => {
         >
           <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-primary/20 to-primary-glow/30 backdrop-blur-sm"></div>
         </div>
-        <div className="relative container mx-auto px-4 py-24 md:py-32 text-center">
+        
+        {/* Language and Theme Controls */}
+        <div className="relative z-10 flex justify-end p-4">
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => setLanguage(language === 'english' ? 'khmer' : 'english')}
+              variant="ghost"
+              size="sm"
+              className="h-10 w-10 p-0 bg-white/10 border border-white/20 text-white hover:bg-white/20 backdrop-blur-sm"
+              title="Select app language"
+            >
+              <Globe className="h-4 w-4" />
+            </Button>
+            <ThemeToggle />
+          </div>
+        </div>
+        
+        <div className="relative container mx-auto px-4 py-16 md:py-24 text-center">
           <div className="animate-fade-in">
             <div className="mb-6">
               <span className="inline-flex items-center px-4 py-2 rounded-full bg-white/20 text-white text-sm font-medium backdrop-blur-sm border border-white/30">
