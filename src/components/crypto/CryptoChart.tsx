@@ -259,7 +259,7 @@ export default function CryptoChart({
       </div>
 
       {/* Charts Tabs */}
-      <Tabs defaultValue="overview" className="space-y-4 my-[156px]">
+      <Tabs defaultValue="overview" className="space-y-4 my-[240px]">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
@@ -275,7 +275,7 @@ export default function CryptoChart({
               <CardHeader>
                 <CardTitle>Portfolio Distribution</CardTitle>
               </CardHeader>
-              <CardContent className="px-0 py-6">
+              <CardContent className="px-0 py-[240px]">
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie data={portfolioData} cx="50%" cy="50%" innerRadius={60} outerRadius={120} fill="#8884d8" dataKey="value" label={({
