@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { TrendingUp, TrendingDown, Share, Bell, Plus, MoreHorizontal, Twitter, Link2, Settings } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { TrendingUp, TrendingDown, Share, Bell, Plus, MoreHorizontal, Twitter, Link2, Settings, Search, Filter } from "lucide-react";
 import { useCryptoData } from "@/hooks/useCryptoData";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
@@ -41,6 +43,9 @@ export default function CryptoPortfolio() {
   const [exchangeRates, setExchangeRates] = useState<CurrencyRates>({
     USD: 1
   });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('value');
+  const [filterBy, setFilterBy] = useState('all');
   const formatCurrency = (amount: number) => {
     const convertedAmount = amount * (exchangeRates[selectedCurrency] || 1);
     return new Intl.NumberFormat('en-US', {
@@ -76,6 +81,35 @@ export default function CryptoPortfolio() {
     const originalValue = holding.purchase_price * holding.amount;
     return calculatePercentageChange(currentValue, originalValue);
   };
+
+  const filteredAndSortedHoldings = useMemo(() => {
+    let filtered = holdings.filter(holding => {
+      const matchesSearch = holding.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           holding.name.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      if (filterBy === 'gainers') {
+        return matchesSearch && getHoldingPercentChange(holding) > 0;
+      } else if (filterBy === 'losers') {
+        return matchesSearch && getHoldingPercentChange(holding) < 0;
+      }
+      return matchesSearch;
+    });
+
+    return filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'value':
+          return getHoldingCurrentValue(b) - getHoldingCurrentValue(a);
+        case 'symbol':
+          return a.symbol.localeCompare(b.symbol);
+        case 'change':
+          return getHoldingPercentChange(b) - getHoldingPercentChange(a);
+        case 'amount':
+          return b.amount - a.amount;
+        default:
+          return 0;
+      }
+    });
+  }, [holdings, searchTerm, filterBy, sortBy, prices]);
   if (loading) {
     return <div className="flex items-center justify-center h-64">
         <div className="animate-pulse text-muted-foreground">Loading portfolio...</div>
@@ -194,7 +228,45 @@ export default function CryptoPortfolio() {
               {/* Portfolio Table */}
               <div className="xl:col-span-2">
                 <Card>
-                  <CardContent className="p-0 overflow-x-auto">
+                  <CardContent className="p-4">
+                    {/* Search and Filter Controls */}
+                    <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                      <div className="relative flex-1">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          placeholder="Search assets..."
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
+                      <div className="flex gap-2">
+                        <Select value={filterBy} onValueChange={setFilterBy}>
+                          <SelectTrigger className="w-32">
+                            <Filter className="h-4 w-4 mr-2" />
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All</SelectItem>
+                            <SelectItem value="gainers">Gainers</SelectItem>
+                            <SelectItem value="losers">Losers</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Select value={sortBy} onValueChange={setSortBy}>
+                          <SelectTrigger className="w-32">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="value">Value</SelectItem>
+                            <SelectItem value="symbol">Symbol</SelectItem>
+                            <SelectItem value="change">Change</SelectItem>
+                            <SelectItem value="amount">Amount</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    
+                    <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
                         <TableRow>
@@ -206,7 +278,7 @@ export default function CryptoPortfolio() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {holdings.map((holding, index) => {
+                        {filteredAndSortedHoldings.map((holding, index) => {
                       const currentPrice = prices[holding.symbol]?.price || 0;
                       const currentValue = getHoldingCurrentValue(holding);
                       const percentChange = getHoldingPercentChange(holding);
@@ -251,6 +323,7 @@ export default function CryptoPortfolio() {
                     })}
                       </TableBody>
                     </Table>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
