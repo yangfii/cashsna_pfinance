@@ -88,8 +88,8 @@ function AppSidebar() {
       toast.error('Unexpected error during sign out');
     }
   };
-  return <Sidebar variant="inset" collapsible="icon" className="my-0 mx-0 px-0">
-      <SidebarHeader>
+  return <Sidebar variant="inset" collapsible="icon" className="py-0 my-0 mx-px px-0">
+      <SidebarHeader className="mx-0 px-0 py-[7px] my-0">
         <div className="flex items-center gap-2 px-2 py-1">
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <LayoutDashboard className="size-4" />
@@ -191,7 +191,7 @@ export default function Layout() {
         <AppSidebar />
         
         {/* Header */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col px-0 py-0 my-0 mx-0">
           <header className="flex h-14 items-center gap-2 sm:gap-4 border-b bg-card/50 backdrop-blur-md px-3 sm:px-4 lg:px-6">
             <SidebarTrigger />
             <div className="flex-1" />
@@ -200,7 +200,7 @@ export default function Layout() {
           
           {/* Main Content */}
           <main className="flex-1 overflow-auto mx-[36px] px-[8px] my-[6px]">
-            <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-6 lg:px-8 lg:py-8 max-w-7xl">
+            <div className="container mx-auto sm:px-4 sm:py-6 lg:px-8 lg:py-8 max-w-7xl px-0 py-[7px]">
               <Outlet />
             </div>
           </main>
