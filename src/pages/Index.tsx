@@ -480,6 +480,19 @@ const Index = () => {
               <p className="text-sm text-muted-foreground mt-6">
                 ✨ ឥតគិតថ្លៃ • ✨ គ្មានកាតឥណទាន • ✨ ចាប់ផ្តើមបានភ្លាម
               </p>
+              
+              <div className="flex flex-wrap justify-center gap-4 mt-8 pt-6 border-t border-border/20">
+                <Link to="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Privacy Policy
+                </Link>
+                <Link to="/terms-of-service" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Terms of Service
+                </Link>
+                <span className="text-sm text-muted-foreground">•</span>
+                <span className="text-sm text-muted-foreground">
+                  Contact: support@cashsnap.finance
+                </span>
+              </div>
             </div>
           </div>
         </div>
