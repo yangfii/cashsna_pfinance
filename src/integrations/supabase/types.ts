@@ -203,6 +203,45 @@ export type Database = {
         }
         Relationships: []
       }
+      exchange_accounts: {
+        Row: {
+          account_name: string
+          api_key: string
+          api_secret: string
+          created_at: string
+          exchange_name: string
+          id: string
+          is_active: boolean
+          last_synced_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_name: string
+          api_key: string
+          api_secret: string
+          created_at?: string
+          exchange_name: string
+          id?: string
+          is_active?: boolean
+          last_synced_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_name?: string
+          api_key?: string
+          api_secret?: string
+          created_at?: string
+          exchange_name?: string
+          id?: string
+          is_active?: boolean
+          last_synced_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
