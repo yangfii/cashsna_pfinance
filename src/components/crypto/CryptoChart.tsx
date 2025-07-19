@@ -284,7 +284,7 @@ export default function CryptoChart({
                   }) => `${symbol} ${(percent * 100).toFixed(1)}%`}>
                       {portfolioData.map((entry, index) => <Cell key={`cell-${index}`} fill={getCryptoColor(entry.symbol, index)} />)}
                     </Pie>
-                    <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                    <Tooltip formatter={(value: number) => formatCurrency(value)} className="px-0 my-[98px]" />
                     <Legend />
                   </PieChart>
                 </ResponsiveContainer>
