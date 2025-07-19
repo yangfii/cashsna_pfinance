@@ -404,10 +404,10 @@ export default function CryptoPortfolio() {
         </Tabs>}
 
       {/* Action Buttons */}
-      <div className="flex flex-wrap gap-2 my-[500px] mx-0 py-0 px-[156px]">
+      <div className="flex flex-wrap justify-center gap-3 mt-8 mb-6">
         <AddHoldingDialog onAddHolding={addHolding} />
-        <PriceAlertsDialog holdings={holdings} alerts={alerts} onAddAlert={addAlert} onRefreshAlerts={fetchAlerts} />
         <ExchangeIntegration onImportHoldings={handleImportHoldings} />
+        <PriceAlertsDialog holdings={holdings} alerts={alerts} onAddAlert={addAlert} onRefreshAlerts={fetchAlerts} />
         <CurrencySettings onCurrencyChange={handleCurrencyChange} />
       </div>
     </div>;
