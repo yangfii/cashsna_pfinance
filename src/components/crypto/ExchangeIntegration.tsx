@@ -11,6 +11,7 @@ import { AlertTriangle, ExternalLink, Key, RefreshCw, CheckCircle, XCircle } fro
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import binanceIcon from "@/assets/binance-icon.png";
+import bybitIcon from "@/assets/bybit-icon.png";
 
 interface ExchangeAccount {
   id: string;
@@ -410,8 +411,8 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded bg-orange-500 flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">BY</span>
+                    <div className="w-8 h-8 rounded flex items-center justify-center">
+                      <img src={bybitIcon} alt="Bybit" className="w-8 h-8 rounded" />
                     </div>
                     Connect Bybit
                   </CardTitle>
