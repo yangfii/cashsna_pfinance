@@ -12,7 +12,7 @@ import { useProfile } from "@/hooks/useProfile";
 import CryptoChart from "@/components/crypto/CryptoChart";
 import AddHoldingDialog from "@/components/crypto/AddHoldingDialog";
 import PriceAlertsDialog from "@/components/crypto/PriceAlertsDialog";
-import DataImportExport from "@/components/crypto/DataImportExport";
+import ExchangeIntegration from "@/components/crypto/ExchangeIntegration";
 import CurrencySettings, { CurrencyRates } from "@/components/crypto/CurrencySettings";
 
 export default function CryptoPortfolio() {
@@ -336,8 +336,7 @@ export default function CryptoPortfolio() {
           onAddAlert={addAlert}
           onRefreshAlerts={fetchAlerts}
         />
-        <DataImportExport 
-          holdings={holdings}
+        <ExchangeIntegration 
           onImportHoldings={handleImportHoldings}
         />
         <CurrencySettings onCurrencyChange={handleCurrencyChange} />
