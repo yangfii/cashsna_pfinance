@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ReportDialog } from "@/components/ReportDialog";
+
 const getNavItems = (t: (key: string) => string) => [{
   to: "/dashboard",
   icon: LayoutDashboard,
@@ -52,6 +53,7 @@ const getNavItems = (t: (key: string) => string) => [{
   label: t("nav.settings"),
   key: "settings"
 }];
+
 function AppSidebar() {
   const {
     user,
@@ -69,6 +71,7 @@ function AppSidebar() {
     state
   } = useSidebar();
   const navItems = getNavItems(t);
+
   const handleSignOut = async () => {
     try {
       console.log('Starting sign out process...');
@@ -88,6 +91,7 @@ function AppSidebar() {
       toast.error('Unexpected error during sign out');
     }
   };
+
   return <Sidebar variant="inset" collapsible="icon" className="py-0 my-0 mx-px px-0">
       <SidebarHeader className="mx-0 px-0 py-[7px] my-0">
         <div className="flex items-center gap-2 px-2 py-1">
@@ -161,6 +165,7 @@ function AppSidebar() {
       </SidebarFooter>
     </Sidebar>;
 }
+
 export default function Layout() {
   const navigate = useNavigate();
   const {
@@ -191,7 +196,7 @@ export default function Layout() {
         <AppSidebar />
         
         {/* Header */}
-        <div className="flex-1 flex flex-col px-0 py-0 my-0 mx-0">
+        <div className="flex-1 flex flex-col">
           <header className="flex h-14 items-center gap-2 sm:gap-4 border-b bg-card/50 backdrop-blur-md px-3 sm:px-4 lg:px-6">
             <SidebarTrigger />
             <div className="flex-1" />
@@ -199,8 +204,8 @@ export default function Layout() {
           </header>
           
           {/* Main Content */}
-          <main className="flex-1 overflow-auto mx-[36px] px-[8px] my-[6px]">
-            <div className="container mx-auto sm:px-4 sm:py-6 lg:px-8 lg:py-8 max-w-7xl px-0 py-[31px]">
+          <main className="flex-1 overflow-auto">
+            <div className="container mx-auto px-4 py-6 lg:px-8 lg:py-8 max-w-7xl">
               <Outlet />
             </div>
           </main>

@@ -16,6 +16,7 @@ import AddHoldingDialog from "@/components/crypto/AddHoldingDialog";
 import PriceAlertsDialog from "@/components/crypto/PriceAlertsDialog";
 import ExchangeIntegration from "@/components/crypto/ExchangeIntegration";
 import CurrencySettings, { CurrencyRates } from "@/components/crypto/CurrencySettings";
+
 export default function CryptoPortfolio() {
   const {
     user
@@ -46,6 +47,7 @@ export default function CryptoPortfolio() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('value');
   const [filterBy, setFilterBy] = useState('all');
+
   const formatCurrency = (amount: number) => {
     const convertedAmount = amount * (exchangeRates[selectedCurrency] || 1);
     return new Intl.NumberFormat('en-US', {
@@ -53,10 +55,12 @@ export default function CryptoPortfolio() {
       currency: selectedCurrency
     }).format(convertedAmount);
   };
+
   const handleCurrencyChange = (currency: string, rates: CurrencyRates) => {
     setSelectedCurrency(currency);
     setExchangeRates(rates);
   };
+
   const handleImportHoldings = async (importedHoldings: any[]) => {
     try {
       await bulkAddHoldings(importedHoldings);
@@ -64,18 +68,22 @@ export default function CryptoPortfolio() {
       console.error('Error importing holdings:', error);
     }
   };
+
   const calculatePercentageChange = (currentValue: number, originalValue: number) => {
     return (currentValue - originalValue) / originalValue * 100;
   };
+
   const getHoldingCurrentValue = (holding: any) => {
     const currentPrice = prices[holding.symbol]?.price || 0;
     return currentPrice * holding.amount;
   };
+
   const getHoldingGainLoss = (holding: any) => {
     const currentValue = getHoldingCurrentValue(holding);
     const originalValue = holding.purchase_price * holding.amount;
     return currentValue - originalValue;
   };
+
   const getHoldingPercentChange = (holding: any) => {
     const currentValue = getHoldingCurrentValue(holding);
     const originalValue = holding.purchase_price * holding.amount;
@@ -110,18 +118,21 @@ export default function CryptoPortfolio() {
       }
     });
   }, [holdings, searchTerm, filterBy, sortBy, prices]);
+
   if (loading) {
     return <div className="flex items-center justify-center h-64">
         <div className="animate-pulse text-muted-foreground">Loading portfolio...</div>
       </div>;
   }
+
   const portfolioValue = calculatePortfolioValue();
   const totalGainLoss = calculateTotalGainLoss();
   const isGain = totalGainLoss >= 0;
   const portfolioPercentChange = portfolioValue > 0 ? calculatePercentageChange(portfolioValue, portfolioValue - totalGainLoss) : 0;
+
   return <div className="space-y-6">
       {/* Profile Header */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mx-0 my-[32px] py-0 px-[2px]">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Avatar className="h-12 w-12 lg:h-16 lg:w-16">
             <AvatarImage src={profile?.avatar_url || undefined} />
@@ -189,7 +200,7 @@ export default function CryptoPortfolio() {
 
       {holdings.length === 0 ? <Card>
           <CardContent className="text-center py-8 text-muted-foreground">
-            <div className="space-y-4 mx-0 my-0 py-0 px-0">
+            <div className="space-y-4">
               <p>No crypto holdings yet</p>
               <p className="text-sm">Add your first cryptocurrency to start tracking your portfolio</p>
               <AddHoldingDialog onAddHolding={addHolding} />
@@ -333,7 +344,7 @@ export default function CryptoPortfolio() {
                 <Card>
                   <CardContent className="p-4 lg:p-6">
                     <h3 className="font-semibold mb-4 text-sm lg:text-base">BALANCES HISTORY</h3>
-                    <div className="h-48 sm:h-64">
+                    <div className="h-48 sm:h-64 overflow-auto">
                       <CryptoChart holdings={holdings} prices={prices} />
                     </div>
                   </CardContent>
@@ -404,7 +415,7 @@ export default function CryptoPortfolio() {
         </Tabs>}
 
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row sm:justify-center gap-3 mt-8 mb-6 px-4">
+      <div className="flex flex-col sm:flex-row sm:justify-center gap-3 mt-8 mb-6">
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <AddHoldingDialog onAddHolding={addHolding} />
           <ExchangeIntegration onImportHoldings={handleImportHoldings} />

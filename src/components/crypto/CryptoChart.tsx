@@ -3,10 +3,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PieChart, Pie, LineChart, Line, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Legend } from "recharts";
 import { CryptoHolding, CryptoPrice } from "@/hooks/useCryptoData";
 import { TrendingUp, TrendingDown, DollarSign, Percent } from "lucide-react";
+
 interface CryptoChartProps {
   holdings: CryptoHolding[];
   prices: Record<string, CryptoPrice>;
 }
+
 export default function CryptoChart({
   holdings,
   prices
@@ -15,12 +17,14 @@ export default function CryptoChart({
   console.log('CryptoChart Debug - Holdings:', holdings);
   console.log('CryptoChart Debug - Prices:', prices);
   console.log('CryptoChart Debug - Holdings length:', holdings.length);
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD'
     }).format(amount);
   };
+
   const formatPercent = (value: number) => {
     return `${value.toFixed(2)}%`;
   };
@@ -200,7 +204,8 @@ export default function CryptoChart({
     sellVolume: Math.random() * 1000,
     symbol: item.symbol
   })).sort((a, b) => a.price - b.price);
-  return <div className="space-y-6">
+
+  return <div className="space-y-6 overflow-auto">
       {/* Portfolio Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
@@ -295,7 +300,7 @@ export default function CryptoChart({
               <CardHeader>
                 <CardTitle>Portfolio Performance</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="overflow-auto">
                 <ResponsiveContainer width="100%" height={300}>
                   <AreaChart data={performanceData}>
                     <defs>
@@ -322,7 +327,7 @@ export default function CryptoChart({
             <CardHeader>
               <CardTitle>Asset Distribution</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="overflow-auto">
               <ResponsiveContainer width="100%" height={400}>
                 <PieChart>
                   <Pie data={portfolioData} cx="50%" cy="50%" labelLine={false} label={({
@@ -340,12 +345,12 @@ export default function CryptoChart({
 
         {/* Performance Tab */}
         <TabsContent value="performance">
-          <div className="space-y-6">
+          <div className="space-y-6 overflow-auto">
             <Card>
               <CardHeader>
                 <CardTitle>Portfolio Performance Over Time</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="overflow-auto">
                 <ResponsiveContainer width="100%" height={400}>
                   <LineChart data={performanceData}>
                     <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
@@ -377,7 +382,7 @@ export default function CryptoChart({
               <CardHeader>
                 <CardTitle>P&L Analysis</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="overflow-auto">
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={portfolioData}>
                     <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
@@ -400,7 +405,7 @@ export default function CryptoChart({
             <CardHeader>
               <CardTitle>Holdings Comparison</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="overflow-auto">
               <ResponsiveContainer width="100%" height={400}>
                 <BarChart data={portfolioData} margin={{
                 top: 20,
@@ -427,7 +432,7 @@ export default function CryptoChart({
             <CardHeader>
               <CardTitle>Market Depth (Simulated)</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="overflow-auto">
               <ResponsiveContainer width="100%" height={400}>
                 <AreaChart data={depthData}>
                   <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
