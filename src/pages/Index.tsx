@@ -163,8 +163,10 @@ const Index = () => {
                   <span className="ml-2">→</span>
                 </Link>
               </Button>
-              <Button variant="outline" size="lg" className="text-lg px-8 py-6 border-white/30 text-white hover:bg-white/10">
-                មើលរបៀបប្រើប្រាស់
+              <Button variant="outline" asChild size="lg" className="text-lg px-8 py-6 border-white/30 text-white hover:bg-white/10">
+                <Link to="/assistant">
+                  🤖 AI ជួយណែនាំ
+                </Link>
               </Button>
             </div>
           </div>
