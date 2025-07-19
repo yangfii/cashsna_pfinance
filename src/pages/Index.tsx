@@ -19,7 +19,7 @@ const Index = () => {
     profile,
     loading: profileLoading
   } = useProfile();
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const navigate = useNavigate();
 
   // Redirect new users to profile setup, but only after profile loading is complete
@@ -123,11 +123,16 @@ const Index = () => {
         <div className="relative z-10 flex justify-end p-4">
           <div className="flex items-center gap-2">
             <Button
-              onClick={() => setLanguage(language === 'english' ? 'khmer' : 'english')}
+              onClick={() => {
+                console.log('Current language:', language);
+                const newLanguage = language === 'english' ? 'khmer' : 'english';
+                console.log('Switching to:', newLanguage);
+                setLanguage(newLanguage);
+              }}
               variant="ghost"
               size="sm"
               className="h-10 w-10 p-0 bg-white/10 border border-white/20 text-white hover:bg-white/20 backdrop-blur-sm"
-              title="Select app language"
+              title={language === 'english' ? 'Switch to Khmer' : 'Switch to English'}
             >
               <Globe className="h-4 w-4" />
             </Button>
@@ -140,7 +145,7 @@ const Index = () => {
             <div className="mb-6">
               <span className="inline-flex items-center px-4 py-2 rounded-full bg-white/20 text-white text-sm font-medium backdrop-blur-sm border border-white/30">
                 <span className="mr-2">✨</span>
-                គ្រប់គ្រងហិរញ្ញវត្ថុដោយ AI
+                {language === 'khmer' ? 'គ្រប់គ្រងហិរញ្ញវត្ថុដោយ AI' : 'AI-Powered Finance Management'}
               </span>
             </div>
             
@@ -149,17 +154,20 @@ const Index = () => {
             </h1>
             
             <h2 className="text-2xl md:text-3xl font-semibold text-white/90 mb-6">
-              គ្រប់គ្រងហិរញ្ញវត្ថុប្រចាំថ្ងៃ
+              {language === 'khmer' ? 'គ្រប់គ្រងហិរញ្ញវត្ថុប្រចាំថ្ងៃ' : 'Daily Financial Management'}
             </h2>
             
             <p className="text-lg md:text-xl text-white/80 mb-8 max-w-3xl mx-auto leading-relaxed">
-              ដំណោះស្រាយគ្រប់គ្រងលុយកាក់ពេញលេញសម្រាប់ប្រជាជនកម្ពុជា ជាមួយនឹងបច្ចេកវិទ្យា AI ទំនើប
+              {language === 'khmer' 
+                ? 'ដំណោះស្រាយគ្រប់គ្រងលុយកាក់ពេញលេញសម្រាប់ប្រជាជនកម្ពុជា ជាមួយនឹងបច្ចេកវិទ្យា AI ទំនើប'
+                : 'Complete money management solution for Cambodians with modern AI technology'
+              }
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg" className="text-lg px-8 py-6 bg-white text-primary hover:bg-white/90 shadow-glow">
                 <Link to="/auth">
-                  ចាប់ផ្តើមប្រើប្រាស់ឥតគិតថ្លៃ
+                  {language === 'khmer' ? 'ចាប់ផ្តើមប្រើប្រាស់ឥតគិតថ្លៃ' : 'Start Free'}
                   <span className="ml-2">→</span>
                 </Link>
               </Button>
