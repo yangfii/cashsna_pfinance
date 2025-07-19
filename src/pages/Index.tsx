@@ -200,7 +200,7 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Feature 1 */}
             <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in">
-              <CardContent className="p-6">
+              <CardContent>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-smooth">
                     <span className="text-lg">📥</span>
