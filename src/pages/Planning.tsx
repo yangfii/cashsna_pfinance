@@ -7,6 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AIAssistant from "@/components/AIAssistant";
+import { AddReminderDialog } from "@/components/reminders/AddReminderDialog";
+import { RemindersList } from "@/components/reminders/RemindersList";
+import { useReminders } from "@/hooks/useReminders";
 import { 
   Plus, 
   Calendar, 
@@ -22,7 +25,8 @@ import {
   Play,
   Pause,
   Square,
-  Timer
+  Timer,
+  Bell
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { 
@@ -75,6 +79,7 @@ export default function Planning() {
   const [showFocusTimer, setShowFocusTimer] = useState(false);
   
   const { toast } = useToast();
+  const { getUpcomingReminders, getOverdueReminders } = useReminders();
 
   // Load goals from localStorage
   useEffect(() => {
@@ -300,7 +305,7 @@ export default function Planning() {
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="goals" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="ai-assistant" className="flex items-center gap-2">
             <Brain className="h-4 w-4" />
             ជំនួយការ AI
@@ -308,6 +313,15 @@ export default function Planning() {
           <TabsTrigger value="goals" className="flex items-center gap-2">
             <Target className="h-4 w-4" />
             គោលដៅ
+          </TabsTrigger>
+          <TabsTrigger value="reminders" className="flex items-center gap-2 relative">
+            <Bell className="h-4 w-4" />
+            កំណត់ចងចាំ
+            {getUpcomingReminders().length > 0 && (
+              <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 text-xs">
+                {getUpcomingReminders().length}
+              </Badge>
+            )}
           </TabsTrigger>
           <TabsTrigger value="focus" className="flex items-center gap-2">
             <Timer className="h-4 w-4" />
@@ -724,6 +738,64 @@ export default function Planning() {
 
         <TabsContent value="ai-assistant" className="mt-6">
           <AIAssistant />
+        </TabsContent>
+
+        <TabsContent value="reminders" className="mt-6 space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold">កំណត់ចងចាំ</h2>
+              <p className="text-muted-foreground">
+                គ្រប់គ្រងការរំលឹក ព្រឹត្តិការណ៍ និងការងារសំខាន់ៗ
+              </p>
+            </div>
+            <AddReminderDialog>
+              <Button className="flex items-center gap-2">
+                <Bell className="h-4 w-4" />
+                បន្ថែមការរំលឹកថ្មី
+              </Button>
+            </AddReminderDialog>
+          </div>
+
+          {/* Quick stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-yellow-600" />
+                  <span className="text-sm font-medium">ខាងមុខ (២៤ម៉ោង)</span>
+                </div>
+                <p className="text-2xl font-bold text-yellow-600">
+                  {getUpcomingReminders().length}
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <Bell className="h-4 w-4 text-red-600" />
+                  <span className="text-sm font-medium">ហួសកំណត់</span>
+                </div>
+                <p className="text-2xl font-bold text-red-600">
+                  {getOverdueReminders().length}
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium">សរុបសកម្ម</span>
+                </div>
+                <p className="text-2xl font-bold text-green-600">
+                  {getUpcomingReminders().length + getOverdueReminders().length}
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <RemindersList />
         </TabsContent>
 
         <TabsContent value="focus" className="mt-6 space-y-6">

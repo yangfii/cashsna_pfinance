@@ -236,6 +236,63 @@ export type Database = {
         }
         Relationships: []
       }
+      reminders: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          due_date: string
+          id: string
+          is_active: boolean
+          is_completed: boolean
+          is_recurring: boolean
+          notification_methods: string[] | null
+          priority: string
+          recurrence_end_date: string | null
+          recurrence_pattern: string | null
+          reminder_type: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          due_date: string
+          id?: string
+          is_active?: boolean
+          is_completed?: boolean
+          is_recurring?: boolean
+          notification_methods?: string[] | null
+          priority?: string
+          recurrence_end_date?: string | null
+          recurrence_pattern?: string | null
+          reminder_type: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string
+          id?: string
+          is_active?: boolean
+          is_completed?: boolean
+          is_recurring?: boolean
+          notification_methods?: string[] | null
+          priority?: string
+          recurrence_end_date?: string | null
+          recurrence_pattern?: string | null
+          reminder_type?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           amount: number
