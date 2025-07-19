@@ -122,12 +122,18 @@ const fetchBybitPortfolio = async (credentials: BybitCredentials) => {
       return sum + (holding.amount * holding.purchase_price);
     }, 0);
     
+    console.log('Bybit portfolio fetched successfully:', {
+      holdingsCount: holdings.length,
+      totalBalance,
+      accountType: 'UNIFIED'
+    });
+
     return {
       success: true,
       holdings,
       totalBalance,
       accountInfo: {
-        accountType: 'SPOT',
+        accountType: 'UNIFIED',
         totalEquity: balanceResponse.result.list[0]?.totalEquity || '0',
         totalWalletBalance: balanceResponse.result.list[0]?.totalWalletBalance || '0'
       }
@@ -135,6 +141,11 @@ const fetchBybitPortfolio = async (credentials: BybitCredentials) => {
     
   } catch (error) {
     console.error('Error fetching Bybit portfolio:', error);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      credentials: credentials ? 'provided' : 'missing'
+    });
     throw error;
   }
 }
@@ -145,7 +156,8 @@ serve(async (req) => {
   }
 
   try {
-    const { action, apiKey, secret, accountId } = await req.json()
+    const { action, apiKey, secret, accountId } = await req.json();
+    console.log('Bybit integration request:', { action, hasApiKey: !!apiKey, hasSecret: !!secret });
 
     if (action === 'connect') {
       if (!apiKey || !secret) {
