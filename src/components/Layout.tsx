@@ -199,8 +199,8 @@ export default function Layout() {
           </header>
           
           {/* Main Content */}
-          <main className="flex-1 overflow-auto py-[12px] px-[16px] my-[6px] mx-px">
-            <div className="container mx-auto sm:px-4 sm:py-6 lg:px-8 lg:py-8 max-w-7xl px-0 py-[22px]">
+          <main className="flex-1 overflow-auto mx-[36px] px-[8px] my-[6px]">
+            <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-6 lg:px-8 lg:py-8 max-w-7xl">
               <Outlet />
             </div>
           </main>
