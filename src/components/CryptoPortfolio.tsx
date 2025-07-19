@@ -150,7 +150,7 @@ export default function CryptoPortfolio() {
 
       {holdings.length === 0 ? <Card>
           <CardContent className="text-center py-8 text-muted-foreground">
-            <div className="space-y-4">
+            <div className="space-y-4 mx-0 my-0 py-0 px-0">
               <p>No crypto holdings yet</p>
               <p className="text-sm">Add your first cryptocurrency to start tracking your portfolio</p>
               <AddHoldingDialog onAddHolding={addHolding} />
@@ -210,7 +210,7 @@ export default function CryptoPortfolio() {
                               </TableCell>
                               <TableCell>
                                 <div>
-                                  <div>{holding.amount.toFixed(4)} {holding.symbol}</div>
+                                  <div className="my-[2px] py-[5px] mx-[4px] px-[4px]">{holding.amount.toFixed(4)} {holding.symbol}</div>
                                 </div>
                               </TableCell>
                               <TableCell>

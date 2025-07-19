@@ -262,8 +262,8 @@ export default function CryptoChart({
       <Tabs defaultValue="overview" className="space-y-4 my-[156px]">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="performance">Performance</TabsTrigger>
           <TabsTrigger value="distribution">Distribution</TabsTrigger>
+          <TabsTrigger value="performance">Performance</TabsTrigger>
           <TabsTrigger value="comparison">Comparison</TabsTrigger>
           <TabsTrigger value="depth">Depth</TabsTrigger>
         </TabsList>
@@ -284,7 +284,7 @@ export default function CryptoChart({
                   }) => `${symbol} ${(percent * 100).toFixed(1)}%`}>
                       {portfolioData.map((entry, index) => <Cell key={`cell-${index}`} fill={getCryptoColor(entry.symbol, index)} />)}
                     </Pie>
-                    <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                    <Tooltip formatter={(value: number) => formatCurrency(value)} className="px-0 my-[163px]" />
                     <Legend />
                   </PieChart>
                 </ResponsiveContainer>
