@@ -87,25 +87,25 @@ export default function CryptoPortfolio() {
   const portfolioPercentChange = portfolioValue > 0 ? calculatePercentageChange(portfolioValue, portfolioValue - totalGainLoss) : 0;
   return <div className="space-y-6">
       {/* Profile Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <Avatar className="h-16 w-16">
+          <Avatar className="h-12 w-12 lg:h-16 lg:w-16">
             <AvatarImage src={profile?.avatar_url || undefined} />
-            <AvatarFallback className="text-lg">
+            <AvatarFallback className="text-sm lg:text-lg">
               {profile?.first_name?.[0] || user?.email?.[0]?.toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+              <h1 className="text-xl sm:text-2xl font-bold">
                 {profile?.first_name ? `${profile.first_name} ${profile.last_name || ''}`.trim() : user?.email?.split('@')[0] || 'Portfolio'}
               </h1>
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="secondary" className="text-xs w-fit">
                 Verified
               </Badge>
             </div>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="text-3xl font-bold">{formatCurrency(portfolioValue)}</span>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mt-1">
+              <span className="text-2xl lg:text-3xl font-bold">{formatCurrency(portfolioValue)}</span>
               <div className={`flex items-center gap-1 ${isGain ? 'text-green-500' : 'text-red-500'}`}>
                 {isGain ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
                 <span className="text-sm font-medium">
@@ -116,26 +116,31 @@ export default function CryptoPortfolio() {
           </div>
         </div>
         
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm">
-            <Bell className="h-4 w-4 mr-2" />
-            Create Alert
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="outline" size="sm" className="text-xs lg:text-sm">
+            <Bell className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
+            <span className="hidden sm:inline">Create Alert</span>
+            <span className="sm:hidden">Alert</span>
           </Button>
-          <Button variant="outline" size="sm">
-            <Link2 className="h-4 w-4 mr-2" />
-            Trace Entity
+          <Button variant="outline" size="sm" className="text-xs lg:text-sm">
+            <Link2 className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
+            <span className="hidden sm:inline">Trace Entity</span>
+            <span className="sm:hidden">Trace</span>
           </Button>
-          <Button variant="outline" size="sm">
-            <Share className="h-4 w-4 mr-2" />
-            Share
+          <Button variant="outline" size="sm" className="text-xs lg:text-sm">
+            <Share className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
+            <span className="hidden sm:inline">Share</span>
+            <span className="sm:hidden">Share</span>
           </Button>
-          <Button variant="outline" size="sm">
-            <Twitter className="h-4 w-4 mr-2" />
-            Tweet
+          <Button variant="outline" size="sm" className="text-xs lg:text-sm">
+            <Twitter className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
+            <span className="hidden sm:inline">Tweet</span>
+            <span className="sm:hidden">Tweet</span>
           </Button>
-          <Button variant="outline" size="sm">
-            <Plus className="h-4 w-4 mr-2" />
-            MORE
+          <Button variant="outline" size="sm" className="text-xs lg:text-sm">
+            <MoreHorizontal className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
+            <span className="hidden sm:inline">MORE</span>
+            <span className="sm:hidden">More</span>
           </Button>
         </div>
       </div>
@@ -157,29 +162,47 @@ export default function CryptoPortfolio() {
             </div>
           </CardContent>
         </Card> : <Tabs defaultValue="portfolio" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="portfolio">PORTFOLIO</TabsTrigger>
-            <TabsTrigger value="holdings">HOLDINGS BY CHAIN</TabsTrigger>
-            <TabsTrigger value="archive">PORTFOLIO ARCHIVE</TabsTrigger>
-            <TabsTrigger value="balances">BALANCES HISTORY</TabsTrigger>
-            <TabsTrigger value="tokens">TOKEN BALANCES HISTORY</TabsTrigger>
-            <TabsTrigger value="profit">PROFIT & LOSS</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1">
+            <TabsTrigger value="portfolio" className="text-xs sm:text-sm">
+              <span className="hidden sm:inline">PORTFOLIO</span>
+              <span className="sm:hidden">PORT</span>
+            </TabsTrigger>
+            <TabsTrigger value="holdings" className="text-xs sm:text-sm">
+              <span className="hidden lg:inline">HOLDINGS BY CHAIN</span>
+              <span className="lg:hidden">HOLDINGS</span>
+            </TabsTrigger>
+            <TabsTrigger value="archive" className="text-xs sm:text-sm">
+              <span className="hidden lg:inline">PORTFOLIO ARCHIVE</span>
+              <span className="lg:hidden">ARCHIVE</span>
+            </TabsTrigger>
+            <TabsTrigger value="balances" className="text-xs sm:text-sm">
+              <span className="hidden lg:inline">BALANCES HISTORY</span>
+              <span className="lg:hidden">BALANCES</span>
+            </TabsTrigger>
+            <TabsTrigger value="tokens" className="text-xs sm:text-sm">
+              <span className="hidden lg:inline">TOKEN BALANCES HISTORY</span>
+              <span className="lg:hidden">TOKENS</span>
+            </TabsTrigger>
+            <TabsTrigger value="profit" className="text-xs sm:text-sm">
+              <span className="hidden lg:inline">PROFIT & LOSS</span>
+              <span className="lg:hidden">P&L</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="portfolio">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
               {/* Portfolio Table */}
-              <div className="lg:col-span-2">
+              <div className="xl:col-span-2">
                 <Card>
-                  <CardContent className="p-0">
+                  <CardContent className="p-0 overflow-x-auto">
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="w-12">#</TableHead>
-                          <TableHead>ASSET</TableHead>
-                          <TableHead>PRICE</TableHead>
-                          <TableHead>HOLDINGS</TableHead>
-                          <TableHead>VALUE</TableHead>
+                          <TableHead className="w-8 sm:w-12 text-xs sm:text-sm">#</TableHead>
+                          <TableHead className="text-xs sm:text-sm">ASSET</TableHead>
+                          <TableHead className="text-xs sm:text-sm hidden sm:table-cell">PRICE</TableHead>
+                          <TableHead className="text-xs sm:text-sm">HOLDINGS</TableHead>
+                          <TableHead className="text-xs sm:text-sm">VALUE</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -189,34 +212,37 @@ export default function CryptoPortfolio() {
                       const percentChange = getHoldingPercentChange(holding);
                       const isPositive = percentChange >= 0;
                       return <TableRow key={holding.id}>
-                              <TableCell className="font-medium">{index + 1}</TableCell>
+                              <TableCell className="font-medium text-xs sm:text-sm">{index + 1}</TableCell>
                               <TableCell>
-                                <div className="flex items-center gap-2">
-                                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
+                                <div className="flex items-center gap-1 sm:gap-2">
+                                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary/20 flex items-center justify-center">
                                     <span className="text-xs font-bold">
                                       {holding.symbol.charAt(0)}
                                     </span>
                                   </div>
-                                  <span className="font-medium">{holding.symbol}</span>
+                                  <span className="font-medium text-xs sm:text-sm">{holding.symbol}</span>
                                 </div>
                               </TableCell>
-                              <TableCell>
-                                <div className="flex items-center gap-2">
-                                  <span>{formatCurrency(currentPrice)}</span>
-                                  <span className={`text-sm ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                              <TableCell className="hidden sm:table-cell">
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-1">
+                                  <span className="text-xs sm:text-sm">{formatCurrency(currentPrice)}</span>
+                                  <span className={`text-xs ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
                                     {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
                                   </span>
                                 </div>
                               </TableCell>
                               <TableCell>
-                                <div>
-                                  <div className="my-[2px] py-[5px] mx-[4px] px-[4px]">{holding.amount.toFixed(4)} {holding.symbol}</div>
+                                <div className="text-xs sm:text-sm">
+                                  <div>{holding.amount.toFixed(4)}</div>
+                                  <div className="text-xs text-muted-foreground sm:hidden">
+                                    {formatCurrency(currentPrice)}
+                                  </div>
                                 </div>
                               </TableCell>
                               <TableCell>
-                                <div className="flex items-center gap-2">
-                                  <span>{formatCurrency(currentValue)}</span>
-                                  <span className={`text-sm ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                                <div className="flex flex-col gap-1">
+                                  <span className="text-xs sm:text-sm font-medium">{formatCurrency(currentValue)}</span>
+                                  <span className={`text-xs ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
                                     {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
                                   </span>
                                 </div>
@@ -230,11 +256,11 @@ export default function CryptoPortfolio() {
               </div>
 
               {/* Balance History Chart */}
-              <div className="lg:col-span-1">
+              <div className="xl:col-span-1">
                 <Card>
-                  <CardContent className="p-6 px-0 py-0 mx-0 my-0">
-                    <h3 className="font-semibold mb-4">BALANCES HISTORY</h3>
-                    <div className="h-64">
+                  <CardContent className="p-4 lg:p-6">
+                    <h3 className="font-semibold mb-4 text-sm lg:text-base">BALANCES HISTORY</h3>
+                    <div className="h-48 sm:h-64">
                       <CryptoChart holdings={holdings} prices={prices} />
                     </div>
                   </CardContent>
@@ -305,7 +331,7 @@ export default function CryptoPortfolio() {
         </Tabs>}
 
       {/* Action Buttons */}
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <AddHoldingDialog onAddHolding={addHolding} />
         <PriceAlertsDialog holdings={holdings} alerts={alerts} onAddAlert={addAlert} onRefreshAlerts={fetchAlerts} />
         <ExchangeIntegration onImportHoldings={handleImportHoldings} />
