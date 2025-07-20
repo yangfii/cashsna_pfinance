@@ -291,25 +291,25 @@ export default function CryptoPortfolio() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <div className="flex items-center gap-2">
             <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 flex-1">
-              <TabsTrigger value="portfolio" className="text-xs sm:text-sm">
-                <span className="hidden sm:inline">PORTFOLIO</span>
-                <span className="sm:hidden">PORT</span>
+              <TabsTrigger value="portfolio" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
+                <span className="hidden sm:inline truncate">PORTFOLIO</span>
+                <span className="sm:hidden truncate">PORT</span>
               </TabsTrigger>
-              <TabsTrigger value="holdings" className="text-xs sm:text-sm">
-                <span className="hidden lg:inline">HOLDINGS BY CHAIN</span>
-                <span className="lg:hidden">HOLDINGS</span>
+              <TabsTrigger value="holdings" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
+                <span className="hidden lg:inline truncate">HOLDINGS BY CHAIN</span>
+                <span className="lg:hidden truncate">HOLDINGS</span>
               </TabsTrigger>
-              <TabsTrigger value="archive" className="text-xs sm:text-sm">
-                <span className="hidden lg:inline">PORTFOLIO ARCHIVE</span>
-                <span className="lg:hidden">ARCHIVE</span>
+              <TabsTrigger value="archive" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
+                <span className="hidden lg:inline truncate">PORTFOLIO ARCHIVE</span>
+                <span className="lg:hidden truncate">ARCHIVE</span>
               </TabsTrigger>
-              <TabsTrigger value="balances" className="text-xs sm:text-sm">
-                <span className="hidden lg:inline">BALANCES HISTORY</span>
-                <span className="lg:hidden">BALANCES</span>
+              <TabsTrigger value="balances" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
+                <span className="hidden lg:inline truncate">BALANCES HISTORY</span>
+                <span className="lg:hidden truncate">BALANCES</span>
               </TabsTrigger>
-              <TabsTrigger value="tokens" className="text-xs sm:text-sm">
-                <span className="hidden lg:inline">TOKEN BALANCES HISTORY</span>
-                <span className="lg:hidden">TOKENS</span>
+              <TabsTrigger value="tokens" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
+                <span className="hidden lg:inline truncate">TOKEN BALANCES HISTORY</span>
+                <span className="lg:hidden truncate">TOKENS</span>
               </TabsTrigger>
             </TabsList>
             
