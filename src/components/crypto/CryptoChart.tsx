@@ -232,8 +232,8 @@ export default function CryptoChart({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
                <div>
-                 <p className="text-card-title">Total Value</p>
-                 <p className="text-card-value">{formatCurrency(totalValue)}</p>
+                 <p className="text-sm font-medium text-muted-foreground">Total Value</p>
+                 <p className="text-2xl font-bold">{formatCurrency(totalValue)}</p>
                </div>
               <DollarSign className="h-8 w-8 text-primary opacity-60" />
             </div>
@@ -244,8 +244,8 @@ export default function CryptoChart({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
                <div>
-                 <p className="text-card-title">Total P&L</p>
-                  <p className={`text-h5 font-semibold ${totalGainLoss >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                 <p className="text-sm font-medium text-muted-foreground">Total P&L</p>
+                  <p className={`text-2xl font-bold ${totalGainLoss >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                     {formatCurrency(totalGainLoss)}
                   </p>
                </div>
@@ -262,8 +262,8 @@ export default function CryptoChart({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
                <div>
-                 <p className="text-card-title">P&L Percentage</p>
-                 <p className={`text-card-value ${totalGainLossPercent >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                 <p className="text-sm font-medium text-muted-foreground">P&L Percentage</p>
+                 <p className={`text-2xl font-bold ${totalGainLossPercent >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                    {formatPercent(totalGainLossPercent)}
                  </p>
                </div>
@@ -276,11 +276,11 @@ export default function CryptoChart({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
                <div>
-                 <p className="text-card-title">Holdings</p>
-                 <p className="text-card-value">{holdings.length}</p>
+                 <p className="text-sm font-medium text-muted-foreground">Holdings</p>
+                 <p className="text-2xl font-bold">{holdings.length}</p>
                </div>
                <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center">
-                 <span className="text-label text-primary">{holdings.length}</span>
+                 <span className="text-sm font-semibold text-primary">{holdings.length}</span>
                </div>
             </div>
           </CardContent>
@@ -348,8 +348,8 @@ export default function CryptoChart({
                       {/* Center Text */}
                       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                          <div className="text-center">
-                           <p className="text-xs text-muted-foreground">Total</p>
-                           <p className="text-lg font-bold">{formatCurrency(totalValue)}</p>
+                           <p className="text-sm text-muted-foreground">Total</p>
+                           <p className="text-xl font-bold">{formatCurrency(totalValue)}</p>
                          </div>
                       </div>
                     </div>
@@ -374,8 +374,8 @@ export default function CryptoChart({
                       </div>
                     </div>
                     <div className="space-y-3">
-                      <h3 className="text-lg font-semibold text-foreground">No portfolio data yet</h3>
-                      <p className="text-sm text-muted-foreground max-w-[280px]">
+                      <h3 className="text-xl font-semibold text-foreground">No portfolio data yet</h3>
+                      <p className="text-base text-muted-foreground max-w-[280px]">
                         Start building your portfolio to see how your assets are distributed
                       </p>
                       <div className="pt-2">
@@ -431,8 +431,8 @@ export default function CryptoChart({
                       </div>
                     </div>
                     <div className="space-y-3">
-                      <h3 className="text-lg font-semibold text-foreground">No portfolio data yet</h3>
-                      <p className="text-sm text-muted-foreground max-w-[280px]">
+                      <h3 className="text-xl font-semibold text-foreground">No portfolio data yet</h3>
+                      <p className="text-base text-muted-foreground max-w-[280px]">
                         Track your portfolio performance over time by adding your first assets
                       </p>
                       <div className="pt-2">
@@ -488,7 +488,7 @@ export default function CryptoChart({
                   </div>
                   <div className="space-y-3">
                     <h3 className="text-xl font-semibold text-foreground">No portfolio data yet</h3>
-                    <p className="text-sm text-muted-foreground max-w-[320px]">
+                    <p className="text-base text-muted-foreground max-w-[320px]">
                       Visualize your asset distribution with detailed charts and percentages
                     </p>
                     <div className="pt-2">
@@ -600,8 +600,8 @@ export default function CryptoChart({
                       <TrendingUp className="w-8 h-8 text-muted-foreground" />
                     </div>
                     <div className="space-y-2">
-                      <p className="text-base font-medium text-muted-foreground">No performance data to display yet</p>
-                      <p className="text-sm text-muted-foreground">Add holdings to see performance chart</p>
+                      <p className="text-lg font-medium text-muted-foreground">No performance data to display yet</p>
+                      <p className="text-base text-muted-foreground">Add holdings to see performance chart</p>
                     </div>
                   </div>
                 )}
