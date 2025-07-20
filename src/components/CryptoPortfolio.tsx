@@ -243,9 +243,9 @@ export default function CryptoPortfolio() {
               <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold">
                 {profile?.first_name ? `${profile.first_name} ${profile.last_name || ''}`.trim() : user?.email?.split('@')[0] || 'Portfolio'}
               </h1>
-              <Badge variant="secondary" className="text-sm w-fit flex items-center gap-2">
-                <img src="https://intel.arkm.com/arkham_check.svg" alt="Verified" className="w-3 h-3" />
-                Verified
+              <Badge variant="secondary" className="text-xs px-2 py-1 inline-flex items-center gap-1.5 max-w-fit shrink-0">
+                <img src="https://intel.arkm.com/arkham_check.svg" alt="Verified" className="w-3 h-3 flex-shrink-0" />
+                <span className="truncate">Verified</span>
               </Badge>
             </div>
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
