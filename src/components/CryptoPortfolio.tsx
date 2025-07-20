@@ -482,7 +482,7 @@ export default function CryptoPortfolio() {
 
           <TabsContent value="profit">
             <Card className="mx-1 sm:mx-2">
-              <CardContent className="p-8 lg:p-10">
+              <CardContent className="p-8 lg:p-10 py-0">
                 <h3 className="font-semibold mb-6 text-lg lg:text-xl">Profit & Loss</h3>
                 <div className="space-y-6 lg:space-y-8">
                   <div className="flex justify-between items-center py-4 lg:py-6 border-b">
