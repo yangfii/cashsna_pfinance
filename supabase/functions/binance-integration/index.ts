@@ -24,17 +24,25 @@ const createSignature = (params: string, secret: string): string => {
 const binanceRequest = async (endpoint: string, credentials: BinanceCredentials, params: Record<string, any> = {}) => {
   const baseUrl = 'https://api.binance.com';
   const timestamp = Date.now();
+  const recvWindow = 5000;
   
-  const queryParams = new URLSearchParams({
+  // Build query parameters
+  const allParams = {
     ...params,
     timestamp: timestamp.toString(),
-    recvWindow: '5000'
-  });
+    recvWindow: recvWindow.toString()
+  };
   
-  const signature = createSignature(queryParams.toString(), credentials.secret);
-  queryParams.append('signature', signature);
+  // Create query string for signature
+  const queryString = Object.keys(allParams)
+    .sort()
+    .map(key => `${key}=${encodeURIComponent(allParams[key])}`)
+    .join('&');
   
-  const url = `${baseUrl}${endpoint}?${queryParams.toString()}`;
+  const signature = createSignature(queryString, credentials.secret);
+  const finalQueryString = `${queryString}&signature=${signature}`;
+  
+  const url = `${baseUrl}${endpoint}?${finalQueryString}`;
   
   const response = await fetch(url, {
     headers: {
@@ -44,7 +52,9 @@ const binanceRequest = async (endpoint: string, credentials: BinanceCredentials,
   });
   
   if (!response.ok) {
-    throw new Error(`Binance API error: ${response.status} ${response.statusText}`);
+    const errorText = await response.text();
+    console.error('Binance API error response:', errorText);
+    throw new Error(`Binance API error: ${response.status} ${response.statusText} - ${errorText}`);
   }
   
   return await response.json();

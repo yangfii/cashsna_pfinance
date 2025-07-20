@@ -27,16 +27,17 @@ const bybitRequest = async (endpoint: string, credentials: BybitCredentials, par
   const timestamp = Date.now();
   const recvWindow = 5000;
   
-  // Create parameter string for signature
+  // Create parameter string for signature (sorted by key)
   const paramString = Object.keys(params)
     .sort()
-    .map(key => `${key}=${params[key]}`)
+    .map(key => `${key}=${encodeURIComponent(params[key])}`)
     .join('&');
   
+  // Create signature payload according to Bybit V5 API specification
   const signaturePayload = `${timestamp}${credentials.apiKey}${recvWindow}${paramString}`;
   const signature = createBybitSignature(signaturePayload, credentials.secret);
   
-  const url = `${baseUrl}${endpoint}?${paramString}`;
+  const url = paramString ? `${baseUrl}${endpoint}?${paramString}` : `${baseUrl}${endpoint}`;
   
   const response = await fetch(url, {
     headers: {
@@ -50,7 +51,9 @@ const bybitRequest = async (endpoint: string, credentials: BybitCredentials, par
   });
   
   if (!response.ok) {
-    throw new Error(`Bybit API error: ${response.status} ${response.statusText}`);
+    const errorText = await response.text();
+    console.error('Bybit API error response:', errorText);
+    throw new Error(`Bybit API error: ${response.status} ${response.statusText} - ${errorText}`);
   }
   
   return await response.json();
