@@ -3,12 +3,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PieChart, Pie, LineChart, Line, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Legend } from "recharts";
 import { CryptoHolding, CryptoPrice } from "@/hooks/useCryptoData";
 import { TrendingUp, TrendingDown, DollarSign, Percent } from "lucide-react";
-
 interface CryptoChartProps {
   holdings: CryptoHolding[];
   prices: Record<string, CryptoPrice>;
 }
-
 export default function CryptoChart({
   holdings,
   prices
@@ -17,14 +15,12 @@ export default function CryptoChart({
   console.log('CryptoChart Debug - Holdings:', holdings);
   console.log('CryptoChart Debug - Prices:', prices);
   console.log('CryptoChart Debug - Holdings length:', holdings.length);
-
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD'
     }).format(amount);
   };
-
   const formatPercent = (value: number) => {
     return `${value.toFixed(2)}%`;
   };
@@ -204,7 +200,6 @@ export default function CryptoChart({
     sellVolume: Math.random() * 1000,
     symbol: item.symbol
   })).sort((a, b) => a.price - b.price);
-
   return <div className="space-y-6 overflow-auto">
       {/* Portfolio Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -264,7 +259,7 @@ export default function CryptoChart({
       </div>
 
       {/* Charts Tabs */}
-      <Tabs defaultValue="overview" className="space-y-4">
+      <Tabs defaultValue="overview" className="space-y-4 px-0 mx-[5px] my-[240px]">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
@@ -429,7 +424,7 @@ export default function CryptoChart({
         {/* Depth Tab */}
         <TabsContent value="depth">
           <Card>
-            <CardHeader>
+            <CardHeader className="mx-0">
               <CardTitle>Market Depth (Simulated)</CardTitle>
             </CardHeader>
             <CardContent className="overflow-auto">

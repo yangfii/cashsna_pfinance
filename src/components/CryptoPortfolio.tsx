@@ -17,10 +17,13 @@ import CurrencySettings, { CurrencyRates } from "@/components/crypto/CurrencySet
 import AdvancedSearch from "@/components/crypto/AdvancedSearch";
 import AdvancedFilters, { FilterOptions } from "@/components/crypto/AdvancedFilters";
 import AdvancedSorting, { SortOption } from "@/components/crypto/AdvancedSorting";
-
 export default function CryptoPortfolio() {
-  const { user } = useAuth();
-  const { profile } = useProfile();
+  const {
+    user
+  } = useAuth();
+  const {
+    profile
+  } = useProfile();
   const {
     holdings,
     prices,
@@ -37,21 +40,30 @@ export default function CryptoPortfolio() {
     lastPriceUpdate,
     bulkAddHoldings
   } = useCryptoData();
-  
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
-  const [exchangeRates, setExchangeRates] = useState<CurrencyRates>({ USD: 1 });
+  const [exchangeRates, setExchangeRates] = useState<CurrencyRates>({
+    USD: 1
+  });
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('value');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [secondarySort, setSecondarySort] = useState<SortOption>();
   const [filters, setFilters] = useState<FilterOptions>({
-    valueRange: { min: null, max: null },
+    valueRange: {
+      min: null,
+      max: null
+    },
     performance: 'all',
     walletType: [],
-    dateRange: { from: null, to: null },
-    amountRange: { min: null, max: null }
+    dateRange: {
+      from: null,
+      to: null
+    },
+    amountRange: {
+      min: null,
+      max: null
+    }
   });
-
   const formatCurrency = (amount: number) => {
     const convertedAmount = amount * (exchangeRates[selectedCurrency] || 1);
     return new Intl.NumberFormat('en-US', {
@@ -59,12 +71,10 @@ export default function CryptoPortfolio() {
       currency: selectedCurrency
     }).format(convertedAmount);
   };
-
   const handleCurrencyChange = (currency: string, rates: CurrencyRates) => {
     setSelectedCurrency(currency);
     setExchangeRates(rates);
   };
-
   const handleImportHoldings = async (importedHoldings: any[]) => {
     try {
       await bulkAddHoldings(importedHoldings);
@@ -72,22 +82,18 @@ export default function CryptoPortfolio() {
       console.error('Error importing holdings:', error);
     }
   };
-
   const calculatePercentageChange = (currentValue: number, originalValue: number) => {
     return (currentValue - originalValue) / originalValue * 100;
   };
-
   const getHoldingCurrentValue = (holding: any) => {
     const currentPrice = prices[holding.symbol]?.price || 0;
     return currentPrice * holding.amount;
   };
-
   const getHoldingGainLoss = (holding: any) => {
     const currentValue = getHoldingCurrentValue(holding);
     const originalValue = holding.purchase_price * holding.amount;
     return currentValue - originalValue;
   };
-
   const getHoldingPercentChange = (holding: any) => {
     const currentValue = getHoldingCurrentValue(holding);
     const originalValue = holding.purchase_price * holding.amount;
@@ -96,10 +102,7 @@ export default function CryptoPortfolio() {
 
   // Get unique wallet types for filtering
   const walletTypes = useMemo(() => {
-    const types = holdings
-      .map(h => h.wallet_type)
-      .filter(Boolean)
-      .filter((type, index, arr) => arr.indexOf(type) === index);
+    const types = holdings.map(h => h.wallet_type).filter(Boolean).filter((type, index, arr) => arr.indexOf(type) === index);
     return types as string[];
   }, [holdings]);
 
@@ -107,12 +110,7 @@ export default function CryptoPortfolio() {
   const filteredAndSortedHoldings = useMemo(() => {
     let filtered = holdings.filter(holding => {
       // Search filter
-      const matchesSearch = !searchTerm || 
-        holding.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        holding.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        holding.wallet_type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        holding.notes?.toLowerCase().includes(searchTerm.toLowerCase());
-      
+      const matchesSearch = !searchTerm || holding.symbol.toLowerCase().includes(searchTerm.toLowerCase()) || holding.name.toLowerCase().includes(searchTerm.toLowerCase()) || holding.wallet_type?.toLowerCase().includes(searchTerm.toLowerCase()) || holding.notes?.toLowerCase().includes(searchTerm.toLowerCase());
       if (!matchesSearch) return false;
 
       // Performance filter
@@ -142,7 +140,6 @@ export default function CryptoPortfolio() {
       if (filters.walletType.length > 0) {
         if (!holding.wallet_type || !filters.walletType.includes(holding.wallet_type)) return false;
       }
-
       return true;
     });
 
@@ -176,14 +173,12 @@ export default function CryptoPortfolio() {
       // Primary sort
       const aValue = getSortValue(a, sortBy);
       const bValue = getSortValue(b, sortBy);
-      
       let primaryComparison = 0;
       if (typeof aValue === 'string' && typeof bValue === 'string') {
         primaryComparison = aValue.localeCompare(bValue);
       } else {
         primaryComparison = (aValue as number) - (bValue as number);
       }
-
       if (sortDirection === 'desc') {
         primaryComparison = -primaryComparison;
       }
@@ -192,21 +187,17 @@ export default function CryptoPortfolio() {
       if (primaryComparison === 0 && secondarySort) {
         const aSecondary = getSortValue(a, secondarySort.field);
         const bSecondary = getSortValue(b, secondarySort.field);
-        
         let secondaryComparison = 0;
         if (typeof aSecondary === 'string' && typeof bSecondary === 'string') {
           secondaryComparison = aSecondary.localeCompare(bSecondary);
         } else {
           secondaryComparison = (aSecondary as number) - (bSecondary as number);
         }
-
         if (secondarySort.direction === 'desc') {
           secondaryComparison = -secondaryComparison;
         }
-
         return secondaryComparison;
       }
-
       return primaryComparison;
     });
   }, [holdings, searchTerm, filters, sortBy, sortDirection, secondarySort, prices]);
@@ -221,18 +212,15 @@ export default function CryptoPortfolio() {
     if (filters.amountRange.min !== null || filters.amountRange.max !== null) count++;
     return count;
   }, [filters]);
-
   if (loading) {
     return <div className="flex items-center justify-center h-64">
         <div className="animate-pulse text-muted-foreground">Loading portfolio...</div>
       </div>;
   }
-
   const portfolioValue = calculatePortfolioValue();
   const totalGainLoss = calculateTotalGainLoss();
   const isGain = totalGainLoss >= 0;
   const portfolioPercentChange = portfolioValue > 0 ? calculatePercentageChange(portfolioValue, portfolioValue - totalGainLoss) : 0;
-
   return <div className="space-y-6">
       {/* Profile Header */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
@@ -311,7 +299,7 @@ export default function CryptoPortfolio() {
           </CardContent>
         </Card> : <Tabs defaultValue="portfolio" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1">
-            <TabsTrigger value="portfolio" className="text-xs sm:text-sm">
+            <TabsTrigger value="portfolio" className="text-xs sm:text-sm px-0 my-0 mx-[33px]">
               <span className="hidden sm:inline">PORTFOLIO</span>
               <span className="sm:hidden">PORT</span>
             </TabsTrigger>
@@ -346,43 +334,26 @@ export default function CryptoPortfolio() {
                     {/* Enhanced Search and Filter Controls */}
                     <div className="space-y-4 mb-6">
                       {/* Search */}
-                      <AdvancedSearch
-                        holdings={holdings}
-                        onSearch={setSearchTerm}
-                        searchTerm={searchTerm}
-                      />
+                      <AdvancedSearch holdings={holdings} onSearch={setSearchTerm} searchTerm={searchTerm} />
                       
                       {/* Filters and Sorting */}
                       <div className="flex flex-col lg:flex-row gap-4 lg:items-start">
                         <div className="flex-1">
-                          <AdvancedFilters
-                            filters={filters}
-                            onFiltersChange={setFilters}
-                            walletTypes={walletTypes}
-                            activeFiltersCount={activeFiltersCount}
-                          />
+                          <AdvancedFilters filters={filters} onFiltersChange={setFilters} walletTypes={walletTypes} activeFiltersCount={activeFiltersCount} />
                         </div>
                         
                         <div className="lg:w-auto">
-                          <AdvancedSorting
-                            sortBy={sortBy}
-                            sortDirection={sortDirection}
-                            onSortChange={(field, direction) => {
-                              setSortBy(field);
-                              setSortDirection(direction);
-                            }}
-                            secondarySort={secondarySort}
-                            onSecondarySortChange={setSecondarySort}
-                          />
+                          <AdvancedSorting sortBy={sortBy} sortDirection={sortDirection} onSortChange={(field, direction) => {
+                        setSortBy(field);
+                        setSortDirection(direction);
+                      }} secondarySort={secondarySort} onSecondarySortChange={setSecondarySort} />
                         </div>
                       </div>
 
                       {/* Results Count */}
-                      {filteredAndSortedHoldings.length !== holdings.length && (
-                        <div className="text-sm text-muted-foreground">
+                      {filteredAndSortedHoldings.length !== holdings.length && <div className="text-sm text-muted-foreground">
                           Showing {filteredAndSortedHoldings.length} of {holdings.length} assets
-                        </div>
-                      )}
+                        </div>}
                     </div>
                     
                     <div className="overflow-x-auto">
@@ -397,19 +368,16 @@ export default function CryptoPortfolio() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {filteredAndSortedHoldings.length === 0 ? (
-                          <TableRow>
+                        {filteredAndSortedHoldings.length === 0 ? <TableRow>
                             <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
                               No assets match your current filters
                             </TableCell>
-                          </TableRow>
-                        ) : (
-                          filteredAndSortedHoldings.map((holding, index) => {
-                            const currentPrice = prices[holding.symbol]?.price || 0;
-                            const currentValue = getHoldingCurrentValue(holding);
-                            const percentChange = getHoldingPercentChange(holding);
-                            const isPositive = percentChange >= 0;
-                            return <TableRow key={holding.id}>
+                          </TableRow> : filteredAndSortedHoldings.map((holding, index) => {
+                        const currentPrice = prices[holding.symbol]?.price || 0;
+                        const currentValue = getHoldingCurrentValue(holding);
+                        const percentChange = getHoldingPercentChange(holding);
+                        const isPositive = percentChange >= 0;
+                        return <TableRow key={holding.id}>
                                     <TableCell className="font-medium text-xs sm:text-sm">{index + 1}</TableCell>
                                     <TableCell>
                                       <div className="flex items-center gap-1 sm:gap-2">
@@ -420,11 +388,9 @@ export default function CryptoPortfolio() {
                                         </div>
                                         <div>
                                           <span className="font-medium text-xs sm:text-sm">{holding.symbol}</span>
-                                          {holding.wallet_type && (
-                                            <div className="text-xs text-muted-foreground capitalize">
+                                          {holding.wallet_type && <div className="text-xs text-muted-foreground capitalize">
                                               {holding.wallet_type}
-                                            </div>
-                                          )}
+                                            </div>}
                                         </div>
                                       </div>
                                     </TableCell>
@@ -453,8 +419,7 @@ export default function CryptoPortfolio() {
                                       </div>
                                     </TableCell>
                                   </TableRow>;
-                          })
-                        )}
+                      })}
                       </TableBody>
                     </Table>
                     </div>
@@ -496,7 +461,7 @@ export default function CryptoPortfolio() {
 
           <TabsContent value="balances">
             <Card>
-              <CardContent className="p-6">
+              <CardContent className="p-6 mx-0 py-0 my-0">
                 <h3 className="font-semibold mb-4">Balance History</h3>
                 <div className="h-96">
                   <CryptoChart holdings={holdings} prices={prices} />
