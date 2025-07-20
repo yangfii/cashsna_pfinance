@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ReportDialog } from "@/components/ReportDialog";
-
 const getNavItems = (t: (key: string) => string) => [{
   to: "/dashboard",
   icon: LayoutDashboard,
@@ -53,7 +52,6 @@ const getNavItems = (t: (key: string) => string) => [{
   label: t("nav.settings"),
   key: "settings"
 }];
-
 function AppSidebar() {
   const {
     user,
@@ -71,7 +69,6 @@ function AppSidebar() {
     state
   } = useSidebar();
   const navItems = getNavItems(t);
-
   const handleSignOut = async () => {
     try {
       console.log('Starting sign out process...');
@@ -91,10 +88,9 @@ function AppSidebar() {
       toast.error('Unexpected error during sign out');
     }
   };
-
   return <Sidebar variant="inset" collapsible="icon" className="py-0 my-0 mx-px px-0">
       <SidebarHeader className="mx-0 px-0 py-[7px] my-0">
-        <div className="flex items-center gap-2 px-2 py-1">
+        <div className="flex items-center gap-2 py-1 my-0 mx-[4px] px-[12px]">
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <LayoutDashboard className="size-4" />
           </div>
@@ -165,7 +161,6 @@ function AppSidebar() {
       </SidebarFooter>
     </Sidebar>;
 }
-
 export default function Layout() {
   const navigate = useNavigate();
   const {
