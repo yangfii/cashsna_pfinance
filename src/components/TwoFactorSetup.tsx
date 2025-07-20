@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
@@ -30,33 +31,41 @@ export function TwoFactorSetup() {
   console.log('2FA Setup - User:', user?.email);
   console.log('2FA Setup - Settings:', twoFASettings);
 
-  const [setupStep, setSetupStep] = useState<'generate' | 'verify'>('generate');
   const [secret, setSecret] = useState<any>(null);
   const [qrCode, setQrCode] = useState<string>('');
   const [verificationCode, setVerificationCode] = useState('');
   const [backupCodes, setBackupCodes] = useState<string[]>([]);
   const [showBackupCodes, setShowBackupCodes] = useState(false);
   const [isSetupOpen, setIsSetupOpen] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     fetch2FASettings();
   }, [fetch2FASettings]);
 
-  const handleGenerateSecret = async () => {
+  const handleStartSetup = async () => {
     try {
-      console.log('Generating 2FA secret...');
+      setIsGenerating(true);
+      console.log('Starting 2FA setup...');
+      
       const newSecret = generate2FASecret();
       console.log('Generated secret:', newSecret);
       setSecret(newSecret);
       
-      console.log('Generating QR code for:', newSecret.otpauth_url);
-      const qrCodeUrl = await generateQRCode(newSecret.otpauth_url!);
-      console.log('Generated QR code URL:', qrCodeUrl);
-      setQrCode(qrCodeUrl);
-      setSetupStep('verify');
+      if (newSecret.otpauth_url) {
+        console.log('Generating QR code for:', newSecret.otpauth_url);
+        const qrCodeUrl = await generateQRCode(newSecret.otpauth_url);
+        console.log('Generated QR code URL:', qrCodeUrl);
+        setQrCode(qrCodeUrl);
+      } else {
+        console.error('No otpauth_url generated');
+        toast.error('Failed to generate QR code');
+      }
     } catch (error) {
-      console.error('Error generating secret:', error);
+      console.error('Error during setup:', error);
       toast.error('Failed to generate 2FA secret');
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -80,7 +89,6 @@ export function TwoFactorSetup() {
 
     toast.success('2FA enabled successfully!');
     setIsSetupOpen(false);
-    setSetupStep('generate');
     setVerificationCode('');
     setSecret(null);
     setQrCode('');
@@ -131,6 +139,12 @@ export function TwoFactorSetup() {
     toast.success('Backup codes downloaded');
   };
 
+  const resetSetup = () => {
+    setSecret(null);
+    setQrCode('');
+    setVerificationCode('');
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -165,67 +179,100 @@ export function TwoFactorSetup() {
         {!twoFASettings?.is_enabled ? (
           <Dialog open={isSetupOpen} onOpenChange={(open) => {
             setIsSetupOpen(open);
-            if (open) {
-              handleGenerateSecret();
+            if (!open) {
+              resetSetup();
             }
           }}>
             <DialogTrigger asChild>
-              <Button>
+              <Button onClick={handleStartSetup}>
                 Enable 2FA
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-md">
+            <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Setup Two-Factor Authentication</DialogTitle>
+                <DialogTitle className="flex items-center gap-2">
+                  <QrCode className="h-5 w-5" />
+                  Setup Two-Factor Authentication
+                </DialogTitle>
               </DialogHeader>
               
-              {setupStep === 'generate' && (
-                <div className="space-y-4">
-                  <p className="text-sm text-muted-foreground">
-                    Scan the QR code below with your authenticator app (Google Authenticator, Authy, etc.)
-                  </p>
-                  
-                  {qrCode && (
-                    <div className="flex flex-col items-center space-y-4">
-                      <img src={qrCode} alt="2FA QR Code" className="border rounded-lg" />
-                      
-                      <div className="w-full">
-                        <Label htmlFor="manual-key">Manual Entry Key</Label>
-                        <div className="flex items-center space-x-2">
-                          <Input
-                            id="manual-key"
-                            value={secret?.secret || ''}
-                            readOnly
-                            className="font-mono text-xs"
-                          />
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => copyToClipboard(secret?.secret || '')}
-                          >
-                            <Copy className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                      
-                      <div className="w-full">
-                        <Label htmlFor="verification-code">Verification Code</Label>
-                        <Input
-                          id="verification-code"
-                          placeholder="Enter 6-digit code"
-                          value={verificationCode}
-                          onChange={(e) => setVerificationCode(e.target.value)}
-                          maxLength={6}
-                        />
-                      </div>
-                      
-                      <Button onClick={handleEnable2FA} disabled={loading} className="w-full">
-                        {loading ? 'Verifying...' : 'Enable 2FA'}
-                      </Button>
+              <div className="space-y-6">
+                <Alert>
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription>
+                    Scan the QR code below with your authenticator app (Google Authenticator, Authy, etc.) or enter the secret key manually.
+                  </AlertDescription>
+                </Alert>
+
+                {isGenerating ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="text-center space-y-2">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                      <p className="text-sm text-muted-foreground">Generating QR code...</p>
                     </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                ) : (
+                  <>
+                    {qrCode ? (
+                      <div className="flex flex-col items-center space-y-4">
+                        <div className="p-4 bg-white rounded-lg border">
+                          <img src={qrCode} alt="2FA QR Code" className="w-48 h-48" />
+                        </div>
+                        
+                        <div className="w-full space-y-2">
+                          <Label htmlFor="manual-key" className="text-sm font-medium">
+                            Manual Entry Key (if you can't scan QR code)
+                          </Label>
+                          <div className="flex items-center space-x-2">
+                            <Input
+                              id="manual-key"
+                              value={secret?.secret || ''}
+                              readOnly
+                              className="font-mono text-xs"
+                            />
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => copyToClipboard(secret?.secret || '')}
+                            >
+                              <Copy className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        <div className="w-full space-y-2">
+                          <Label htmlFor="verification-code" className="text-sm font-medium">
+                            Enter 6-digit verification code from your authenticator app
+                          </Label>
+                          <Input
+                            id="verification-code"
+                            placeholder="000000"
+                            value={verificationCode}
+                            onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                            maxLength={6}
+                            className="text-center text-lg tracking-widest"
+                          />
+                        </div>
+                        
+                        <Button 
+                          onClick={handleEnable2FA} 
+                          disabled={loading || verificationCode.length !== 6} 
+                          className="w-full"
+                        >
+                          {loading ? 'Verifying...' : 'Enable 2FA'}
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <p className="text-muted-foreground">QR code not available. Please try again.</p>
+                        <Button onClick={handleStartSetup} variant="outline" className="mt-2">
+                          Regenerate QR Code
+                        </Button>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
             </DialogContent>
           </Dialog>
         ) : (
