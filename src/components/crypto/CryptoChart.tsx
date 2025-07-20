@@ -296,7 +296,7 @@ export default function CryptoChart({
         <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-1">
           <TabsTrigger value="overview" className="text-xs sm:text-sm px-2 sm:px-3">
             <span className="hidden sm:inline">Overview</span>
-            <span className="sm:hidden">Home</span>
+            <span className="sm:hidden mx-0">Home</span>
           </TabsTrigger>
           <TabsTrigger value="performance" className="text-xs sm:text-sm px-2 sm:px-3">
             <span className="hidden sm:inline">Performance</span>
