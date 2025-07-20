@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type Transaction = {
   id: string;
@@ -33,6 +34,7 @@ export default function Dashboard() {
   const { toast } = useToast();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   // Fetch transactions on mount
   useEffect(() => {
@@ -256,8 +258,8 @@ export default function Dashboard() {
 
 
       {/* Main Dashboard Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-        <div className="xl:col-span-3 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="lg:col-span-3 space-y-6">
           {/* Quick Actions */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 animate-slide-up">
             <Card className="stat-card hover:shadow-glow transition-smooth cursor-pointer">
@@ -291,7 +293,7 @@ export default function Dashboard() {
         </div>
         
         {/* Profile Card */}
-        <div className="xl:col-span-1">
+        <div className="lg:col-span-1">
           <ProfileCard />
         </div>
       </div>

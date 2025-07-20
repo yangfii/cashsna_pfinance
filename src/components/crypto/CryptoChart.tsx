@@ -4,6 +4,7 @@ import { PieChart, Pie, LineChart, Line, BarChart, Bar, AreaChart, Area, XAxis, 
 import { CryptoHolding, CryptoPrice } from "@/hooks/useCryptoData";
 import { TrendingUp, TrendingDown, DollarSign, Percent } from "lucide-react";
 import DonutChartLegend from "./DonutChartLegend";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface CryptoChartProps {
   holdings: CryptoHolding[];
@@ -14,6 +15,7 @@ export default function CryptoChart({
   holdings,
   prices
 }: CryptoChartProps) {
+  const isMobile = useIsMobile();
   // Debug logging
   console.log('CryptoChart Debug - Holdings:', holdings);
   console.log('CryptoChart Debug - Prices:', prices);
@@ -335,12 +337,14 @@ export default function CryptoChart({
                       </div>
                     </div>
                     
-                    {/* Custom Legend */}
-                    <DonutChartLegend 
-                      topTokens={topTokens}
-                      overflowTokens={overflowTokens}
-                      totalValue={totalValue}
-                    />
+                    {/* Custom Legend - Hidden on mobile */}
+                    {!isMobile && (
+                      <DonutChartLegend 
+                        topTokens={topTokens}
+                        overflowTokens={overflowTokens}
+                        totalValue={totalValue}
+                      />
+                    )}
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center h-[300px] text-center space-y-4">
@@ -578,9 +582,9 @@ export default function CryptoChart({
                       name === 'value' ? 'Current Value' : 'Initial Investment'
                     ]}
                   />
-                  <Legend />
-                  <Bar dataKey="value" fill="hsl(var(--primary))" name="Current Value" />
-                  <Bar dataKey="initialValue" fill="hsl(var(--secondary))" name="Initial Investment" />
+                   {!isMobile && <Legend />}
+                   <Bar dataKey="value" fill="hsl(var(--primary))" name="Current Value" />
+                   <Bar dataKey="initialValue" fill="hsl(var(--secondary))" name="Initial Investment" />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>

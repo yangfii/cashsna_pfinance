@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TrendingUp, TrendingDown, Share, Bell, Plus, MoreHorizontal, Twitter, Link2 } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useCryptoData } from "@/hooks/useCryptoData";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
@@ -22,6 +24,7 @@ import AdvancedSorting, { SortOption } from "@/components/crypto/AdvancedSorting
 export default function CryptoPortfolio() {
   const { user } = useAuth();
   const { profile } = useProfile();
+  const isMobile = useIsMobile();
   const {
     holdings,
     prices,
@@ -296,53 +299,71 @@ export default function CryptoPortfolio() {
       ) : (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <div className="flex items-center gap-2">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 flex-1">
-              <TabsTrigger value="portfolio" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
-                <span className="hidden sm:inline truncate">PORTFOLIO</span>
-                <span className="sm:hidden truncate">PORT</span>
-              </TabsTrigger>
-              <TabsTrigger value="holdings" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
-                <span className="hidden lg:inline truncate">HOLDINGS BY CHAIN</span>
-                <span className="lg:hidden truncate">HOLDINGS</span>
-              </TabsTrigger>
-              <TabsTrigger value="archive" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
-                <span className="hidden lg:inline truncate">PORTFOLIO ARCHIVE</span>
-                <span className="lg:hidden truncate">ARCHIVE</span>
-              </TabsTrigger>
-              <TabsTrigger value="balances" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
-                <span className="hidden lg:inline truncate">BALANCES HISTORY</span>
-                <span className="lg:hidden truncate">BALANCES</span>
-              </TabsTrigger>
-              <TabsTrigger value="tokens" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
-                <span className="hidden lg:inline truncate">TOKEN BALANCES HISTORY</span>
-                <span className="lg:hidden truncate">TOKENS</span>
-              </TabsTrigger>
-            </TabsList>
+            {isMobile ? (
+              <Select value={activeTab} onValueChange={setActiveTab}>
+                <SelectTrigger className="flex-1">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="portfolio">PORTFOLIO</SelectItem>
+                  <SelectItem value="holdings">HOLDINGS BY CHAIN</SelectItem>
+                  <SelectItem value="archive">PORTFOLIO ARCHIVE</SelectItem>
+                  <SelectItem value="balances">BALANCES HISTORY</SelectItem>
+                  <SelectItem value="tokens">TOKEN BALANCES HISTORY</SelectItem>
+                  <SelectItem value="profit">PROFIT & LOSS</SelectItem>
+                </SelectContent>
+              </Select>
+            ) : (
+              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 flex-1">
+                <TabsTrigger value="portfolio" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
+                  <span className="hidden sm:inline truncate">PORTFOLIO</span>
+                  <span className="sm:hidden truncate">PORT</span>
+                </TabsTrigger>
+                <TabsTrigger value="holdings" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
+                  <span className="hidden lg:inline truncate">HOLDINGS BY CHAIN</span>
+                  <span className="lg:hidden truncate">HOLDINGS</span>
+                </TabsTrigger>
+                <TabsTrigger value="archive" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
+                  <span className="hidden lg:inline truncate">PORTFOLIO ARCHIVE</span>
+                  <span className="lg:hidden truncate">ARCHIVE</span>
+                </TabsTrigger>
+                <TabsTrigger value="balances" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
+                  <span className="hidden lg:inline truncate">BALANCES HISTORY</span>
+                  <span className="lg:hidden truncate">BALANCES</span>
+                </TabsTrigger>
+                <TabsTrigger value="tokens" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
+                  <span className="hidden lg:inline truncate">TOKEN BALANCES HISTORY</span>
+                  <span className="lg:hidden truncate">TOKENS</span>
+                </TabsTrigger>
+              </TabsList>
+            )}
             
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="text-xs">
-                <Plus className="h-3 w-3 mr-1" />
-                More+
-              </Button>
-              
-              <div className="hidden lg:flex items-center gap-2">
-                <Button 
-                  variant={activeTab === 'profit' ? 'default' : 'outline'} 
-                  size="sm" 
-                  className="text-xs border rounded-md px-3 py-1"
-                  onClick={() => setActiveTab('profit')}
-                >
-                  <span className="hidden lg:inline">PROFIT & LOSS</span>
-                  <span className="lg:hidden">P&L</span>
+            {!isMobile && (
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" className="text-xs">
+                  <Plus className="h-3 w-3 mr-1" />
+                  More+
                 </Button>
+                
+                <div className="hidden lg:flex items-center gap-2">
+                  <Button 
+                    variant={activeTab === 'profit' ? 'default' : 'outline'} 
+                    size="sm" 
+                    className="text-xs border rounded-md px-3 py-1"
+                    onClick={() => setActiveTab('profit')}
+                  >
+                    <span className="hidden lg:inline">PROFIT & LOSS</span>
+                    <span className="lg:hidden">P&L</span>
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           <TabsContent value="portfolio">
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Portfolio Table */}
-              <div className="xl:col-span-2">
+              <div className="lg:col-span-2">
                 <Card>
                   <CardContent className="p-4">
                     {/* Enhanced Search and Filter Controls */}
@@ -472,6 +493,11 @@ export default function CryptoPortfolio() {
                 <Card>
                   <CardContent className="p-4 lg:p-6">
                     <h3 className="font-semibold mb-4 text-sm lg:text-base">BALANCES HISTORY</h3>
+                    {isMobile && (
+                      <p className="text-xs text-muted-foreground mb-2">
+                        Chart legends hidden on mobile for better readability
+                      </p>
+                    )}
                     <div className="h-48 sm:h-64 overflow-auto">
                       <CryptoChart holdings={holdings} prices={prices} />
                     </div>
