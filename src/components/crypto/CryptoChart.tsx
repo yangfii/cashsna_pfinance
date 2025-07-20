@@ -3,10 +3,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PieChart, Pie, LineChart, Line, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Legend } from "recharts";
 import { CryptoHolding, CryptoPrice } from "@/hooks/useCryptoData";
 import { TrendingUp, TrendingDown, DollarSign, Percent } from "lucide-react";
+import DonutChartLegend from "./DonutChartLegend";
+
 interface CryptoChartProps {
   holdings: CryptoHolding[];
   prices: Record<string, CryptoPrice>;
 }
+
 export default function CryptoChart({
   holdings,
   prices
@@ -15,12 +18,14 @@ export default function CryptoChart({
   console.log('CryptoChart Debug - Holdings:', holdings);
   console.log('CryptoChart Debug - Prices:', prices);
   console.log('CryptoChart Debug - Holdings length:', holdings.length);
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD'
     }).format(amount);
   };
+
   const formatPercent = (value: number) => {
     return `${value.toFixed(2)}%`;
   };
@@ -58,6 +63,7 @@ export default function CryptoChart({
     const initialValue = holding.amount * holding.purchase_price;
     const gainLoss = currentValue - initialValue;
     const gainLossPercent = initialValue > 0 ? (currentValue - initialValue) / initialValue * 100 : 0;
+    
     console.log(`Portfolio calculation for ${holding.symbol}:`, {
       symbol: holding.symbol,
       amount: holding.amount,
@@ -66,6 +72,7 @@ export default function CryptoChart({
       initialValue,
       priceData: prices[holding.symbol]
     });
+    
     return {
       name: holding.name,
       symbol: holding.symbol.toUpperCase(),
@@ -79,36 +86,28 @@ export default function CryptoChart({
       initialValue
     };
   });
+  
   console.log('Final portfolio data for charts:', portfolioData);
+  
   const totalValue = portfolioData.reduce((sum, item) => sum + item.value, 0);
   const totalGainLoss = portfolioData.reduce((sum, item) => sum + item.gainLoss, 0);
   const totalInitialValue = portfolioData.reduce((sum, item) => sum + item.initialValue, 0);
   const totalGainLossPercent = totalInitialValue > 0 ? (totalValue - totalInitialValue) / totalInitialValue * 100 : 0;
 
   // Professional crypto-specific color palette
-  const cryptoColorPalette = ['#F7931A',
-  // Bitcoin Orange
-  '#627EEA',
-  // Ethereum Blue  
-  '#0033AD',
-  // Cardano Blue
-  '#9945FF',
-  // Solana Purple
-  '#E6007A',
-  // Polkadot Pink
-  '#00D4AA',
-  // Tether Green
-  '#F3BA2F',
-  // Binance Coin Yellow
-  '#26A17B',
-  // USDC Green
-  '#FF6B35',
-  // Additional Orange
-  '#8B5CF6',
-  // Additional Purple
-  '#06B6D4',
-  // Additional Cyan
-  '#F59E0B' // Additional Amber
+  const cryptoColorPalette = [
+    '#F7931A', // Bitcoin Orange
+    '#627EEA', // Ethereum Blue  
+    '#0033AD', // Cardano Blue
+    '#9945FF', // Solana Purple
+    '#E6007A', // Polkadot Pink
+    '#00D4AA', // Tether Green
+    '#F3BA2F', // Binance Coin Yellow
+    '#26A17B', // USDC Green
+    '#FF6B35', // Additional Orange
+    '#8B5CF6', // Additional Purple
+    '#06B6D4', // Additional Cyan
+    '#F59E0B'  // Additional Amber
   ];
 
   // Function to get professional color for crypto
@@ -117,37 +116,26 @@ export default function CryptoChart({
 
     // Assign brand-specific colors for known cryptocurrencies
     const cryptoColors: Record<string, string> = {
-      'btc': '#F7931A',
-      // Bitcoin Orange
+      'btc': '#F7931A', // Bitcoin Orange
       'bitcoin': '#F7931A',
-      'eth': '#627EEA',
-      // Ethereum Blue
+      'eth': '#627EEA', // Ethereum Blue
       'ethereum': '#627EEA',
-      'ada': '#0033AD',
-      // Cardano Blue
+      'ada': '#0033AD', // Cardano Blue
       'cardano': '#0033AD',
-      'sol': '#9945FF',
-      // Solana Purple
+      'sol': '#9945FF', // Solana Purple
       'solana': '#9945FF',
-      'dot': '#E6007A',
-      // Polkadot Pink
+      'dot': '#E6007A', // Polkadot Pink
       'polkadot': '#E6007A',
-      'usdt': '#00D4AA',
-      // Tether Green
+      'usdt': '#00D4AA', // Tether Green
       'tether': '#00D4AA',
-      'bnb': '#F3BA2F',
-      // Binance Coin Yellow
+      'bnb': '#F3BA2F', // Binance Coin Yellow
       'binance': '#F3BA2F',
-      'usdc': '#26A17B',
-      // USDC Green
-      'xrp': '#23292F',
-      // XRP Black
+      'usdc': '#26A17B', // USDC Green
+      'xrp': '#23292F', // XRP Black
       'ripple': '#23292F',
-      'matic': '#8247E5',
-      // Polygon Purple
+      'matic': '#8247E5', // Polygon Purple
       'polygon': '#8247E5',
-      'avax': '#E84142',
-      // Avalanche Red
+      'avax': '#E84142', // Avalanche Red
       'avalanche': '#E84142'
     };
 
@@ -155,43 +143,74 @@ export default function CryptoChart({
     return cryptoColors[symbolLower] || cryptoColorPalette[index % cryptoColorPalette.length];
   };
 
+  // Prepare data for donut chart legend
+  const prepareDonutChartData = () => {
+    // Sort by value descending
+    const sortedData = [...portfolioData].sort((a, b) => b.value - a.value);
+    
+    // Calculate percentages
+    const dataWithPercent = sortedData.map((item, index) => ({
+      name: item.name,
+      symbol: item.symbol,
+      value: item.value,
+      percent: totalValue > 0 ? (item.value / totalValue) * 100 : 0,
+      color: getCryptoColor(item.symbol, index)
+    }));
+
+    // Split into top 5 and overflow
+    const topTokens = dataWithPercent.slice(0, 5);
+    const overflowTokens = dataWithPercent.slice(5);
+
+    return { topTokens, overflowTokens, sortedData: dataWithPercent };
+  };
+
+  const { topTokens, overflowTokens, sortedData } = prepareDonutChartData();
+
   // Enhanced historical data with ROI tracking
-  const performanceData = [{
-    date: 'Jan',
-    value: totalValue * 0.7,
-    invested: totalInitialValue * 0.7,
-    roi: (totalValue * 0.7 - totalInitialValue * 0.7) / (totalInitialValue * 0.7) * 100
-  }, {
-    date: 'Feb',
-    value: totalValue * 0.75,
-    invested: totalInitialValue * 0.75,
-    roi: (totalValue * 0.75 - totalInitialValue * 0.75) / (totalInitialValue * 0.75) * 100
-  }, {
-    date: 'Mar',
-    value: totalValue * 0.8,
-    invested: totalInitialValue * 0.8,
-    roi: (totalValue * 0.8 - totalInitialValue * 0.8) / (totalInitialValue * 0.8) * 100
-  }, {
-    date: 'Apr',
-    value: totalValue * 0.85,
-    invested: totalInitialValue * 0.85,
-    roi: (totalValue * 0.85 - totalInitialValue * 0.85) / (totalInitialValue * 0.85) * 100
-  }, {
-    date: 'May',
-    value: totalValue * 0.9,
-    invested: totalInitialValue * 0.9,
-    roi: (totalValue * 0.9 - totalInitialValue * 0.9) / (totalInitialValue * 0.9) * 100
-  }, {
-    date: 'Jun',
-    value: totalValue * 0.95,
-    invested: totalInitialValue * 0.95,
-    roi: (totalValue * 0.95 - totalInitialValue * 0.95) / (totalInitialValue * 0.95) * 100
-  }, {
-    date: 'Jul',
-    value: totalValue,
-    invested: totalInitialValue,
-    roi: totalGainLossPercent
-  }];
+  const performanceData = [
+    {
+      date: 'Jan',
+      value: totalValue * 0.7,
+      invested: totalInitialValue * 0.7,
+      roi: (totalValue * 0.7 - totalInitialValue * 0.7) / (totalInitialValue * 0.7) * 100
+    },
+    {
+      date: 'Feb',
+      value: totalValue * 0.75,
+      invested: totalInitialValue * 0.75,
+      roi: (totalValue * 0.75 - totalInitialValue * 0.75) / (totalInitialValue * 0.75) * 100
+    },
+    {
+      date: 'Mar',
+      value: totalValue * 0.8,
+      invested: totalInitialValue * 0.8,
+      roi: (totalValue * 0.8 - totalInitialValue * 0.8) / (totalInitialValue * 0.8) * 100
+    },
+    {
+      date: 'Apr',
+      value: totalValue * 0.85,
+      invested: totalInitialValue * 0.85,
+      roi: (totalValue * 0.85 - totalInitialValue * 0.85) / (totalInitialValue * 0.85) * 100
+    },
+    {
+      date: 'May',
+      value: totalValue * 0.9,
+      invested: totalInitialValue * 0.9,
+      roi: (totalValue * 0.9 - totalInitialValue * 0.9) / (totalInitialValue * 0.9) * 100
+    },
+    {
+      date: 'Jun',
+      value: totalValue * 0.95,
+      invested: totalInitialValue * 0.95,
+      roi: (totalValue * 0.95 - totalInitialValue * 0.95) / (totalInitialValue * 0.95) * 100
+    },
+    {
+      date: 'Jul',
+      value: totalValue,
+      invested: totalInitialValue,
+      roi: totalGainLossPercent
+    }
+  ];
 
   // Sample depth chart data
   const depthData = portfolioData.map((item, index) => ({
@@ -200,7 +219,9 @@ export default function CryptoChart({
     sellVolume: Math.random() * 1000,
     symbol: item.symbol
   })).sort((a, b) => a.price - b.price);
-  return <div className="space-y-6 overflow-auto">
+
+  return (
+    <div className="space-y-6 overflow-auto">
       {/* Portfolio Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
@@ -224,7 +245,11 @@ export default function CryptoChart({
                   {formatCurrency(totalGainLoss)}
                 </p>
               </div>
-              {totalGainLoss >= 0 ? <TrendingUp className="h-8 w-8 text-green-500" /> : <TrendingDown className="h-8 w-8 text-red-500" />}
+              {totalGainLoss >= 0 ? (
+                <TrendingUp className="h-8 w-8 text-green-500" />
+              ) : (
+                <TrendingDown className="h-8 w-8 text-red-500" />
+              )}
             </div>
           </CardContent>
         </Card>
@@ -259,7 +284,7 @@ export default function CryptoChart({
       </div>
 
       {/* Charts Tabs */}
-      <Tabs defaultValue="overview" className="space-y-4 px-0 mx-0 my-[238px]">
+      <Tabs defaultValue="overview" className="space-y-4">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
@@ -275,27 +300,55 @@ export default function CryptoChart({
               <CardHeader>
                 <CardTitle>Portfolio Distribution</CardTitle>
               </CardHeader>
-              <CardContent className="px-0 py-6 overflow-auto">
+              <CardContent className="p-6">
                 {portfolioData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie data={portfolioData} cx="50%" cy="50%" innerRadius={60} outerRadius={120} fill="#8884d8" dataKey="value" label={({
-                      symbol,
-                      percent
-                    }) => `${symbol} ${(percent * 100).toFixed(1)}%`}>
-                        {portfolioData.map((entry, index) => <Cell key={`cell-${index}`} fill={getCryptoColor(entry.symbol, index)} />)}
-                      </Pie>
-                      <Tooltip formatter={(value: number) => formatCurrency(value)} />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    {/* Donut Chart */}
+                    <div className="relative">
+                      <ResponsiveContainer width="100%" height={280}>
+                        <PieChart>
+                          <Pie
+                            data={sortedData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={70}
+                            outerRadius={120}
+                            paddingAngle={2}
+                            dataKey="value"
+                          >
+                            {sortedData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <Tooltip 
+                            formatter={(value: number) => [formatCurrency(value), 'Value']}
+                            labelFormatter={(label) => `${label}`}
+                          />
+                        </PieChart>
+                      </ResponsiveContainer>
+                      {/* Center Text */}
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="text-center">
+                          <p className="text-xs text-muted-foreground">Total</p>
+                          <p className="text-lg font-bold">{formatCurrency(totalValue)}</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Custom Legend */}
+                    <DonutChartLegend 
+                      topTokens={topTokens}
+                      overflowTokens={overflowTokens}
+                      totalValue={totalValue}
+                    />
+                  </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center h-[300px] text-center space-y-4">
                     <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
                       <PieChart className="w-8 h-8 text-muted-foreground" />
                     </div>
                     <div className="space-y-2">
-                      <p className="text-muted-foreground font-medium">No data to display yet</p>
+                      <p className="text-muted-foreground font-medium">No data to display yet</p>  
                       <p className="text-sm text-muted-foreground">Add holdings to see chart distribution</p>
                     </div>
                   </div>
@@ -321,7 +374,14 @@ export default function CryptoChart({
                       <XAxis dataKey="date" />
                       <YAxis tickFormatter={value => formatCurrency(value)} />
                       <Tooltip formatter={(value: number) => formatCurrency(value)} />
-                      <Area type="monotone" dataKey="value" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorValue)" strokeWidth={2} />
+                      <Area
+                        type="monotone"
+                        dataKey="value"
+                        stroke="hsl(var(--primary))"
+                        fillOpacity={1}
+                        fill="url(#colorValue)"
+                        strokeWidth={2}
+                      />
                     </AreaChart>
                   </ResponsiveContainer>
                 ) : (
@@ -349,11 +409,19 @@ export default function CryptoChart({
             <CardContent className="overflow-auto">
               <ResponsiveContainer width="100%" height={400}>
                 <PieChart>
-                  <Pie data={portfolioData} cx="50%" cy="50%" labelLine={false} label={({
-                  name,
-                  percent
-                }) => `${name} (${(percent * 100).toFixed(1)}%)`} outerRadius={150} fill="#8884d8" dataKey="value">
-                    {portfolioData.map((entry, index) => <Cell key={`cell-${index}`} fill={getCryptoColor(entry.symbol, index)} />)}
+                  <Pie
+                    data={portfolioData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name} (${(percent * 100).toFixed(1)}%)`}
+                    outerRadius={150}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {portfolioData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={getCryptoColor(entry.symbol, index)} />
+                    ))}
                   </Pie>
                   <Tooltip formatter={(value: number) => formatCurrency(value)} />
                 </PieChart>
@@ -376,22 +444,43 @@ export default function CryptoChart({
                     <XAxis dataKey="date" />
                     <YAxis yAxisId="left" tickFormatter={value => formatCurrency(value)} />
                     <YAxis yAxisId="right" orientation="right" tickFormatter={value => formatPercent(value)} />
-                    <Tooltip formatter={(value: number, name: string) => [name === 'value' ? formatCurrency(value) : name === 'invested' ? formatCurrency(value) : formatPercent(value), name === 'value' ? 'Current Value' : name === 'invested' ? 'Invested' : 'ROI']} />
-                    <Line yAxisId="left" type="monotone" dataKey="value" stroke="hsl(var(--primary))" strokeWidth={3} dot={{
-                    fill: 'hsl(var(--primary))',
-                    strokeWidth: 2,
-                    r: 4
-                  }} name="Current Value" />
-                    <Line yAxisId="left" type="monotone" dataKey="invested" stroke="hsl(var(--secondary))" strokeWidth={2} strokeDasharray="5 5" dot={{
-                    fill: 'hsl(var(--secondary))',
-                    strokeWidth: 2,
-                    r: 3
-                  }} name="Invested" />
-                    <Line yAxisId="right" type="monotone" dataKey="roi" stroke="#10b981" strokeWidth={2} dot={{
-                    fill: '#10b981',
-                    strokeWidth: 2,
-                    r: 3
-                  }} name="ROI %" />
+                    <Tooltip
+                      formatter={(value: number, name: string) => [
+                        name === 'value' ? formatCurrency(value) : 
+                        name === 'invested' ? formatCurrency(value) : 
+                        formatPercent(value),
+                        name === 'value' ? 'Current Value' : 
+                        name === 'invested' ? 'Invested' : 'ROI'
+                      ]}
+                    />
+                    <Line
+                      yAxisId="left"
+                      type="monotone"
+                      dataKey="value"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth={3}
+                      dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 4 }}
+                      name="Current Value"
+                    />
+                    <Line
+                      yAxisId="left"
+                      type="monotone"
+                      dataKey="invested"
+                      stroke="hsl(var(--secondary))"
+                      strokeWidth={2}
+                      strokeDasharray="5 5"
+                      dot={{ fill: 'hsl(var(--secondary))', strokeWidth: 2, r: 3 }}
+                      name="Invested"
+                    />
+                    <Line
+                      yAxisId="right"
+                      type="monotone"
+                      dataKey="roi"
+                      stroke="#10b981"
+                      strokeWidth={2}
+                      dot={{ fill: '#10b981', strokeWidth: 2, r: 3 }}
+                      name="ROI %"
+                    />
                   </LineChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -409,7 +498,9 @@ export default function CryptoChart({
                     <YAxis tickFormatter={value => formatCurrency(value)} />
                     <Tooltip formatter={(value: number) => [formatCurrency(value), 'P&L']} />
                     <Bar dataKey="gainLoss" radius={[4, 4, 0, 0]}>
-                      {portfolioData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.gainLoss >= 0 ? '#10b981' : '#ef4444'} />)}
+                      {portfolioData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.gainLoss >= 0 ? '#10b981' : '#ef4444'} />
+                      ))}
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
@@ -426,16 +517,19 @@ export default function CryptoChart({
             </CardHeader>
             <CardContent className="overflow-auto">
               <ResponsiveContainer width="100%" height={400}>
-                <BarChart data={portfolioData} margin={{
-                top: 20,
-                right: 30,
-                left: 20,
-                bottom: 5
-              }}>
+                <BarChart
+                  data={portfolioData}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                   <XAxis dataKey="symbol" />
                   <YAxis tickFormatter={value => formatCurrency(value)} />
-                  <Tooltip formatter={(value: number, name: string) => [formatCurrency(value), name === 'value' ? 'Current Value' : 'Initial Investment']} />
+                  <Tooltip
+                    formatter={(value: number, name: string) => [
+                      formatCurrency(value),
+                      name === 'value' ? 'Current Value' : 'Initial Investment'
+                    ]}
+                  />
                   <Legend />
                   <Bar dataKey="value" fill="hsl(var(--primary))" name="Current Value" />
                   <Bar dataKey="initialValue" fill="hsl(var(--secondary))" name="Initial Investment" />
@@ -457,14 +551,34 @@ export default function CryptoChart({
                   <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                   <XAxis dataKey="price" tickFormatter={value => `$${value.toFixed(2)}`} />
                   <YAxis />
-                  <Tooltip formatter={(value: number, name: string) => [value.toFixed(2), name === 'buyVolume' ? 'Buy Orders' : 'Sell Orders']} />
-                  <Area type="monotone" dataKey="buyVolume" stackId="1" stroke="#22c55e" fill="#22c55e" fillOpacity={0.6} />
-                  <Area type="monotone" dataKey="sellVolume" stackId="2" stroke="#ef4444" fill="#ef4444" fillOpacity={0.6} />
+                  <Tooltip
+                    formatter={(value: number, name: string) => [
+                      value.toFixed(2),
+                      name === 'buyVolume' ? 'Buy Orders' : 'Sell Orders'
+                    ]}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="buyVolume"
+                    stackId="1"
+                    stroke="#22c55e"
+                    fill="#22c55e"
+                    fillOpacity={0.6}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="sellVolume"
+                    stackId="2"
+                    stroke="#ef4444"
+                    fill="#ef4444"
+                    fillOpacity={0.6}
+                  />
                 </AreaChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
-    </div>;
+    </div>
+  );
 }
