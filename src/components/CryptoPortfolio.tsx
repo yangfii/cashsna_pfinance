@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -248,7 +249,12 @@ export default function CryptoPortfolio() {
               <h1 className="text-xl sm:text-2xl font-bold">
                 {profile?.first_name ? `${profile.first_name} ${profile.last_name || ''}`.trim() : user?.email?.split('@')[0] || 'Portfolio'}
               </h1>
-              <Badge variant="secondary" className="text-xs w-fit">
+              <Badge variant="secondary" className="text-xs w-fit flex items-center gap-1">
+                <img 
+                  src="https://intel.arkm.com/arkham_check.svg" 
+                  alt="Verified" 
+                  className="w-3 h-3"
+                />
                 Verified
               </Badge>
             </div>
