@@ -287,12 +287,27 @@ export default function CryptoChart({
 
       {/* Charts Tabs */}
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="performance">Performance</TabsTrigger>
-          <TabsTrigger value="distribution">Distribution</TabsTrigger>
-          <TabsTrigger value="comparison">Comparison</TabsTrigger>
-          <TabsTrigger value="depth">Depth</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-1">
+          <TabsTrigger value="overview" className="text-xs sm:text-sm px-2 sm:px-3">
+            <span className="hidden sm:inline">Overview</span>
+            <span className="sm:hidden">Home</span>
+          </TabsTrigger>
+          <TabsTrigger value="performance" className="text-xs sm:text-sm px-2 sm:px-3">
+            <span className="hidden sm:inline">Performance</span>
+            <span className="sm:hidden">Perf</span>
+          </TabsTrigger>
+          <TabsTrigger value="distribution" className="text-xs sm:text-sm px-2 sm:px-3">
+            <span className="hidden sm:inline">Distribution</span>
+            <span className="sm:hidden">Dist</span>
+          </TabsTrigger>
+          <TabsTrigger value="comparison" className="text-xs sm:text-sm px-2 sm:px-3">
+            <span className="hidden sm:inline">Comparison</span>
+            <span className="sm:hidden">Comp</span>
+          </TabsTrigger>
+          <TabsTrigger value="depth" className="text-xs sm:text-sm px-2 sm:px-3">
+            <span className="hidden sm:inline">Depth</span>
+            <span className="sm:hidden">Chart</span>
+          </TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
