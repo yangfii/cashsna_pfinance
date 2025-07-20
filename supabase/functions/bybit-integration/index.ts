@@ -61,6 +61,14 @@ const bybitRequest = async (endpoint: string, credentials: BybitCredentials, par
 
 const fetchBybitPortfolio = async (credentials: BybitCredentials) => {
   try {
+    console.log('Testing Bybit API connection...');
+    
+    // Test connection with server time first
+    const serverTimeResponse = await fetch('https://api.bybit.com/v5/market/time');
+    if (!serverTimeResponse.ok) {
+      throw new Error('Cannot connect to Bybit API');
+    }
+    
     // Get account balance for unified account
     const balanceResponse = await bybitRequest('/v5/account/wallet-balance', credentials, {
       accountType: 'UNIFIED'

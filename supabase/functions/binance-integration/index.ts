@@ -62,7 +62,16 @@ const binanceRequest = async (endpoint: string, credentials: BinanceCredentials,
 
 const fetchBinancePortfolio = async (credentials: BinanceCredentials) => {
   try {
-    // Test API connection first
+    // Test API connection with server time first
+    console.log('Testing Binance API connection...');
+    
+    // Get server time to ensure connection works
+    const serverTimeResponse = await fetch('https://api.binance.com/api/v3/time');
+    if (!serverTimeResponse.ok) {
+      throw new Error('Cannot connect to Binance API');
+    }
+    
+    // Test authenticated endpoint
     const accountInfo = await binanceRequest('/api/v3/account', credentials);
     
     // Get current prices for all symbols

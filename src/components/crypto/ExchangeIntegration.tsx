@@ -170,9 +170,22 @@ export default function ExchangeIntegration({
       }
     } catch (error) {
       console.error('Binance connection error:', error);
+      
+      let errorMessage = "Failed to connect to Binance. Please check your credentials.";
+      
+      // Parse specific error messages
+      if (error && typeof error === 'object') {
+        const errorObj = error as any;
+        if (errorObj.message?.includes('-2015')) {
+          errorMessage = "Invalid API key or insufficient permissions. Ensure you have mainnet keys with 'Enable Reading' and 'Spot Trading' permissions.";
+        } else if (errorObj.message?.includes('Invalid API-key')) {
+          errorMessage = "Invalid API key. Please verify your Binance API key is correct and has proper permissions.";
+        }
+      }
+      
       toast({
         title: "Connection Failed",
-        description: "Failed to connect to Binance. Please check your credentials.",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
@@ -430,10 +443,13 @@ export default function ExchangeIntegration({
                   <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
                     <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5" />
                     <div className="text-sm text-amber-800">
-                      <p className="font-medium">Required Permissions:</p>
+                      <p className="font-medium">API Key Requirements:</p>
                       <ul className="list-disc list-inside mt-1 space-y-1">
-                        <li>Enable Reading</li>
-                        <li>Spot & Margin Trading (read-only)</li>
+                        <li>Must be <strong>Mainnet</strong> (not Testnet) API keys</li>
+                        <li>Enable "Enable Reading" permission</li>
+                        <li>Enable "Spot & Margin Trading" permission</li>
+                        <li>Do NOT enable "Enable Withdrawals"</li>
+                        <li>Consider IP restrictions for security</li>
                       </ul>
                     </div>
                   </div>
