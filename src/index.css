@@ -173,6 +173,14 @@
     font-family: 'Kantumruy Pro', sans-serif;
   }
 
+  /* Typography Design Tokens */
+  h1 { @apply text-2xl sm:text-3xl font-bold tracking-tight; }
+  h2 { @apply text-xl sm:text-2xl font-semibold tracking-tight; }
+  h3 { @apply text-lg sm:text-xl font-semibold; }
+  h4 { @apply text-base sm:text-lg font-semibold; }
+  h5 { @apply text-sm sm:text-base font-medium; }
+  h6 { @apply text-sm font-medium; }
+
   /* Remove default app.css styles that conflict */
   #root {
     max-width: none;
@@ -223,6 +231,16 @@
 }
 
 @layer utilities {
+  /* Typography Utilities */
+  .text-h4 { @apply text-base sm:text-lg font-semibold leading-tight; }
+  .text-h5 { @apply text-sm sm:text-base font-medium leading-snug; }
+  .text-body { @apply text-sm sm:text-base leading-relaxed; }
+  .text-body-sm { @apply text-xs sm:text-sm leading-relaxed; }
+  .text-label { @apply text-xs sm:text-sm font-medium leading-none; }
+  .text-card-title { @apply text-sm font-medium text-muted-foreground; }
+  .text-card-value { @apply text-xl sm:text-2xl font-bold; }
+  .text-stat-label { @apply text-xs text-muted-foreground leading-none; }
+
   .text-gradient {
     background: var(--gradient-primary);
     -webkit-background-clip: text;

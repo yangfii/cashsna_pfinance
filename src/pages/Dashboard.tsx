@@ -122,16 +122,16 @@ export default function Dashboard() {
         {/* Total Income */}
         <Card className="income-card stat-card animate-bounce-in">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
+            <CardTitle className="text-card-title">
               {t("dashboard.totalIncome")}
             </CardTitle>
             <TrendingUp className="h-4 w-4 text-emerald-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-xl sm:text-2xl font-bold text-emerald-800 dark:text-emerald-300">
+            <div className="text-card-value text-emerald-800 dark:text-emerald-300">
               {formatCurrency(totalIncome)}
             </div>
-            <p className="text-xs text-emerald-600 dark:text-emerald-500 mt-1">
+            <p className="text-stat-label text-emerald-600 dark:text-emerald-500 mt-1">
               +12% ពីខែមុន
             </p>
           </CardContent>
@@ -140,16 +140,16 @@ export default function Dashboard() {
         {/* Total Expenses */}
         <Card className="expense-card stat-card animate-bounce-in" style={{animationDelay: '0.1s'}}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-red-700 dark:text-red-400">
+            <CardTitle className="text-card-title">
               {t("dashboard.totalExpenses")}
             </CardTitle>
             <TrendingDown className="h-4 w-4 text-red-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-xl sm:text-2xl font-bold text-red-800 dark:text-red-300">
+            <div className="text-card-value text-red-800 dark:text-red-300">
               {formatCurrency(totalExpense)}
             </div>
-            <p className="text-xs text-red-600 dark:text-red-500 mt-1">
+            <p className="text-stat-label text-red-600 dark:text-red-500 mt-1">
               -5% ពីខែមុន
             </p>
           </CardContent>
@@ -158,21 +158,21 @@ export default function Dashboard() {
         {/* Net Balance */}
         <Card className="balance-card stat-card animate-bounce-in" style={{animationDelay: '0.2s'}}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-400">
+            <CardTitle className="text-card-title">
               {t("dashboard.currentBalance")}
             </CardTitle>
             <Wallet className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
             <div className={cn(
-              "text-xl sm:text-2xl font-bold",
+              "text-card-value",
               netBalance >= 0 
                 ? "text-blue-800 dark:text-blue-300" 
                 : "text-red-800 dark:text-red-300"
             )}>
               {formatCurrency(netBalance)}
             </div>
-            <p className="text-xs text-blue-600 dark:text-blue-500 mt-1">
+            <p className="text-stat-label text-blue-600 dark:text-blue-500 mt-1">
               គោលដៅពីរខែ: $2,000
             </p>
           </CardContent>
@@ -181,16 +181,16 @@ export default function Dashboard() {
         {/* This Month */}
         <Card className="stat-card animate-bounce-in" style={{animationDelay: '0.3s'}}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="text-card-title">
               ប្រតិបត្តិការខែនេះ
             </CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-xl sm:text-2xl font-bold">
+            <div className="text-card-value">
               {loading ? "..." : transactions.length}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-stat-label mt-1">
               រាយការណ៍ប្រតិបត្តិការ
             </p>
           </CardContent>
@@ -201,7 +201,7 @@ export default function Dashboard() {
       <Card className="stat-card animate-slide-up">
         <CardHeader>
           <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-            <CardTitle className="text-base sm:text-lg">{t("dashboard.recentTransactions")}</CardTitle>
+            <CardTitle className="text-h4">{t("dashboard.recentTransactions")}</CardTitle>
             <Button variant="outline" size="sm" className="w-full sm:w-auto">
               មើលទាំងអស់
             </Button>
@@ -228,10 +228,10 @@ export default function Dashboard() {
                     "w-2 h-8 rounded-full flex-shrink-0",
                     transaction.type === "income" ? "bg-gradient-income" : "bg-gradient-expense"
                   )} />
-                  <div className="min-w-0 flex-1">
-                    <p className="font-medium text-sm sm:text-base truncate">{transaction.category}</p>
-                    <p className="text-xs sm:text-sm text-muted-foreground truncate">{transaction.note}</p>
-                  </div>
+                   <div className="min-w-0 flex-1">
+                     <p className="text-h5 truncate">{transaction.category}</p>
+                     <p className="text-body-sm text-muted-foreground truncate">{transaction.note}</p>
+                   </div>
                 </div>
                 <div className="flex items-center justify-between sm:flex-col sm:items-end sm:text-right">
                   <Badge 
@@ -266,10 +266,10 @@ export default function Dashboard() {
                   <div className="p-2 sm:p-3 bg-gradient-income rounded-xl flex-shrink-0">
                     <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-semibold text-sm sm:text-base">បន្ថែមចំណូល</h3>
-                    <p className="text-xs sm:text-sm text-muted-foreground">កត់ត្រាចំណូលថ្មី</p>
-                  </div>
+                   <div className="min-w-0 flex-1">
+                     <h3 className="text-h5">បន្ថែមចំណូល</h3>
+                     <p className="text-body-sm text-muted-foreground">កត់ត្រាចំណូលថ្មី</p>
+                   </div>
                 </div>
               </CardContent>
             </Card>
@@ -280,10 +280,10 @@ export default function Dashboard() {
                   <div className="p-2 sm:p-3 bg-gradient-expense rounded-xl flex-shrink-0">
                     <TrendingDown className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-semibold text-sm sm:text-base">បន្ថែមចំណាយ</h3>
-                    <p className="text-xs sm:text-sm text-muted-foreground">កត់ត្រាចំណាយថ្មី</p>
-                  </div>
+                   <div className="min-w-0 flex-1">
+                     <h3 className="text-h5">បន្ថែមចំណាយ</h3>
+                     <p className="text-body-sm text-muted-foreground">កត់ត្រាចំណាយថ្មី</p>
+                   </div>
                 </div>
               </CardContent>
             </Card>

@@ -386,8 +386,8 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
                         <Sparkles className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="font-medium text-sm">Start a conversation</h3>
-                        <p className="text-xs text-muted-foreground">Ask me anything about your finances!</p>
+                        <h3 className="text-h5">Start a conversation</h3>
+                        <p className="text-body-sm text-muted-foreground">Ask me anything about your finances!</p>
                       </div>
                     </div>
                   ) : (
@@ -473,7 +473,7 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
             {analysisResult && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
+                  <CardTitle className="text-h4 flex items-center gap-2">
                     <TrendingUp className="h-5 w-5" />
                     Financial Analysis Results
                   </CardTitle>

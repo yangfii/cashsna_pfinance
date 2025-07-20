@@ -227,10 +227,10 @@ export default function CryptoChart({
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Value</p>
-                <p className="text-2xl font-bold">{formatCurrency(totalValue)}</p>
-              </div>
+               <div>
+                 <p className="text-card-title">Total Value</p>
+                 <p className="text-card-value">{formatCurrency(totalValue)}</p>
+               </div>
               <DollarSign className="h-8 w-8 text-primary opacity-60" />
             </div>
           </CardContent>
@@ -239,12 +239,12 @@ export default function CryptoChart({
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total P&L</p>
-                <p className={`text-2xl font-bold ${totalGainLoss >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                  {formatCurrency(totalGainLoss)}
-                </p>
-              </div>
+               <div>
+                 <p className="text-card-title">Total P&L</p>
+                 <p className={`text-card-value ${totalGainLoss >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                   {formatCurrency(totalGainLoss)}
+                 </p>
+               </div>
               {totalGainLoss >= 0 ? (
                 <TrendingUp className="h-8 w-8 text-green-500" />
               ) : (
@@ -257,12 +257,12 @@ export default function CryptoChart({
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">P&L Percentage</p>
-                <p className={`text-2xl font-bold ${totalGainLossPercent >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                  {formatPercent(totalGainLossPercent)}
-                </p>
-              </div>
+               <div>
+                 <p className="text-card-title">P&L Percentage</p>
+                 <p className={`text-card-value ${totalGainLossPercent >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                   {formatPercent(totalGainLossPercent)}
+                 </p>
+               </div>
               <Percent className={`h-8 w-8 ${totalGainLossPercent >= 0 ? 'text-green-500' : 'text-red-500'}`} />
             </div>
           </CardContent>
@@ -271,13 +271,13 @@ export default function CryptoChart({
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Holdings</p>
-                <p className="text-2xl font-bold">{holdings.length}</p>
-              </div>
-              <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center">
-                <span className="text-sm font-bold text-primary">{holdings.length}</span>
-              </div>
+               <div>
+                 <p className="text-card-title">Holdings</p>
+                 <p className="text-card-value">{holdings.length}</p>
+               </div>
+               <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center">
+                 <span className="text-label text-primary">{holdings.length}</span>
+               </div>
             </div>
           </CardContent>
         </Card>
@@ -298,7 +298,7 @@ export default function CryptoChart({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle>Portfolio Distribution</CardTitle>
+                <CardTitle className="text-h4">Portfolio Distribution</CardTitle>
               </CardHeader>
               <CardContent className="p-6">
                 {portfolioData.length > 0 ? (
@@ -328,10 +328,10 @@ export default function CryptoChart({
                       </ResponsiveContainer>
                       {/* Center Text */}
                       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="text-center">
-                          <p className="text-xs text-muted-foreground">Total</p>
-                          <p className="text-lg font-bold">{formatCurrency(totalValue)}</p>
-                        </div>
+                         <div className="text-center">
+                           <p className="text-stat-label">Total</p>
+                           <p className="text-h5 font-bold">{formatCurrency(totalValue)}</p>
+                         </div>
                       </div>
                     </div>
                     
@@ -357,9 +357,9 @@ export default function CryptoChart({
             </Card>
 
             <Card>
-              <CardHeader>
-                <CardTitle>Portfolio Performance</CardTitle>
-              </CardHeader>
+                 <CardHeader>
+                   <CardTitle className="text-h4">Portfolio Performance</CardTitle>
+                 </CardHeader>
               <CardContent className="overflow-auto">
                 {portfolioData.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>

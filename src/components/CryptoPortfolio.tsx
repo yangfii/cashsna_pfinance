@@ -246,10 +246,10 @@ export default function CryptoPortfolio() {
           </Avatar>
           <div>
             <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-              <h1 className="text-xl sm:text-2xl font-bold">
+              <h1 className="text-h4">
                 {profile?.first_name ? `${profile.first_name} ${profile.last_name || ''}`.trim() : user?.email?.split('@')[0] || 'Portfolio'}
               </h1>
-              <Badge variant="secondary" className="text-xs w-fit flex items-center gap-1">
+              <Badge variant="secondary" className="text-body-sm w-fit flex items-center gap-1">
                 <img 
                   src="https://intel.arkm.com/arkham_check.svg" 
                   alt="Verified" 
@@ -259,10 +259,10 @@ export default function CryptoPortfolio() {
               </Badge>
             </div>
             <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mt-1">
-              <span className="text-2xl lg:text-3xl font-bold">{formatCurrency(portfolioValue)}</span>
+              <span className="text-card-value">{formatCurrency(portfolioValue)}</span>
               <div className={`flex items-center gap-1 ${isGain ? 'text-green-500' : 'text-red-500'}`}>
                 {isGain ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
-                <span className="text-sm font-medium">
+                <span className="text-h5">
                   {isGain ? '+' : ''}{portfolioPercentChange.toFixed(2)}%
                 </span>
               </div>
