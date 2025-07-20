@@ -259,7 +259,7 @@ export default function CryptoChart({
       </div>
 
       {/* Charts Tabs */}
-      <Tabs defaultValue="overview" className="space-y-4 px-0 mx-[5px] my-[240px]">
+      <Tabs defaultValue="overview" className="space-y-4 px-0 mx-0 my-[238px]">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
