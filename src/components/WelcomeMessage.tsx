@@ -32,7 +32,7 @@ export function WelcomeMessage() {
             </AvatarFallback>
           </Avatar>
           <div>
-            <h2 className="text-xl font-semibold text-foreground">
+            <h2 className="text-h4">
               Hello, {profile?.first_name || displayName}
             </h2>
             <p className="text-sm text-muted-foreground">

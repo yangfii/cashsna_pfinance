@@ -144,7 +144,7 @@ export function ProfileCard() {
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
           </div>
           <div className="flex-1 text-center sm:text-left min-w-0">
-            <h3 className="text-base sm:text-lg font-semibold text-foreground truncate">
+            <h3 className="text-h5 text-foreground truncate">
               {displayName}
             </h3>
             <p className="text-sm text-muted-foreground truncate">{user?.email}</p>

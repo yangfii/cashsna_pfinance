@@ -54,7 +54,7 @@ const Index = () => {
                       <h2 className="text-3xl lg:text-4xl font-bold text-gradient">
                         Welcome to CashSnap Finance
                       </h2>
-                      <p className="text-lg text-muted-foreground max-w-2xl">
+                      <p className="text-body max-w-2xl">
                         Your intelligent personal finance management dashboard. 
                         Track expenses, manage budgets, and achieve your financial goals.
                       </p>
@@ -80,20 +80,20 @@ const Index = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="stat-card income-card p-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-constructive">$0.00</div>
-                    <div className="text-sm text-muted-foreground">Total Income</div>
+                    <div className="text-card-value text-constructive">$0.00</div>
+                    <div className="text-card-title">Total Income</div>
                   </div>
                 </div>
                 <div className="stat-card expense-card p-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-destructive">$0.00</div>
-                    <div className="text-sm text-muted-foreground">Total Expenses</div>
+                    <div className="text-card-value text-destructive">$0.00</div>
+                    <div className="text-card-title">Total Expenses</div>
                   </div>
                 </div>
                 <div className="stat-card balance-card p-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-balance">$0.00</div>
-                    <div className="text-sm text-muted-foreground">Current Balance</div>
+                    <div className="text-card-value text-balance">$0.00</div>
+                    <div className="text-card-title">Current Balance</div>
                   </div>
                 </div>
               </div>
@@ -189,7 +189,7 @@ const Index = () => {
               🔥 {language === 'khmer' ? 'លក្ខណៈពិសេសសំខាន់ៗ' : 'Key Features'}
               <span className="text-gradient"> {language === 'khmer' ? '' : '(ពិសេសណ៍)'}</span>
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-body text-muted-foreground max-w-2xl mx-auto">
               {language === 'khmer' 
                 ? 'ដំណោះស្រាយគ្រប់គ្រងហិរញ្ញវត្ថុដ៏ទំនើបសម្រាប់អ្នក'
                 : 'Modern financial management solution for you'
@@ -207,10 +207,10 @@ const Index = () => {
                   </div>
                   <span className="text-2xl">📊</span>
                 </div>
-                <h3 className="text-lg font-semibold mb-3">
+                <h3 className="text-h4 mb-3">
                   {language === 'khmer' ? 'ត្រួតពិនិត្យចំណូល និងចំណាយប្រចាំថ្ងៃ' : 'Track Daily Income & Expenses'}
                 </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                <p className="text-body-sm text-muted-foreground leading-relaxed mb-3">
                   {language === 'khmer' 
                     ? 'គ្រប់គ្រងប្រាក់ចំណូល និងចំណាយរបស់អ្នកបានយ៉ាងងាយស្រួលជាមួយប្រភេទចំណាត់ថ្នាក់ (Categories) និងការបញ្ចូលទិន្នន័យដោយរហ័ស។'
                     : 'Easily manage your income and expenses with categories and quick data entry.'
@@ -236,8 +236,8 @@ const Index = () => {
                   </div>
                   <span className="text-2xl">📊</span>
                 </div>
-                <h3 className="text-lg font-semibold mb-3">ផ្ទាំងព័ត៌មានហិរញ្ញវត្ថុទំនើប</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                <h3 className="text-h4 mb-3">ផ្ទាំងព័ត៌មានហិរញ្ញវត្ថុទំនើប</h3>
+                <p className="text-body-sm text-muted-foreground leading-relaxed mb-3">
                   មើលការចំណាយ-ចំណូលរបស់អ្នកគ្រប់ពេលវេលា តាមរយៈក្រាហ្វច្បាស់លាស់ និងតារាងសង្ខេប។
                 </p>
                 <div className="flex items-start gap-2">
