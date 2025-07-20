@@ -383,7 +383,7 @@ export default function CryptoChart({
                         Start building your portfolio to see how your assets are distributed
                       </p>
                       <div className="pt-2">
-                        <Button size="sm" className="gap-2">
+                        <Button size="sm" className="gap-2 whitespace-nowrap">
                           <Plus className="w-4 h-4" />
                           Add assets
                         </Button>
@@ -440,7 +440,7 @@ export default function CryptoChart({
                         Track your portfolio performance over time by adding your first assets
                       </p>
                       <div className="pt-2">
-                        <Button size="sm" className="gap-2">
+                        <Button size="sm" className="gap-2 whitespace-nowrap">
                           <Plus className="w-4 h-4" />
                           Add assets
                         </Button>
@@ -496,7 +496,7 @@ export default function CryptoChart({
                       Visualize your asset distribution with detailed charts and percentages
                     </p>
                     <div className="pt-2">
-                      <Button className="gap-2">
+                      <Button className="gap-2 whitespace-nowrap">
                         <Plus className="w-4 h-4" />
                         Add assets
                       </Button>
