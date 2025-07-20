@@ -438,51 +438,99 @@ export default function CryptoChart({
                 <CardTitle>Portfolio Performance Over Time</CardTitle>
               </CardHeader>
               <CardContent className="overflow-auto">
-                <ResponsiveContainer width="100%" height={400}>
-                  <LineChart data={performanceData}>
-                    <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                    <XAxis dataKey="date" />
-                    <YAxis yAxisId="left" tickFormatter={value => formatCurrency(value)} />
-                    <YAxis yAxisId="right" orientation="right" tickFormatter={value => formatPercent(value)} />
-                    <Tooltip
-                      formatter={(value: number, name: string) => [
-                        name === 'value' ? formatCurrency(value) : 
-                        name === 'invested' ? formatCurrency(value) : 
-                        formatPercent(value),
-                        name === 'value' ? 'Current Value' : 
-                        name === 'invested' ? 'Invested' : 'ROI'
-                      ]}
-                    />
-                    <Line
-                      yAxisId="left"
-                      type="monotone"
-                      dataKey="value"
-                      stroke="hsl(var(--primary))"
-                      strokeWidth={3}
-                      dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 4 }}
-                      name="Current Value"
-                    />
-                    <Line
-                      yAxisId="left"
-                      type="monotone"
-                      dataKey="invested"
-                      stroke="hsl(var(--secondary))"
-                      strokeWidth={2}
-                      strokeDasharray="5 5"
-                      dot={{ fill: 'hsl(var(--secondary))', strokeWidth: 2, r: 3 }}
-                      name="Invested"
-                    />
-                    <Line
-                      yAxisId="right"
-                      type="monotone"
-                      dataKey="roi"
-                      stroke="#10b981"
-                      strokeWidth={2}
-                      dot={{ fill: '#10b981', strokeWidth: 2, r: 3 }}
-                      name="ROI %"
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
+                {portfolioData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={400}>
+                    <LineChart data={performanceData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                      <CartesianGrid 
+                        strokeDasharray="2 2" 
+                        stroke="hsl(var(--muted-foreground))" 
+                        opacity={0.2}
+                        horizontal={true}
+                        vertical={false}
+                      />
+                      <XAxis 
+                        dataKey="date" 
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                        dy={10}
+                        label={{ value: 'Time Period', position: 'insideBottom', offset: -10 }}
+                      />
+                      <YAxis 
+                        yAxisId="left" 
+                        tickFormatter={value => formatCurrency(value)}
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                        label={{ value: 'Portfolio Value', angle: -90, position: 'insideLeft' }}
+                      />
+                      <YAxis 
+                        yAxisId="right" 
+                        orientation="right" 
+                        tickFormatter={value => formatPercent(value)}
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                        label={{ value: 'ROI %', angle: 90, position: 'insideRight' }}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: 'hsl(var(--card))',
+                          border: '1px solid hsl(var(--border))',
+                          borderRadius: '8px',
+                          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                        }}
+                        formatter={(value: number, name: string) => [
+                          name === 'value' ? formatCurrency(value) : 
+                          name === 'invested' ? formatCurrency(value) : 
+                          formatPercent(value),
+                          name === 'value' ? 'Current Value' : 
+                          name === 'invested' ? 'Invested' : 'ROI'
+                        ]}
+                        labelFormatter={(label) => `Month: ${label}`}
+                      />
+                      <Line
+                        yAxisId="left"
+                        type="monotone"
+                        dataKey="value"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth={3}
+                        dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 4 }}
+                        activeDot={{ r: 7, stroke: 'hsl(var(--primary))', strokeWidth: 2 }}
+                        name="Current Value"
+                      />
+                      <Line
+                        yAxisId="left"
+                        type="monotone"
+                        dataKey="invested"
+                        stroke="hsl(var(--muted-foreground))"
+                        strokeWidth={2}
+                        strokeDasharray="5 5"
+                        dot={{ fill: 'hsl(var(--muted-foreground))', strokeWidth: 2, r: 3 }}
+                        name="Invested"
+                      />
+                      <Line
+                        yAxisId="right"
+                        type="monotone"
+                        dataKey="roi"
+                        stroke="#10b981"
+                        strokeWidth={2}
+                        dot={{ fill: '#10b981', strokeWidth: 2, r: 3 }}
+                        name="ROI %"
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-[400px] text-center space-y-4">
+                    <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+                      <TrendingUp className="w-8 h-8 text-muted-foreground" />
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-muted-foreground font-medium">No performance data to display yet</p>
+                      <p className="text-sm text-muted-foreground">Add holdings to see performance chart</p>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
