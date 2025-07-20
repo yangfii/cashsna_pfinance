@@ -13,24 +13,23 @@ import { supabase } from "@/integrations/supabase/client";
 import binanceIcon from "@/assets/binance-icon.png";
 import bybitIcon from "@/assets/bybit-icon.png";
 import { Database } from "@/integrations/supabase/types";
-
 type ExchangeAccount = Database['public']['Tables']['exchange_accounts']['Row'];
-
 interface ExchangeIntegrationProps {
   onImportHoldings: (holdings: any[]) => void;
 }
-
-export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegrationProps) {
+export default function ExchangeIntegration({
+  onImportHoldings
+}: ExchangeIntegrationProps) {
   const [connectedAccounts, setConnectedAccounts] = useState<ExchangeAccount[]>([]);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   // Binance connection state
   const [binanceApiKey, setBinanceApiKey] = useState('');
   const [binanceSecret, setBinanceSecret] = useState('');
   const [binanceAccountName, setBinanceAccountName] = useState('');
-  
+
   // Bybit connection state
   const [bybitApiKey, setBybitApiKey] = useState('');
   const [bybitSecret, setBybitSecret] = useState('');
@@ -40,16 +39,15 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
   useEffect(() => {
     loadConnectedAccounts();
   }, []);
-
   const loadConnectedAccounts = async () => {
     try {
-      const { data, error } = await supabase
-        .from('exchange_accounts')
-        .select('*')
-        .order('created_at', { ascending: false });
-
+      const {
+        data,
+        error
+      } = await supabase.from('exchange_accounts').select('*').order('created_at', {
+        ascending: false
+      });
       if (error) throw error;
-
       setConnectedAccounts((data || []) as ExchangeAccount[]);
     } catch (error) {
       console.error('Error loading connected accounts:', error);
@@ -62,70 +60,60 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
       setIsLoading(false);
     }
   };
-
   const saveAccount = async (exchangeName: 'binance' | 'bybit', accountName: string, apiKey: string, apiSecret: string) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: {
+          user
+        }
+      } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
-
-      const { data, error } = await supabase
-        .from('exchange_accounts')
-        .insert({
-          user_id: user.id,
-          exchange_name: exchangeName,
-          account_name: accountName,
-          api_key: apiKey,
-          api_secret: apiSecret,
-          is_active: true
-        })
-        .select()
-        .single();
-
+      const {
+        data,
+        error
+      } = await supabase.from('exchange_accounts').insert({
+        user_id: user.id,
+        exchange_name: exchangeName,
+        account_name: accountName,
+        api_key: apiKey,
+        api_secret: apiSecret,
+        is_active: true
+      }).select().single();
       if (error) throw error;
 
       // Add to local state
       setConnectedAccounts(prev => [data as ExchangeAccount, ...prev]);
-      
       return data;
     } catch (error) {
       console.error('Error saving account:', error);
       throw error;
     }
   };
-
   const updateLastSync = async (accountId: string) => {
     try {
-      const { error } = await supabase
-        .from('exchange_accounts')
-        .update({ last_synced_at: new Date().toISOString() })
-        .eq('id', accountId);
-
+      const {
+        error
+      } = await supabase.from('exchange_accounts').update({
+        last_synced_at: new Date().toISOString()
+      }).eq('id', accountId);
       if (error) throw error;
 
       // Update local state
-      setConnectedAccounts(prev =>
-        prev.map(acc =>
-          acc.id === accountId
-            ? { ...acc, last_synced_at: new Date().toISOString() }
-            : acc
-        )
-      );
+      setConnectedAccounts(prev => prev.map(acc => acc.id === accountId ? {
+        ...acc,
+        last_synced_at: new Date().toISOString()
+      } : acc));
     } catch (error) {
       console.error('Error updating last sync:', error);
     }
   };
-
   const deleteAccount = async (accountId: string) => {
     try {
-      const { error } = await supabase
-        .from('exchange_accounts')
-        .delete()
-        .eq('id', accountId);
-
+      const {
+        error
+      } = await supabase.from('exchange_accounts').delete().eq('id', accountId);
       if (error) throw error;
-
       setConnectedAccounts(prev => prev.filter(acc => acc.id !== accountId));
-      
       toast({
         title: "Account Deleted",
         description: "Exchange account has been removed"
@@ -139,7 +127,6 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
       });
     }
   };
-
   const connectBinance = async () => {
     if (!binanceApiKey || !binanceSecret || !binanceAccountName) {
       toast({
@@ -149,29 +136,28 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
       });
       return;
     }
-
     setIsConnecting(true);
     try {
       // Test the connection first
-      const { data, error } = await supabase.functions.invoke('binance-integration', {
+      const {
+        data,
+        error
+      } = await supabase.functions.invoke('binance-integration', {
         body: {
           action: 'connect',
           apiKey: binanceApiKey,
           secret: binanceSecret
         }
       });
-
       if (error) throw error;
-
       if (data.success) {
         // Save to database
         const savedAccount = await saveAccount('binance', binanceAccountName, binanceApiKey, binanceSecret);
-        
+
         // Import holdings if available
         if (data.holdings && data.holdings.length > 0) {
           onImportHoldings(data.holdings);
         }
-
         toast({
           title: "Binance Connected",
           description: `Successfully connected to Binance. Found ${data.holdings?.length || 0} holdings.`
@@ -193,7 +179,6 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
       setIsConnecting(false);
     }
   };
-
   const connectBybit = async () => {
     if (!bybitApiKey || !bybitSecret || !bybitAccountName) {
       toast({
@@ -203,34 +188,35 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
       });
       return;
     }
-
     setIsConnecting(true);
     try {
       // Test the connection first
-      const { data, error } = await supabase.functions.invoke('bybit-integration', {
+      const {
+        data,
+        error
+      } = await supabase.functions.invoke('bybit-integration', {
         body: {
           action: 'connect',
           apiKey: bybitApiKey,
           secret: bybitSecret
         }
       });
-
-      console.log('Bybit connection response:', { data, error });
-
+      console.log('Bybit connection response:', {
+        data,
+        error
+      });
       if (error) {
         console.error('Supabase function error:', error);
         throw error;
       }
-
       if (data?.success) {
         // Save to database
         const savedAccount = await saveAccount('bybit', bybitAccountName, bybitApiKey, bybitSecret);
-        
+
         // Import holdings if available
         if (data.holdings && data.holdings.length > 0) {
           onImportHoldings(data.holdings);
         }
-
         toast({
           title: "Bybit Connected",
           description: `Successfully connected to Bybit. Found ${data.holdings?.length || 0} holdings.`
@@ -252,23 +238,22 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
       setIsConnecting(false);
     }
   };
-
   const syncAccount = async (account: ExchangeAccount) => {
     setIsSyncing(true);
-    
     try {
       const functionName = account.exchange_name === 'binance' ? 'binance-integration' : 'bybit-integration';
-      
-      const { data, error } = await supabase.functions.invoke(functionName, {
+      const {
+        data,
+        error
+      } = await supabase.functions.invoke(functionName, {
         body: {
-          action: 'connect', // Use connect action with stored credentials
+          action: 'connect',
+          // Use connect action with stored credentials
           apiKey: account.api_key,
           secret: account.api_secret
         }
       });
-
       if (error) throw error;
-
       if (data.success) {
         // Update last sync time
         await updateLastSync(account.id);
@@ -277,7 +262,6 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
         if (data.holdings && data.holdings.length > 0) {
           onImportHoldings(data.holdings);
         }
-
         toast({
           title: "Sync Complete",
           description: `Successfully synced ${account.exchange_name} account`
@@ -294,22 +278,18 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
       setIsSyncing(false);
     }
   };
-
   const toggleAccountActive = async (accountId: string, isActive: boolean) => {
     try {
-      const { error } = await supabase
-        .from('exchange_accounts')
-        .update({ is_active: isActive })
-        .eq('id', accountId);
-
+      const {
+        error
+      } = await supabase.from('exchange_accounts').update({
+        is_active: isActive
+      }).eq('id', accountId);
       if (error) throw error;
-
-      setConnectedAccounts(prev =>
-        prev.map(acc =>
-          acc.id === accountId ? { ...acc, is_active: isActive } : acc
-        )
-      );
-
+      setConnectedAccounts(prev => prev.map(acc => acc.id === accountId ? {
+        ...acc,
+        is_active: isActive
+      } : acc));
       toast({
         title: isActive ? "Account Activated" : "Account Deactivated",
         description: `Account ${isActive ? 'activated' : 'deactivated'} successfully`
@@ -323,11 +303,9 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
       });
     }
   };
-
-  return (
-    <Dialog>
+  return <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="gap-2">
+        <Button variant="outline" className="gap-2 text-base text-emerald-600">
           <ExternalLink className="h-4 w-4" />
           Exchange Integration
         </Button>
@@ -347,34 +325,24 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Connected Accounts</h3>
               
-              {isLoading ? (
-                <Card>
+              {isLoading ? <Card>
                   <CardContent className="text-center py-8">
                     <p className="text-muted-foreground">Loading connected accounts...</p>
                   </CardContent>
-                </Card>
-              ) : connectedAccounts.length === 0 ? (
-                <Card>
+                </Card> : connectedAccounts.length === 0 ? <Card>
                   <CardContent className="text-center py-8">
                     <p className="text-muted-foreground">No exchange accounts connected</p>
                     <p className="text-sm text-muted-foreground mt-2">
                       Connect to Binance or Bybit to automatically sync your portfolio
                     </p>
                   </CardContent>
-                </Card>
-              ) : (
-                <div className="space-y-4">
-                  {connectedAccounts.map((account) => (
-                    <Card key={account.id}>
+                </Card> : <div className="space-y-4">
+                  {connectedAccounts.map(account => <Card key={account.id}>
                       <CardContent className="p-6">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                              {account.exchange_name === 'binance' ? (
-                                <img src={binanceIcon} alt="Binance" className="w-8 h-8 rounded" />
-                              ) : (
-                                <img src={bybitIcon} alt="Bybit" className="w-8 h-8 rounded" />
-                              )}
+                              {account.exchange_name === 'binance' ? <img src={binanceIcon} alt="Binance" className="w-8 h-8 rounded" /> : <img src={bybitIcon} alt="Bybit" className="w-8 h-8 rounded" />}
                             </div>
                             <div>
                               <h4 className="font-semibold">{account.account_name}</h4>
@@ -382,21 +350,14 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
                                 {account.exchange_name} Account
                               </p>
                               <p className="text-sm text-muted-foreground">
-                                Last sync: {account.last_synced_at 
-                                  ? new Date(account.last_synced_at).toLocaleString()
-                                  : 'Never'
-                                }
+                                Last sync: {account.last_synced_at ? new Date(account.last_synced_at).toLocaleString() : 'Never'}
                               </p>
                             </div>
                           </div>
                           
                           <div className="flex items-center gap-4">
                             <div className="flex items-center gap-2">
-                              {account.is_active ? (
-                                <CheckCircle className="h-5 w-5 text-green-500" />
-                              ) : (
-                                <XCircle className="h-5 w-5 text-red-500" />
-                              )}
+                              {account.is_active ? <CheckCircle className="h-5 w-5 text-green-500" /> : <XCircle className="h-5 w-5 text-red-500" />}
                               <Badge variant={account.is_active ? 'default' : 'secondary'}>
                                 {account.is_active ? 'Active' : 'Inactive'}
                               </Badge>
@@ -406,38 +367,22 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
                               <Label htmlFor={`active-${account.id}`} className="text-sm">
                                 Active
                               </Label>
-                              <Switch
-                                id={`active-${account.id}`}
-                                checked={account.is_active}
-                                onCheckedChange={(checked) => toggleAccountActive(account.id, checked)}
-                              />
+                              <Switch id={`active-${account.id}`} checked={account.is_active} onCheckedChange={checked => toggleAccountActive(account.id, checked)} />
                             </div>
                             
                             <div className="flex gap-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => syncAccount(account)}
-                                disabled={isSyncing || !account.is_active}
-                              >
+                              <Button variant="outline" size="sm" onClick={() => syncAccount(account)} disabled={isSyncing || !account.is_active}>
                                 <RefreshCw className="h-4 w-4" />
                               </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => deleteAccount(account.id)}
-                                className="text-red-600 hover:text-red-700"
-                              >
+                              <Button variant="outline" size="sm" onClick={() => deleteAccount(account.id)} className="text-red-600 hover:text-red-700">
                                 <Trash2 className="h-4 w-4" />
                               </Button>
                             </div>
                           </div>
                         </div>
                       </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
+                    </Card>)}
+                </div>}
             </div>
           </TabsContent>
 
@@ -459,33 +404,15 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="binance-account-name">Account Name</Label>
-                    <Input
-                      id="binance-account-name"
-                      type="text"
-                      placeholder="e.g., Main Account, Trading Account"
-                      value={binanceAccountName}
-                      onChange={(e) => setBinanceAccountName(e.target.value)}
-                    />
+                    <Input id="binance-account-name" type="text" placeholder="e.g., Main Account, Trading Account" value={binanceAccountName} onChange={e => setBinanceAccountName(e.target.value)} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="binance-api-key">API Key</Label>
-                    <Input
-                      id="binance-api-key"
-                      type="password"
-                      placeholder="Enter Binance API Key"
-                      value={binanceApiKey}
-                      onChange={(e) => setBinanceApiKey(e.target.value)}
-                    />
+                    <Input id="binance-api-key" type="password" placeholder="Enter Binance API Key" value={binanceApiKey} onChange={e => setBinanceApiKey(e.target.value)} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="binance-secret">Secret Key</Label>
-                    <Input
-                      id="binance-secret"
-                      type="password"
-                      placeholder="Enter Binance Secret Key"
-                      value={binanceSecret}
-                      onChange={(e) => setBinanceSecret(e.target.value)}
-                    />
+                    <Input id="binance-secret" type="password" placeholder="Enter Binance Secret Key" value={binanceSecret} onChange={e => setBinanceSecret(e.target.value)} />
                   </div>
                   
                   <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
@@ -499,11 +426,7 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
                     </div>
                   </div>
 
-                  <Button
-                    onClick={connectBinance}
-                    disabled={!binanceApiKey || !binanceSecret || !binanceAccountName || isConnecting}
-                    className="w-full"
-                  >
+                  <Button onClick={connectBinance} disabled={!binanceApiKey || !binanceSecret || !binanceAccountName || isConnecting} className="w-full">
                     {isConnecting ? "Connecting..." : "Connect & Save"}
                   </Button>
                   
@@ -534,33 +457,15 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="bybit-account-name">Account Name</Label>
-                    <Input
-                      id="bybit-account-name"
-                      type="text"
-                      placeholder="e.g., Main Account, Trading Account"
-                      value={bybitAccountName}
-                      onChange={(e) => setBybitAccountName(e.target.value)}
-                    />
+                    <Input id="bybit-account-name" type="text" placeholder="e.g., Main Account, Trading Account" value={bybitAccountName} onChange={e => setBybitAccountName(e.target.value)} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="bybit-api-key">API Key</Label>
-                    <Input
-                      id="bybit-api-key"
-                      type="password"
-                      placeholder="Enter Bybit API Key"
-                      value={bybitApiKey}
-                      onChange={(e) => setBybitApiKey(e.target.value)}
-                    />
+                    <Input id="bybit-api-key" type="password" placeholder="Enter Bybit API Key" value={bybitApiKey} onChange={e => setBybitApiKey(e.target.value)} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="bybit-secret">Secret Key</Label>
-                    <Input
-                      id="bybit-secret"
-                      type="password"
-                      placeholder="Enter Bybit Secret Key"
-                      value={bybitSecret}
-                      onChange={(e) => setBybitSecret(e.target.value)}
-                    />
+                    <Input id="bybit-secret" type="password" placeholder="Enter Bybit Secret Key" value={bybitSecret} onChange={e => setBybitSecret(e.target.value)} />
                   </div>
                   
                   <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
@@ -574,11 +479,7 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
                     </div>
                   </div>
 
-                  <Button
-                    onClick={connectBybit}
-                    disabled={!bybitApiKey || !bybitSecret || !bybitAccountName || isConnecting}
-                    className="w-full"
-                  >
+                  <Button onClick={connectBybit} disabled={!bybitApiKey || !bybitSecret || !bybitAccountName || isConnecting} className="w-full">
                     {isConnecting ? "Connecting..." : "Connect & Save"}
                   </Button>
                   
@@ -613,6 +514,5 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
           </TabsContent>
         </Tabs>
       </DialogContent>
-    </Dialog>
-  );
+    </Dialog>;
 }
