@@ -334,13 +334,13 @@
 
 /* Enhanced responsive breakpoints for better large screen support */
 @media (min-width: 1920px) {
-  .container-content { @apply max-w-8xl; }
+  .container-content { @apply max-w-[1536px]; }
   .container-portfolio { @apply max-w-[1800px]; }
   .container-dashboard { @apply max-w-[2000px]; }
 }
 
 @media (min-width: 2560px) {
-  .container-content { @apply max-w-9xl; }
+  .container-content { @apply max-w-[1792px]; }
   .container-portfolio { @apply max-w-[2000px]; }
   .container-dashboard { @apply max-w-[2200px]; }
 }
