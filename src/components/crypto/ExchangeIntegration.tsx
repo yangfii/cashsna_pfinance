@@ -253,7 +253,16 @@ export default function ExchangeIntegration({
           secret: account.api_secret
         }
       });
-      if (error) throw error;
+      
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw new Error(`Function error: ${error.message || 'Unknown error'}`);
+      }
+      
+      if (!data) {
+        throw new Error('No data returned from exchange API');
+      }
+      
       if (data.success) {
         // Update last sync time
         await updateLastSync(account.id);
@@ -266,12 +275,15 @@ export default function ExchangeIntegration({
           title: "Sync Complete",
           description: `Successfully synced ${account.exchange_name} account`
         });
+      } else {
+        throw new Error(data.error || 'Sync failed without specific error');
       }
     } catch (error) {
       console.error('Sync error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       toast({
         title: "Sync Failed",
-        description: `Failed to sync ${account.exchange_name} account`,
+        description: `Failed to sync ${account.exchange_name} account: ${errorMessage}`,
         variant: "destructive"
       });
     } finally {
