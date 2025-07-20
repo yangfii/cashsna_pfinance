@@ -19,6 +19,7 @@ import CurrencySettings, { CurrencyRates } from "@/components/crypto/CurrencySet
 import AdvancedSearch from "@/components/crypto/AdvancedSearch";
 import AdvancedFilters, { FilterOptions } from "@/components/crypto/AdvancedFilters";
 import AdvancedSorting, { SortOption } from "@/components/crypto/AdvancedSorting";
+
 export default function CryptoPortfolio() {
   const {
     user
@@ -216,6 +217,7 @@ export default function CryptoPortfolio() {
     if (filters.amountRange.min !== null || filters.amountRange.max !== null) count++;
     return count;
   }, [filters]);
+
   if (loading) {
     return <div className="flex items-center justify-center h-64">
         <div className="animate-pulse text-muted-foreground">Loading portfolio...</div>
@@ -225,31 +227,32 @@ export default function CryptoPortfolio() {
   const totalGainLoss = calculateTotalGainLoss();
   const isGain = totalGainLoss >= 0;
   const portfolioPercentChange = portfolioValue > 0 ? calculatePercentageChange(portfolioValue, portfolioValue - totalGainLoss) : 0;
-  return <div className="space-y-6">
-      {/* Profile Header */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <Avatar className="h-12 w-12 lg:h-16 lg:w-16">
+
+  return <div className="space-y-8 lg:space-y-10">
+      {/* Profile Header - Enhanced spacing and responsive design */}
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 lg:gap-8 p-1 sm:p-2">
+        <div className="flex items-center gap-4 lg:gap-6">
+          <Avatar className="h-14 w-14 lg:h-18 lg:w-18 xl:h-20 xl:w-20">
             <AvatarImage src={profile?.avatar_url || undefined} />
-            <AvatarFallback className="text-sm lg:text-lg">
+            <AvatarFallback className="text-lg lg:text-xl xl:text-2xl">
               {profile?.first_name?.[0] || user?.email?.[0]?.toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <div>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-              <h1 className="text-h4">
+          <div className="space-y-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold">
                 {profile?.first_name ? `${profile.first_name} ${profile.last_name || ''}`.trim() : user?.email?.split('@')[0] || 'Portfolio'}
               </h1>
-              <Badge variant="secondary" className="text-body-sm w-fit flex items-center gap-1">
+              <Badge variant="secondary" className="text-sm w-fit flex items-center gap-2">
                 <img src="https://intel.arkm.com/arkham_check.svg" alt="Verified" className="w-3 h-3" />
                 Verified
               </Badge>
             </div>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mt-1">
-              <span className="text-card-value">{formatCurrency(portfolioValue)}</span>
-              <div className={`flex items-center gap-1 ${isGain ? 'text-green-500' : 'text-red-500'}`}>
-                {isGain ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
-                <span className="text-h5">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <span className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold">{formatCurrency(portfolioValue)}</span>
+              <div className={`flex items-center gap-2 ${isGain ? 'text-green-500' : 'text-red-500'}`}>
+                {isGain ? <TrendingUp className="h-5 w-5 lg:h-6 lg:w-6" /> : <TrendingDown className="h-5 w-5 lg:h-6 lg:w-6" />}
+                <span className="text-lg lg:text-xl font-semibold">
                   {isGain ? '+' : ''}{portfolioPercentChange.toFixed(2)}%
                 </span>
               </div>
@@ -257,26 +260,32 @@ export default function CryptoPortfolio() {
           </div>
         </div>
         
-        <div className="flex flex-wrap items-center gap-2">
-          <AddHoldingDialog onAddHolding={addHolding} />
-          <ExchangeIntegration onImportHoldings={handleImportHoldings} />
-          <PriceAlertsDialog holdings={holdings} alerts={alerts} onAddAlert={addAlert} onRefreshAlerts={fetchAlerts} />
-          <CurrencySettings onCurrencyChange={handleCurrencyChange} />
+        {/* Enhanced button layout with better spacing and wrapping */}
+        <div className="flex flex-wrap items-center gap-3 lg:gap-4 w-full lg:w-auto">
+          <div className="flex flex-wrap gap-2 sm:gap-3 flex-1 lg:flex-initial">
+            <AddHoldingDialog onAddHolding={addHolding} />
+            <ExchangeIntegration onImportHoldings={handleImportHoldings} />
+          </div>
+          <div className="flex flex-wrap gap-2 sm:gap-3 flex-1 lg:flex-initial">
+            <PriceAlertsDialog holdings={holdings} alerts={alerts} onAddAlert={addAlert} onRefreshAlerts={fetchAlerts} />
+            <CurrencySettings onCurrencyChange={handleCurrencyChange} />
+          </div>
         </div>
       </div>
 
-      {holdings.length === 0 ? <Card>
-          <CardContent className="text-center py-8 text-muted-foreground">
-            <div className="space-y-4">
-              <p>No crypto holdings yet</p>
-              <p className="text-sm">Add your first cryptocurrency to start tracking your portfolio</p>
+      {holdings.length === 0 ? <Card className="mx-1 sm:mx-2">
+          <CardContent className="text-center py-12 lg:py-16 text-muted-foreground">
+            <div className="space-y-6">
+              <p className="text-lg lg:text-xl">No crypto holdings yet</p>
+              <p className="text-base lg:text-lg">Add your first cryptocurrency to start tracking your portfolio</p>
               <AddHoldingDialog onAddHolding={addHolding} />
             </div>
           </CardContent>
-        </Card> : <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <div className="flex items-center gap-2">
+        </Card> : <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8 lg:space-y-10">
+          {/* Enhanced tabs layout with better responsive behavior */}
+          <div className="flex items-center gap-3 lg:gap-4 px-1 sm:px-2">
             {isMobile ? <Select value={activeTab} onValueChange={setActiveTab}>
-                <SelectTrigger className="flex-1">
+                <SelectTrigger className="flex-1 h-12">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -287,59 +296,62 @@ export default function CryptoPortfolio() {
                   <SelectItem value="tokens">TOKEN BALANCES HISTORY</SelectItem>
                   <SelectItem value="profit">PROFIT & LOSS</SelectItem>
                 </SelectContent>
-              </Select> : <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 flex-1">
-                <TabsTrigger value="portfolio" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
-                  <span className="hidden sm:inline truncate">PORTFOLIO</span>
-                  <span className="sm:hidden truncate">PORT</span>
-                </TabsTrigger>
-                <TabsTrigger value="holdings" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
-                  <span className="hidden lg:inline truncate">HOLDINGS BY CHAIN</span>
-                  <span className="lg:hidden truncate">HOLDINGS</span>
-                </TabsTrigger>
-                <TabsTrigger value="archive" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
-                  <span className="hidden lg:inline truncate">PORTFOLIO ARCHIVE</span>
-                  <span className="lg:hidden truncate">ARCHIVE</span>
-                </TabsTrigger>
-                <TabsTrigger value="balances" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
-                  <span className="hidden lg:inline truncate">BALANCES HISTORY</span>
-                  <span className="lg:hidden truncate">BALANCES</span>
-                </TabsTrigger>
-                <TabsTrigger value="tokens" className="text-xs sm:text-sm px-2 py-2 overflow-hidden">
-                  <span className="hidden lg:inline truncate">TOKEN BALANCES HISTORY</span>
-                  <span className="lg:hidden truncate">TOKENS</span>
-                </TabsTrigger>
-              </TabsList>}
-            
-            {!isMobile && <div className="flex items-center gap-2">
+              </Select> : <>
+                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 lg:gap-3 flex-1 h-12 lg:h-14">
+                  <TabsTrigger value="portfolio" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
+                    <span className="hidden sm:inline truncate">PORTFOLIO</span>
+                    <span className="sm:hidden truncate">PORT</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="holdings" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
+                    <span className="hidden lg:inline truncate">HOLDINGS BY CHAIN</span>
+                    <span className="lg:hidden truncate">HOLDINGS</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="archive" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
+                    <span className="hidden lg:inline truncate">PORTFOLIO ARCHIVE</span>
+                    <span className="lg:hidden truncate">ARCHIVE</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="balances" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
+                    <span className="hidden lg:inline truncate">BALANCES HISTORY</span>
+                    <span className="lg:hidden truncate">BALANCES</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="tokens" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
+                    <span className="hidden lg:inline truncate">TOKEN BALANCES HISTORY</span>
+                    <span className="lg:hidden truncate">TOKENS</span>
+                  </TabsTrigger>
+                </TabsList>
                 
-                
-                <div className="hidden lg:flex items-center gap-2">
-                  <Button variant={activeTab === 'profit' ? 'default' : 'outline'} size="sm" className="text-xs border rounded-md px-3 py-1" onClick={() => setActiveTab('profit')}>
+                <div className="flex items-center gap-3">
+                  <Button 
+                    variant={activeTab === 'profit' ? 'default' : 'outline'} 
+                    size="sm" 
+                    className="text-xs lg:text-sm border rounded-md px-4 py-3 h-12 lg:h-14 whitespace-nowrap" 
+                    onClick={() => setActiveTab('profit')}
+                  >
                     <span className="hidden lg:inline">PROFIT & LOSS</span>
                     <span className="lg:hidden">P&L</span>
                   </Button>
                 </div>
-              </div>}
+              </>}
           </div>
 
           <TabsContent value="portfolio">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Portfolio Table */}
-              <div className="lg:col-span-2">
-                <Card>
-                  <CardContent className="p-4">
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 lg:gap-10">
+              {/* Portfolio Table - Enhanced spacing and responsive design */}
+              <div className="xl:col-span-2">
+                <Card className="mx-1 sm:mx-2">
+                  <CardContent className="p-6 lg:p-8">
                     {/* Enhanced Search and Filter Controls */}
-                    <div className="space-y-4 mb-6">
+                    <div className="space-y-6 lg:space-y-8 mb-8 lg:mb-10">
                       {/* Search */}
                       <AdvancedSearch holdings={holdings} onSearch={setSearchTerm} searchTerm={searchTerm} />
                       
                       {/* Filters and Sorting */}
-                      <div className="flex flex-col lg:flex-row gap-4 lg:items-start">
+                      <div className="flex flex-col xl:flex-row gap-6 lg:gap-8 xl:items-start">
                         <div className="flex-1">
                           <AdvancedFilters filters={filters} onFiltersChange={setFilters} walletTypes={walletTypes} activeFiltersCount={activeFiltersCount} />
                         </div>
                         
-                        <div className="lg:w-auto">
+                        <div className="xl:w-auto">
                           <AdvancedSorting sortBy={sortBy} sortDirection={sortDirection} onSortChange={(field, direction) => {
                         setSortBy(field);
                         setSortDirection(direction);
@@ -348,7 +360,7 @@ export default function CryptoPortfolio() {
                       </div>
 
                       {/* Results Count */}
-                      {filteredAndSortedHoldings.length !== holdings.length && <div className="text-sm text-muted-foreground">
+                      {filteredAndSortedHoldings.length !== holdings.length && <div className="text-sm lg:text-base text-muted-foreground">
                           Showing {filteredAndSortedHoldings.length} of {holdings.length} assets
                         </div>}
                     </div>
@@ -357,16 +369,16 @@ export default function CryptoPortfolio() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="w-8 sm:w-12 text-xs sm:text-sm">#</TableHead>
-                          <TableHead className="text-xs sm:text-sm">ASSET</TableHead>
-                          <TableHead className="text-xs sm:text-sm hidden sm:table-cell">PRICE</TableHead>
-                          <TableHead className="text-xs sm:text-sm">HOLDINGS</TableHead>
-                          <TableHead className="text-xs sm:text-sm">VALUE</TableHead>
+                          <TableHead className="w-8 sm:w-12 text-xs sm:text-sm lg:text-base">#</TableHead>
+                          <TableHead className="text-xs sm:text-sm lg:text-base">ASSET</TableHead>
+                          <TableHead className="text-xs sm:text-sm lg:text-base hidden sm:table-cell">PRICE</TableHead>
+                          <TableHead className="text-xs sm:text-sm lg:text-base">HOLDINGS</TableHead>
+                          <TableHead className="text-xs sm:text-sm lg:text-base">VALUE</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {filteredAndSortedHoldings.length === 0 ? <TableRow>
-                            <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                            <TableCell colSpan={5} className="text-center py-12 lg:py-16 text-muted-foreground text-base lg:text-lg">
                               No assets match your current filters
                             </TableCell>
                           </TableRow> : filteredAndSortedHoldings.map((holding, index) => {
@@ -374,43 +386,43 @@ export default function CryptoPortfolio() {
                         const currentValue = getHoldingCurrentValue(holding);
                         const percentChange = getHoldingPercentChange(holding);
                         const isPositive = percentChange >= 0;
-                        return <TableRow key={holding.id}>
-                                <TableCell className="font-medium text-xs sm:text-sm">{index + 1}</TableCell>
-                                <TableCell>
-                                  <div className="flex items-center gap-1 sm:gap-2">
-                                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary/20 flex items-center justify-center">
-                                      <span className="text-xs font-bold">
+                        return <TableRow key={holding.id} className="hover:bg-muted/30">
+                                <TableCell className="font-medium text-xs sm:text-sm lg:text-base py-4 lg:py-6">{index + 1}</TableCell>
+                                <TableCell className="py-4 lg:py-6">
+                                  <div className="flex items-center gap-2 lg:gap-3">
+                                    <div className="w-6 h-6 lg:w-8 lg:h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                                      <span className="text-xs lg:text-sm font-bold">
                                         {holding.symbol.charAt(0)}
                                       </span>
                                     </div>
                                     <div>
-                                      <span className="font-medium text-xs sm:text-sm">{holding.symbol}</span>
-                                      {holding.wallet_type && <div className="text-xs text-muted-foreground capitalize">
+                                      <span className="font-medium text-sm lg:text-base">{holding.symbol}</span>
+                                      {holding.wallet_type && <div className="text-xs lg:text-sm text-muted-foreground/80 capitalize">
                                           {holding.wallet_type}
                                         </div>}
                                     </div>
                                   </div>
                                 </TableCell>
-                                <TableCell className="hidden sm:table-cell">
-                                  <div className="flex flex-col sm:flex-row sm:items-center gap-1">
-                                    <span className="text-xs sm:text-sm">{formatCurrency(currentPrice)}</span>
-                                    <span className={`text-xs ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                                <TableCell className="hidden sm:table-cell py-4 lg:py-6">
+                                  <div className="flex flex-col lg:flex-row lg:items-center gap-1 lg:gap-2">
+                                    <span className="text-sm lg:text-base">{formatCurrency(currentPrice)}</span>
+                                    <span className={`text-xs lg:text-sm ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
                                       {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
                                     </span>
                                   </div>
                                 </TableCell>
-                                <TableCell>
-                                  <div className="text-xs sm:text-sm">
+                                <TableCell className="py-4 lg:py-6">
+                                  <div className="text-sm lg:text-base">
                                     <div>{holding.amount.toFixed(4)}</div>
-                                    <div className="text-xs text-muted-foreground sm:hidden">
+                                    <div className="text-xs lg:text-sm text-muted-foreground/80 sm:hidden">
                                       {formatCurrency(currentPrice)}
                                     </div>
                                   </div>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell className="py-4 lg:py-6">
                                   <div className="flex flex-col gap-1">
-                                    <span className="text-xs sm:text-sm font-medium">{formatCurrency(currentValue)}</span>
-                                    <span className={`text-xs ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                                    <span className="text-sm lg:text-base font-medium">{formatCurrency(currentValue)}</span>
+                                    <span className={`text-xs lg:text-sm ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
                                       {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
                                     </span>
                                   </div>
@@ -430,28 +442,28 @@ export default function CryptoPortfolio() {
           </TabsContent>
 
           <TabsContent value="holdings">
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="font-semibold mb-4">Holdings by Chain</h3>
-                <p className="text-muted-foreground">Chain-specific holdings view coming soon...</p>
+            <Card className="mx-1 sm:mx-2">
+              <CardContent className="p-8 lg:p-10">
+                <h3 className="font-semibold mb-6 text-lg lg:text-xl">Holdings by Chain</h3>
+                <p className="text-muted-foreground/80 text-base lg:text-lg">Chain-specific holdings view coming soon...</p>
               </CardContent>
             </Card>
           </TabsContent>
 
           <TabsContent value="archive">
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="font-semibold mb-4">Portfolio Archive</h3>
-                <p className="text-muted-foreground">Historical portfolio snapshots coming soon...</p>
+            <Card className="mx-1 sm:mx-2">
+              <CardContent className="p-8 lg:p-10">
+                <h3 className="font-semibold mb-6 text-lg lg:text-xl">Portfolio Archive</h3>
+                <p className="text-muted-foreground/80 text-base lg:text-lg">Historical portfolio snapshots coming soon...</p>
               </CardContent>
             </Card>
           </TabsContent>
 
           <TabsContent value="balances">
-            <Card>
-              <CardContent className="p-6 mx-0 py-0 my-0">
-                <h3 className="font-semibold mb-4">Balance History</h3>
-                <div className="h-96">
+            <Card className="mx-1 sm:mx-2">
+              <CardContent className="p-8 lg:p-10 mx-0 py-0 my-0">
+                <h3 className="font-semibold mb-6 text-lg lg:text-xl">Balance History</h3>
+                <div className="h-96 lg:h-[500px]">
                   <CryptoChart holdings={holdings} prices={prices} />
                 </div>
               </CardContent>
@@ -459,28 +471,28 @@ export default function CryptoPortfolio() {
           </TabsContent>
 
           <TabsContent value="tokens">
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="font-semibold mb-4">Token Balance History</h3>
-                <p className="text-muted-foreground">Individual token balance tracking coming soon...</p>
+            <Card className="mx-1 sm:mx-2">
+              <CardContent className="p-8 lg:p-10">
+                <h3 className="font-semibold mb-6 text-lg lg:text-xl">Token Balance History</h3>
+                <p className="text-muted-foreground/80 text-base lg:text-lg">Individual token balance tracking coming soon...</p>
               </CardContent>
             </Card>
           </TabsContent>
 
           <TabsContent value="profit">
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="font-semibold mb-4">Profit & Loss</h3>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span>Total Gain/Loss:</span>
-                    <span className={`font-bold ${isGain ? 'text-green-500' : 'text-red-500'}`}>
+            <Card className="mx-1 sm:mx-2">
+              <CardContent className="p-8 lg:p-10">
+                <h3 className="font-semibold mb-6 text-lg lg:text-xl">Profit & Loss</h3>
+                <div className="space-y-6 lg:space-y-8">
+                  <div className="flex justify-between items-center py-4 lg:py-6 border-b">
+                    <span className="text-base lg:text-lg">Total Gain/Loss:</span>
+                    <span className={`font-bold text-lg lg:text-xl ${isGain ? 'text-green-500' : 'text-red-500'}`}>
                       {formatCurrency(Math.abs(totalGainLoss))}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span>Percentage Change:</span>
-                    <span className={`font-bold ${isGain ? 'text-green-500' : 'text-red-500'}`}>
+                  <div className="flex justify-between items-center py-4 lg:py-6">
+                    <span className="text-base lg:text-lg">Percentage Change:</span>
+                    <span className={`font-bold text-lg lg:text-xl ${isGain ? 'text-green-500' : 'text-red-500'}`}>
                       {isGain ? '+' : ''}{portfolioPercentChange.toFixed(2)}%
                     </span>
                   </div>

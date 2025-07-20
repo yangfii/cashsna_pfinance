@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -25,7 +26,7 @@
     --secondary-foreground: 160 30% 25%;
 
     --muted: 210 40% 98%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted-foreground: 215.4 16.3% 56.9%; /* Improved contrast from 46.9% */
 
     --accent: 160 30% 94%;
     --accent-foreground: 160 50% 30%;
@@ -75,24 +76,17 @@
     --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    /* Dark theme - Professional dark neutrals */
+    /* Dark theme - Professional dark neutrals with improved accessibility */
     --background: 222 84% 4.9%;
     --foreground: 210 40% 98%;
 
@@ -110,7 +104,7 @@
     --secondary-foreground: 210 40% 98%;
 
     --muted: 230 15% 15%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted-foreground: 215 20.2% 75.1%; /* Improved contrast from 65.1% */
 
     --accent: 230 20% 20%;
     --accent-foreground: 210 40% 98%;
@@ -125,26 +119,26 @@
     --input: 230 15% 18%;
     --ring: 160 70% 60%;
 
-    /* Dark finance colors */
-    --income: 142 70% 45%;
+    /* Dark finance colors with better contrast */
+    --income: 142 70% 50%; /* Improved from 45% */
     --income-foreground: 0 0% 100%;
-    --expense: 0 84% 60%;
+    --expense: 0 84% 65%; /* Improved from 60% */
     --expense-foreground: 0 0% 100%;
-    --balance: 221 83% 65%;  
+    --balance: 221 83% 70%; /* Improved from 65% */
     --balance-foreground: 0 0% 100%;
 
     /* Chart colors (dark theme) */
-    --chart-1: 142 70% 45%;
-    --chart-2: 0 84% 60%;
-    --chart-3: 43 96% 56%;
-    --chart-4: 262 83% 58%;
-    --chart-5: 196 94% 67%;
-    --chart-6: 31 81% 61%;
+    --chart-1: 142 70% 50%;
+    --chart-2: 0 84% 65%;
+    --chart-3: 43 96% 60%;
+    --chart-4: 262 83% 65%;
+    --chart-5: 196 94% 70%;
+    --chart-6: 31 81% 65%;
 
     /* Dark gradients */
     --gradient-primary: linear-gradient(135deg, hsl(160 70% 60%), hsl(160 84% 39%));
-    --gradient-income: linear-gradient(135deg, hsl(142 70% 45%), hsl(142 76% 36%));
-    --gradient-expense: linear-gradient(135deg, hsl(0 84% 60%), hsl(15 80% 55%));
+    --gradient-income: linear-gradient(135deg, hsl(142 70% 50%), hsl(142 76% 36%));
+    --gradient-expense: linear-gradient(135deg, hsl(0 84% 65%), hsl(15 80% 55%));
     --gradient-hero: linear-gradient(135deg, hsl(160 70% 60%) 0%, hsl(160 84% 39%) 50%, hsl(180 65% 45%) 100%);
     --gradient-card: linear-gradient(145deg, hsl(230 25% 8%) 0%, hsl(230 20% 12%) 100%);
 
@@ -173,13 +167,13 @@
     font-family: 'Kantumruy Pro', sans-serif;
   }
 
-  /* Typography Design Tokens */
-  h1 { @apply text-2xl sm:text-3xl font-bold tracking-tight; }
-  h2 { @apply text-xl sm:text-2xl font-semibold tracking-tight; }
-  h3 { @apply text-lg sm:text-xl font-semibold; }
-  h4 { @apply text-base sm:text-lg font-semibold; }
-  h5 { @apply text-sm sm:text-base font-medium; }
-  h6 { @apply text-sm font-medium; }
+  /* Enhanced Typography Design Tokens with better responsive spacing */
+  h1 { @apply text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight; }
+  h2 { @apply text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-semibold tracking-tight; }
+  h3 { @apply text-lg sm:text-xl lg:text-2xl xl:text-3xl font-semibold; }
+  h4 { @apply text-base sm:text-lg lg:text-xl xl:text-2xl font-semibold; }
+  h5 { @apply text-sm sm:text-base lg:text-lg xl:text-xl font-medium; }
+  h6 { @apply text-sm lg:text-base font-medium; }
 
   /* Remove default app.css styles that conflict */
   #root {
@@ -191,9 +185,9 @@
 }
 
 @layer components {
-  /* Finance app specific components */
+  /* Enhanced Finance app specific components with better spacing */
   .stat-card {
-    @apply bg-gradient-to-br from-card to-card/90 backdrop-blur-sm border border-border/50 rounded-xl p-4 sm:p-6 shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-glow)] transition-[var(--transition-smooth)];
+    @apply bg-gradient-to-br from-card to-card/90 backdrop-blur-sm border border-border/50 rounded-xl p-6 sm:p-8 lg:p-10 shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-glow)] transition-[var(--transition-smooth)];
   }
 
   .income-card {
@@ -228,18 +222,31 @@
   .animate-bounce-in {
     animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
   }
+
+  /* Enhanced responsive spacing utilities */
+  .spacing-section {
+    @apply space-y-6 sm:space-y-8 lg:space-y-10 xl:space-y-12;
+  }
+
+  .spacing-grid {
+    @apply gap-4 sm:gap-6 lg:gap-8 xl:gap-10;
+  }
+
+  .spacing-container {
+    @apply px-4 sm:px-6 lg:px-8 xl:px-10 py-6 sm:py-8 lg:py-10 xl:py-12;
+  }
 }
 
 @layer utilities {
-  /* Typography Utilities */
-  .text-h4 { @apply text-base sm:text-lg font-semibold leading-tight; }
-  .text-h5 { @apply text-sm sm:text-base font-medium leading-snug; }
-  .text-body { @apply text-sm sm:text-base leading-relaxed; }
-  .text-body-sm { @apply text-xs sm:text-sm leading-relaxed; }
-  .text-label { @apply text-xs sm:text-sm font-medium leading-none; }
-  .text-card-title { @apply text-sm font-medium text-muted-foreground; }
-  .text-card-value { @apply text-xl sm:text-2xl font-bold; }
-  .text-stat-label { @apply text-xs text-muted-foreground leading-none; }
+  /* Enhanced Typography Utilities with better contrast */
+  .text-h4 { @apply text-base sm:text-lg lg:text-xl xl:text-2xl font-semibold leading-tight; }
+  .text-h5 { @apply text-sm sm:text-base lg:text-lg xl:text-xl font-medium leading-snug; }
+  .text-body { @apply text-sm sm:text-base lg:text-lg leading-relaxed; }
+  .text-body-sm { @apply text-xs sm:text-sm lg:text-base leading-relaxed; }
+  .text-label { @apply text-xs sm:text-sm lg:text-base font-medium leading-none; }
+  .text-card-title { @apply text-sm lg:text-base font-medium text-muted-foreground; }
+  .text-card-value { @apply text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold; }
+  .text-stat-label { @apply text-xs lg:text-sm text-muted-foreground leading-none; }
 
   .text-gradient {
     background: var(--gradient-primary);
@@ -247,6 +254,21 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+
+  /* Enhanced spacing utilities for large screens */
+  .spacing-lg { @apply space-y-8 lg:space-y-10 xl:space-y-12; }
+  .gap-lg { @apply gap-6 lg:gap-8 xl:gap-10; }
+  .p-lg { @apply p-6 lg:p-8 xl:p-10; }
+  .px-lg { @apply px-6 lg:px-8 xl:px-10; }
+  .py-lg { @apply py-6 lg:py-8 xl:py-10; }
+  .m-lg { @apply m-6 lg:m-8 xl:m-10; }
+  .mx-lg { @apply mx-6 lg:mx-8 xl:mx-10; }
+  .my-lg { @apply my-6 lg:my-8 xl:my-10; }
+
+  /* Max-width containers for different content types */
+  .container-content { @apply max-w-7xl mx-auto; }
+  .container-portfolio { @apply max-w-[1600px] mx-auto; }
+  .container-dashboard { @apply max-w-[1800px] mx-auto; }
 
   .shadow-soft {
     box-shadow: var(--shadow-soft);
@@ -308,4 +330,17 @@
     opacity: 1;
     transform: scale(1) translateY(0);
   }
+}
+
+/* Enhanced responsive breakpoints for better large screen support */
+@media (min-width: 1920px) {
+  .container-content { @apply max-w-8xl; }
+  .container-portfolio { @apply max-w-[1800px]; }
+  .container-dashboard { @apply max-w-[2000px]; }
+}
+
+@media (min-width: 2560px) {
+  .container-content { @apply max-w-9xl; }
+  .container-portfolio { @apply max-w-[2000px]; }
+  .container-dashboard { @apply max-w-[2200px]; }
 }

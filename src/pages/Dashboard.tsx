@@ -92,48 +92,52 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      {/* Welcome Message */}
-      <WelcomeMessage />
+    <div className="w-full container-dashboard space-y-10 lg:space-y-12 animate-fade-in">
+      {/* Welcome Message with enhanced spacing */}
+      <div className="px-2 sm:px-4 lg:px-6">
+        <WelcomeMessage />
+      </div>
       
-      {/* Header */}
-      <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
-        <div className="space-y-2">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{t("dashboard.title")}</h1>
-          <p className="text-sm sm:text-base text-muted-foreground">
+      {/* Header with improved breathing space */}
+      <div className="flex flex-col space-y-6 lg:space-y-8 xl:flex-row xl:items-center xl:justify-between xl:space-y-0 px-2 sm:px-4 lg:px-6">
+        <div className="space-y-3 lg:space-y-4">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground">{t("dashboard.title")}</h1>
+          <p className="text-base sm:text-lg lg:text-xl xl:text-2xl text-muted-foreground">
             ស្ថានភាពហិរញ្ញវត្ថុរបស់អ្នកសម្រាប់ខែ {currentMonth}
           </p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-3">
-          <Button variant="outline" size="sm" className="gap-2 w-full sm:w-auto">
-            <Calendar className="h-4 w-4" />
-            <span className="text-sm">ប្រែប្រួលខែ</span>
+        
+        {/* Enhanced button layout with better spacing and wrapping */}
+        <div className="flex flex-col sm:flex-row gap-4 lg:gap-6">
+          <Button variant="outline" size="sm" className="gap-3 w-full sm:w-auto h-12 lg:h-14 px-6 lg:px-8">
+            <Calendar className="h-5 w-5 lg:h-6 lg:w-6" />
+            <span className="text-sm lg:text-base">ប្រែប្រួលខែ</span>
           </Button>
-            <Button 
-              className="gap-2 bg-gradient-primary border-0 hover:shadow-glow transition-smooth w-full sm:w-auto"
-              onClick={() => navigate('/dashboard/transactions')}
-            >
-            <Plus className="h-4 w-4" />
-            <span className="text-sm">{t("dashboard.addTransaction")}</span>
+          <Button 
+            className="gap-3 bg-gradient-primary border-0 hover:shadow-glow transition-smooth w-full sm:w-auto h-12 lg:h-14 px-6 lg:px-8"
+            onClick={() => navigate('/dashboard/transactions')}
+          >
+            <Plus className="h-5 w-5 lg:h-6 lg:w-6" />
+            <span className="text-sm lg:text-base">{t("dashboard.addTransaction")}</span>
           </Button>
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      {/* Enhanced Stats Cards with better spacing and responsive grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8 xl:gap-10 px-2 sm:px-4 lg:px-6">
         {/* Total Income */}
         <Card className="income-card stat-card animate-bounce-in">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-card-title">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 lg:pb-4">
+            <CardTitle className="text-sm lg:text-base font-medium text-muted-foreground">
               {t("dashboard.totalIncome")}
             </CardTitle>
-            <TrendingUp className="h-4 w-4 text-emerald-600" />
+            <TrendingUp className="h-5 w-5 lg:h-6 lg:w-6 text-emerald-600" />
           </CardHeader>
-          <CardContent>
-            <div className="text-card-value text-emerald-800 dark:text-emerald-300">
+          <CardContent className="pt-0">
+            <div className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-emerald-800 dark:text-emerald-300">
               {formatCurrency(totalIncome)}
             </div>
-            <p className="text-stat-label text-emerald-600 dark:text-emerald-500 mt-1">
+            <p className="text-xs lg:text-sm text-emerald-600 dark:text-emerald-500 mt-2 lg:mt-3">
               +12% ពីខែមុន
             </p>
           </CardContent>
@@ -141,17 +145,17 @@ export default function Dashboard() {
 
         {/* Total Expenses */}
         <Card className="expense-card stat-card animate-bounce-in" style={{animationDelay: '0.1s'}}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-card-title">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 lg:pb-4">
+            <CardTitle className="text-sm lg:text-base font-medium text-muted-foreground">
               {t("dashboard.totalExpenses")}
             </CardTitle>
-            <TrendingDown className="h-4 w-4 text-red-600" />
+            <TrendingDown className="h-5 w-5 lg:h-6 lg:w-6 text-red-600" />
           </CardHeader>
-          <CardContent>
-            <div className="text-card-value text-red-800 dark:text-red-300">
+          <CardContent className="pt-0">
+            <div className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-red-800 dark:text-red-300">
               {formatCurrency(totalExpense)}
             </div>
-            <p className="text-stat-label text-red-600 dark:text-red-500 mt-1">
+            <p className="text-xs lg:text-sm text-red-600 dark:text-red-500 mt-2 lg:mt-3">
               -5% ពីខែមុន
             </p>
           </CardContent>
@@ -159,22 +163,22 @@ export default function Dashboard() {
 
         {/* Net Balance */}
         <Card className="balance-card stat-card animate-bounce-in" style={{animationDelay: '0.2s'}}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-card-title">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 lg:pb-4">
+            <CardTitle className="text-sm lg:text-base font-medium text-muted-foreground">
               {t("dashboard.currentBalance")}
             </CardTitle>
-            <Wallet className="h-4 w-4 text-blue-600" />
+            <Wallet className="h-5 w-5 lg:h-6 lg:w-6 text-blue-600" />
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <div className={cn(
-              "text-card-value",
+              "text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold",
               netBalance >= 0 
                 ? "text-blue-800 dark:text-blue-300" 
                 : "text-red-800 dark:text-red-300"
             )}>
               {formatCurrency(netBalance)}
             </div>
-            <p className="text-stat-label text-blue-600 dark:text-blue-500 mt-1">
+            <p className="text-xs lg:text-sm text-blue-600 dark:text-blue-500 mt-2 lg:mt-3">
               គោលដៅពីរខែ: $2,000
             </p>
           </CardContent>
@@ -182,109 +186,110 @@ export default function Dashboard() {
 
         {/* This Month */}
         <Card className="stat-card animate-bounce-in" style={{animationDelay: '0.3s'}}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-card-title">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 lg:pb-4">
+            <CardTitle className="text-sm lg:text-base font-medium text-muted-foreground">
               ប្រតិបត្តិការខែនេះ
             </CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <DollarSign className="h-5 w-5 lg:h-6 lg:w-6 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
-            <div className="text-card-value">
+          <CardContent className="pt-0">
+            <div className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold">
               {loading ? "..." : transactions.length}
             </div>
-            <p className="text-stat-label mt-1">
+            <p className="text-xs lg:text-sm text-muted-foreground mt-2 lg:mt-3">
               រាយការណ៍ប្រតិបត្តិការ
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Recent Transactions */}
-      <Card className="stat-card animate-slide-up">
-        <CardHeader>
-          <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-            <CardTitle className="text-h4">{t("dashboard.recentTransactions")}</CardTitle>
-            <Button variant="outline" size="sm" className="w-full sm:w-auto">
-              មើលទាំងអស់
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {loading ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <p>{t("common.loading")}</p>
+      {/* Enhanced Recent Transactions with better spacing */}
+      <div className="px-2 sm:px-4 lg:px-6">
+        <Card className="stat-card animate-slide-up">
+          <CardHeader className="pb-6 lg:pb-8">
+            <div className="flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:justify-between">
+              <CardTitle className="text-xl lg:text-2xl xl:text-3xl font-semibold">{t("dashboard.recentTransactions")}</CardTitle>
+              <Button variant="outline" size="sm" className="w-full lg:w-auto h-10 lg:h-12 px-4 lg:px-6">
+                <span className="text-sm lg:text-base">មើលទាំងអស់</span>
+              </Button>
             </div>
-          ) : transactions.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <p>{t("dashboard.noTransactions")}</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {transactions.slice(0, 5).map((transaction) => (
-              <div
-                key={transaction.id}
-                className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-smooth"
-              >
-                <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
-                  <div className={cn(
-                    "w-2 h-8 rounded-full flex-shrink-0",
-                    transaction.type === "income" ? "bg-gradient-income" : "bg-gradient-expense"
-                  )} />
-                   <div className="min-w-0 flex-1">
-                     <p className="text-h5 truncate">{transaction.category}</p>
-                     <p className="text-body-sm text-muted-foreground truncate">{transaction.note}</p>
-                   </div>
-                </div>
-                <div className="flex items-center justify-between sm:flex-col sm:items-end sm:text-right">
-                  <Badge 
-                    variant={transaction.type === "income" ? "secondary" : "destructive"}
-                    className={cn(
-                      "text-xs sm:text-sm",
-                      transaction.type === "income" 
-                        ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" 
-                        : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-                    )}
-                  >
-                    {transaction.type === "income" ? "+" : "-"}{formatCurrency(transaction.amount)}
-                  </Badge>
-                  <p className="text-xs text-muted-foreground mt-0 sm:mt-1">{transaction.date}</p>
-                </div>
+          </CardHeader>
+          <CardContent className="pt-0">
+            {loading ? (
+              <div className="text-center py-12 lg:py-16 text-muted-foreground">
+                <p className="text-base lg:text-lg">{t("common.loading")}</p>
               </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+            ) : transactions.length === 0 ? (
+              <div className="text-center py-12 lg:py-16 text-muted-foreground">
+                <p className="text-base lg:text-lg">{t("dashboard.noTransactions")}</p>
+              </div>
+            ) : (
+              <div className="space-y-4 lg:space-y-6">
+                {transactions.slice(0, 5).map((transaction) => (
+                <div
+                  key={transaction.id}
+                  className="flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:justify-between p-6 lg:p-8 rounded-lg bg-muted/30 hover:bg-muted/50 transition-smooth"
+                >
+                  <div className="flex items-center space-x-4 lg:space-x-6 min-w-0 flex-1">
+                    <div className={cn(
+                      "w-2 h-10 lg:h-12 rounded-full flex-shrink-0",
+                      transaction.type === "income" ? "bg-gradient-income" : "bg-gradient-expense"
+                    )} />
+                     <div className="min-w-0 flex-1">
+                       <p className="text-base lg:text-lg xl:text-xl font-semibold truncate">{transaction.category}</p>
+                       <p className="text-sm lg:text-base text-muted-foreground truncate">{transaction.note}</p>
+                     </div>
+                  </div>
+                  <div className="flex items-center justify-between lg:flex-col lg:items-end lg:text-right lg:space-y-2">
+                    <Badge 
+                      variant={transaction.type === "income" ? "secondary" : "destructive"}
+                      className={cn(
+                        "text-sm lg:text-base px-3 py-1 lg:px-4 lg:py-2",
+                        transaction.type === "income" 
+                          ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" 
+                          : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                      )}
+                    >
+                      {transaction.type === "income" ? "+" : "-"}{formatCurrency(transaction.amount)}
+                    </Badge>
+                    <p className="text-xs lg:text-sm text-muted-foreground mt-0 lg:mt-1">{transaction.date}</p>
+                  </div>
+                </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
-
-      {/* Main Dashboard Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div className="lg:col-span-3 space-y-6">
-          {/* Quick Actions */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 animate-slide-up">
+      {/* Enhanced Main Dashboard Grid with better spacing */}
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-8 lg:gap-10 xl:gap-12 px-2 sm:px-4 lg:px-6">
+        <div className="xl:col-span-3 space-y-8 lg:space-y-10">
+          {/* Enhanced Quick Actions with better spacing */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 xl:gap-10 animate-slide-up">
             <Card className="stat-card hover:shadow-glow transition-smooth cursor-pointer">
-              <CardContent className="p-4 sm:p-6">
-                <div className="flex items-center space-x-3 sm:space-x-4">
-                  <div className="p-2 sm:p-3 bg-gradient-income rounded-xl flex-shrink-0">
-                    <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+              <CardContent className="p-8 lg:p-10">
+                <div className="flex items-center space-x-4 lg:space-x-6">
+                  <div className="p-4 lg:p-5 bg-gradient-income rounded-xl flex-shrink-0">
+                    <TrendingUp className="h-6 w-6 lg:h-8 lg:w-8 text-white" />
                   </div>
                    <div className="min-w-0 flex-1">
-                     <h3 className="text-h5">បន្ថែមចំណូល</h3>
-                     <p className="text-body-sm text-muted-foreground">កត់ត្រាចំណូលថ្មី</p>
+                     <h3 className="text-lg lg:text-xl xl:text-2xl font-semibold">បន្ថែមចំណូល</h3>
+                     <p className="text-sm lg:text-base text-muted-foreground">កត់ត្រាចំណូលថ្មី</p>
                    </div>
                 </div>
               </CardContent>
             </Card>
 
             <Card className="stat-card hover:shadow-glow transition-smooth cursor-pointer">
-              <CardContent className="p-4 sm:p-6">
-                <div className="flex items-center space-x-3 sm:space-x-4">
-                  <div className="p-2 sm:p-3 bg-gradient-expense rounded-xl flex-shrink-0">
-                    <TrendingDown className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+              <CardContent className="p-8 lg:p-10">
+                <div className="flex items-center space-x-4 lg:space-x-6">
+                  <div className="p-4 lg:p-5 bg-gradient-expense rounded-xl flex-shrink-0">
+                    <TrendingDown className="h-6 w-6 lg:h-8 lg:w-8 text-white" />
                   </div>
                    <div className="min-w-0 flex-1">
-                     <h3 className="text-h5">បន្ថែមចំណាយ</h3>
-                     <p className="text-body-sm text-muted-foreground">កត់ត្រាចំណាយថ្មី</p>
+                     <h3 className="text-lg lg:text-xl xl:text-2xl font-semibold">បន្ថែមចំណាយ</h3>
+                     <p className="text-sm lg:text-base text-muted-foreground">កត់ត្រាចំណាយថ្មី</p>
                    </div>
                 </div>
               </CardContent>
@@ -293,7 +298,7 @@ export default function Dashboard() {
         </div>
         
         {/* Profile Card */}
-        <div className="lg:col-span-1">
+        <div className="xl:col-span-1">
           <ProfileCard />
         </div>
       </div>
