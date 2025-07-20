@@ -282,12 +282,7 @@ export default function CryptoPortfolio() {
       </div>
 
       {/* Portfolio Tags */}
-      <div className="flex flex-wrap gap-2">
-        <Badge variant="outline">Key Opinion Leader</Badge>
-        <Badge variant="outline">Individual</Badge>
-        <Badge variant="outline">High Transacting</Badge>
-        <Badge variant="outline">Owner</Badge>
-      </div>
+      
 
       {holdings.length === 0 ? <Card>
           <CardContent className="text-center py-8 text-muted-foreground">
