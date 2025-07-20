@@ -272,32 +272,44 @@ export default function CryptoPortfolio() {
             </div>
           </CardContent>
         </Card> : <Tabs defaultValue="portfolio" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1">
-            <TabsTrigger value="portfolio" className="text-xs sm:text-sm px-0 my-0 mx-[33px]">
-              <span className="hidden sm:inline">PORTFOLIO</span>
-              <span className="sm:hidden">PORT</span>
-            </TabsTrigger>
-            <TabsTrigger value="holdings" className="text-xs sm:text-sm">
-              <span className="hidden lg:inline">HOLDINGS BY CHAIN</span>
-              <span className="lg:hidden">HOLDINGS</span>
-            </TabsTrigger>
-            <TabsTrigger value="archive" className="text-xs sm:text-sm">
-              <span className="hidden lg:inline">PORTFOLIO ARCHIVE</span>
-              <span className="lg:hidden">ARCHIVE</span>
-            </TabsTrigger>
-            <TabsTrigger value="balances" className="text-xs sm:text-sm">
-              <span className="hidden lg:inline">BALANCES HISTORY</span>
-              <span className="lg:hidden">BALANCES</span>
-            </TabsTrigger>
-            <TabsTrigger value="tokens" className="text-xs sm:text-sm">
-              <span className="hidden lg:inline">TOKEN BALANCES HISTORY</span>
-              <span className="lg:hidden">TOKENS</span>
-            </TabsTrigger>
-            <TabsTrigger value="profit" className="text-xs sm:text-sm">
-              <span className="hidden lg:inline">PROFIT & LOSS</span>
-              <span className="lg:hidden">P&L</span>
-            </TabsTrigger>
-          </TabsList>
+          <div className="flex items-center gap-2">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1 flex-1">
+              <TabsTrigger value="portfolio" className="text-xs sm:text-sm">
+                <span className="hidden sm:inline">PORTFOLIO</span>
+                <span className="sm:hidden">PORT</span>
+              </TabsTrigger>
+              <TabsTrigger value="holdings" className="text-xs sm:text-sm">
+                <span className="hidden lg:inline">HOLDINGS BY CHAIN</span>
+                <span className="lg:hidden">HOLDINGS</span>
+              </TabsTrigger>
+              <TabsTrigger value="archive" className="text-xs sm:text-sm">
+                <span className="hidden lg:inline">PORTFOLIO ARCHIVE</span>
+                <span className="lg:hidden">ARCHIVE</span>
+              </TabsTrigger>
+              <TabsTrigger value="balances" className="text-xs sm:text-sm">
+                <span className="hidden lg:inline">BALANCES HISTORY</span>
+                <span className="lg:hidden">BALANCES</span>
+              </TabsTrigger>
+              <TabsTrigger value="tokens" className="text-xs sm:text-sm">
+                <span className="hidden lg:inline">TOKEN BALANCES HISTORY</span>
+                <span className="lg:hidden">TOKENS</span>
+              </TabsTrigger>
+            </TabsList>
+            
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" className="text-xs">
+                <Plus className="h-3 w-3 mr-1" />
+                More+
+              </Button>
+              
+              <div className="hidden lg:flex items-center gap-2">
+                <TabsTrigger value="profit" className="text-xs sm:text-sm border rounded-md px-3 py-1">
+                  <span className="hidden lg:inline">PROFIT & LOSS</span>
+                  <span className="lg:hidden">P&L</span>
+                </TabsTrigger>
+              </div>
+            </div>
+          </div>
 
           <TabsContent value="portfolio">
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
