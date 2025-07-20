@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ReportDialog } from "@/components/ReportDialog";
-
 const getNavItems = (t: (key: string) => string) => [{
   to: "/dashboard",
   icon: LayoutDashboard,
@@ -53,7 +52,6 @@ const getNavItems = (t: (key: string) => string) => [{
   label: t("nav.settings"),
   key: "settings"
 }];
-
 function AppSidebar() {
   const {
     user,
@@ -71,7 +69,6 @@ function AppSidebar() {
     state
   } = useSidebar();
   const navItems = getNavItems(t);
-
   const handleSignOut = async () => {
     try {
       console.log('Starting sign out process...');
@@ -91,7 +88,6 @@ function AppSidebar() {
       toast.error('Unexpected error during sign out');
     }
   };
-
   return <Sidebar variant="inset" collapsible="icon" className="py-0 my-0 mx-px px-0">
       <SidebarHeader className="mx-0 px-0 py-[7px] my-0">
         <div className="flex items-center gap-2 py-1 my-0 mx-[4px] px-[12px]">
@@ -109,7 +105,7 @@ function AppSidebar() {
         </div>
       </SidebarHeader>
       
-      <SidebarContent>
+      <SidebarContent className="mx-[6px]">
         <SidebarGroup>
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -129,7 +125,7 @@ function AppSidebar() {
       
       <SidebarFooter>
         <SidebarMenu>
-          <SidebarMenuItem>
+          <SidebarMenuItem className="px-0 mx-0 my-[14px] py-0">
             <SidebarMenuButton asChild tooltip="Profile">
               <NavLink to="/dashboard/settings" className={cn("flex items-center gap-3 p-3", location.pathname === "/dashboard/settings" ? "bg-accent" : "")}>
                 <Avatar className="size-10">
@@ -165,7 +161,6 @@ function AppSidebar() {
       </SidebarFooter>
     </Sidebar>;
 }
-
 export default function Layout() {
   const navigate = useNavigate();
   const {
@@ -175,13 +170,11 @@ export default function Layout() {
     user,
     loading
   } = useAuth();
-
   useEffect(() => {
     if (!loading && !user) {
       navigate('/auth');
     }
   }, [user, loading, navigate]);
-
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5">
         <div className="text-center">
@@ -190,11 +183,9 @@ export default function Layout() {
         </div>
       </div>;
   }
-
   if (!user) {
     return null;
   }
-
   return <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-to-br from-background via-background to-primary/5">
         <AppSidebar />
