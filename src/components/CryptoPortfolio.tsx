@@ -290,7 +290,7 @@ export default function CryptoPortfolio() {
       ) : (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <div className="flex items-center gap-2">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 flex-1">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 flex-1">
               <TabsTrigger value="portfolio" className="text-xs sm:text-sm">
                 <span className="hidden sm:inline">PORTFOLIO</span>
                 <span className="sm:hidden">PORT</span>
