@@ -223,7 +223,6 @@ export default function CryptoPortfolio() {
         <div className="animate-pulse text-muted-foreground">Loading portfolio...</div>
       </div>;
   }
-  
   const portfolioValue = calculatePortfolioValue();
   const totalGainLoss = calculateTotalGainLoss();
   const isGain = totalGainLoss >= 0;
@@ -283,7 +282,7 @@ export default function CryptoPortfolio() {
             </div>
           </CardContent>
         </Card> : <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8 lg:space-y-10">
-          {/* Enhanced tabs layout with chart navigation tabs */}
+          {/* Enhanced tabs layout with better responsive behavior */}
           <div className="flex items-center gap-3 lg:gap-4 px-1 sm:px-2">
             {isMobile ? <Select value={activeTab} onValueChange={setActiveTab}>
                 <SelectTrigger className="flex-1 h-12">
@@ -296,11 +295,6 @@ export default function CryptoPortfolio() {
                   <SelectItem value="balances">BALANCES HISTORY</SelectItem>
                   <SelectItem value="tokens">TOKEN BALANCES HISTORY</SelectItem>
                   <SelectItem value="profit">PROFIT & LOSS</SelectItem>
-                  <SelectItem value="overview">OVERVIEW</SelectItem>
-                  <SelectItem value="performance">PERFORMANCE</SelectItem>
-                  <SelectItem value="distribution">DISTRIBUTION</SelectItem>
-                  <SelectItem value="comparison">COMPARISON</SelectItem>
-                  <SelectItem value="depth">DEPTH</SelectItem>
                 </SelectContent>
               </Select> : <>
                 <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 lg:gap-3 flex-1 h-12 lg:h-14">
@@ -308,29 +302,25 @@ export default function CryptoPortfolio() {
                     <span className="hidden sm:inline truncate">PORTFOLIO</span>
                     <span className="sm:hidden truncate">PORT</span>
                   </TabsTrigger>
-                  <TabsTrigger value="overview" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
-                    <span className="hidden sm:inline truncate">OVERVIEW</span>
-                    <span className="sm:hidden truncate">OVER</span>
+                  <TabsTrigger value="holdings" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
+                    <span className="hidden lg:inline truncate">HOLDINGS BY CHAIN</span>
+                    <span className="lg:hidden truncate">HOLDINGS</span>
                   </TabsTrigger>
-                  <TabsTrigger value="performance" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
-                    <span className="hidden sm:inline truncate">PERFORMANCE</span>
-                    <span className="sm:hidden truncate">PERF</span>
+                  <TabsTrigger value="archive" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
+                    <span className="hidden lg:inline truncate">PORTFOLIO ARCHIVE</span>
+                    <span className="lg:hidden truncate">ARCHIVE</span>
                   </TabsTrigger>
-                  <TabsTrigger value="distribution" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
-                    <span className="hidden sm:inline truncate">DISTRIBUTION</span>
-                    <span className="sm:hidden truncate">DIST</span>
+                  <TabsTrigger value="balances" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
+                    <span className="hidden lg:inline truncate">BALANCES HISTORY</span>
+                    <span className="lg:hidden truncate">BALANCES</span>
                   </TabsTrigger>
-                  <TabsTrigger value="comparison" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
-                    <span className="hidden sm:inline truncate">COMPARISON</span>
-                    <span className="sm:hidden truncate">COMP</span>
+                  <TabsTrigger value="tokens" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
+                    <span className="hidden lg:inline truncate">TOKEN BALANCES HISTORY</span>
+                    <span className="lg:hidden truncate">TOKENS</span>
                   </TabsTrigger>
                 </TabsList>
                 
                 <div className="flex items-center gap-3">
-                  <Button variant={activeTab === 'depth' ? 'default' : 'outline'} size="sm" className="text-xs lg:text-sm border rounded-md px-4 py-3 h-12 lg:h-14 whitespace-nowrap" onClick={() => setActiveTab('depth')}>
-                    <span className="hidden lg:inline">DEPTH</span>
-                    <span className="lg:hidden">DPTH</span>
-                  </Button>
                   <Button variant={activeTab === 'profit' ? 'default' : 'outline'} size="sm" className="text-xs lg:text-sm border rounded-md px-4 py-3 h-12 lg:h-14 whitespace-nowrap" onClick={() => setActiveTab('profit')}>
                     <span className="hidden lg:inline">PROFIT & LOSS</span>
                     <span className="lg:hidden">P&L</span>
@@ -455,48 +445,6 @@ export default function CryptoPortfolio() {
             </div>
           </TabsContent>
 
-          {/* Chart Tabs Content */}
-          <TabsContent value="overview">
-            <Card className="mx-1 sm:mx-2">
-              <CardContent className="p-8 lg:p-10">
-                <CryptoChart holdings={holdings} prices={prices} activeTab="overview" />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="performance">
-            <Card className="mx-1 sm:mx-2">
-              <CardContent className="p-8 lg:p-10">
-                <CryptoChart holdings={holdings} prices={prices} activeTab="performance" />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="distribution">
-            <Card className="mx-1 sm:mx-2">
-              <CardContent className="p-8 lg:p-10">
-                <CryptoChart holdings={holdings} prices={prices} activeTab="distribution" />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="comparison">
-            <Card className="mx-1 sm:mx-2">
-              <CardContent className="p-8 lg:p-10">
-                <CryptoChart holdings={holdings} prices={prices} activeTab="comparison" />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="depth">
-            <Card className="mx-1 sm:mx-2">
-              <CardContent className="p-8 lg:p-10">
-                <CryptoChart holdings={holdings} prices={prices} activeTab="depth" />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* ... keep existing code (holdings, archive, balances, tokens, profit tabs content) */}
           <TabsContent value="holdings">
             <Card className="mx-1 sm:mx-2">
               <CardContent className="p-8 lg:p-10">
