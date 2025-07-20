@@ -317,7 +317,7 @@ export default function CryptoChart({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <Card className="flex flex-col">
               <CardHeader className="pb-4">
-                <CardTitle className="text-h4">Portfolio Distribution</CardTitle>
+                <CardTitle className="text-lg font-semibold">Portfolio Distribution</CardTitle>
               </CardHeader>
               <CardContent className="flex-1 p-6 pt-2">
                 {portfolioData.length > 0 ? (
@@ -348,8 +348,8 @@ export default function CryptoChart({
                       {/* Center Text */}
                       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                          <div className="text-center">
-                           <p className="text-stat-label">Total</p>
-                           <p className="text-h5 font-bold">{formatCurrency(totalValue)}</p>
+                           <p className="text-xs text-muted-foreground">Total</p>
+                           <p className="text-lg font-bold">{formatCurrency(totalValue)}</p>
                          </div>
                       </div>
                     </div>
@@ -392,7 +392,7 @@ export default function CryptoChart({
 
             <Card className="flex flex-col">
               <CardHeader className="pb-4">
-                <CardTitle className="text-h4">Portfolio Performance</CardTitle>
+                <CardTitle className="text-lg font-semibold">Portfolio Performance</CardTitle>
               </CardHeader>
               <CardContent className="flex-1 p-6 pt-2 overflow-auto">
                 {portfolioData.length > 0 ? (
@@ -453,7 +453,7 @@ export default function CryptoChart({
         <TabsContent value="distribution">
           <Card>
             <CardHeader>
-              <CardTitle>Asset Distribution</CardTitle>
+              <CardTitle className="text-lg font-semibold">Asset Distribution</CardTitle>
             </CardHeader>
             <CardContent className="overflow-auto">
               {portfolioData.length > 0 ? (
@@ -488,7 +488,7 @@ export default function CryptoChart({
                   </div>
                   <div className="space-y-3">
                     <h3 className="text-xl font-semibold text-foreground">No portfolio data yet</h3>
-                    <p className="text-muted-foreground max-w-[320px]">
+                    <p className="text-sm text-muted-foreground max-w-[320px]">
                       Visualize your asset distribution with detailed charts and percentages
                     </p>
                     <div className="pt-2">
@@ -509,7 +509,7 @@ export default function CryptoChart({
           <div className="space-y-6 overflow-auto">
             <Card>
               <CardHeader>
-                <CardTitle>Portfolio Performance Over Time</CardTitle>
+                <CardTitle className="text-lg font-semibold">Portfolio Performance Over Time</CardTitle>
               </CardHeader>
               <CardContent className="overflow-auto">
                 {portfolioData.length > 0 ? (
@@ -600,7 +600,7 @@ export default function CryptoChart({
                       <TrendingUp className="w-8 h-8 text-muted-foreground" />
                     </div>
                     <div className="space-y-2">
-                      <p className="text-muted-foreground font-medium">No performance data to display yet</p>
+                      <p className="text-base font-medium text-muted-foreground">No performance data to display yet</p>
                       <p className="text-sm text-muted-foreground">Add holdings to see performance chart</p>
                     </div>
                   </div>
@@ -610,7 +610,7 @@ export default function CryptoChart({
 
             <Card>
               <CardHeader>
-                <CardTitle>P&L Analysis</CardTitle>
+                <CardTitle className="text-lg font-semibold">P&L Analysis</CardTitle>
               </CardHeader>
               <CardContent className="overflow-auto">
                 <ResponsiveContainer width="100%" height={300}>
@@ -635,7 +635,7 @@ export default function CryptoChart({
         <TabsContent value="comparison">
           <Card>
             <CardHeader>
-              <CardTitle>Holdings Comparison</CardTitle>
+              <CardTitle className="text-lg font-semibold">Holdings Comparison</CardTitle>
             </CardHeader>
             <CardContent className="overflow-auto">
               <ResponsiveContainer width="100%" height={400}>
@@ -665,7 +665,7 @@ export default function CryptoChart({
         <TabsContent value="depth">
           <Card>
             <CardHeader className="mx-0">
-              <CardTitle>Market Depth (Simulated)</CardTitle>
+              <CardTitle className="text-lg font-semibold">Market Depth (Simulated)</CardTitle>
             </CardHeader>
             <CardContent className="overflow-auto">
               <ResponsiveContainer width="100%" height={400}>
