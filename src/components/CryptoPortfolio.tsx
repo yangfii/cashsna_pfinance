@@ -19,6 +19,7 @@ import CurrencySettings, { CurrencyRates } from "@/components/crypto/CurrencySet
 import AdvancedSearch from "@/components/crypto/AdvancedSearch";
 import AdvancedFilters, { FilterOptions } from "@/components/crypto/AdvancedFilters";
 import AdvancedSorting, { SortOption } from "@/components/crypto/AdvancedSorting";
+
 export default function CryptoPortfolio() {
   const {
     user
@@ -216,6 +217,7 @@ export default function CryptoPortfolio() {
     if (filters.amountRange.min !== null || filters.amountRange.max !== null) count++;
     return count;
   }, [filters]);
+
   if (loading) {
     return <div className="flex items-center justify-center h-64">
         <div className="animate-pulse text-muted-foreground">Loading portfolio...</div>
@@ -225,6 +227,7 @@ export default function CryptoPortfolio() {
   const totalGainLoss = calculateTotalGainLoss();
   const isGain = totalGainLoss >= 0;
   const portfolioPercentChange = portfolioValue > 0 ? calculatePercentageChange(portfolioValue, portfolioValue - totalGainLoss) : 0;
+
   return <div className="space-y-8 lg:space-y-10">
       {/* Profile Header - Enhanced spacing and responsive design */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 lg:gap-8 p-1 sm:p-2">
@@ -429,7 +432,16 @@ export default function CryptoPortfolio() {
               </div>
 
               {/* Balance History Chart */}
-              
+              <div className="xl:col-span-1">
+                <Card className="mx-1 sm:mx-2">
+                  <CardContent className="p-8 lg:p-10">
+                    <h3 className="font-semibold mb-6 text-lg lg:text-xl">Balance History</h3>
+                    <div className="h-64 lg:h-80">
+                      <CryptoChart holdings={holdings} prices={prices} />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </TabsContent>
 
@@ -453,7 +465,7 @@ export default function CryptoPortfolio() {
 
           <TabsContent value="balances">
             <Card className="mx-1 sm:mx-2">
-              <CardContent className="p-8 lg:p-10 mx-0 py-[13px] my-[3px] px-0">
+              <CardContent className="p-8 lg:p-10">
                 <h3 className="font-semibold mb-6 text-lg lg:text-xl">Balance History</h3>
                 <div className="h-96 lg:h-[500px]">
                   <CryptoChart holdings={holdings} prices={prices} />
