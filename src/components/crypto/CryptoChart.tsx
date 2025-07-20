@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PieChart, Pie, LineChart, Line, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Legend } from "recharts";
@@ -313,16 +314,16 @@ export default function CryptoChart({
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <Card className="flex flex-col">
+              <CardHeader className="pb-4">
                 <CardTitle className="text-h4">Portfolio Distribution</CardTitle>
               </CardHeader>
-              <CardContent className="p-6">
+              <CardContent className="flex-1 p-6 pt-2">
                 {portfolioData.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center h-full">
                     {/* Donut Chart */}
-                    <div className="relative">
+                    <div className="relative flex items-center justify-center">
                       <ResponsiveContainer width="100%" height={280}>
                         <PieChart>
                           <Pie
@@ -389,34 +390,36 @@ export default function CryptoChart({
               </CardContent>
             </Card>
 
-            <Card>
-                 <CardHeader>
-                   <CardTitle className="text-h4">Portfolio Performance</CardTitle>
-                 </CardHeader>
-              <CardContent className="overflow-auto">
+            <Card className="flex flex-col">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-h4">Portfolio Performance</CardTitle>
+              </CardHeader>
+              <CardContent className="flex-1 p-6 pt-2 overflow-auto">
                 {portfolioData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={300}>
-                    <AreaChart data={performanceData}>
-                      <defs>
-                        <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8} />
-                          <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.1} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                      <XAxis dataKey="date" />
-                      <YAxis tickFormatter={value => formatCurrency(value)} />
-                      <Tooltip formatter={(value: number) => formatCurrency(value)} />
-                      <Area
-                        type="monotone"
-                        dataKey="value"
-                        stroke="hsl(var(--primary))"
-                        fillOpacity={1}
-                        fill="url(#colorValue)"
-                        strokeWidth={2}
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
+                  <div className="h-full min-h-[280px] flex items-center">
+                    <ResponsiveContainer width="100%" height={280}>
+                      <AreaChart data={performanceData}>
+                        <defs>
+                          <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8} />
+                            <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.1} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                        <XAxis dataKey="date" />
+                        <YAxis tickFormatter={value => formatCurrency(value)} />
+                        <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                        <Area
+                          type="monotone"
+                          dataKey="value"
+                          stroke="hsl(var(--primary))"
+                          fillOpacity={1}
+                          fill="url(#colorValue)"
+                          strokeWidth={2}
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center h-[300px] text-center space-y-6">
                     <div className="relative">
