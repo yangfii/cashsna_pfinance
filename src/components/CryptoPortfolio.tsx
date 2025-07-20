@@ -253,23 +253,10 @@ export default function CryptoPortfolio() {
         </div>
         
         <div className="flex flex-wrap items-center gap-2">
-          <Button variant="outline" size="sm" className="text-xs lg:text-sm">
-            <Bell className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
-            <span className="hidden sm:inline">Create Alert</span>
-            <span className="sm:hidden">Alert</span>
-          </Button>
-          
-          <Button variant="outline" size="sm" className="text-xs lg:text-sm">
-            <Share className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
-            <span className="hidden sm:inline">Share</span>
-            <span className="sm:hidden">Share</span>
-          </Button>
-          
-          <Button variant="outline" size="sm" className="text-xs lg:text-sm">
-            <MoreHorizontal className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
-            <span className="hidden sm:inline">MORE</span>
-            <span className="sm:hidden">More</span>
-          </Button>
+          <AddHoldingDialog onAddHolding={addHolding} />
+          <ExchangeIntegration onImportHoldings={handleImportHoldings} />
+          <PriceAlertsDialog holdings={holdings} alerts={alerts} onAddAlert={addAlert} onRefreshAlerts={fetchAlerts} />
+          <CurrencySettings onCurrencyChange={handleCurrencyChange} />
         </div>
       </div>
 
@@ -489,16 +476,5 @@ export default function CryptoPortfolio() {
           </TabsContent>
         </Tabs>}
 
-      {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row sm:justify-center gap-3 mt-8 mb-6">
-        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-          <AddHoldingDialog onAddHolding={addHolding} />
-          <ExchangeIntegration onImportHoldings={handleImportHoldings} />
-        </div>
-        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-          <PriceAlertsDialog holdings={holdings} alerts={alerts} onAddAlert={addAlert} onRefreshAlerts={fetchAlerts} />
-          <CurrencySettings onCurrencyChange={handleCurrencyChange} />
-        </div>
-      </div>
     </div>;
 }
