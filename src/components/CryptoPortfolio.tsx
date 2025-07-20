@@ -69,8 +69,6 @@ export default function CryptoPortfolio() {
     }
   });
   const [activeTab, setActiveTab] = useState('portfolio');
-  const [chartTab, setChartTab] = useState('overview');
-
   const formatCurrency = (amount: number) => {
     const convertedAmount = amount * (exchangeRates[selectedCurrency] || 1);
     return new Intl.NumberFormat('en-US', {
@@ -78,12 +76,10 @@ export default function CryptoPortfolio() {
       currency: selectedCurrency
     }).format(convertedAmount);
   };
-
   const handleCurrencyChange = (currency: string, rates: CurrencyRates) => {
     setSelectedCurrency(currency);
     setExchangeRates(rates);
   };
-
   const handleImportHoldings = async (importedHoldings: any[]) => {
     try {
       await bulkAddHoldings(importedHoldings);
@@ -91,22 +87,18 @@ export default function CryptoPortfolio() {
       console.error('Error importing holdings:', error);
     }
   };
-
   const calculatePercentageChange = (currentValue: number, originalValue: number) => {
     return (currentValue - originalValue) / originalValue * 100;
   };
-
   const getHoldingCurrentValue = (holding: any) => {
     const currentPrice = prices[holding.symbol]?.price || 0;
     return currentPrice * holding.amount;
   };
-
   const getHoldingGainLoss = (holding: any) => {
     const currentValue = getHoldingCurrentValue(holding);
     const originalValue = holding.purchase_price * holding.amount;
     return currentValue - originalValue;
   };
-
   const getHoldingPercentChange = (holding: any) => {
     const currentValue = getHoldingCurrentValue(holding);
     const originalValue = holding.purchase_price * holding.amount;
@@ -439,38 +431,14 @@ export default function CryptoPortfolio() {
                 </Card>
               </div>
 
-              {/* Balance History Chart with Chart Tabs */}
+              {/* Balance History Chart */}
               <div className="xl:col-span-1">
                 <Card className="mx-1 sm:mx-2">
                   <CardContent className="p-8 lg:p-10">
-                    <div className="flex items-center justify-between mb-6">
-                      <h3 className="font-semibold text-lg lg:text-xl">Balance History</h3>
+                    <h3 className="font-semibold mb-6 text-lg lg:text-xl">Balance History</h3>
+                    <div className="h-64 lg:h-80">
+                      <CryptoChart holdings={holdings} prices={prices} />
                     </div>
-                    
-                    {/* Chart Navigation Tabs */}
-                    <Tabs value={chartTab} onValueChange={setChartTab} className="space-y-4">
-                      <TabsList className="grid w-full grid-cols-3 lg:grid-cols-5 gap-1">
-                        <TabsTrigger value="overview" className="text-xs px-2">
-                          Overview
-                        </TabsTrigger>
-                        <TabsTrigger value="performance" className="text-xs px-2">
-                          Performance
-                        </TabsTrigger>
-                        <TabsTrigger value="distribution" className="text-xs px-2">
-                          Distribution
-                        </TabsTrigger>
-                        <TabsTrigger value="comparison" className="text-xs px-2">
-                          Comparison
-                        </TabsTrigger>
-                        <TabsTrigger value="depth" className="text-xs px-2">
-                          Depth
-                        </TabsTrigger>
-                      </TabsList>
-                      
-                      <div className="h-64 lg:h-80">
-                        <CryptoChart holdings={holdings} prices={prices} activeTab={chartTab} />
-                      </div>
-                    </Tabs>
                   </CardContent>
                 </Card>
               </div>
