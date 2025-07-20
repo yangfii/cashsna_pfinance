@@ -425,19 +425,7 @@ export default function CryptoPortfolio() {
               </div>
 
               {/* Balance History Chart */}
-              <div className="xl:col-span-1">
-                <Card>
-                  <CardContent className="p-4 lg:p-6">
-                    <h3 className="font-semibold mb-4 text-sm lg:text-base">BALANCES HISTORY</h3>
-                    {isMobile && <p className="text-xs text-muted-foreground mb-2">
-                        Chart legends hidden on mobile for better readability
-                      </p>}
-                    <div className="h-48 sm:h-64 overflow-auto">
-                      <CryptoChart holdings={holdings} prices={prices} />
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+              
             </div>
           </TabsContent>
 
