@@ -260,8 +260,8 @@ export default function CryptoPortfolio() {
           </Button>
           <Button variant="outline" size="sm" className="text-xs lg:text-sm">
             <Link2 className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
-            <span className="hidden sm:inline">Trace Entity</span>
-            <span className="sm:hidden">Trace</span>
+            <span className="hidden sm:inline">Exchange Integration</span>
+            <span className="sm:hidden">Exchange</span>
           </Button>
           <Button variant="outline" size="sm" className="text-xs lg:text-sm">
             <Share className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
