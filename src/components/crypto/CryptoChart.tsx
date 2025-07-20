@@ -276,18 +276,30 @@ export default function CryptoChart({
                 <CardTitle>Portfolio Distribution</CardTitle>
               </CardHeader>
               <CardContent className="px-0 py-6 overflow-auto">
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie data={portfolioData} cx="50%" cy="50%" innerRadius={60} outerRadius={120} fill="#8884d8" dataKey="value" label={({
-                    symbol,
-                    percent
-                  }) => `${symbol} ${(percent * 100).toFixed(1)}%`}>
-                      {portfolioData.map((entry, index) => <Cell key={`cell-${index}`} fill={getCryptoColor(entry.symbol, index)} />)}
-                    </Pie>
-                    <Tooltip formatter={(value: number) => formatCurrency(value)} />
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
+                {portfolioData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie data={portfolioData} cx="50%" cy="50%" innerRadius={60} outerRadius={120} fill="#8884d8" dataKey="value" label={({
+                      symbol,
+                      percent
+                    }) => `${symbol} ${(percent * 100).toFixed(1)}%`}>
+                        {portfolioData.map((entry, index) => <Cell key={`cell-${index}`} fill={getCryptoColor(entry.symbol, index)} />)}
+                      </Pie>
+                      <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-[300px] text-center space-y-4">
+                    <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+                      <PieChart className="w-8 h-8 text-muted-foreground" />
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-muted-foreground font-medium">No data to display yet</p>
+                      <p className="text-sm text-muted-foreground">Add holdings to see chart distribution</p>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -296,21 +308,33 @@ export default function CryptoChart({
                 <CardTitle>Portfolio Performance</CardTitle>
               </CardHeader>
               <CardContent className="overflow-auto">
-                <ResponsiveContainer width="100%" height={300}>
-                  <AreaChart data={performanceData}>
-                    <defs>
-                      <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.1} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                    <XAxis dataKey="date" />
-                    <YAxis tickFormatter={value => formatCurrency(value)} />
-                    <Tooltip formatter={(value: number) => formatCurrency(value)} />
-                    <Area type="monotone" dataKey="value" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorValue)" strokeWidth={2} />
-                  </AreaChart>
-                </ResponsiveContainer>
+                {portfolioData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <AreaChart data={performanceData}>
+                      <defs>
+                        <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.1} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                      <XAxis dataKey="date" />
+                      <YAxis tickFormatter={value => formatCurrency(value)} />
+                      <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                      <Area type="monotone" dataKey="value" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorValue)" strokeWidth={2} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-[300px] text-center space-y-4">
+                    <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+                      <TrendingUp className="w-8 h-8 text-muted-foreground" />
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-muted-foreground font-medium">No data to display yet</p>
+                      <p className="text-sm text-muted-foreground">Add holdings to see performance chart</p>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
