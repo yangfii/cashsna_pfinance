@@ -434,7 +434,7 @@ export default function CryptoPortfolio() {
               {/* Balance History Chart */}
               <div className="xl:col-span-1">
                 <Card className="mx-1 sm:mx-2">
-                  <CardContent className="p-8 lg:p-10">
+                  <CardContent className="p-4 lg:p-6">
                     <h3 className="font-semibold mb-6 text-lg lg:text-xl">Balance History</h3>
                     <div className="h-64 lg:h-80">
                       <CryptoChart holdings={holdings} prices={prices} />
