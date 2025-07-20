@@ -6,7 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { TrendingUp, TrendingDown, Share, Bell, Plus, MoreHorizontal, Twitter, Link2 } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { TrendingUp, TrendingDown, Share, Bell, Plus, MoreHorizontal, Twitter, Link2, Trash2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useCryptoData } from "@/hooks/useCryptoData";
 import { useAuth } from "@/hooks/useAuth";
@@ -34,6 +35,7 @@ export default function CryptoPortfolio() {
     loading,
     addHolding,
     deleteHolding,
+    deleteAllData,
     addAlert,
     fetchAlerts,
     fetchCryptoPrices,
@@ -266,6 +268,31 @@ export default function CryptoPortfolio() {
           <div className="flex flex-wrap gap-2 sm:gap-3 flex-1 lg:flex-initial">
             <PriceAlertsDialog holdings={holdings} alerts={alerts} onAddAlert={addAlert} onRefreshAlerts={fetchAlerts} />
             <CurrencySettings onCurrencyChange={handleCurrencyChange} />
+            {holdings.length > 0 && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" size="sm" className="text-xs lg:text-sm px-3 py-2 h-9 lg:h-10">
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    <span className="hidden sm:inline">Delete All Data</span>
+                    <span className="sm:hidden">Delete All</span>
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete All Portfolio Data</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will permanently delete all your crypto holdings and price alerts. This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={deleteAllData} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                      Delete All Data
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
           </div>
         </div>
       </div>

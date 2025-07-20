@@ -347,6 +347,42 @@ export const useCryptoData = () => {
     }
   };
 
+  const deleteAllData = async () => {
+    try {
+      // Delete all crypto holdings for the user
+      const { error: holdingsError } = await supabase
+        .from('crypto_holdings')
+        .delete()
+        .eq('user_id', user?.id);
+
+      if (holdingsError) throw holdingsError;
+
+      // Delete all crypto alerts for the user
+      const { error: alertsError } = await supabase
+        .from('crypto_alerts')
+        .delete()
+        .eq('user_id', user?.id);
+
+      if (alertsError) throw alertsError;
+
+      toast({
+        title: "Success",
+        description: "All portfolio data deleted successfully"
+      });
+
+      // Refresh data
+      fetchHoldings();
+      fetchAlerts();
+    } catch (error) {
+      console.error('Error deleting all data:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete all data",
+        variant: "destructive"
+      });
+    }
+  };
+
   const calculatePortfolioValue = () => {
     return holdings.reduce((total, holding) => {
       const currentPrice = prices[holding.symbol]?.price || 0;
@@ -428,6 +464,7 @@ export const useCryptoData = () => {
     addHolding,
     bulkAddHoldings,
     deleteHolding,
+    deleteAllData,
     addAlert,
     fetchHoldings,
     fetchAlerts,
