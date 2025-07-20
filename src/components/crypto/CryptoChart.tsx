@@ -2,7 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PieChart, Pie, LineChart, Line, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Legend } from "recharts";
 import { CryptoHolding, CryptoPrice } from "@/hooks/useCryptoData";
-import { TrendingUp, TrendingDown, DollarSign, Percent } from "lucide-react";
+import { TrendingUp, TrendingDown, DollarSign, Percent, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import DonutChartLegend from "./DonutChartLegend";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -362,13 +363,26 @@ export default function CryptoChart({
                     )}
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center h-[300px] text-center space-y-4">
-                    <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
-                      <PieChart className="w-8 h-8 text-muted-foreground" />
+                  <div className="flex flex-col items-center justify-center h-[300px] text-center space-y-6">
+                    <div className="relative">
+                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                        <PieChart className="w-10 h-10 text-primary/60" />
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Plus className="w-3 h-3 text-primary/70" />
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <p className="text-muted-foreground font-medium">No data to display yet</p>  
-                      <p className="text-sm text-muted-foreground">Add holdings to see chart distribution</p>
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-semibold text-foreground">No portfolio data yet</h3>
+                      <p className="text-sm text-muted-foreground max-w-[280px]">
+                        Start building your portfolio to see how your assets are distributed
+                      </p>
+                      <div className="pt-2">
+                        <Button size="sm" className="gap-2">
+                          <Plus className="w-4 h-4" />
+                          Add assets
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -404,13 +418,26 @@ export default function CryptoChart({
                     </AreaChart>
                   </ResponsiveContainer>
                 ) : (
-                  <div className="flex flex-col items-center justify-center h-[300px] text-center space-y-4">
-                    <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
-                      <TrendingUp className="w-8 h-8 text-muted-foreground" />
+                  <div className="flex flex-col items-center justify-center h-[300px] text-center space-y-6">
+                    <div className="relative">
+                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-500/20 to-green-500/5 flex items-center justify-center">
+                        <TrendingUp className="w-10 h-10 text-green-500/60" />
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-green-500/10 flex items-center justify-center">
+                        <Plus className="w-3 h-3 text-green-500/70" />
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <p className="text-muted-foreground font-medium">No data to display yet</p>
-                      <p className="text-sm text-muted-foreground">Add holdings to see performance chart</p>
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-semibold text-foreground">No portfolio data yet</h3>
+                      <p className="text-sm text-muted-foreground max-w-[280px]">
+                        Track your portfolio performance over time by adding your first assets
+                      </p>
+                      <div className="pt-2">
+                        <Button size="sm" className="gap-2">
+                          <Plus className="w-4 h-4" />
+                          Add assets
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -426,25 +453,50 @@ export default function CryptoChart({
               <CardTitle>Asset Distribution</CardTitle>
             </CardHeader>
             <CardContent className="overflow-auto">
-              <ResponsiveContainer width="100%" height={400}>
-                <PieChart>
-                  <Pie
-                    data={portfolioData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={({ name, percent }) => `${name} (${(percent * 100).toFixed(1)}%)`}
-                    outerRadius={150}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {portfolioData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={getCryptoColor(entry.symbol, index)} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value: number) => formatCurrency(value)} />
-                </PieChart>
-              </ResponsiveContainer>
+              {portfolioData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={400}>
+                  <PieChart>
+                    <Pie
+                      data={portfolioData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name} (${(percent * 100).toFixed(1)}%)`}
+                      outerRadius={150}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {portfolioData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={getCryptoColor(entry.symbol, index)} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-[400px] text-center space-y-6">
+                  <div className="relative">
+                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                      <PieChart className="w-12 h-12 text-primary/60" />
+                    </div>
+                    <div className="absolute -top-1 -right-1 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Plus className="w-4 h-4 text-primary/70" />
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <h3 className="text-xl font-semibold text-foreground">No portfolio data yet</h3>
+                    <p className="text-muted-foreground max-w-[320px]">
+                      Visualize your asset distribution with detailed charts and percentages
+                    </p>
+                    <div className="pt-2">
+                      <Button className="gap-2">
+                        <Plus className="w-4 h-4" />
+                        Add assets
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
