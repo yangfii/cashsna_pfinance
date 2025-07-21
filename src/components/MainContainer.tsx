@@ -11,7 +11,7 @@ export default function MainContainer({ children }: MainContainerProps) {
       }}
     >
       {/* Optional overlay to make content readable */}
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm z-0" />
+      <div className="absolute inset-0 bg-background/40 backdrop-blur-sm z-0" />
 
       {/* Foreground content */}
       <div className="relative z-10 flex flex-col min-h-screen">

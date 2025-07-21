@@ -342,7 +342,7 @@ export default function Categories() {
         <CardHeader>
           <div className="flex items-center gap-3">
             <div className="p-2 bg-gradient-income rounded-lg">
-              <TrendingUp className="h-5 w-5 text-white" />
+              <TrendingUp className="h-5 w-5 text-constructive-foreground" />
             </div>
             <div>
               <CardTitle className="text-emerald-800 dark:text-emerald-400">
@@ -402,7 +402,7 @@ export default function Categories() {
         <CardHeader>
           <div className="flex items-center gap-3">
             <div className="p-2 bg-gradient-expense rounded-lg">
-              <TrendingDown className="h-5 w-5 text-white" />
+              <TrendingDown className="h-5 w-5 text-destructive-foreground" />
             </div>
             <div>
               <CardTitle className="text-red-800 dark:text-red-400">

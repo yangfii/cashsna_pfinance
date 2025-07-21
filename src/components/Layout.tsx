@@ -130,7 +130,7 @@ function AppSidebar() {
               <NavLink to="/dashboard/settings" className={cn("flex items-center gap-3 p-3", location.pathname === "/dashboard/settings" ? "bg-accent" : "")}>
                 <Avatar className="size-10">
                   <AvatarImage src={profile?.avatar_url || undefined} alt="Profile picture" />
-                  <AvatarFallback className="bg-gradient-primary text-white">
+                  <AvatarFallback className="bg-gradient-primary text-primary-foreground">
                     <User className="size-5" />
                   </AvatarFallback>
                 </Avatar>

@@ -215,7 +215,7 @@ export function TwoFactorSetup() {
                   <>
                     {qrCode ? (
                       <div className="flex flex-col items-center space-y-4">
-                        <div className="p-4 bg-white rounded-lg border">
+                        <div className="p-4 bg-card rounded-lg border">
                           <img src={qrCode} alt="2FA QR Code" className="w-48 h-48" />
                         </div>
                         

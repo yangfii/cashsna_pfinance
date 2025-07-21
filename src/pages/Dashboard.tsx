@@ -271,7 +271,7 @@ export default function Dashboard() {
               <CardContent className="p-8 lg:p-10">
                 <div className="flex items-center space-x-4 lg:space-x-6">
                   <div className="p-4 lg:p-5 bg-gradient-income rounded-xl flex-shrink-0">
-                    <TrendingUp className="h-6 w-6 lg:h-8 lg:w-8 text-white" />
+                    <TrendingUp className="h-6 w-6 lg:h-8 lg:w-8 text-constructive-foreground" />
                   </div>
                    <div className="min-w-0 flex-1">
                      <h3 className="text-lg lg:text-xl xl:text-2xl font-semibold">បន្ថែមចំណូល</h3>
@@ -285,7 +285,7 @@ export default function Dashboard() {
               <CardContent className="p-8 lg:p-10">
                 <div className="flex items-center space-x-4 lg:space-x-6">
                   <div className="p-4 lg:p-5 bg-gradient-expense rounded-xl flex-shrink-0">
-                    <TrendingDown className="h-6 w-6 lg:h-8 lg:w-8 text-white" />
+                    <TrendingDown className="h-6 w-6 lg:h-8 lg:w-8 text-destructive-foreground" />
                   </div>
                    <div className="min-w-0 flex-1">
                      <h3 className="text-lg lg:text-xl xl:text-2xl font-semibold">បន្ថែមចំណាយ</h3>

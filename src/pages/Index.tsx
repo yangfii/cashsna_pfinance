@@ -156,7 +156,7 @@ const Index = () => {
               }}
               variant="ghost"
               size="sm"
-              className="h-10 w-10 p-0 bg-white/10 border border-white/20 text-white hover:bg-white/20 backdrop-blur-sm"
+              className="h-10 w-10 p-0 bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20 backdrop-blur-sm"
               title={language === 'english' ? 'Switch to Khmer' : 'Switch to English'}
             >
               <Globe className="h-4 w-4" />
@@ -168,21 +168,21 @@ const Index = () => {
         <div className="relative container mx-auto px-4 py-16 md:py-24 text-center">
           <div className="animate-fade-in">
             <div className="mb-6">
-              <span className="inline-flex items-center px-4 py-2 rounded-full bg-white/20 text-white text-sm font-medium backdrop-blur-sm border border-white/30">
+              <span className="inline-flex items-center px-4 py-2 rounded-full bg-primary-foreground/20 text-primary-foreground text-sm font-medium backdrop-blur-sm border border-primary-foreground/30">
                 <span className="mr-2">✨</span>
                 {language === 'khmer' ? 'គ្រប់គ្រងហិរញ្ញវត្ថុដោយ AI' : 'AI-Powered Finance Management'}
               </span>
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg">
+            <h1 className="text-5xl md:text-7xl font-bold text-primary-foreground mb-6 drop-shadow-lg">
               CashSnap <span className="text-primary-glow">Finance</span>
             </h1>
             
-            <h2 className="text-2xl md:text-3xl font-semibold text-white/90 mb-6">
+            <h2 className="text-2xl md:text-3xl font-semibold text-primary-foreground/90 mb-6">
               {language === 'khmer' ? 'គ្រប់គ្រងហិរញ្ញវត្ថុប្រចាំថ្ងៃ' : 'Daily Financial Management'}
             </h2>
             
-            <p className="text-lg md:text-xl text-white/80 mb-8 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 max-w-3xl mx-auto leading-relaxed">
               {language === 'khmer' 
                 ? 'ដំណោះស្រាយគ្រប់គ្រងលុយកាក់ពេញលេញសម្រាប់ប្រជាជនកម្ពុជា ជាមួយនឹងបច្ចេកវិទ្យា AI ទំនើប'
                 : 'Complete money management solution for Cambodians with modern AI technology'
@@ -190,13 +190,13 @@ const Index = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="text-lg px-8 py-6 bg-white text-primary hover:bg-white/90 shadow-glow">
+              <Button asChild size="lg" className="text-lg px-8 py-6 bg-background text-primary hover:bg-background/90 shadow-glow">
                 <Link to="/auth">
                   {language === 'khmer' ? 'ចាប់ផ្តើមប្រើប្រាស់ឥតគិតថ្លៃ' : 'Start Free'}
                   <span className="ml-2">→</span>
                 </Link>
               </Button>
-              <Button variant="outline" asChild size="lg" className="text-lg px-8 py-6 border-white/30 text-white hover:bg-white/10">
+              <Button variant="outline" asChild size="lg" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
                 <Link to="/assistant">
                   {language === 'khmer' ? '🤖 AI ជួយណែនាំ' : '🤖 AI Guide'}
                 </Link>
@@ -227,7 +227,7 @@ const Index = () => {
             <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in">
               <CardContent>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-smooth">
+                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-smooth">
                     <span className="text-lg">📥</span>
                   </div>
                   <span className="text-2xl">📊</span>
@@ -256,7 +256,7 @@ const Index = () => {
           }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-smooth">
+                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-smooth">
                     <span className="text-lg">📈</span>
                   </div>
                   <span className="text-2xl">📊</span>
@@ -278,7 +278,7 @@ const Index = () => {
           }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-smooth">
+                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-smooth">
                     <span className="text-lg">🗣️</span>
                   </div>
                   <span className="text-2xl">🇰🇭</span>
@@ -300,7 +300,7 @@ const Index = () => {
           }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-smooth">
+                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-smooth">
                     <span className="text-lg">🧩</span>
                   </div>
                   <span className="text-2xl">📱</span>
@@ -322,7 +322,7 @@ const Index = () => {
           }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-smooth">
+                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-smooth">
                     <span className="text-lg">🖌️</span>
                   </div>
                   <span className="text-2xl">🎨</span>
@@ -344,7 +344,7 @@ const Index = () => {
           }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-smooth">
+                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-smooth">
                     <span className="text-lg">🛡️</span>
                   </div>
                   <span className="text-2xl">🔒</span>
@@ -366,7 +366,7 @@ const Index = () => {
           }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-smooth">
+                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-smooth">
                     <span className="text-lg">🎁</span>
                   </div>
                   <span className="text-2xl">🆓</span>
@@ -384,7 +384,7 @@ const Index = () => {
           }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-smooth">
+                  <div className="p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-smooth">
                     <span className="text-xl">🤖</span>
                   </div>
                   <h3 className="text-xl font-semibold">ជំនួយដោយបញ្ញាសិប្បនិម្មិត (AI Assistance)</h3>

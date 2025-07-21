@@ -196,7 +196,7 @@ export default function PortfolioAnalytics({
               {topPerformers.map((holding, index) => (
                 <div key={holding.id} className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                    <div className="w-8 h-8 bg-constructive rounded-full flex items-center justify-center text-constructive-foreground font-bold text-sm">
                       {index + 1}
                     </div>
                     <div>
@@ -233,7 +233,7 @@ export default function PortfolioAnalytics({
               {worstPerformers.map((holding, index) => (
                 <div key={holding.id} className="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                    <div className="w-8 h-8 bg-destructive rounded-full flex items-center justify-center text-destructive-foreground font-bold text-sm">
                       {index + 1}
                     </div>
                     <div>

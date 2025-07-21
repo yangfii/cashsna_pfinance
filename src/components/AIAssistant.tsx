@@ -57,7 +57,7 @@ const AIFeatureCard = ({
     <CardContent className="p-6">
       <div className="flex items-start space-x-4">
         <div className={`p-3 rounded-lg ${
-          variant === "primary" ? "bg-gradient-primary text-white" : "bg-muted"
+          variant === "primary" ? "bg-gradient-primary text-primary-foreground" : "bg-muted"
         }`}>
           <Icon className="h-5 w-5" />
         </div>
@@ -83,7 +83,7 @@ const MessageBubble = ({ message }: { message: ChatMessage }) => (
     }`}>
       <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
         message.sender === 'user' 
-          ? 'bg-gradient-primary text-white' 
+          ? 'bg-gradient-primary text-primary-foreground' 
           : 'bg-muted border'
       }`}>
         {message.sender === 'user' ? (
@@ -94,13 +94,13 @@ const MessageBubble = ({ message }: { message: ChatMessage }) => (
       </div>
       <div className={`rounded-2xl px-4 py-3 ${
         message.sender === 'user'
-          ? 'bg-gradient-primary text-white'
+          ? 'bg-gradient-primary text-primary-foreground'
           : 'bg-muted border'
       }`}>
         <p className="text-sm leading-relaxed">{message.content}</p>
         <div className="flex items-center justify-between mt-2">
           <p className={`text-xs ${
-            message.sender === 'user' ? 'text-white/70' : 'text-muted-foreground'
+            message.sender === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground'
           }`}>
             {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </p>
@@ -348,7 +348,7 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-3">
           <div className="p-2 bg-gradient-primary rounded-lg">
-            <Brain className="h-5 w-5 text-white" />
+            <Brain className="h-5 w-5 text-primary-foreground" />
           </div>
           <div>
             <h2 className="text-lg font-semibold">AI Financial Assistant</h2>
@@ -383,7 +383,7 @@ export default function AIAssistant({ initialTab = 'chat' }: AIAssistantProps) {
                   {chatMessages.length === 0 ? (
                     <div className="text-center py-8 space-y-3">
                       <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center mx-auto">
-                        <Sparkles className="h-6 w-6 text-white" />
+                        <Sparkles className="h-6 w-6 text-primary-foreground" />
                       </div>
                       <div>
                         <h3 className="text-h5">Start a conversation</h3>

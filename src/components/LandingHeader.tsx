@@ -4,16 +4,16 @@ import { ThemeToggle } from './ThemeToggle';
 export default function LandingHeader() {
   return (
     <header className="w-full px-3 sm:px-6 py-4 bg-transparent flex justify-between items-center z-20">
-      <h1 className="text-h4 text-white">Cashsnap Finance</h1>
+      <h1 className="text-h4 text-primary-foreground">Cashsnap Finance</h1>
       <div className="flex items-center gap-4">
         <nav className="hidden sm:flex space-x-4 text-sm">
-          <Link to="/dashboard" className="text-white hover:underline">Dashboard</Link>
-          <a href="#features" className="text-white hover:underline">Features</a>
-          <Link to="/auth" className="text-white hover:underline">Sign In</Link>
+          <Link to="/dashboard" className="text-primary-foreground hover:underline">Dashboard</Link>
+          <a href="#features" className="text-primary-foreground hover:underline">Features</a>
+          <Link to="/auth" className="text-primary-foreground hover:underline">Sign In</Link>
         </nav>
         <nav className="sm:hidden flex space-x-2 text-sm">
-          <Link to="/dashboard" className="text-white hover:underline">Dashboard</Link>
-          <Link to="/auth" className="text-white hover:underline">Sign In</Link>
+          <Link to="/dashboard" className="text-primary-foreground hover:underline">Dashboard</Link>
+          <Link to="/auth" className="text-primary-foreground hover:underline">Sign In</Link>
         </nav>
         <ThemeToggle />
       </div>
