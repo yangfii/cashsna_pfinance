@@ -254,11 +254,11 @@ export default function CryptoChart({
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total P&L</p>
-                <p className={`text-2xl font-bold ${totalGainLoss >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                <p className={`text-2xl font-bold ${totalGainLoss >= 0 ? 'text-constructive' : 'text-destructive'}`}>
                   {formatCurrency(totalGainLoss)}
                 </p>
               </div>
-              {totalGainLoss >= 0 ? <TrendingUp className="h-8 w-8 text-green-500" /> : <TrendingDown className="h-8 w-8 text-red-500" />}
+              {totalGainLoss >= 0 ? <TrendingUp className="h-8 w-8 text-constructive" /> : <TrendingDown className="h-8 w-8 text-destructive" />}
             </div>
           </CardContent>
         </Card>
