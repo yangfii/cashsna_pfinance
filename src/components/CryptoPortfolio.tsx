@@ -232,9 +232,17 @@ export default function CryptoPortfolio() {
       {/* Profile Header - Enhanced spacing and responsive design */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 lg:gap-8 p-1 sm:p-2">
         <div className="flex items-center gap-4 lg:gap-6">
-          <Avatar className="h-14 w-14 lg:h-18 lg:w-18 xl:h-20 xl:w-20">
-            <AvatarImage src={profile?.avatar_url || undefined} />
-            <AvatarFallback className="text-lg lg:text-xl xl:text-2xl">
+          <Avatar className="h-14 w-14 lg:h-18 lg:w-18 xl:h-20 xl:w-20 ring-2 ring-primary/20">
+            <AvatarImage 
+              src={profile?.avatar_url || undefined} 
+              alt="Profile picture"
+              className="object-cover object-center"
+              style={{ 
+                filter: 'contrast(1.05) saturate(1.1)',
+              }}
+              loading="eager"
+            />
+            <AvatarFallback className="text-lg lg:text-xl xl:text-2xl bg-gradient-to-br from-primary/20 to-primary/10 font-semibold">
               {profile?.first_name?.[0] || user?.email?.[0]?.toUpperCase()}
             </AvatarFallback>
           </Avatar>
