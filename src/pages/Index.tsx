@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import { Globe } from 'lucide-react';
 import heroBackground from '@/assets/hero-background.jpg';
 import backgroundImage from '@/assets/background-image.jpg';
+import overlayBackground from '@/assets/overlay-background.jpg';
 const Index = () => {
   const {
     user
@@ -130,7 +131,15 @@ const Index = () => {
               backgroundBlendMode: 'overlay'
             }}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-primary/20 to-primary-glow/30 backdrop-blur-sm"></div>
+            <div 
+              className="absolute inset-0 bg-gradient-to-br from-primary/40 via-primary/20 to-primary-glow/30 backdrop-blur-sm"
+              style={{ 
+                backgroundImage: `url(${overlayBackground})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+              }}
+            ></div>
           </div>
         </div>
         
