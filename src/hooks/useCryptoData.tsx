@@ -133,6 +133,30 @@ export const useCryptoData = () => {
     }
   };
 
+  const updateCryptoPrices = async () => {
+    try {
+      console.log('Calling price update edge function...');
+      
+      const { data, error } = await supabase.functions.invoke('update-crypto-prices');
+      
+      if (error) {
+        console.error('Error calling price update function:', error);
+        throw error;
+      }
+      
+      console.log('Price update function response:', data);
+      return data;
+    } catch (error) {
+      console.error('Error updating crypto prices:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update crypto prices",
+        variant: "destructive"
+      });
+      throw error;
+    }
+  };
+
   const fetchCryptoPrices = async () => {
     try {
       console.log('Fetching crypto prices from database...');
@@ -158,6 +182,21 @@ export const useCryptoData = () => {
           variant: "destructive"
         });
         return;
+      }
+
+      // If no prices found or very few, trigger price update
+      if (!pricesData || pricesData.length === 0) {
+        console.log('No prices found in database, triggering price update...');
+        try {
+          await updateCryptoPrices();
+          // Wait a moment for the data to be inserted
+          setTimeout(() => {
+            fetchCryptoPrices(); // Recursive call after update
+          }, 2000);
+          return;
+        } catch (updateError) {
+          console.log('Price update failed, continuing with empty prices');
+        }
       }
 
       // Group by symbol and take the latest price for each
@@ -469,6 +508,7 @@ export const useCryptoData = () => {
     fetchHoldings,
     fetchAlerts,
     fetchCryptoPrices,
+    updateCryptoPrices,
     calculatePortfolioValue,
     calculateTotalGainLoss,
     calculateROI,

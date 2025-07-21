@@ -20,8 +20,8 @@ serve(async (req) => {
 
     console.log('Starting crypto price update...')
 
-    // List of popular cryptocurrencies to fetch
-    const cryptoIds = [
+    // Get dynamic list from user holdings or use defaults
+    let cryptoIds = [
       'bitcoin',
       'ethereum', 
       'tether',
@@ -51,8 +51,41 @@ serve(async (req) => {
       'hedera-hashgraph',
       'decentraland',
       'the-sandbox',
-      'aave'
+      'aave',
+      'lido-dao', // LDO
+      'sui', // SUI
+      // Note: Some tokens like LDBERA, RED, INIT, GOAT, ZEREBRO, PELL may not be on CoinGecko
+      // We'll add them with 0 values as fallback
     ]
+
+    // Get user holdings to include their specific tokens
+    try {
+      const { data: holdings } = await supabase
+        .from('crypto_holdings')
+        .select('symbol')
+        .neq('symbol', null)
+      
+      if (holdings && holdings.length > 0) {
+        const userSymbols = holdings.map(h => h.symbol.toLowerCase())
+        // Add common mappings
+        const symbolMappings: Record<string, string> = {
+          'ldo': 'lido-dao',
+          'sui': 'sui',
+          'usdt': 'tether',
+          'btc': 'bitcoin',
+          'eth': 'ethereum'
+        }
+        
+        userSymbols.forEach(symbol => {
+          const coinGeckoId = symbolMappings[symbol] || symbol
+          if (!cryptoIds.includes(coinGeckoId)) {
+            cryptoIds.push(coinGeckoId)
+          }
+        })
+      }
+    } catch (error) {
+      console.log('Could not fetch user holdings, using default list:', error)
+    }
 
     // Fetch prices from CoinGecko API
     const url = `https://api.coingecko.com/api/v3/simple/price?ids=${cryptoIds.join(',')}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true`
@@ -98,8 +131,13 @@ serve(async (req) => {
       'hedera-hashgraph': 'HBAR',
       'decentraland': 'MANA',
       'the-sandbox': 'SAND',
-      'aave': 'AAVE'
+      'aave': 'AAVE',
+      'lido-dao': 'LDO',
+      'sui': 'SUI'
     }
+
+    // Add fallback entries for tokens not on CoinGecko
+    const fallbackTokens = ['LDBERA', 'RED', 'INIT', 'GOAT', 'ZEREBRO', 'PELL']
 
     // Prepare data for insertion
     const priceData = Object.entries(data).map(([coinId, priceInfo]: [string, any]) => ({
@@ -110,6 +148,20 @@ serve(async (req) => {
       market_cap: priceInfo.usd_market_cap || 0,
       last_updated: new Date().toISOString()
     }))
+
+    // Add fallback entries for tokens not available on CoinGecko
+    fallbackTokens.forEach(symbol => {
+      if (!priceData.some(p => p.symbol === symbol)) {
+        priceData.push({
+          symbol,
+          price: 0,
+          price_change_24h: 0,
+          volume_24h: 0,
+          market_cap: 0,
+          last_updated: new Date().toISOString()
+        })
+      }
+    })
 
     console.log(`Inserting ${priceData.length} price records...`)
 
