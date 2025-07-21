@@ -130,7 +130,7 @@ const Index = () => {
               backgroundBlendMode: 'overlay'
             }}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-primary/20 to-primary-glow/30"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-primary/20 to-primary-glow/30 backdrop-blur-sm"></div>
           </div>
         </div>
         
