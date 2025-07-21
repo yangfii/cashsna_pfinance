@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -10,6 +11,7 @@ import { LanguageProvider } from "@/hooks/useLanguage";
 import { Analytics } from "@vercel/analytics/react";
 import Layout from "@/components/Layout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import ErrorBoundary from "@/components/ui/error-boundary";
 import Dashboard from "@/pages/Dashboard";
 import Transactions from "@/pages/Transactions";
 import Categories from "@/pages/Categories";
@@ -25,43 +27,52 @@ import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 3,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
+    },
+  },
+});
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <LanguageProvider>
-        <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <Analytics />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/assistant" element={<Assistant />} />
-                <Route path="/profile-setup" element={<ProfileSetup />} />
-                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                <Route path="/terms-of-service" element={<TermsOfService />} />
-                <Route path="/" element={<Index />} />
-                <Route path="/dashboard" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-                  <Route index element={<Dashboard />} />
-                  <Route path="transactions" element={<Transactions />} />
-                  <Route path="categories" element={<Categories />} />
-                  <Route path="portfolio" element={<Portfolio />} />
-                  <Route path="assistant" element={<Assistant />} />
-                  <Route path="planning" element={<Planning />} />
-                  <Route path="reports" element={<Reports />} />
-                  <Route path="settings" element={<Settings />} />
-                </Route>
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
-        </AuthProvider>
-      </LanguageProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <LanguageProvider>
+          <AuthProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <Analytics />
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/profile-setup" element={<ProfileSetup />} />
+                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                  <Route path="/terms-of-service" element={<TermsOfService />} />
+                  <Route path="/" element={<Index />} />
+                  <Route path="/dashboard" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+                    <Route index element={<Dashboard />} />
+                    <Route path="transactions" element={<Transactions />} />
+                    <Route path="categories" element={<Categories />} />
+                    <Route path="portfolio" element={<Portfolio />} />
+                    <Route path="assistant" element={<Assistant />} />
+                    <Route path="planning" element={<Planning />} />
+                    <Route path="reports" element={<Reports />} />
+                    <Route path="settings" element={<Settings />} />
+                  </Route>
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </TooltipProvider>
+          </AuthProvider>
+        </LanguageProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;

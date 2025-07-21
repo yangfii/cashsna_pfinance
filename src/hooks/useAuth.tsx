@@ -26,7 +26,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log('Auth state change:', event, session?.user?.email);
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
@@ -38,7 +37,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (error) {
         console.error('Error getting session:', error);
       }
-      console.log('Initial session:', session?.user?.email);
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -54,7 +52,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         password,
       });
       
-      // Store remember me preference in localStorage for future sessions
       if (rememberMe) {
         localStorage.setItem('rememberMe', 'true');
       } else {
@@ -63,7 +60,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       return { error };
     } catch (err) {
-      console.error('Sign in error:', err);
       return { error: err };
     }
   };
@@ -81,50 +77,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       return { error };
     } catch (err) {
-      console.error('Sign up error:', err);
       return { error: err };
     }
   };
-
 
   const signInWithGoogle = async () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/`
+          redirectTo: `${window.location.origin}/dashboard`
         }
       });
       return { error };
     } catch (err) {
-      console.error('Google sign in error:', err);
       return { error: err };
     }
   };
 
   const signOut = async () => {
     try {
-      // Always clear local state first
       setSession(null);
       setUser(null);
       
-      // Attempt to sign out from Supabase
       const { error } = await supabase.auth.signOut();
       
-      // If there's a session-related error, ignore it since we've already cleared local state
       if (error && (
         error.message?.includes('Auth session missing') ||
         error.message?.includes('Session not found') ||
         error.message?.includes('session_not_found')
       )) {
-        console.log('Session already expired, continuing with logout');
         return { error: null };
       }
       
       return { error };
     } catch (err) {
-      console.error('Sign out error:', err);
-      // For any other error, still treat as successful since we cleared local state
       return { error: null };
     }
   };
@@ -136,7 +123,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       return { error };
     } catch (err) {
-      console.error('Password reset error:', err);
       return { error: err };
     }
   };

@@ -1,7 +1,9 @@
+
 import { useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
+import { toast } from 'sonner';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -14,6 +16,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   useEffect(() => {
     if (!loading && !user) {
+      toast.error('Please sign in to access this page');
       navigate('/auth');
     }
   }, [user, loading, navigate]);

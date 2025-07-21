@@ -1,5 +1,6 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createHash, createHmac } from "https://deno.land/std@0.168.0/node/crypto.ts"
+import { createHmac } from "https://deno.land/std@0.168.0/node/crypto.ts"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -24,16 +25,14 @@ const createSignature = (params: string, secret: string): string => {
 const binanceRequest = async (endpoint: string, credentials: BinanceCredentials, params: Record<string, any> = {}) => {
   const baseUrl = 'https://api.binance.com';
   const timestamp = Date.now();
-  const recvWindow = 5000;
+  const recvWindow = 60000;
   
-  // Build query parameters
   const allParams = {
     ...params,
     timestamp: timestamp.toString(),
     recvWindow: recvWindow.toString()
   };
   
-  // Create query string for signature
   const queryString = Object.keys(allParams)
     .sort()
     .map(key => `${key}=${encodeURIComponent(allParams[key])}`)
@@ -53,42 +52,63 @@ const binanceRequest = async (endpoint: string, credentials: BinanceCredentials,
   
   if (!response.ok) {
     const errorText = await response.text();
-    console.error('Binance API error response:', errorText);
-    throw new Error(`Binance API error: ${response.status} ${response.statusText} - ${errorText}`);
+    let errorMessage = 'Unknown error';
+    
+    try {
+      const errorData = JSON.parse(errorText);
+      if (errorData.code === -2015) {
+        errorMessage = 'Invalid API-key, IP, or permissions for action';
+      } else if (errorData.code === -1021) {
+        errorMessage = 'Timestamp for this request is outside of the recvWindow';
+      } else if (errorData.code === -1022) {
+        errorMessage = 'Signature for this request is not valid';
+      } else {
+        errorMessage = errorData.msg || errorText;
+      }
+    } catch {
+      errorMessage = errorText;
+    }
+    
+    throw new Error(`Binance API error: ${errorMessage}`);
   }
   
   return await response.json();
 }
 
+const validateCredentials = (credentials: BinanceCredentials) => {
+  if (!credentials.apiKey || !credentials.secret) {
+    throw new Error('API key and secret are required');
+  }
+  
+  if (credentials.apiKey.length < 10 || credentials.secret.length < 10) {
+    throw new Error('Invalid API key or secret format');
+  }
+}
+
 const fetchBinancePortfolio = async (credentials: BinanceCredentials) => {
   try {
-    // Test API connection with server time first
-    console.log('Testing Binance API connection...');
+    validateCredentials(credentials);
     
-    // Get server time to ensure connection works
+    // Test connection with server time first
     const serverTimeResponse = await fetch('https://api.binance.com/api/v3/time');
     if (!serverTimeResponse.ok) {
       throw new Error('Cannot connect to Binance API');
     }
     
-    // Test authenticated endpoint
     const accountInfo = await binanceRequest('/api/v3/account', credentials);
     
-    // Get current prices for all symbols
+    // Get current prices
     const tickerData = await fetch('https://api.binance.com/api/v3/ticker/price');
     const prices = await tickerData.json();
     const priceMap = new Map(prices.map((p: any) => [p.symbol, parseFloat(p.price)]));
     
-    // Filter non-zero balances
     const balances: BinanceBalance[] = accountInfo.balances.filter((balance: BinanceBalance) => 
       parseFloat(balance.free) > 0 || parseFloat(balance.locked) > 0
     );
     
-    // Convert to portfolio format
     const holdings = balances.map((balance: BinanceBalance) => {
       const totalAmount = parseFloat(balance.free) + parseFloat(balance.locked);
       
-      // Try to get current price (look for USDT pair first, then USD)
       let currentPrice = 0;
       if (balance.asset === 'USDT' || balance.asset === 'USD') {
         currentPrice = 1;
@@ -97,7 +117,6 @@ const fetchBinancePortfolio = async (credentials: BinanceCredentials) => {
                      priceMap.get(`${balance.asset}USD`) || 
                      priceMap.get(`${balance.asset}BTC`) || 0;
         
-        // If we got BTC price, convert to USD
         if (currentPrice > 0 && priceMap.has(`${balance.asset}BTC`)) {
           const btcPrice = priceMap.get('BTCUSDT') || 0;
           currentPrice = currentPrice * btcPrice;
@@ -108,15 +127,14 @@ const fetchBinancePortfolio = async (credentials: BinanceCredentials) => {
         symbol: balance.asset,
         name: balance.asset,
         amount: totalAmount,
-        purchase_price: currentPrice, // Use current price as purchase price for now
+        purchase_price: currentPrice,
         purchase_date: new Date().toISOString().split('T')[0],
         notes: 'Imported from Binance',
         wallet_address: '',
         wallet_type: 'binance'
       };
-    }).filter(holding => holding.amount > 0.0001); // Filter out dust amounts
+    }).filter(holding => holding.amount > 0.0001);
     
-    // Calculate total balance in USD
     const totalBalance = holdings.reduce((sum, holding) => {
       return sum + (holding.amount * holding.purchase_price);
     }, 0);
@@ -134,7 +152,6 @@ const fetchBinancePortfolio = async (credentials: BinanceCredentials) => {
     };
     
   } catch (error) {
-    console.error('Error fetching Binance portfolio:', error);
     throw error;
   }
 }
@@ -148,13 +165,6 @@ serve(async (req) => {
     const { action, apiKey, secret, accountId } = await req.json()
 
     if (action === 'connect') {
-      if (!apiKey || !secret) {
-        return new Response(
-          JSON.stringify({ error: 'API key and secret are required' }),
-          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
-      }
-
       const credentials: BinanceCredentials = { apiKey, secret };
       const result = await fetchBinancePortfolio(credentials);
 
@@ -165,8 +175,6 @@ serve(async (req) => {
     }
 
     if (action === 'sync') {
-      // For sync operations, you would typically store encrypted credentials
-      // and retrieve them here. For now, return a placeholder response.
       return new Response(
         JSON.stringify({ 
           success: false, 
@@ -182,7 +190,6 @@ serve(async (req) => {
     )
 
   } catch (error) {
-    console.error('Binance integration error:', error);
     return new Response(
       JSON.stringify({ error: error.message || 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

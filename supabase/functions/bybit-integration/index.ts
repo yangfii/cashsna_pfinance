@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createHmac } from "https://deno.land/std@0.168.0/node/crypto.ts"
 
@@ -25,15 +26,13 @@ const createBybitSignature = (params: string, secret: string): string => {
 const bybitRequest = async (endpoint: string, credentials: BybitCredentials, params: Record<string, any> = {}) => {
   const baseUrl = 'https://api.bybit.com';
   const timestamp = Date.now();
-  const recvWindow = 5000;
+  const recvWindow = 60000;
   
-  // Create parameter string for signature (sorted by key)
   const paramString = Object.keys(params)
     .sort()
     .map(key => `${key}=${encodeURIComponent(params[key])}`)
     .join('&');
   
-  // Create signature payload according to Bybit V5 API specification
   const signaturePayload = `${timestamp}${credentials.apiKey}${recvWindow}${paramString}`;
   const signature = createBybitSignature(signaturePayload, credentials.secret);
   
@@ -52,24 +51,49 @@ const bybitRequest = async (endpoint: string, credentials: BybitCredentials, par
   
   if (!response.ok) {
     const errorText = await response.text();
-    console.error('Bybit API error response:', errorText);
-    throw new Error(`Bybit API error: ${response.status} ${response.statusText} - ${errorText}`);
+    let errorMessage = 'Unknown error';
+    
+    try {
+      const errorData = JSON.parse(errorText);
+      if (errorData.retCode === 10003) {
+        errorMessage = 'Invalid API key';
+      } else if (errorData.retCode === 10004) {
+        errorMessage = 'Invalid signature';
+      } else if (errorData.retCode === 10005) {
+        errorMessage = 'Permission denied';
+      } else {
+        errorMessage = errorData.retMsg || errorText;
+      }
+    } catch {
+      errorMessage = errorText;
+    }
+    
+    throw new Error(`Bybit API error: ${errorMessage}`);
   }
   
   return await response.json();
 }
 
+const validateCredentials = (credentials: BybitCredentials) => {
+  if (!credentials.apiKey || !credentials.secret) {
+    throw new Error('API key and secret are required');
+  }
+  
+  if (credentials.apiKey.length < 10 || credentials.secret.length < 10) {
+    throw new Error('Invalid API key or secret format');
+  }
+}
+
 const fetchBybitPortfolio = async (credentials: BybitCredentials) => {
   try {
-    console.log('Testing Bybit API connection...');
+    validateCredentials(credentials);
     
-    // Test connection with server time first
+    // Test connection
     const serverTimeResponse = await fetch('https://api.bybit.com/v5/market/time');
     if (!serverTimeResponse.ok) {
       throw new Error('Cannot connect to Bybit API');
     }
     
-    // Get account balance for unified account
     const balanceResponse = await bybitRequest('/v5/account/wallet-balance', credentials, {
       accountType: 'UNIFIED'
     });
@@ -78,7 +102,7 @@ const fetchBybitPortfolio = async (credentials: BybitCredentials) => {
       throw new Error(`Bybit API error: ${balanceResponse.retMsg}`);
     }
     
-    // Get current prices from Bybit
+    // Get current prices
     const tickerResponse = await fetch('https://api.bybit.com/v5/market/tickers?category=spot');
     const tickerData = await tickerResponse.json();
     
@@ -89,26 +113,21 @@ const fetchBybitPortfolio = async (credentials: BybitCredentials) => {
       });
     }
     
-    // Process balances
     const balances: BybitBalance[] = balanceResponse.result.list[0]?.coin || [];
     
-    // Convert to portfolio format
     const holdings = balances
       .filter((balance: BybitBalance) => parseFloat(balance.walletBalance) > 0)
       .map((balance: BybitBalance) => {
         const totalAmount = parseFloat(balance.walletBalance);
         
-        // Get current price (try USDT pair first)
         let currentPrice = 0;
         if (balance.coin === 'USDT' || balance.coin === 'USD') {
           currentPrice = 1;
         } else {
-          // Try different pairs
           currentPrice = priceMap.get(`${balance.coin}USDT`) || 
                         priceMap.get(`${balance.coin}USD`) || 
                         priceMap.get(`${balance.coin}BTC`) || 0;
           
-          // If we got BTC price, convert to USD
           if (currentPrice > 0 && priceMap.has(`${balance.coin}BTC`)) {
             const btcPrice = priceMap.get('BTCUSDT') || 0;
             currentPrice = currentPrice * btcPrice;
@@ -119,25 +138,18 @@ const fetchBybitPortfolio = async (credentials: BybitCredentials) => {
           symbol: balance.coin,
           name: balance.coin,
           amount: totalAmount,
-          purchase_price: currentPrice, // Use current price as purchase price for now
+          purchase_price: currentPrice,
           purchase_date: new Date().toISOString().split('T')[0],
           notes: 'Imported from Bybit',
           wallet_address: '',
           wallet_type: 'bybit'
         };
       })
-      .filter(holding => holding.amount > 0.0001); // Filter out dust amounts
+      .filter(holding => holding.amount > 0.0001);
     
-    // Calculate total balance in USD
     const totalBalance = holdings.reduce((sum, holding) => {
       return sum + (holding.amount * holding.purchase_price);
     }, 0);
-    
-    console.log('Bybit portfolio fetched successfully:', {
-      holdingsCount: holdings.length,
-      totalBalance,
-      accountType: 'UNIFIED'
-    });
 
     return {
       success: true,
@@ -151,12 +163,6 @@ const fetchBybitPortfolio = async (credentials: BybitCredentials) => {
     };
     
   } catch (error) {
-    console.error('Error fetching Bybit portfolio:', error);
-    console.error('Error details:', {
-      message: error.message,
-      stack: error.stack,
-      credentials: credentials ? 'provided' : 'missing'
-    });
     throw error;
   }
 }
@@ -168,16 +174,8 @@ serve(async (req) => {
 
   try {
     const { action, apiKey, secret, accountId } = await req.json();
-    console.log('Bybit integration request:', { action, hasApiKey: !!apiKey, hasSecret: !!secret });
 
     if (action === 'connect') {
-      if (!apiKey || !secret) {
-        return new Response(
-          JSON.stringify({ error: 'API key and secret are required' }),
-          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
-      }
-
       const credentials: BybitCredentials = { apiKey, secret };
       const result = await fetchBybitPortfolio(credentials);
 
@@ -188,8 +186,6 @@ serve(async (req) => {
     }
 
     if (action === 'sync') {
-      // For sync operations, you would typically store encrypted credentials
-      // and retrieve them here. For now, return a placeholder response.
       return new Response(
         JSON.stringify({ 
           success: false, 
@@ -205,7 +201,6 @@ serve(async (req) => {
     )
 
   } catch (error) {
-    console.error('Bybit integration error:', error);
     return new Response(
       JSON.stringify({ error: error.message || 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
