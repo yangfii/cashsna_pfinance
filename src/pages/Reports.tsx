@@ -301,7 +301,7 @@ export default function Reports() {
                 <BarChart3 className="h-6 w-6 text-white" />
               </div>
               <div>
-                <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                <CardTitle className="text-xl font-bold text-primary">
                   ទិន្នន័យចំណូល vs ចំណាយ
                 </CardTitle>
                 <p className="text-sm text-muted-foreground mt-1">
