@@ -132,12 +132,13 @@ const Index = () => {
             }}
           >
             <div 
-              className="absolute inset-0 bg-gradient-to-br from-primary/40 via-primary/20 to-primary-glow/30 backdrop-blur-sm"
+              className="absolute inset-0 bg-gradient-to-br from-primary/40 via-primary/20 to-primary-glow/30 backdrop-blur-md"
               style={{ 
                 backgroundImage: `url(${overlayBackground})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat'
+                backgroundRepeat: 'no-repeat',
+                filter: 'blur(2px)'
               }}
             ></div>
           </div>
