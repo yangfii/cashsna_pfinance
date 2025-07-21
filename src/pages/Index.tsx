@@ -11,6 +11,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useEffect } from 'react';
 import { Globe } from 'lucide-react';
 import heroBackground from '@/assets/hero-background.jpg';
+import backgroundImage from '@/assets/background-image.jpg';
 const Index = () => {
   const {
     user
@@ -122,7 +123,15 @@ const Index = () => {
           className="absolute inset-0 bg-cover bg-center bg-no-repeat" 
           style={{ backgroundImage: `url(${heroBackground})` }}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-primary/20 to-primary-glow/30 backdrop-blur-sm"></div>
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat backdrop-blur-sm"
+            style={{ 
+              backgroundImage: `url(${backgroundImage})`,
+              backgroundBlendMode: 'overlay'
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-primary/20 to-primary-glow/30"></div>
+          </div>
         </div>
         
         {/* Language and Theme Controls */}
