@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Calendar as CalendarIcon, Filter, Search, Edit, Trash2, Save, Camera, Upload } from "lucide-react";
+import { Plus, Calendar as CalendarIcon, Filter, Search, Edit, Trash2, Save, Camera, Upload, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -26,6 +26,7 @@ type Transaction = {
   date: string;
   created_at: string;
   updated_at: string;
+  image_url: string | null;
 };
 
 const incomeCategories = ["ប្រាក់ខែ", "បន្ថែម", "លក់របស់", "ការដាក់វិនិយោគ", "Crypto investment"];
@@ -45,9 +46,11 @@ export default function Transactions() {
     amount: "",
     category: "",
     note: "",
-    date: new Date()
+    date: new Date(),
+    imageUrl: null as string | null
   });
   const [isProcessingImage, setIsProcessingImage] = useState(false);
+  const [viewingImage, setViewingImage] = useState<string | null>(null);
 
   // Fetch transactions on mount
   useEffect(() => {
@@ -115,7 +118,8 @@ export default function Transactions() {
           amount: parseFloat(formData.amount),
           category: formData.category,
           date: format(formData.date, "yyyy-MM-dd"),
-          note: formData.note || null
+          note: formData.note || null,
+          image_url: formData.imageUrl
         }])
         .select()
         .single();
@@ -128,7 +132,8 @@ export default function Transactions() {
         amount: "",
         category: "",
         note: "",
-        date: new Date()
+        date: new Date(),
+        imageUrl: null
       });
       setDialogOpen(false);
       
@@ -151,7 +156,8 @@ export default function Transactions() {
       amount: transaction.amount.toString(),
       category: transaction.category,
       note: transaction.note || "",
-      date: new Date(transaction.date)
+      date: new Date(transaction.date),
+      imageUrl: transaction.image_url
     });
     setDialogOpen(true);
   };
@@ -218,7 +224,8 @@ export default function Transactions() {
         amount: "",
         category: "",
         note: "",
-        date: new Date()
+        date: new Date(),
+        imageUrl: null
       });
       setEditingTransaction(null);
       setDialogOpen(false);
@@ -251,6 +258,23 @@ export default function Transactions() {
     toast.loading('កំពុងដំណើរការរូបភាព...', { id: 'processing-image' });
 
     try {
+      // Upload image to Supabase storage first
+      const fileExt = file.name.split('.').pop();
+      const fileName = `receipt_${Date.now()}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      // Process receipt with AI
       const formDataUpload = new FormData();
       formDataUpload.append('image', file);
       formDataUpload.append('userId', user.id);
@@ -263,24 +287,25 @@ export default function Transactions() {
         }
       });
 
-      if (!response.ok) throw new Error('Failed to process receipt');
-
-      const result = await response.json();
-      
-      if (result.success) {
-        // Pre-populate form with extracted data
-        setFormData({
-          type: result.data.type || "expense",
-          amount: result.data.amount?.toString() || "",
-          category: result.data.category || "",
-          note: result.data.description || "",
-          date: result.data.date ? new Date(result.data.date) : new Date()
-        });
-        
-        toast.success('បានស្កេនវិក័យបត្រជោគជ័យ!', { id: 'processing-image' });
-      } else {
-        throw new Error(result.error || 'Failed to extract data');
+      let extractedData = null;
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          extractedData = result.data;
+        }
       }
+
+      // Pre-populate form with extracted data or defaults
+      setFormData({
+        type: extractedData?.type || "expense",
+        amount: extractedData?.amount?.toString() || "",
+        category: extractedData?.category || "",
+        note: extractedData?.description || "",
+        date: extractedData?.date ? new Date(extractedData.date) : new Date(),
+        imageUrl: publicUrl
+      });
+      
+      toast.success('បានស្កេនវិក័យបត្រជោគជ័យ!', { id: 'processing-image' });
     } catch (error) {
       console.error('Error processing receipt:', error);
       toast.error('មានបញ្ហាក្នុងការស្កេនវិក័យបត្រ', { id: 'processing-image' });
@@ -309,7 +334,8 @@ export default function Transactions() {
                   amount: "",
                   category: "",
                   note: "",
-                  date: new Date()
+                  date: new Date(),
+                  imageUrl: null
                 });
               }}
             >
@@ -520,30 +546,40 @@ export default function Transactions() {
                     className="flex items-center justify-between p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-smooth animate-slide-up"
                     style={{animationDelay: `${index * 0.05}s`}}
                   >
-                    <div className="flex items-center space-x-4">
-                      <div className={cn(
-                        "w-3 h-10 rounded-full",
-                        transaction.type === "income" ? "bg-gradient-income" : "bg-gradient-expense"
-                      )} />
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <p className="font-medium">{transaction.category}</p>
-                          <Badge 
-                            variant={transaction.type === "income" ? "secondary" : "destructive"}
-                            className={cn(
-                              "text-xs",
-                              transaction.type === "income" 
-                                ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" 
-                                : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-                            )}
-                          >
-                            {transaction.type === "income" ? "ចំណូល" : "ចំណាយ"}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">{transaction.note}</p>
-                        <p className="text-xs text-muted-foreground">{transaction.date}</p>
-                      </div>
-                    </div>
+                     <div className="flex items-center space-x-4">
+                       <div className={cn(
+                         "w-3 h-10 rounded-full",
+                         transaction.type === "income" ? "bg-gradient-income" : "bg-gradient-expense"
+                       )} />
+                       <div>
+                         <div className="flex items-center gap-2 mb-1">
+                           <p className="font-medium">{transaction.category}</p>
+                           <Badge 
+                             variant={transaction.type === "income" ? "secondary" : "destructive"}
+                             className={cn(
+                               "text-xs",
+                               transaction.type === "income" 
+                                 ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" 
+                                 : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                             )}
+                           >
+                             {transaction.type === "income" ? "ចំណូល" : "ចំណាយ"}
+                           </Badge>
+                           {transaction.image_url && (
+                             <Button
+                               variant="ghost"
+                               size="sm"
+                               className="h-6 w-6 p-0"
+                               onClick={() => setViewingImage(transaction.image_url)}
+                             >
+                               <Eye className="h-3 w-3 text-primary" />
+                             </Button>
+                           )}
+                         </div>
+                         <p className="text-sm text-muted-foreground">{transaction.note}</p>
+                         <p className="text-xs text-muted-foreground">{transaction.date}</p>
+                       </div>
+                     </div>
                     
                     <div className="flex items-center gap-3">
                       <div className="text-right">
@@ -580,6 +616,24 @@ export default function Transactions() {
           )}
         </CardContent>
       </Card>
+
+      {/* Image Viewing Dialog */}
+      <Dialog open={!!viewingImage} onOpenChange={() => setViewingImage(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>រូបភាពវិក័យបត្រ</DialogTitle>
+          </DialogHeader>
+          <div className="flex justify-center">
+            {viewingImage && (
+              <img 
+                src={viewingImage} 
+                alt="Receipt" 
+                className="max-w-full max-h-96 object-contain rounded-lg"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
