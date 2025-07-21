@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Calendar as CalendarIcon, Filter, Search, Edit, Trash2, Save, Upload, FileText } from "lucide-react";
+import { Plus, Calendar as CalendarIcon, Filter, Search, Edit, Trash2, Save } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -47,7 +47,6 @@ export default function Transactions() {
     note: "",
     date: new Date()
   });
-  const [isDragOver, setIsDragOver] = useState(false);
 
   // Fetch transactions on mount
   useEffect(() => {
@@ -230,94 +229,6 @@ export default function Transactions() {
     }
   };
 
-  const handleFileUpload = async (files: FileList) => {
-    if (!user) return;
-    
-    const file = files[0];
-    if (!file) return;
-
-    // Check file type
-    const fileExtension = file.name.toLowerCase().split('.').pop();
-    if (!['csv', 'txt'].includes(fileExtension || '')) {
-      toast.error('Please upload a CSV file');
-      return;
-    }
-
-    try {
-      const text = await file.text();
-      const rows = text.split('\n').filter(row => row.trim());
-      
-      if (rows.length < 2) {
-        toast.error('File must contain at least a header and one transaction');
-        return;
-      }
-
-      const header = rows[0].toLowerCase();
-      const importedTransactions = [];
-
-      for (let i = 1; i < rows.length; i++) {
-        const values = rows[i].split(',').map(v => v.trim().replace(/"/g, ''));
-        
-        if (values.length < 4) continue;
-
-        // Assume format: type, amount, category, note, date
-        const [type, amount, category, note, date] = values;
-        
-        if (!type || !amount || !category) continue;
-
-        const parsedAmount = parseFloat(amount);
-        if (isNaN(parsedAmount) || parsedAmount <= 0) continue;
-
-        const transactionType = type.toLowerCase().includes('income') || type.toLowerCase().includes('ចំណូល') ? 'income' : 'expense';
-        
-        importedTransactions.push({
-          user_id: user.id,
-          type: transactionType as "income" | "expense",
-          amount: parsedAmount,
-          category: category,
-          note: note || null,
-          date: date ? format(new Date(date), "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd")
-        });
-      }
-
-      if (importedTransactions.length === 0) {
-        toast.error('No valid transactions found in file');
-        return;
-      }
-
-      // Insert transactions
-      const { data, error } = await supabase
-        .from('transactions')
-        .insert(importedTransactions)
-        .select();
-
-      if (error) throw error;
-
-      setTransactions([...data.map(item => ({...item, type: item.type as "income" | "expense"})), ...transactions]);
-      toast.success(`Successfully imported ${importedTransactions.length} transactions!`);
-      
-    } catch (error) {
-      console.error('Error importing transactions:', error);
-      toast.error('Error importing file. Please check the format.');
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-    handleFileUpload(e.dataTransfer.files);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-  };
-
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('km-KH', {
       style: 'currency',
@@ -329,174 +240,130 @@ export default function Transactions() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="space-y-4">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">ប្រតិបត្តិការ</h1>
-            <p className="text-muted-foreground">គ្រប់គ្រងចំណូលនិងចំណាយរបស់អ្នក</p>
-          </div>
-          
-          <div className="flex gap-2">
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger asChild>
-                <Button 
-                  className="gap-2 bg-gradient-primary border-0 hover:shadow-glow transition-smooth"
-                  onClick={() => {
-                    setEditingTransaction(null);
-                    setFormData({
-                      type: "expense",
-                      amount: "",
-                      category: "",
-                      note: "",
-                      date: new Date()
-                    });
-                  }}
-                >
-                  <Plus className="h-4 w-4" />
-                  បន្ថែមប្រតិបត្តិការ
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-md">
-                <DialogHeader>
-                  <DialogTitle>
-                    {editingTransaction ? 'កែប្រែប្រតិបត្តិការ' : 'បន្ថែមប្រតិបត្តិការថ្មី'}
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  {/* Transaction Type */}
-                  <div className="space-y-2">
-                    <Label>ប្រភេទ</Label>
-                    <Select value={formData.type} onValueChange={(value) => setFormData({...formData, type: value, category: ""})}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="income">ចំណូល</SelectItem>
-                        <SelectItem value="expense">ចំណាយ</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground mb-2">ប្រតិបត្តិការ</h1>
+          <p className="text-muted-foreground">គ្រប់គ្រងចំណូលនិងចំណាយរបស់អ្នក</p>
+        </div>
+        
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogTrigger asChild>
+            <Button 
+              className="gap-2 bg-gradient-primary border-0 hover:shadow-glow transition-smooth"
+              onClick={() => {
+                setEditingTransaction(null);
+                setFormData({
+                  type: "expense",
+                  amount: "",
+                  category: "",
+                  note: "",
+                  date: new Date()
+                });
+              }}
+            >
+              <Plus className="h-4 w-4" />
+              បន្ថែមប្រតិបត្តិការ
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>
+                {editingTransaction ? 'កែប្រែប្រតិបត្តិការ' : 'បន្ថែមប្រតិបត្តិការថ្មី'}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              {/* Transaction Type */}
+              <div className="space-y-2">
+                <Label>ប្រភេទ</Label>
+                <Select value={formData.type} onValueChange={(value) => setFormData({...formData, type: value, category: ""})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="income">ចំណូល</SelectItem>
+                    <SelectItem value="expense">ចំណាយ</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-                  {/* Amount */}
-                  <div className="space-y-2">
-                    <Label>ចំនួនទឹកប្រាក់</Label>
-                    <Input
-                      type="number"
-                      placeholder="0.00"
-                      value={formData.amount}
-                      onChange={(e) => setFormData({...formData, amount: e.target.value})}
+              {/* Amount */}
+              <div className="space-y-2">
+                <Label>ចំនួនទឹកប្រាក់</Label>
+                <Input
+                  type="number"
+                  placeholder="0.00"
+                  value={formData.amount}
+                  onChange={(e) => setFormData({...formData, amount: e.target.value})}
+                />
+              </div>
+
+              {/* Category */}
+              <div className="space-y-2">
+                <Label>ប្រភេទ</Label>
+                <Select value={formData.category} onValueChange={(value) => setFormData({...formData, category: value})}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="ជ្រើសរើសប្រភេទ" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(formData.type === "income" ? incomeCategories : expenseCategories).map((category) => (
+                      <SelectItem key={category} value={category}>{category}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Date */}
+              <div className="space-y-2">
+                <Label>កាលបរិច្ឆេទ</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="w-full justify-start text-left font-normal">
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {format(formData.date, "PPP")}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={formData.date}
+                      onSelect={(date) => date && setFormData({...formData, date})}
+                      initialFocus
+                      className="p-3 pointer-events-auto"
                     />
-                  </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
 
-                  {/* Category */}
-                  <div className="space-y-2">
-                    <Label>ប្រភេទ</Label>
-                    <Select value={formData.category} onValueChange={(value) => setFormData({...formData, category: value})}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="ជ្រើសរើសប្រភេទ" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {(formData.type === "income" ? incomeCategories : expenseCategories).map((category) => (
-                          <SelectItem key={category} value={category}>{category}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+              {/* Note */}
+              <div className="space-y-2">
+                <Label>កំណត់ចំណាំ</Label>
+                <Textarea
+                  placeholder="បន្ថែមកំណត់ចំណាំ..."
+                  value={formData.note}
+                  onChange={(e) => setFormData({...formData, note: e.target.value})}
+                />
+              </div>
 
-                  {/* Date */}
-                  <div className="space-y-2">
-                    <Label>កាលបរិច្ឆេទ</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" className="w-full justify-start text-left font-normal">
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {format(formData.date, "PPP")}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={formData.date}
-                          onSelect={(date) => date && setFormData({...formData, date})}
-                          initialFocus
-                          className="p-3 pointer-events-auto"
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-
-                  {/* Note */}
-                  <div className="space-y-2">
-                    <Label>កំណត់ចំណាំ</Label>
-                    <Textarea
-                      placeholder="បន្ថែមកំណត់ចំណាំ..."
-                      value={formData.note}
-                      onChange={(e) => setFormData({...formData, note: e.target.value})}
-                    />
-                  </div>
-
-                  <Button 
-                    onClick={() => {
-                      console.log('Save button clicked - formData:', formData);
-                      console.log('Button disabled check:', !formData.amount || !formData.category || parseFloat(formData.amount) <= 0);
-                      console.log('Editing mode:', !!editingTransaction);
-                      if (editingTransaction) {
-                        handleUpdateTransaction();
-                      } else {
-                        handleAddTransaction();
-                      }
-                    }} 
-                    className="w-full bg-gradient-primary border-0 hover:shadow-glow transition-smooth gap-2"
-                    disabled={!formData.amount || !formData.category || parseFloat(formData.amount) <= 0}
-                  >
-                    <Save className="h-4 w-4" />
-                    {editingTransaction ? 'កែប្រែ' : 'រក្សា'}
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
-
-            {/* File Upload Button */}
-            <div className="relative">
-              <input
-                type="file"
-                accept=".csv,.txt"
-                onChange={(e) => e.target.files && handleFileUpload(e.target.files)}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-              />
-              <Button
-                variant="outline"
-                className="gap-2 hover:bg-accent/50 transition-smooth"
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
+              <Button 
+                onClick={() => {
+                  console.log('Save button clicked - formData:', formData);
+                  console.log('Button disabled check:', !formData.amount || !formData.category || parseFloat(formData.amount) <= 0);
+                  console.log('Editing mode:', !!editingTransaction);
+                  if (editingTransaction) {
+                    handleUpdateTransaction();
+                  } else {
+                    handleAddTransaction();
+                  }
+                }} 
+                className="w-full bg-gradient-primary border-0 hover:shadow-glow transition-smooth gap-2"
+                disabled={!formData.amount || !formData.category || parseFloat(formData.amount) <= 0}
               >
-                <Upload className="h-4 w-4" />
-                Import CSV
+                <Save className="h-4 w-4" />
+                {editingTransaction ? 'កែប្រែ' : 'រក្សា'}
               </Button>
             </div>
-          </div>
-        </div>
-
-        {/* File Drop Zone */}
-        <div 
-          className={cn(
-            "border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200",
-            "hover:border-primary/50 hover:bg-accent/20",
-            isDragOver ? "border-primary bg-primary/10" : "border-muted-foreground/20"
-          )}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-        >
-          <FileText className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground mb-1">
-            Drag & drop your CSV file here
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Format: type,amount,category,note,date
-          </p>
-        </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Filters */}
