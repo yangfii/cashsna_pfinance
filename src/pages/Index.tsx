@@ -22,14 +22,20 @@ const Index = () => {
   const { language, setLanguage, t } = useLanguage();
   const navigate = useNavigate();
 
-  // Redirect new users to profile setup, but only after profile loading is complete
+  // Handle user redirects
   useEffect(() => {
     if (user && !profileLoading) {
-      // Only redirect if we're certain the profile is incomplete
-      if (!profile || !profile.first_name && !profile.last_name) {
+      // Check if user has a complete profile
+      if (!profile || (!profile.first_name && !profile.last_name)) {
         // Add a small delay to prevent rapid redirects
         const timer = setTimeout(() => {
           navigate('/profile-setup');
+        }, 100);
+        return () => clearTimeout(timer);
+      } else {
+        // If user has a complete profile, redirect to dashboard
+        const timer = setTimeout(() => {
+          navigate('/dashboard');
         }, 100);
         return () => clearTimeout(timer);
       }
