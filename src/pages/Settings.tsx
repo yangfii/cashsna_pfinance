@@ -24,6 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/hooks/useLanguage";
 import { ProfileCard } from "@/components/ProfileCard";
 import { TwoFactorSetup } from "@/components/TwoFactorSetup";
+import { TrustedDevicesManager } from "@/components/TrustedDevicesManager";
 import { 
   AlertDialog,
   AlertDialogAction,
@@ -127,6 +128,9 @@ export default function Settings() {
 
       {/* Two-Factor Authentication */}
       <TwoFactorSetup />
+
+      {/* Trusted Devices */}
+      <TrustedDevicesManager />
 
       {/* Appearance Settings */}
       <Card className="stat-card animate-bounce-in">
