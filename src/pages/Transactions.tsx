@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Calendar as CalendarIcon, Filter, Search, Edit, Trash2, Save } from "lucide-react";
+import { Plus, Calendar as CalendarIcon, Filter, Search, Edit, Trash2, Save, Camera, Upload } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -47,6 +47,7 @@ export default function Transactions() {
     note: "",
     date: new Date()
   });
+  const [isProcessingImage, setIsProcessingImage] = useState(false);
 
   // Fetch transactions on mount
   useEffect(() => {
@@ -237,6 +238,57 @@ export default function Transactions() {
     }).format(amount);
   };
 
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !user) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('សូមជ្រើសរើសរូបភាពតែប៉ុណ្ណោះ');
+      return;
+    }
+
+    setIsProcessingImage(true);
+    toast.loading('កំពុងដំណើរការរូបភាព...', { id: 'processing-image' });
+
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append('image', file);
+      formDataUpload.append('userId', user.id);
+
+      const response = await fetch('https://giziyaymzuydlnbjzhsc.supabase.co/functions/v1/process-receipt', {
+        method: 'POST',
+        body: formDataUpload,
+        headers: {
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdpeml5YXltenV5ZGxuYmp6aHNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3MDU3MDUsImV4cCI6MjA2NzI4MTcwNX0.ueksNc6W4vmdg6gW7S-Vo2sa-hV7SROTdkMXwndz4pA`
+        }
+      });
+
+      if (!response.ok) throw new Error('Failed to process receipt');
+
+      const result = await response.json();
+      
+      if (result.success) {
+        // Pre-populate form with extracted data
+        setFormData({
+          type: result.data.type || "expense",
+          amount: result.data.amount?.toString() || "",
+          category: result.data.category || "",
+          note: result.data.description || "",
+          date: result.data.date ? new Date(result.data.date) : new Date()
+        });
+        
+        toast.success('បានស្កេនវិក័យបត្រជោគជ័យ!', { id: 'processing-image' });
+      } else {
+        throw new Error(result.error || 'Failed to extract data');
+      }
+    } catch (error) {
+      console.error('Error processing receipt:', error);
+      toast.error('មានបញ្ហាក្នុងការស្កេនវិក័យបត្រ', { id: 'processing-image' });
+    } finally {
+      setIsProcessingImage(false);
+    }
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
@@ -272,6 +324,53 @@ export default function Transactions() {
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
+              {/* Image Upload Section */}
+              <div className="space-y-2">
+                <Label>ស្កេនវិក័យបត្រ</Label>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex-1 gap-2"
+                    onClick={() => document.getElementById('receipt-upload')?.click()}
+                    disabled={isProcessingImage}
+                  >
+                    {isProcessingImage ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary" />
+                        កំពុងដំណើរការ...
+                      </>
+                    ) : (
+                      <>
+                        <Camera className="h-4 w-4" />
+                        ថតរូប
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex-1 gap-2"
+                    onClick={() => document.getElementById('receipt-upload')?.click()}
+                    disabled={isProcessingImage}
+                  >
+                    <Upload className="h-4 w-4" />
+                    បញ្ចូលរូប
+                  </Button>
+                </div>
+                <input
+                  id="receipt-upload"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                  capture="environment"
+                />
+                <p className="text-xs text-muted-foreground text-center">
+                  ថតរូបឬបញ្ចូលរូបវិក័យបត្រដើម្បីបង្កើតប្រតិបត្តិការដោយស្វ័យប្រវត្តិ
+                </p>
+              </div>
+
               {/* Transaction Type */}
               <div className="space-y-2">
                 <Label>ប្រភេទ</Label>
