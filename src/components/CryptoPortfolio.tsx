@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { TrendingUp, TrendingDown, Share, Bell, Plus, MoreHorizontal, Twitter, Link2, Trash2 } from "lucide-react";
+import { TrendingUp, TrendingDown, Share, Bell, Plus, MoreHorizontal, Twitter, Link2, Trash2, RefreshCw } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useCryptoData } from "@/hooks/useCryptoData";
 import { useAuth } from "@/hooks/useAuth";
@@ -39,6 +39,7 @@ export default function CryptoPortfolio() {
     addAlert,
     fetchAlerts,
     fetchCryptoPrices,
+    updateCryptoPrices,
     calculatePortfolioValue,
     calculateTotalGainLoss,
     calculatePortfolioMetrics,
@@ -267,6 +268,17 @@ export default function CryptoPortfolio() {
           </div>
           <div className="flex flex-wrap gap-2 sm:gap-3 flex-1 lg:flex-initial">
             <PriceAlertsDialog holdings={holdings} alerts={alerts} onAddAlert={addAlert} onRefreshAlerts={fetchAlerts} />
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="text-xs lg:text-sm px-3 py-2 h-9 lg:h-10"
+              onClick={updateCryptoPrices}
+              disabled={loading}
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">Refresh Prices</span>
+              <span className="sm:hidden">Refresh</span>
+            </Button>
             <CurrencySettings onCurrencyChange={handleCurrencyChange} />
             {holdings.length > 0 && (
               <AlertDialog>
