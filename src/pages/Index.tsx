@@ -21,14 +21,18 @@ const Index = () => {
     profile,
     loading: profileLoading
   } = useProfile();
-  const { language, setLanguage, t } = useLanguage();
+  const {
+    language,
+    setLanguage,
+    t
+  } = useLanguage();
   const navigate = useNavigate();
 
   // Handle user redirects
   useEffect(() => {
     if (user && !profileLoading) {
       // Check if user has a complete profile
-      if (!profile || (!profile.first_name && !profile.last_name)) {
+      if (!profile || !profile.first_name && !profile.last_name) {
         // Add a small delay to prevent rapid redirects
         const timer = setTimeout(() => {
           navigate('/profile-setup');
@@ -120,45 +124,32 @@ const Index = () => {
   return <div className="min-h-screen">
       {/* Hero Section with Professional Gradient */}
       <section className="relative overflow-hidden bg-gradient-hero">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat" 
-          style={{ backgroundImage: `url(${heroBackground})` }}
-        >
-          <div 
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat backdrop-blur-sm"
-            style={{ 
-              backgroundImage: `url(${backgroundImage})`,
-              backgroundBlendMode: 'overlay'
-            }}
-          >
-            <div 
-              className="absolute inset-0 bg-gradient-to-br from-primary/40 via-primary/20 to-primary-glow/30 backdrop-blur-md"
-              style={{ 
-                backgroundImage: `url(${overlayBackground})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-                filter: 'blur(2px)'
-              }}
-            ></div>
+        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{
+        backgroundImage: `url(${heroBackground})`
+      }}>
+          <div className="absolute inset-0 bg-cover bg-center bg-no-repeat backdrop-blur-sm" style={{
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundBlendMode: 'overlay'
+        }}>
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-primary/20 to-primary-glow/30 backdrop-blur-md" style={{
+            backgroundImage: `url(${overlayBackground})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            filter: 'blur(2px)'
+          }}></div>
           </div>
         </div>
         
         {/* Language and Theme Controls */}
         <div className="relative z-10 flex justify-end p-4">
           <div className="flex items-center gap-2">
-            <Button
-              onClick={() => {
-                console.log('Current language:', language);
-                const newLanguage = language === 'english' ? 'khmer' : 'english';
-                console.log('Switching to:', newLanguage);
-                setLanguage(newLanguage);
-              }}
-              variant="ghost"
-              size="sm"
-              className="h-10 w-10 p-0 bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20 backdrop-blur-sm"
-              title={language === 'english' ? 'Switch to Khmer' : 'Switch to English'}
-            >
+            <Button onClick={() => {
+            console.log('Current language:', language);
+            const newLanguage = language === 'english' ? 'khmer' : 'english';
+            console.log('Switching to:', newLanguage);
+            setLanguage(newLanguage);
+          }} variant="ghost" size="sm" className="h-10 w-10 p-0 bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20 backdrop-blur-sm" title={language === 'english' ? 'Switch to Khmer' : 'Switch to English'}>
               <Globe className="h-4 w-4" />
             </Button>
             <ThemeToggle />
@@ -183,10 +174,7 @@ const Index = () => {
             </h2>
             
             <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 max-w-3xl mx-auto leading-relaxed">
-              {language === 'khmer' 
-                ? 'ដំណោះស្រាយគ្រប់គ្រងលុយកាក់ពេញលេញសម្រាប់ប្រជាជនកម្ពុជា ជាមួយនឹងបច្ចេកវិទ្យា AI ទំនើប'
-                : 'Complete money management solution for Cambodians with modern AI technology'
-              }
+              {language === 'khmer' ? 'ដំណោះស្រាយគ្រប់គ្រងលុយកាក់ពេញលេញសម្រាប់ប្រជាជនកម្ពុជា ជាមួយនឹងបច្ចេកវិទ្យា AI ទំនើប' : 'Complete money management solution for Cambodians with modern AI technology'}
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -215,168 +203,31 @@ const Index = () => {
               <span className="text-gradient"> {language === 'khmer' ? '' : '(ពិសេសណ៍)'}</span>
             </h2>
             <p className="text-body text-muted-foreground max-w-2xl mx-auto">
-              {language === 'khmer' 
-                ? 'ដំណោះស្រាយគ្រប់គ្រងហិរញ្ញវត្ថុដ៏ទំនើបសម្រាប់អ្នក'
-                : 'Modern financial management solution for you'
-              }
+              {language === 'khmer' ? 'ដំណោះស្រាយគ្រប់គ្រងហិរញ្ញវត្ថុដ៏ទំនើបសម្រាប់អ្នក' : 'Modern financial management solution for you'}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Feature 1 */}
-            <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in">
-              <CardContent>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-smooth">
-                    <span className="text-lg">📥</span>
-                  </div>
-                  <span className="text-2xl">📊</span>
-                </div>
-                <h3 className="text-h4 mb-3">
-                  {language === 'khmer' ? 'ត្រួតពិនិត្យចំណូល និងចំណាយប្រចាំថ្ងៃ' : 'Track Daily Income & Expenses'}
-                </h3>
-                <p className="text-body-sm text-muted-foreground leading-relaxed mb-3">
-                  {language === 'khmer' 
-                    ? 'គ្រប់គ្រងប្រាក់ចំណូល និងចំណាយរបស់អ្នកបានយ៉ាងងាយស្រួលជាមួយប្រភេទចំណាត់ថ្នាក់ (Categories) និងការបញ្ចូលទិន្នន័យដោយរហ័ស។'
-                    : 'Easily manage your income and expenses with categories and quick data entry.'
-                  }
-                </p>
-                <div className="flex items-start gap-2">
-                  <span className="text-xs text-primary font-medium">💡</span>
-                  <p className="text-xs text-primary font-medium">
-                    {language === 'khmer' ? 'គ្មានការស្មុគស្មាញ' : 'No complications'}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            
 
             {/* Feature 2 */}
-            <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in" style={{
-            animationDelay: '0.1s'
-          }}>
-              <CardContent className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-smooth">
-                    <span className="text-lg">📈</span>
-                  </div>
-                  <span className="text-2xl">📊</span>
-                </div>
-                <h3 className="text-h4 mb-3">ផ្ទាំងព័ត៌មានហិរញ្ញវត្ថុទំនើប</h3>
-                <p className="text-body-sm text-muted-foreground leading-relaxed mb-3">
-                  មើលការចំណាយ-ចំណូលរបស់អ្នកគ្រប់ពេលវេលា តាមរយៈក្រាហ្វច្បាស់លាស់ និងតារាងសង្ខេប។
-                </p>
-                <div className="flex items-start gap-2">
-                  <span className="text-xs text-primary font-medium">💡</span>
-                  <p className="text-xs text-primary font-medium">យល់ដឹងអំពីលទ្ធភាពហិរញ្ញវត្ថុបានច្បាស់លាស់ជាងមុន!</p>
-                </div>
-              </CardContent>
-            </Card>
+            
 
             {/* Feature 3 */}
-            <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in" style={{
-            animationDelay: '0.2s'
-          }}>
-              <CardContent className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-smooth">
-                    <span className="text-lg">🗣️</span>
-                  </div>
-                  <span className="text-2xl">🇰🇭</span>
-                </div>
-                <h3 className="text-lg font-semibold mb-3">ផ្តល់ជូនជាភាសាខ្មែរ</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-3">
-                  CashSnap Finance ត្រូវបានរចនាឡើងសម្រាប់អ្នកប្រើនៅកម្ពុជា ជាមួយនឹងភាសាខ្មែរប្រកបដោយការយល់ងាយ។
-                </p>
-                <div className="flex items-start gap-2">
-                  <span className="text-xs text-primary font-medium">💡</span>
-                  <p className="text-xs text-primary font-medium">ងាយស្រួលប្រើ សម្រាប់មនុស្សគ្រប់វ័យ!</p>
-                </div>
-              </CardContent>
-            </Card>
+            
 
             {/* Feature 4 */}
-            <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in" style={{
-            animationDelay: '0.3s'
-          }}>
-              <CardContent className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-smooth">
-                    <span className="text-lg">🧩</span>
-                  </div>
-                  <span className="text-2xl">📱</span>
-                </div>
-                <h3 className="text-lg font-semibold mb-3">ប្រើបានជារបៀប App និង Offline</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-3">
-                  គាំទ្រ PWA (Progressive Web App) អាចដំឡើងដូចជា App ទូរស័ព្ទបានផងដែរ។
-                </p>
-                <div className="flex items-start gap-2">
-                  <span className="text-xs text-primary font-medium">💡</span>
-                  <p className="text-xs text-primary font-medium">ប្រើនៅគ្រប់កន្លែង គ្រប់ពេល – ទោះបីឥតអ៊ីនធឺណិតក៏ដោយ!</p>
-                </div>
-              </CardContent>
-            </Card>
+            
 
             {/* Feature 5 */}
-            <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in" style={{
-            animationDelay: '0.4s'
-          }}>
-              <CardContent className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-smooth">
-                    <span className="text-lg">🖌️</span>
-                  </div>
-                  <span className="text-2xl">🎨</span>
-                </div>
-                <h3 className="text-lg font-semibold mb-3">មានបែបផែនស្រស់ស្អាត និងអាចប្ដូរបាន</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-3">
-                  ជម្រើស Light / Dark Mode និងការប្ដូរប្រភេទចំណូល-ចំណាយ តាមបំណង។
-                </p>
-                <div className="flex items-start gap-2">
-                  <span className="text-xs text-primary font-medium">💡</span>
-                  <p className="text-xs text-primary font-medium">ផ្ទាល់ខ្លួន ងាយសម្របសម្រួល!</p>
-                </div>
-              </CardContent>
-            </Card>
+            
 
             {/* Feature 6 */}
-            <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in" style={{
-            animationDelay: '0.5s'
-          }}>
-              <CardContent className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-smooth">
-                    <span className="text-lg">🛡️</span>
-                  </div>
-                  <span className="text-2xl">🔒</span>
-                </div>
-                <h3 className="text-lg font-semibold mb-3">គ្មានពាណិជ្ជកម្ម និងការពារទិន្នន័យ</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-3">
-                  វេបសាយនេះគ្មានពាណិជ្ជកម្ម មិនលក់ទិន្នន័យ និងផ្តោតលើសុវត្ថិភាពផ្ទាល់ខ្លួនរបស់អ្នកប្រើជាចម្បង។
-                </p>
-                <div className="flex items-start gap-2">
-                  <span className="text-xs text-primary font-medium">💡</span>
-                  <p className="text-xs text-primary font-medium">ជំនឿចិត្តពេញលេញ និងទំនុកចិត្តក្នុងការប្រើប្រាស់!</p>
-                </div>
-              </CardContent>
-            </Card>
+            
 
             {/* Feature 7 */}
-            <Card className="h-full group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in" style={{
-            animationDelay: '0.6s'
-          }}>
-              <CardContent className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-smooth">
-                    <span className="text-lg">🎁</span>
-                  </div>
-                  <span className="text-2xl">🆓</span>
-                </div>
-                <h3 className="text-lg font-semibold mb-3">ប្រើប្រាស់ឥតគិតថ្លៃ</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  គ្មានបង់ប្រាក់! អាចប្រើបានទាំងនិស្សិត អ្នកជំនាញ និងគ្រួសារ។
-                </p>
-              </CardContent>
-            </Card>
+            
 
             {/* Feature 8 - AI Assistance (full width) */}
             <Card className="lg:col-span-4 group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in bg-gradient-to-r from-primary/5 to-primary-glow/5" style={{
@@ -475,7 +326,7 @@ const Index = () => {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center">
-            <div className="bg-gradient-card shadow-card rounded-3xl p-8 md:p-12 max-w-4xl mx-auto border border-border/50">
+            <div className="bg-gradient-card shadow-card rounded-3xl p-8 md:p-12 max-w-4xl mx-auto border border-border/50 py-[23px]">
               <div className="mb-6">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-primary text-2xl">✨</span>
