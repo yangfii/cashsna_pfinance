@@ -202,8 +202,8 @@ const Index = () => {
               🔥 {language === 'khmer' ? 'លក្ខណៈពិសេសសំខាន់ៗ' : 'Key Features'}
               <span className="text-gradient"> {language === 'khmer' ? '' : '(ពិសេសណ៍)'}</span>
             </h2>
-            <p className="text-body text-muted-foreground max-w-2xl mx-auto">
-              {language === 'khmer' ? 'ដំណោះស្រាយគ្រប់គ្រងហិរញ្ញវត្ថុដ៏ទំនើបសម្រាប់អ្នក' : 'Modern financial management solution for you'}
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              {language === 'khmer' ? 'ដំណោះស្រាយគ្រប់គ្រងហិរញ្ញវត្ថុដ៏ទំនើបសម្រាប់អ្នក' : 'Complete financial management solution designed for modern users'}
             </p>
           </div>
 
