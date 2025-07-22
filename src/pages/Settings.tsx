@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,10 +51,17 @@ export default function Settings() {
     darkMode: theme === "dark"
   });
 
+  // Sync settings with language context
+  useEffect(() => {
+    setSettings(prev => ({ ...prev, language: language }));
+  }, [language]);
+
   const handleSaveSettings = () => {
     console.log('Saving settings:', settings);
-    // Store language preference in localStorage
-    localStorage.setItem('language', settings.language);
+    // Update language if it's different
+    if (settings.language !== language) {
+      setLanguage(settings.language);
+    }
     toast({
       title: t('settings.saved'),
       description: t('settings.savedDesc'),
@@ -63,8 +70,8 @@ export default function Settings() {
 
   const handleExportData = () => {
     toast({
-      title: "កំពុងនាំចេញទិន្នន័យ",
-      description: "ទិន្នន័យរបស់អ្នកនឹងត្រូវបាននាំចេញក្នុងរយៈពេលបន្តិច។",
+      title: t('settings.exportData'),
+      description: t('settings.exportDataDesc'),
     });
   };
 
@@ -90,8 +97,8 @@ export default function Settings() {
       console.log('All data cleared successfully');
       
       toast({
-        title: "ទិន្នន័យត្រូវបានលុបជោគជ័យ",
-        description: "ទិន្នន័យទាំងអស់ត្រូវបានលុបចេញពីគណនីរបស់អ្នក។",
+        title: t('settings.saved'),
+        description: t('settings.savedDesc'),
         variant: "destructive",
       });
       
@@ -103,8 +110,8 @@ export default function Settings() {
     } catch (error) {
       console.error('Error clearing data:', error);
       toast({
-        title: "កំហុសក្នុងការលុបទិន្នន័យ",
-        description: "មានបញ្ហាក្នុងការលុបទិន្នន័យ។ សូមព្យាយាមម្តងទៀត។",
+        title: t('common.no'),
+        description: t('settings.savedDesc'),
         variant: "destructive",
       });
     }
@@ -179,7 +186,7 @@ export default function Settings() {
                 {t('settings.languageDesc')}
               </p>
             </div>
-            <Select value={language} onValueChange={(value) => {
+            <Select value={settings.language} onValueChange={(value) => {
               setLanguage(value);
               setSettings({...settings, language: value});
             }}>
@@ -403,18 +410,18 @@ export default function Settings() {
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>តើអ្នកប្រាកដជាចង់លុបទិន្នន័យទាំងអស់មែនទេ?</AlertDialogTitle>
+                  <AlertDialogTitle>{t('settings.deleteAll')}?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។ វានឹងលុបប្រតិបត្តិការ ការកំណត់ និងទិន្នន័យផ្ទាល់ខ្លួនទាំងអស់។
+                    {t('settings.deleteAllDesc')}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>បោះបង់</AlertDialogCancel>
+                  <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
                   <AlertDialogAction 
                     onClick={handleDeleteAllData}
                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                   >
-                    បាទ/ចាស លុបទាំងអស់
+                    {t('common.yes')}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ReportDialog } from "@/components/ReportDialog";
+
 const getNavItems = (t: (key: string) => string) => [{
   to: "/dashboard",
   icon: LayoutDashboard,
@@ -29,7 +31,7 @@ const getNavItems = (t: (key: string) => string) => [{
 }, {
   to: "/dashboard/portfolio",
   icon: Coins,
-  label: "Exchange Portfolio",
+  label: t("nav.portfolio"),
   key: "portfolio"
 }, {
   to: "/dashboard/assistant",
@@ -52,29 +54,20 @@ const getNavItems = (t: (key: string) => string) => [{
   label: t("nav.settings"),
   key: "settings"
 }];
+
 function AppSidebar() {
-  const {
-    user,
-    signOut
-  } = useAuth();
-  const {
-    profile
-  } = useProfile();
-  const {
-    t
-  } = useLanguage();
+  const { user, signOut } = useAuth();
+  const { profile } = useProfile();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
-  const {
-    state
-  } = useSidebar();
+  const { state } = useSidebar();
   const navItems = getNavItems(t);
+
   const handleSignOut = async () => {
     try {
       console.log('Starting sign out process...');
-      const {
-        error
-      } = await signOut();
+      const { error } = await signOut();
       if (error) {
         console.error('Sign out error:', error);
         toast.error(`Error signing out: ${error.message || 'Unknown error'}`);
@@ -88,7 +81,9 @@ function AppSidebar() {
       toast.error('Unexpected error during sign out');
     }
   };
-  return <Sidebar variant="inset" collapsible="icon" className="py-0 my-0 mx-px px-0">
+
+  return (
+    <Sidebar variant="inset" collapsible="icon" className="py-0 my-0 mx-px px-0">
       <SidebarHeader className="mx-0 px-0 py-[7px] my-0">
         <div className="flex items-center gap-2 py-1 my-0 mx-[4px] px-[12px]">
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -96,10 +91,10 @@ function AppSidebar() {
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-semibold text-foreground">
-              Cashsnap
+              {t('layout.appTitle')}
             </span>
             <span className="truncate text-xs text-muted-foreground">
-              Finance Tracker
+              {t('layout.appSubtitle')}
             </span>
           </div>
         </div>
@@ -107,17 +102,19 @@ function AppSidebar() {
       
       <SidebarContent className="mx-[6px]">
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel>{t('layout.navigation')}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map(item => <SidebarMenuItem key={item.key}>
+              {navItems.map(item => (
+                <SidebarMenuItem key={item.key}>
                   <SidebarMenuButton asChild isActive={location.pathname === item.to} tooltip={item.label}>
                     <NavLink to={item.to}>
                       <item.icon />
                       <span>{item.label}</span>
                     </NavLink>
                   </SidebarMenuButton>
-                </SidebarMenuItem>)}
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -126,30 +123,39 @@ function AppSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem className="px-0 mx-0 my-[14px] py-0">
-            <SidebarMenuButton asChild tooltip="Profile">
-              <NavLink to="/dashboard/settings" className={cn("flex items-center gap-3 p-3", location.pathname === "/dashboard/settings" ? "bg-accent" : "")}>
+            <SidebarMenuButton asChild tooltip={t('nav.profile')}>
+              <NavLink to="/dashboard/settings" className={cn(
+                "flex items-center gap-3 p-3", 
+                location.pathname === "/dashboard/settings" ? "bg-accent" : ""
+              )}>
                 <Avatar className="size-10">
                   <AvatarImage src={profile?.avatar_url || undefined} alt="Profile picture" />
                   <AvatarFallback className="bg-gradient-primary text-primary-foreground">
                     <User className="size-5" />
                   </AvatarFallback>
                 </Avatar>
-                {state === "expanded" && <div className="grid flex-1 text-left text-sm leading-tight">
+                {state === "expanded" && (
+                  <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold text-foreground">
                       {user?.email?.split('@')[0]}
                     </span>
                     <span className="truncate text-xs text-muted-foreground">
                       {t("nav.profile")}
                     </span>
-                  </div>}
+                  </div>
+                )}
               </NavLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <ReportDialog trigger={<SidebarMenuButton tooltip="Report to developers">
+            <ReportDialog 
+              trigger={
+                <SidebarMenuButton tooltip={t('layout.reportToDevelopers')}>
                   <Bug />
-                  <span>Report to developers</span>
-                </SidebarMenuButton>} />
+                  <span>{t('layout.reportToDevelopers')}</span>
+                </SidebarMenuButton>
+              } 
+            />
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={handleSignOut} tooltip={t("nav.signOut")}>
@@ -159,34 +165,38 @@ function AppSidebar() {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
-    </Sidebar>;
+    </Sidebar>
+  );
 }
+
 export default function Layout() {
   const navigate = useNavigate();
-  const {
-    t
-  } = useLanguage();
-  const {
-    user,
-    loading
-  } = useAuth();
+  const { t } = useLanguage();
+  const { user, loading } = useAuth();
+
   useEffect(() => {
     if (!loading && !user) {
       navigate('/auth');
     }
   }, [user, loading, navigate]);
+
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5">
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
           <p className="mt-4 text-muted-foreground">{t("common.loading")}</p>
         </div>
-      </div>;
+      </div>
+    );
   }
+
   if (!user) {
     return null;
   }
-  return <SidebarProvider>
+
+  return (
+    <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-to-br from-background via-background to-primary/5">
         <AppSidebar />
         
@@ -206,5 +216,6 @@ export default function Layout() {
           </main>
         </div>
       </div>
-    </SidebarProvider>;
+    </SidebarProvider>
+  );
 }

@@ -32,6 +32,12 @@ const translations = {
     'dashboard.noTransactions': 'មិនមានប្រតិបត្តិការនៅឡើយទេ',
     'dashboard.addTransaction': 'បន្ថែមប្រតិបត្តិការ',
     
+    // Layout & Common
+    'layout.navigation': 'ការផ្លាស់ទី',
+    'layout.appTitle': 'Cashsnap',
+    'layout.appSubtitle': 'Finance Tracker',
+    'layout.reportToDevelopers': 'រាយការណ៍ទៅកាន់អ្នកអភិវឌ្ឍន៍',
+    
     // Transactions
     'transactions.title': 'ប្រតិបត្តិការ',
     'transactions.add': 'បន្ថែមប្រតិបត្តិការ',
@@ -196,6 +202,12 @@ const translations = {
     'dashboard.noTransactions': 'No transactions yet',
     'dashboard.addTransaction': 'Add Transaction',
     
+    // Layout & Common
+    'layout.navigation': 'Navigation',
+    'layout.appTitle': 'Cashsnap',
+    'layout.appSubtitle': 'Finance Tracker',
+    'layout.reportToDevelopers': 'Report to developers',
+    
     // Transactions
     'transactions.title': 'Transactions',
     'transactions.add': 'Add Transaction',
@@ -342,20 +354,28 @@ const translations = {
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<string>(() => {
-    return localStorage.getItem('language') || 'khmer';
+    const savedLanguage = localStorage.getItem('app-language');
+    return savedLanguage || 'khmer';
   });
 
   useEffect(() => {
-    localStorage.setItem('language', language);
+    localStorage.setItem('app-language', language);
+    console.log('Language preference saved:', language);
   }, [language]);
 
   const setLanguage = (lang: string) => {
-    console.log('Language changed to:', lang);
+    console.log('Current language:', language);
+    console.log('Switching to:', lang);
     setLanguageState(lang);
   };
 
   const t = (key: string): string => {
-    return translations[language as keyof typeof translations]?.[key] || key;
+    const translation = translations[language as keyof typeof translations]?.[key];
+    if (!translation) {
+      console.warn(`Missing translation for key: ${key} in language: ${language}`);
+      return key;
+    }
+    return translation;
   };
 
   return (
