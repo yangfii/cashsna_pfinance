@@ -198,11 +198,8 @@ const Index = () => {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 animate-slide-up">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              🔥 {language === 'khmer' ? 'លក្ខណៈពិសេសសំខាន់ៗ' : 'Key Features'}
-              <span className="text-gradient"> {language === 'khmer' ? '' : '(ពិសេសណ៍)'}</span>
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            
+            <p className="text-lg text-muted-foreground max-w-2xl my-0 mx-[122px]">
               {language === 'khmer' ? 'ដំណោះស្រាយគ្រប់គ្រងហិរញ្ញវត្ថុដ៏ទំនើបសម្រាប់អ្នក' : 'Complete financial management solution designed for modern users'}
             </p>
           </div>
