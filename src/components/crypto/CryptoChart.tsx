@@ -8,7 +8,7 @@ import DonutChartLegend from "./DonutChartLegend";
 import { useIsMobile } from "@/hooks/use-mobile";
 interface CryptoChartProps {
   holdings: CryptoHolding[];
-  prices: Record<string, CryptoPrice>;
+  prices: CryptoPrice;
 }
 export default function CryptoChart({
   holdings,
@@ -57,8 +57,8 @@ export default function CryptoChart({
 
   // Calculate data for charts
   const portfolioData = holdings.map(holding => {
-    const currentPrice = prices[holding.symbol]?.price || 0;
-    const priceChange24h = prices[holding.symbol]?.price_change_24h || 0;
+    const currentPrice = prices[holding.symbol.toLowerCase()]?.usd || 0;
+    const priceChange24h = prices[holding.symbol.toLowerCase()]?.usd_24h_change || 0;
     const currentValue = holding.amount * currentPrice;
     const initialValue = holding.amount * holding.purchase_price;
     const gainLoss = currentValue - initialValue;
@@ -69,7 +69,7 @@ export default function CryptoChart({
       currentPrice,
       currentValue,
       initialValue,
-      priceData: prices[holding.symbol]
+      priceData: prices[holding.symbol.toLowerCase()]
     });
     return {
       name: holding.name,

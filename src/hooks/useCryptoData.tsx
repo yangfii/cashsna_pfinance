@@ -15,14 +15,16 @@ export interface CryptoHolding {
   wallet_type?: string;
 }
 
+export interface CryptoPriceData {
+  usd: number;
+  usd_24h_change: number;
+  usd_24h_vol?: number;
+  usd_market_cap?: number;
+  last_updated?: string;
+}
+
 export interface CryptoPrice {
-  [key: string]: {
-    usd: number;
-    usd_24h_change: number;
-    usd_24h_vol?: number;
-    usd_market_cap?: number;
-    last_updated?: string;
-  };
+  [key: string]: CryptoPriceData;
 }
 
 export interface CryptoAlert {

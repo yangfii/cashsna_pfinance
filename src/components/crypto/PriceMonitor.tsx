@@ -6,7 +6,7 @@ import { TrendingUp, TrendingDown, Activity, RefreshCw } from "lucide-react";
 import { CryptoPrice } from "@/hooks/useCryptoData";
 
 interface PriceMonitorProps {
-  prices: Record<string, CryptoPrice>;
+  prices: CryptoPrice;
   watchlist?: string[];
   onRefresh: () => void;
   lastUpdate?: Date | null;
@@ -42,7 +42,14 @@ export default function PriceMonitor({ prices, watchlist = [], onRefresh, lastUp
     return <Activity className="h-4 w-4" />;
   };
 
-  const priceData = Object.values(prices);
+  const priceData = Object.entries(prices).map(([symbol, data]) => ({ 
+    symbol, 
+    usd: data.usd,
+    usd_24h_change: data.usd_24h_change,
+    usd_24h_vol: data.usd_24h_vol,
+    usd_market_cap: data.usd_market_cap,
+    last_updated: data.last_updated
+  }));
 
   return (
     <Card>
@@ -87,10 +94,10 @@ export default function PriceMonitor({ prices, watchlist = [], onRefresh, lastUp
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="font-medium">{formatPrice(priceInfo.price)}</div>
-                  <div className={`flex items-center gap-1 text-sm ${getChangeColor(priceInfo.price_change_24h)}`}>
-                    {getChangeIcon(priceInfo.price_change_24h)}
-                    {Math.abs(priceInfo.price_change_24h).toFixed(2)}%
+                  <div className="font-medium">{formatPrice(priceInfo.usd)}</div>
+                  <div className={`flex items-center gap-1 text-sm ${getChangeColor(priceInfo.usd_24h_change)}`}>
+                    {getChangeIcon(priceInfo.usd_24h_change)}
+                    {Math.abs(priceInfo.usd_24h_change).toFixed(2)}%
                   </div>
                 </div>
               </div>

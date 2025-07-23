@@ -6,7 +6,7 @@ import { CryptoHolding, CryptoPrice } from "@/hooks/useCryptoData";
 
 interface HoldingsListProps {
   holdings: CryptoHolding[];
-  prices: Record<string, CryptoPrice>;
+  prices: CryptoPrice;
   onDeleteHolding: (id: string) => void;
 }
 
@@ -36,12 +36,12 @@ export default function HoldingsList({ holdings, prices, onDeleteHolding }: Hold
   return (
     <div className="space-y-3">
       {holdings.map((holding) => {
-        const currentPrice = prices[holding.symbol]?.price || 0;
+        const currentPrice = prices[holding.symbol.toLowerCase()]?.usd || 0;
         const currentValue = holding.amount * currentPrice;
         const purchaseValue = holding.amount * holding.purchase_price;
         const gainLoss = currentValue - purchaseValue;
         const gainLossPercent = purchaseValue > 0 ? (gainLoss / purchaseValue) * 100 : 0;
-        const priceChange24h = prices[holding.symbol]?.price_change_24h || 0;
+        const priceChange24h = prices[holding.symbol.toLowerCase()]?.usd_24h_change || 0;
 
         return (
           <div key={holding.id} className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">

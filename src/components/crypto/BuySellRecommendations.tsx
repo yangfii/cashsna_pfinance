@@ -32,7 +32,7 @@ interface TechnicalSignal {
 
 interface BuySellRecommendationsProps {
   holdings: CryptoHolding[];
-  prices: Record<string, CryptoPrice>;
+  prices: CryptoPrice;
 }
 
 export default function BuySellRecommendations({ holdings, prices }: BuySellRecommendationsProps) {
@@ -57,8 +57,8 @@ export default function BuySellRecommendations({ holdings, prices }: BuySellReco
         const priceData = prices[holding.symbol.toLowerCase()];
         if (!priceData) return;
 
-        const currentPrice = priceData.price;
-        const change24h = priceData.price_change_24h || 0;
+        const currentPrice = priceData.usd;
+        const change24h = priceData.usd_24h_change || 0;
         const purchasePrice = holding.purchase_price;
         const currentValue = holding.amount * currentPrice;
         const purchaseValue = holding.amount * purchasePrice;
@@ -128,10 +128,10 @@ export default function BuySellRecommendations({ holdings, prices }: BuySellReco
 
       // Add market opportunities for new positions
       const marketOpportunities = ['ethereum', 'bitcoin', 'solana', 'cardano'];
-      marketOpportunities.forEach(symbol => {
+        marketOpportunities.forEach(symbol => {
         if (!holdings.find(h => h.symbol.toLowerCase() === symbol) && prices[symbol]) {
           const priceData = prices[symbol];
-          const change24h = priceData.price_change_24h || 0;
+          const change24h = priceData.usd_24h_change || 0;
           
           if (Math.abs(change24h) > 5) {
             newRecommendations.push({
@@ -141,8 +141,8 @@ export default function BuySellRecommendations({ holdings, prices }: BuySellReco
               action: change24h < -10 ? 'buy' : 'hold',
               confidence: Math.abs(change24h) > 10 ? 85 : 60,
               reason: change24h < -10 ? 'Strong market dip presents buying opportunity' : 'Monitor for entry point',
-              targetPrice: priceData.price * 1.3,
-              currentPrice: priceData.price,
+              targetPrice: priceData.usd * 1.3,
+              currentPrice: priceData.usd,
               potentialGain: 30,
               timeframe: 'medium',
               riskLevel: Math.abs(change24h) > 15 ? 'high' : 'medium',
