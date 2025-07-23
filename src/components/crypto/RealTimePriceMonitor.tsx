@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,16 +9,18 @@ import {
   TrendingDown, 
   Clock,
   Wifi,
-  WifiOff
+  WifiOff,
+  AlertCircle
 } from "lucide-react";
-import { CryptoPrice } from "@/hooks/useCryptoData";
+import { CryptoPrice, CryptoHolding } from "@/hooks/useCryptoData";
 
 interface RealTimePriceMonitorProps {
   prices: CryptoPrice;
-  holdings: any[];
+  holdings: CryptoHolding[];
   onRefresh: () => void;
   lastUpdate: Date | null;
   updateCount: number;
+  connectionStatus?: 'connected' | 'disconnected' | 'reconnecting';
 }
 
 export default function RealTimePriceMonitor({ 
@@ -25,7 +28,8 @@ export default function RealTimePriceMonitor({
   holdings, 
   onRefresh, 
   lastUpdate, 
-  updateCount 
+  updateCount,
+  connectionStatus = 'disconnected'
 }: RealTimePriceMonitorProps) {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -51,6 +55,28 @@ export default function RealTimePriceMonitor({
 
   const isRecentUpdate = lastUpdate && (new Date().getTime() - lastUpdate.getTime()) < 30000;
 
+  const getConnectionIcon = () => {
+    switch (connectionStatus) {
+      case 'connected':
+        return <Wifi className="h-4 w-4 text-green-500" />;
+      case 'reconnecting':
+        return <RefreshCw className="h-4 w-4 text-yellow-500 animate-spin" />;
+      default:
+        return <WifiOff className="h-4 w-4 text-red-500" />;
+    }
+  };
+
+  const getConnectionBadge = () => {
+    switch (connectionStatus) {
+      case 'connected':
+        return <Badge variant="default" className="bg-green-500">Live</Badge>;
+      case 'reconnecting':
+        return <Badge variant="secondary" className="bg-yellow-500">Reconnecting</Badge>;
+      default:
+        return <Badge variant="destructive">Offline</Badge>;
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -60,11 +86,7 @@ export default function RealTimePriceMonitor({
             Real-Time Prices
           </CardTitle>
           <div className="flex items-center gap-2">
-            {isRecentUpdate ? (
-              <Wifi className="h-4 w-4 text-green-500" />
-            ) : (
-              <WifiOff className="h-4 w-4 text-red-500" />
-            )}
+            {getConnectionIcon()}
             <Button 
               variant="outline" 
               size="sm" 
@@ -78,7 +100,7 @@ export default function RealTimePriceMonitor({
         </div>
       </CardHeader>
       <CardContent>
-        {/* Status Bar */}
+        {/* Enhanced Status Bar */}
         <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg mb-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
@@ -86,14 +108,24 @@ export default function RealTimePriceMonitor({
               <span className="text-sm">Last: {formatTimeAgo(lastUpdate)}</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${isRecentUpdate ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
+              <div className={`w-2 h-2 rounded-full ${
+                connectionStatus === 'connected' ? 'bg-green-500 animate-pulse' : 
+                connectionStatus === 'reconnecting' ? 'bg-yellow-500 animate-pulse' : 
+                'bg-red-500'
+              }`} />
               <span className="text-sm">Updates: {updateCount}</span>
             </div>
           </div>
-          <Badge variant={isRecentUpdate ? "default" : "secondary"}>
-            {isRecentUpdate ? "Live" : "Offline"}
-          </Badge>
+          {getConnectionBadge()}
         </div>
+
+        {/* Connection Status Alert */}
+        {connectionStatus === 'disconnected' && (
+          <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-lg mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <span className="text-sm">Real-time updates are currently unavailable</span>
+          </div>
+        )}
 
         {/* Price List */}
         <div className="space-y-2">

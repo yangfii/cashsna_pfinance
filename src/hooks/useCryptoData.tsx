@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -16,12 +16,13 @@ export interface CryptoHolding {
 }
 
 export interface CryptoPrice {
-  symbol: string;
-  price: number;
-  price_change_24h: number;
-  volume_24h: number;
-  market_cap: number;
-  last_updated: string;
+  [key: string]: {
+    usd: number;
+    usd_24h_change: number;
+    usd_24h_vol?: number;
+    usd_market_cap?: number;
+    last_updated?: string;
+  };
 }
 
 export interface CryptoAlert {
@@ -36,56 +37,104 @@ export interface CryptoAlert {
 
 export const useCryptoData = () => {
   const [holdings, setHoldings] = useState<CryptoHolding[]>([]);
-  const [prices, setPrices] = useState<Record<string, CryptoPrice>>({});
+  const [prices, setPrices] = useState<CryptoPrice>({});
   const [alerts, setAlerts] = useState<CryptoAlert[]>([]);
   const [loading, setLoading] = useState(true);
   const [priceUpdateCount, setPriceUpdateCount] = useState(0);
   const [lastPriceUpdate, setLastPriceUpdate] = useState<Date | null>(null);
+  const [connectionStatus, setConnectionStatus] = useState<'connected' | 'disconnected' | 'reconnecting'>('disconnected');
   
   const { user } = useAuth();
   const { toast } = useToast();
 
-  // Set up real-time subscription for crypto prices
+  // Debounced price update function
+  const debouncedPriceUpdate = useCallback(
+    debounce((newPrice: any) => {
+      const cryptoPrice = {
+        usd: parseFloat(newPrice.price?.toString() || '0'),
+        usd_24h_change: newPrice.price_change_24h ? parseFloat(newPrice.price_change_24h.toString()) : 0,
+        usd_24h_vol: newPrice.volume_24h ? parseFloat(newPrice.volume_24h.toString()) : 0,
+        usd_market_cap: newPrice.market_cap ? parseFloat(newPrice.market_cap.toString()) : 0,
+        last_updated: newPrice.last_updated || new Date().toISOString()
+      };
+      
+      setPrices(prev => ({
+        ...prev,
+        [newPrice.symbol.toLowerCase()]: cryptoPrice
+      }));
+      
+      setLastPriceUpdate(new Date());
+      setPriceUpdateCount(prev => prev + 1);
+    }, 100),
+    []
+  );
+
+  // Enhanced real-time subscription with reconnection logic
   useEffect(() => {
     if (!user) return;
 
-    const channel = supabase
-      .channel('crypto-prices-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'crypto_prices'
-        },
-        (payload) => {
-          console.log('New crypto price received:', payload);
-          
-          const newPrice = payload.new as any;
-          const cryptoPrice: CryptoPrice = {
-            symbol: newPrice.symbol,
-            price: parseFloat(newPrice.price?.toString() || '0'),
-            price_change_24h: newPrice.price_change_24h ? parseFloat(newPrice.price_change_24h.toString()) : 0,
-            volume_24h: newPrice.volume_24h ? parseFloat(newPrice.volume_24h.toString()) : 0,
-            market_cap: newPrice.market_cap ? parseFloat(newPrice.market_cap.toString()) : 0,
-            last_updated: newPrice.last_updated || new Date().toISOString()
-          };
-          
-          setPrices(prev => ({
-            ...prev,
-            [newPrice.symbol]: cryptoPrice
-          }));
-          
-          setLastPriceUpdate(new Date());
-          setPriceUpdateCount(prev => prev + 1);
-        }
-      )
-      .subscribe();
+    let channel: any;
+    let reconnectAttempts = 0;
+    const maxReconnectAttempts = 5;
+
+    const setupRealtimeSubscription = () => {
+      try {
+        channel = supabase
+          .channel('crypto-prices-changes')
+          .on(
+            'postgres_changes',
+            {
+              event: 'INSERT',
+              schema: 'public',
+              table: 'crypto_prices'
+            },
+            (payload) => {
+              console.log('New crypto price received:', payload);
+              setConnectionStatus('connected');
+              debouncedPriceUpdate(payload.new);
+            }
+          )
+          .on(
+            'postgres_changes',
+            {
+              event: 'UPDATE',
+              schema: 'public',
+              table: 'crypto_prices'
+            },
+            (payload) => {
+              console.log('Updated crypto price received:', payload);
+              setConnectionStatus('connected');
+              debouncedPriceUpdate(payload.new);
+            }
+          )
+          .subscribe((status) => {
+            console.log('Realtime subscription status:', status);
+            if (status === 'SUBSCRIBED') {
+              setConnectionStatus('connected');
+              reconnectAttempts = 0;
+            } else if (status === 'CLOSED') {
+              setConnectionStatus('disconnected');
+              if (reconnectAttempts < maxReconnectAttempts) {
+                setConnectionStatus('reconnecting');
+                reconnectAttempts++;
+                setTimeout(() => setupRealtimeSubscription(), 2000 * reconnectAttempts);
+              }
+            }
+          });
+      } catch (error) {
+        console.error('Error setting up realtime subscription:', error);
+        setConnectionStatus('disconnected');
+      }
+    };
+
+    setupRealtimeSubscription();
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
-  }, [user]);
+  }, [user, debouncedPriceUpdate]);
 
   useEffect(() => {
     if (user) {
@@ -161,10 +210,7 @@ export const useCryptoData = () => {
     try {
       console.log('Fetching crypto prices from database...');
       
-      // Get unique symbols from holdings
       const symbols = holdings.map(h => h.symbol);
-      
-      // If no holdings, fetch some default popular cryptocurrencies
       const defaultSymbols = ['BTC', 'ETH', 'USDT', 'BNB', 'SOL', 'ADA', 'XRP', 'DOT', 'LINK', 'LTC'];
       const symbolsToFetch = symbols.length > 0 ? symbols : defaultSymbols;
       
@@ -184,14 +230,12 @@ export const useCryptoData = () => {
         return;
       }
 
-      // If no prices found or very few, trigger price update
       if (!pricesData || pricesData.length === 0) {
         console.log('No prices found in database, triggering price update...');
         try {
           await updateCryptoPrices();
-          // Wait a moment for the data to be inserted
           setTimeout(() => {
-            fetchCryptoPrices(); // Recursive call after update
+            fetchCryptoPrices();
           }, 2000);
           return;
         } catch (updateError) {
@@ -199,17 +243,15 @@ export const useCryptoData = () => {
         }
       }
 
-      // Group by symbol and take the latest price for each
-      const latestPrices: Record<string, CryptoPrice> = {};
+      const latestPrices: CryptoPrice = {};
       
       pricesData?.forEach(price => {
-        if (!latestPrices[price.symbol]) {
-          latestPrices[price.symbol] = {
-            symbol: price.symbol,
-            price: parseFloat(price.price?.toString() || '0'),
-            price_change_24h: price.price_change_24h ? parseFloat(price.price_change_24h.toString()) : 0,
-            volume_24h: price.volume_24h ? parseFloat(price.volume_24h.toString()) : 0,
-            market_cap: price.market_cap ? parseFloat(price.market_cap.toString()) : 0,
+        if (!latestPrices[price.symbol.toLowerCase()]) {
+          latestPrices[price.symbol.toLowerCase()] = {
+            usd: parseFloat(price.price?.toString() || '0'),
+            usd_24h_change: price.price_change_24h ? parseFloat(price.price_change_24h.toString()) : 0,
+            usd_24h_vol: price.volume_24h ? parseFloat(price.volume_24h.toString()) : 0,
+            usd_market_cap: price.market_cap ? parseFloat(price.market_cap.toString()) : 0,
             last_updated: price.last_updated || new Date().toISOString()
           };
         }
@@ -231,9 +273,9 @@ export const useCryptoData = () => {
     }
   };
 
-  const checkAlerts = async (currentPrices: Record<string, CryptoPrice>) => {
+  const checkAlerts = async (currentPrices: CryptoPrice) => {
     for (const alert of alerts) {
-      const currentPrice = currentPrices[alert.symbol]?.price;
+      const currentPrice = currentPrices[alert.symbol.toLowerCase()]?.usd;
       if (!currentPrice || alert.is_triggered) continue;
 
       let shouldTrigger = false;
@@ -246,7 +288,7 @@ export const useCryptoData = () => {
           shouldTrigger = currentPrice <= alert.target_value;
           break;
         case 'percent_change':
-          const change24h = currentPrices[alert.symbol]?.price_change_24h || 0;
+          const change24h = currentPrices[alert.symbol.toLowerCase()]?.usd_24h_change || 0;
           shouldTrigger = Math.abs(change24h) >= alert.target_value;
           break;
       }
@@ -388,7 +430,6 @@ export const useCryptoData = () => {
 
   const deleteAllData = async () => {
     try {
-      // Delete all crypto holdings for the user
       const { error: holdingsError } = await supabase
         .from('crypto_holdings')
         .delete()
@@ -396,7 +437,6 @@ export const useCryptoData = () => {
 
       if (holdingsError) throw holdingsError;
 
-      // Delete all crypto alerts for the user
       const { error: alertsError } = await supabase
         .from('crypto_alerts')
         .delete()
@@ -409,7 +449,6 @@ export const useCryptoData = () => {
         description: "All portfolio data deleted successfully"
       });
 
-      // Refresh data
       fetchHoldings();
       fetchAlerts();
     } catch (error) {
@@ -424,14 +463,14 @@ export const useCryptoData = () => {
 
   const calculatePortfolioValue = () => {
     return holdings.reduce((total, holding) => {
-      const currentPrice = prices[holding.symbol]?.price || 0;
+      const currentPrice = prices[holding.symbol.toLowerCase()]?.usd || 0;
       return total + (holding.amount * currentPrice);
     }, 0);
   };
 
   const calculateTotalGainLoss = () => {
     return holdings.reduce((total, holding) => {
-      const currentPrice = prices[holding.symbol]?.price || 0;
+      const currentPrice = prices[holding.symbol.toLowerCase()]?.usd || 0;
       const currentValue = holding.amount * currentPrice;
       const purchaseValue = holding.amount * holding.purchase_price;
       return total + (currentValue - purchaseValue);
@@ -452,8 +491,8 @@ export const useCryptoData = () => {
     const roi = calculateROI();
     
     const holdingMetrics = holdings.map(holding => {
-      const currentPrice = prices[holding.symbol]?.price || 0;
-      const priceChange24h = prices[holding.symbol]?.price_change_24h || 0;
+      const currentPrice = prices[holding.symbol.toLowerCase()]?.usd || 0;
+      const priceChange24h = prices[holding.symbol.toLowerCase()]?.usd_24h_change || 0;
       const currentValue = holding.amount * currentPrice;
       const purchaseValue = holding.amount * holding.purchase_price;
       const gainLoss = currentValue - purchaseValue;
@@ -500,6 +539,7 @@ export const useCryptoData = () => {
     prices,
     alerts,
     loading,
+    connectionStatus,
     addHolding,
     bulkAddHoldings,
     deleteHolding,
@@ -519,3 +559,15 @@ export const useCryptoData = () => {
     priceUpdateCount
   };
 };
+
+// Debounce utility function
+function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeout: NodeJS.Timeout;
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+}

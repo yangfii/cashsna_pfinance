@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
@@ -52,10 +53,8 @@ serve(async (req) => {
       'decentraland',
       'the-sandbox',
       'aave',
-      'lido-dao', // LDO
-      'sui', // SUI
-      // Note: Some tokens like LDBERA, RED, INIT, GOAT, ZEREBRO, PELL may not be on CoinGecko
-      // We'll add them with 0 values as fallback
+      'lido-dao',
+      'sui',
     ]
 
     // Get user holdings to include their specific tokens
@@ -67,7 +66,6 @@ serve(async (req) => {
       
       if (holdings && holdings.length > 0) {
         const userSymbols = holdings.map(h => h.symbol.toLowerCase())
-        // Add common mappings
         const symbolMappings: Record<string, string> = {
           'ldo': 'lido-dao',
           'sui': 'sui',
@@ -87,18 +85,32 @@ serve(async (req) => {
       console.log('Could not fetch user holdings, using default list:', error)
     }
 
-    // Fetch prices from CoinGecko API
-    const url = `https://api.coingecko.com/api/v3/simple/price?ids=${cryptoIds.join(',')}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true`
+    // Fetch prices from CoinGecko API with retry logic
+    const maxRetries = 3;
+    let pricesData = null;
     
-    console.log('Fetching from CoinGecko API...')
-    const response = await fetch(url)
-    
-    if (!response.ok) {
-      throw new Error(`CoinGecko API error: ${response.status}`)
-    }
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const url = `https://api.coingecko.com/api/v3/simple/price?ids=${cryptoIds.join(',')}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true`
+        
+        console.log(`Fetching from CoinGecko API (attempt ${attempt})...`)
+        const response = await fetch(url)
+        
+        if (!response.ok) {
+          throw new Error(`CoinGecko API error: ${response.status}`)
+        }
 
-    const data = await response.json()
-    console.log('CoinGecko API response received')
+        pricesData = await response.json()
+        console.log('CoinGecko API response received successfully')
+        break;
+      } catch (error) {
+        console.log(`Attempt ${attempt} failed:`, error.message)
+        if (attempt === maxRetries) {
+          throw error;
+        }
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+      }
+    }
 
     // Map coin IDs to symbols
     const coinSymbols: Record<string, string> = {
@@ -139,8 +151,8 @@ serve(async (req) => {
     // Add fallback entries for tokens not on CoinGecko
     const fallbackTokens = ['LDBERA', 'RED', 'INIT', 'GOAT', 'ZEREBRO', 'PELL']
 
-    // Prepare data for insertion
-    const priceData = Object.entries(data).map(([coinId, priceInfo]: [string, any]) => ({
+    // Prepare data for upsert operations
+    const priceData = Object.entries(pricesData).map(([coinId, priceInfo]: [string, any]) => ({
       symbol: coinSymbols[coinId] || coinId.toUpperCase(),
       price: priceInfo.usd || 0,
       price_change_24h: priceInfo.usd_24h_change || 0,
@@ -163,24 +175,49 @@ serve(async (req) => {
       }
     })
 
-    console.log(`Inserting ${priceData.length} price records...`)
+    console.log(`Processing ${priceData.length} price records...`)
 
-    // Insert prices into database
-    const { error } = await supabase
-      .from('crypto_prices')
-      .insert(priceData)
-
-    if (error) {
-      console.error('Database insert error:', error)
-      throw error
+    // Batch upsert operations for better performance
+    const batchSize = 50;
+    const batches = [];
+    
+    for (let i = 0; i < priceData.length; i += batchSize) {
+      batches.push(priceData.slice(i, i + batchSize));
     }
 
-    console.log('Crypto prices updated successfully!')
+    let totalInserted = 0;
+    let totalErrors = 0;
+
+    for (const batch of batches) {
+      try {
+        const { error, count } = await supabase
+          .from('crypto_prices')
+          .upsert(batch, { 
+            onConflict: 'symbol',
+            ignoreDuplicates: false 
+          })
+          .select('*', { count: 'exact' });
+
+        if (error) {
+          console.error('Batch upsert error:', error);
+          totalErrors++;
+        } else {
+          totalInserted += count || batch.length;
+          console.log(`Batch processed successfully: ${batch.length} records`);
+        }
+      } catch (error) {
+        console.error('Batch processing error:', error);
+        totalErrors++;
+      }
+    }
+
+    console.log(`Crypto prices update completed! Inserted: ${totalInserted}, Errors: ${totalErrors}`);
     
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: `Updated ${priceData.length} crypto prices`,
+        message: `Updated ${totalInserted} crypto prices`,
+        errors: totalErrors,
         timestamp: new Date().toISOString()
       }),
       { 
