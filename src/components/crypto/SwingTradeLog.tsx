@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar, CalendarIcon, Plus, TrendingUp, TrendingDown, Target, DollarSign } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -270,11 +270,12 @@ export default function SwingTradeLog({ formatCurrency }: SwingTradeLogProps) {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
-                  <Calendar
+                  <CalendarComponent
                     mode="single"
                     selected={entryDate}
-                    onSelect={setEntryDate}
+                    onSelect={(date) => setEntryDate(date)}
                     initialFocus
+                    className="p-3 pointer-events-auto"
                   />
                 </PopoverContent>
               </Popover>
@@ -318,11 +319,12 @@ export default function SwingTradeLog({ formatCurrency }: SwingTradeLogProps) {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
-                  <Calendar
+                  <CalendarComponent
                     mode="single"
                     selected={exitDate}
-                    onSelect={setExitDate}
+                    onSelect={(date) => setExitDate(date)}
                     initialFocus
+                    className="p-3 pointer-events-auto"
                   />
                 </PopoverContent>
               </Popover>
