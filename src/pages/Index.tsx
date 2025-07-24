@@ -187,7 +187,7 @@ const Index = () => {
               <Button asChild size="lg" className="text-lg px-8 py-6 bg-background text-primary hover:bg-background/90 shadow-glow">
                 <Link to="/auth">
                   {language === 'khmer' ? 'ចាប់ផ្តើមប្រើប្រាស់ឥតគិតថ្លៃ' : 'Start Free'}
-                  <span className="ml-2">→</span>
+                  <span className="ml-2 animate-bounce">→</span>
                 </Link>
               </Button>
               <Button variant="outline" asChild size="lg" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
@@ -277,7 +277,7 @@ const Index = () => {
       <section className="py-20 bg-gradient-to-br from-secondary/30 to-accent/20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-6"> ប្រយោជន៍សំខាន់</h3>
+            <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-6">ប្រយោជន៍សំខាន់</h3>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -346,7 +346,7 @@ const Index = () => {
                 <Button asChild size="lg" className="text-lg px-12 py-6 shadow-glow hover:shadow-primary/20">
                   <Link to="/auth">
                     ចាប់ផ្តើមឥឡូវនេះ
-                    <span className="ml-2">→</span>
+                    <span className="ml-2 animate-bounce">→</span>
                   </Link>
                 </Button>
                 <Button variant="outline" size="lg" className="text-lg px-12 py-6">
