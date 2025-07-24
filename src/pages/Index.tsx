@@ -13,7 +13,6 @@ import { Globe } from 'lucide-react';
 import heroBackground from '@/assets/hero-background.jpg';
 import backgroundImage from '@/assets/background-image.jpg';
 import overlayBackground from '@/assets/overlay-background.jpg';
-
 const Index = () => {
   const {
     user
@@ -48,7 +47,6 @@ const Index = () => {
       }
     }
   }, [user, profile, profileLoading, navigate]);
-
   if (user) {
     return <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
         <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -123,7 +121,6 @@ const Index = () => {
         </div>
       </div>;
   }
-
   return <div className="min-h-screen">
       {/* Hero Section with Professional Gradient */}
       <section className="relative overflow-hidden bg-gradient-hero">
@@ -207,14 +204,18 @@ const Index = () => {
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent animate-fade-in">
               {language === 'khmer' ? 'មុខងារសំខាន់ៗ' : 'Key Features'}
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-fade-in" style={{
+            animationDelay: '0.2s'
+          }}>
               {language === 'khmer' ? 'ដំណោះស្រាយគ្រប់គ្រងហិរញ្ញវត្ថុដ៏ទំនើបសម្រាប់អ្នក' : 'Complete financial management solution designed for modern users'}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Feature 1 - Smart Expense Tracking */}
-            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{ animationDelay: '0.1s' }}>
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
+            animationDelay: '0.1s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 group-hover:scale-110">
@@ -231,7 +232,9 @@ const Index = () => {
             </Card>
 
             {/* Feature 2 - Budget Management */}
-            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{ animationDelay: '0.2s' }}>
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
+            animationDelay: '0.2s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 rounded-lg bg-constructive/10 text-constructive group-hover:bg-constructive group-hover:text-constructive-foreground transition-all duration-300 group-hover:scale-110">
@@ -248,7 +251,9 @@ const Index = () => {
             </Card>
 
             {/* Feature 3 - Financial Goals */}
-            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{ animationDelay: '0.3s' }}>
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
+            animationDelay: '0.3s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 rounded-lg bg-balance/10 text-balance group-hover:bg-balance group-hover:text-balance-foreground transition-all duration-300 group-hover:scale-110">
@@ -265,7 +270,9 @@ const Index = () => {
             </Card>
 
             {/* Feature 4 - Crypto Portfolio */}
-            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{ animationDelay: '0.4s' }}>
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
+            animationDelay: '0.4s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-accent-foreground transition-all duration-300 group-hover:scale-110">
@@ -282,7 +289,9 @@ const Index = () => {
             </Card>
 
             {/* Feature 5 - Reports & Analytics */}
-            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{ animationDelay: '0.5s' }}>
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
+            animationDelay: '0.5s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 rounded-lg bg-secondary/10 text-secondary group-hover:bg-secondary group-hover:text-secondary-foreground transition-all duration-300 group-hover:scale-110">
@@ -299,7 +308,9 @@ const Index = () => {
             </Card>
 
             {/* Feature 6 - Multi-language Support */}
-            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{ animationDelay: '0.6s' }}>
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
+            animationDelay: '0.6s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 rounded-lg bg-muted/10 text-muted-foreground group-hover:bg-muted group-hover:text-muted-foreground transition-all duration-300 group-hover:scale-110">
@@ -316,7 +327,9 @@ const Index = () => {
             </Card>
 
             {/* Feature 7 - Security */}
-            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{ animationDelay: '0.7s' }}>
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
+            animationDelay: '0.7s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 rounded-lg bg-destructive/10 text-destructive group-hover:bg-destructive group-hover:text-destructive-foreground transition-all duration-300 group-hover:scale-110">
@@ -333,7 +346,9 @@ const Index = () => {
             </Card>
 
             {/* Feature 8 - AI Assistance (full width) */}
-            <Card className="lg:col-span-4 group hover:shadow-glow transition-all duration-500 hover:-translate-y-1 animate-fade-in bg-gradient-to-r from-primary/5 to-primary-glow/5 border-0" style={{ animationDelay: '0.8s' }}>
+            <Card className="lg:col-span-4 group hover:shadow-glow transition-all duration-500 hover:-translate-y-1 animate-fade-in bg-gradient-to-r from-primary/5 to-primary-glow/5 border-0" style={{
+            animationDelay: '0.8s'
+          }}>
               <CardContent className="p-8">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="p-4 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 group-hover:scale-110">
@@ -391,7 +406,9 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0" style={{ animationDelay: '0.1s' }}>
+            <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0" style={{
+            animationDelay: '0.1s'
+          }}>
               <CardContent className="p-6 text-center">
                 <div className="mb-4">
                   <div className="w-12 h-12 bg-constructive/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-constructive/20 transition-all duration-300 group-hover:scale-110">
@@ -404,7 +421,9 @@ const Index = () => {
               </CardContent>
             </Card>
             
-            <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0" style={{ animationDelay: '0.2s' }}>
+            <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0" style={{
+            animationDelay: '0.2s'
+          }}>
               <CardContent className="p-6 text-center">
                 <div className="mb-4">
                   <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
@@ -417,7 +436,9 @@ const Index = () => {
               </CardContent>
             </Card>
             
-            <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0" style={{ animationDelay: '0.3s' }}>
+            <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0" style={{
+            animationDelay: '0.3s'
+          }}>
               <CardContent className="p-6 text-center">
                 <div className="mb-4">
                   <div className="w-12 h-12 bg-balance/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-balance/20 transition-all duration-300 group-hover:scale-110">
@@ -437,7 +458,7 @@ const Index = () => {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center">
-            <div className="bg-gradient-card shadow-card rounded-3xl p-8 md:p-12 max-w-4xl mx-auto border border-border/50 animate-fade-in">
+            <div className="bg-gradient-card shadow-card rounded-3xl p-8 md:p-12 max-w-4xl mx-auto border border-border/50 animate-fade-in py-[10px]">
               <div className="mb-6">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 hover:scale-110 transition-transform duration-300">
                   <span className="text-primary text-2xl animate-bounce">✨</span>
@@ -448,11 +469,15 @@ const Index = () => {
                 {language === 'khmer' ? 'ត្រៀមខ្លួនគ្រប់គ្រងលុយកាក់ដូចអ្នកជំនាញ?' : 'Ready to manage money like a pro?'}
               </h3>
               
-              <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto animate-fade-in" style={{
+              animationDelay: '0.2s'
+            }}>
                 {language === 'khmer' ? 'ចាប់ផ្តើមដំណើរហិរញ្ញវត្ថុរបស់អ្នកនៅថ្ងៃនេះ ជាមួយនឹងឧបករណ៍ដ៏ទំនើប និងងាយស្រួលប្រើ' : 'Start your financial journey today with modern and easy-to-use tools'}
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: '0.4s' }}>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{
+              animationDelay: '0.4s'
+            }}>
                 <Button asChild size="lg" className="text-lg px-12 py-6 shadow-glow hover:shadow-primary/20 hover:scale-105 transition-all duration-300">
                   <Link to="/auth">
                     {language === 'khmer' ? 'ចាប់ផ្តើមឥឡូវនេះ' : 'Start Now'}
@@ -464,11 +489,15 @@ const Index = () => {
                 </Button>
               </div>
               
-              <p className="text-sm text-muted-foreground mt-6 animate-fade-in" style={{ animationDelay: '0.6s' }}>
+              <p className="text-sm text-muted-foreground mt-6 animate-fade-in" style={{
+              animationDelay: '0.6s'
+            }}>
                 ✨ {language === 'khmer' ? 'ឥតគិតថ្លៃ • ✨ គ្មានកាតឥណទាន • ✨ ចាប់ផ្តើមបានភ្លាម' : 'Free • ✨ No Credit Card • ✨ Start Instantly'}
               </p>
               
-              <div className="flex flex-wrap justify-center gap-4 mt-8 pt-6 border-t border-border/20 animate-fade-in" style={{ animationDelay: '0.8s' }}>
+              <div className="flex flex-wrap justify-center gap-4 mt-8 pt-6 border-t border-border/20 animate-fade-in" style={{
+              animationDelay: '0.8s'
+            }}>
                 <Link to="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors hover:underline">
                   Privacy Policy
                 </Link>
@@ -486,5 +515,4 @@ const Index = () => {
       </section>
     </div>;
 };
-
 export default Index;
