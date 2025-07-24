@@ -863,14 +863,16 @@ export default function Planning() {
         </TabsContent>
       </Tabs>
 
-      <style jsx>{`
-        @keyframes colorShift {
-          0% { color: hsl(var(--primary)); }
-          25% { color: hsl(var(--destructive)); }
-          50% { color: hsl(var(--warning)); }
-          75% { color: hsl(var(--success)); }
-          100% { color: hsl(var(--primary)); }
-        }
-      `}</style>
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @keyframes colorShift {
+            0% { color: hsl(var(--primary)); }
+            25% { color: hsl(var(--destructive)); }
+            50% { color: hsl(var(--warning)); }
+            75% { color: hsl(var(--success)); }
+            100% { color: hsl(var(--primary)); }
+          }
+        `
+      }} />
     </div>;
 }
