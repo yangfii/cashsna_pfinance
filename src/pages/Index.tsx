@@ -13,7 +13,6 @@ import { Globe } from 'lucide-react';
 import heroBackground from '@/assets/hero-background.jpg';
 import backgroundImage from '@/assets/background-image.jpg';
 import overlayBackground from '@/assets/overlay-background.jpg';
-
 const Index = () => {
   const {
     user
@@ -48,7 +47,6 @@ const Index = () => {
       }
     }
   }, [user, profile, profileLoading, navigate]);
-
   if (user) {
     return <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
         <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -123,7 +121,6 @@ const Index = () => {
         </div>
       </div>;
   }
-
   return <div className="min-h-screen">
       {/* Hero Section with Professional Gradient */}
       <section className="relative overflow-hidden bg-gradient-hero">
@@ -205,7 +202,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 animate-slide-up">
             
-            <p className="text-lg text-muted-foreground max-w-2xl my-0 mx-[122px]">
+            <p className="text-lg text-muted-foreground max-w-2xl my-0 mx-[240px]">
               {language === 'khmer' ? 'ដំណោះស្រាយគ្រប់គ្រងហិរញ្ញវត្ថុដ៏ទំនើបសម្រាប់អ្នក' : 'Complete financial management solution designed for modern users'}
             </p>
           </div>
@@ -376,5 +373,4 @@ const Index = () => {
       </section>
     </div>;
 };
-
 export default Index;
