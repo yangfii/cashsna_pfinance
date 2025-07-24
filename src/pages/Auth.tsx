@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -223,14 +224,23 @@ export default function Auth() {
   };
 
   return (
-    <div 
-      className="min-h-screen flex items-center justify-center p-4 bg-cover bg-center bg-no-repeat relative"
-      style={{
-        backgroundImage: `url('https://i.pinimg.com/1200x/e7/bf/23/e7bf23137788c366a62be0baa10056ea.jpg')`,
-      }}
-    >
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Video Background */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover z-0"
+      >
+        <source 
+          src="https://videos.openai.com/vg-assets/assets%2Ftask_01k0wwjs6se73rfdthhefettqn%2Ftask_01k0wwjs6se73rfdthhefettqn_genid_0d24d992-728b-4be6-80e6-401a3300492f_25_07_24_00_16_977505%2Fvideos%2F00000_520489364%2Fmd.mp4?st=2025-07-24T11%3A47%3A17Z&se=2025-07-30T12%3A47%3A17Z&sks=b&skt=2025-07-24T11%3A47%3A17Z&ske=2025-07-30T12%3A47%3A17Z&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skoid=aa5ddad1-c91a-4f0a-9aca-e20682cc8969&skv=2019-02-02&sv=2018-11-09&sr=b&sp=r&spr=https%2Chttp&sig=Ipj%2BbCeZEaKOY7TBqj6KLr7ZgJ07fHq%2BsaSzNhLhu7A%3D&az=oaivgprodscus" 
+          type="video/mp4" 
+        />
+      </video>
+
       {/* Overlay for better readability */}
-      <div className="absolute inset-0 bg-background/60 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-background/60 backdrop-blur-sm z-1" />
       
       {/* Content */}
       <div className="relative z-10 w-full max-w-md space-y-8">
