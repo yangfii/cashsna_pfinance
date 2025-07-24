@@ -315,9 +315,9 @@ export default function Auth() {
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t border-white/30" />
                 </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white/10 backdrop-blur-sm px-2 text-white/80 rounded-full border border-white/20">
-                    Or continue with email
+                <div className="relative flex justify-center text-sm">
+                  <span className="bg-white/5 backdrop-blur-md px-4 py-1 text-white/70 rounded-lg border border-white/10 font-medium tracking-wide">
+                    or continue with email
                   </span>
                 </div>
               </div>
