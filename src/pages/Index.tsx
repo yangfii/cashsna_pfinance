@@ -13,6 +13,7 @@ import { Globe } from 'lucide-react';
 import heroBackground from '@/assets/hero-background.jpg';
 import backgroundImage from '@/assets/background-image.jpg';
 import overlayBackground from '@/assets/overlay-background.jpg';
+
 const Index = () => {
   const {
     user
@@ -47,6 +48,7 @@ const Index = () => {
       }
     }
   }, [user, profile, profileLoading, navigate]);
+
   if (user) {
     return <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
         <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -121,6 +123,7 @@ const Index = () => {
         </div>
       </div>;
   }
+
   return <div className="min-h-screen">
       {/* Hero Section with Professional Gradient */}
       <section className="relative overflow-hidden bg-gradient-hero">
@@ -131,13 +134,15 @@ const Index = () => {
           backgroundImage: `url(${backgroundImage})`,
           backgroundBlendMode: 'overlay'
         }}>
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-primary/20 to-primary-glow/30 backdrop-blur-md" style={{
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-primary/20 to-primary-glow/30 backdrop-blur-md flex items-center justify-center" style={{
             backgroundImage: `url(${overlayBackground})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             filter: 'blur(2px)'
-          }}></div>
+          }}>
+              <span className="text-primary-foreground/60 text-4xl font-bold">កូនខ្មែរ</span>
+            </div>
           </div>
         </div>
         
@@ -370,4 +375,5 @@ const Index = () => {
       </section>
     </div>;
 };
+
 export default Index;
