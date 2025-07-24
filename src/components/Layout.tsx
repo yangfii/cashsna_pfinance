@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -108,9 +107,11 @@ function AppSidebar() {
               {navItems.map(item => (
                 <SidebarMenuItem key={item.key}>
                   <SidebarMenuButton asChild isActive={location.pathname === item.to} tooltip={item.label}>
-                    <NavLink to={item.to}>
-                      <item.icon />
-                      <span>{item.label}</span>
+                    <NavLink to={item.to} className="group">
+                      <item.icon className="transition-transform duration-300 group-hover:scale-110" />
+                      <span className="transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
+                        {item.label}
+                      </span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -125,10 +126,10 @@ function AppSidebar() {
           <SidebarMenuItem className="px-0 mx-0 my-[14px] py-0">
             <SidebarMenuButton asChild tooltip={t('nav.profile')}>
               <NavLink to="/dashboard/settings" className={cn(
-                "flex items-center gap-3 p-3", 
+                "flex items-center gap-3 p-3 group", 
                 location.pathname === "/dashboard/settings" ? "bg-accent" : ""
               )}>
-                <Avatar className="size-10">
+                <Avatar className="size-10 transition-transform duration-300 group-hover:scale-105">
                   <AvatarImage src={profile?.avatar_url || undefined} alt="Profile picture" />
                   <AvatarFallback className="bg-gradient-primary text-primary-foreground">
                     <User className="size-5" />
@@ -136,10 +137,10 @@ function AppSidebar() {
                 </Avatar>
                 {state === "expanded" && (
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold text-foreground">
+                    <span className="truncate font-semibold text-foreground transition-all duration-300 group-hover:tracking-wide">
                       {user?.email?.split('@')[0]}
                     </span>
-                    <span className="truncate text-xs text-muted-foreground">
+                    <span className="truncate text-xs text-muted-foreground transition-all duration-300 group-hover:font-medium">
                       {t("nav.profile")}
                     </span>
                   </div>
@@ -150,17 +151,21 @@ function AppSidebar() {
           <SidebarMenuItem>
             <ReportDialog 
               trigger={
-                <SidebarMenuButton tooltip={t('layout.reportToDevelopers')}>
-                  <Bug />
-                  <span>{t('layout.reportToDevelopers')}</span>
+                <SidebarMenuButton tooltip={t('layout.reportToDevelopers')} className="group">
+                  <Bug className="transition-transform duration-300 group-hover:scale-110" />
+                  <span className="transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
+                    {t('layout.reportToDevelopers')}
+                  </span>
                 </SidebarMenuButton>
               } 
             />
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={handleSignOut} tooltip={t("nav.signOut")}>
-              <LogOut />
-              <span>{t("nav.signOut")}</span>
+            <SidebarMenuButton onClick={handleSignOut} tooltip={t("nav.signOut")} className="group">
+              <LogOut className="transition-transform duration-300 group-hover:scale-110" />
+              <span className="transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
+                {t("nav.signOut")}
+              </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
