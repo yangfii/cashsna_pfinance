@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -240,51 +239,73 @@ export default function Auth() {
       </video>
 
       {/* Overlay for better readability */}
-      <div className="absolute inset-0 bg-background/60 backdrop-blur-sm z-1" />
+      <div className="absolute inset-0 bg-background/40 backdrop-blur-sm z-1" />
       
       {/* Content */}
       <div className="relative z-10 w-full max-w-md space-y-8">
         {/* Professional Header */}
         <div className="text-center space-y-3">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-white/90 to-blue-100 bg-clip-text text-transparent drop-shadow-lg">
             សូមស្វាគមន៍!
           </h1>
-          <p className="text-base text-muted-foreground font-medium">
+          <p className="text-base text-white/90 font-medium drop-shadow-md">
             Sign in to your account to continue
           </p>
         </div>
 
-        <Card className="border shadow-lg bg-gradient-to-br from-card to-card/95">
-          <CardHeader className="text-center pb-4 relative">
+        {/* Glassmorphism Card */}
+        <Card className="
+          backdrop-blur-xl 
+          bg-white/10 
+          dark:bg-white/5 
+          border 
+          border-white/20 
+          dark:border-white/10 
+          shadow-2xl 
+          shadow-black/20 
+          dark:shadow-black/40
+          rounded-2xl
+          overflow-hidden
+          relative
+          before:absolute 
+          before:inset-0 
+          before:bg-gradient-to-br 
+          before:from-white/20 
+          before:via-white/5 
+          before:to-transparent 
+          before:rounded-2xl 
+          before:pointer-events-none
+        ">
+          <CardHeader className="text-center pb-4 relative z-10">
             <Button
               onClick={() => setLanguage(language === 'english' ? 'khmer' : 'english')}
               variant="ghost"
               size="sm"
-              className="absolute top-4 right-4 h-8 w-8 p-0"
+              className="absolute top-4 right-4 h-8 w-8 p-0 bg-white/10 hover:bg-white/20 text-white/80 hover:text-white border border-white/20"
               title="Select app language"
             >
               <Globe className="h-4 w-4" />
             </Button>
-            <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-balance bg-clip-text text-transparent">
+            <CardTitle className="text-xl font-bold text-white drop-shadow-lg">
               Cashsnap Finances Tracking
             </CardTitle>
-            <CardDescription className="text-muted-foreground/80">
+            <CardDescription className="text-white/80 drop-shadow-md">
               Access your personal finance dashboard
             </CardDescription>
           </CardHeader>
         
-        <CardContent>
+        <CardContent className="relative z-10">
           <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">{t("auth.signIn")}</TabsTrigger>
-              <TabsTrigger value="signup">{t("auth.signUp")}</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 bg-white/10 backdrop-blur-sm border border-white/20">
+              <TabsTrigger value="signin" className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/80">{t("auth.signIn")}</TabsTrigger>
+              <TabsTrigger value="signup" className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/80">{t("auth.signUp")}</TabsTrigger>
             </TabsList>
             
             <div className="mt-6">
               <Button 
                 onClick={handleGoogleSignIn}
                 variant="google" 
-                className="w-full"
+                className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm"
                 disabled={loading}
               >
                 Continue with Google
@@ -292,10 +313,10 @@ export default function Auth() {
               
               <div className="relative my-6">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
+                  <span className="w-full border-t border-white/30" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
+                  <span className="bg-white/10 backdrop-blur-sm px-2 text-white/80 rounded-full border border-white/20">
                     Or continue with email
                   </span>
                 </div>
@@ -305,7 +326,7 @@ export default function Auth() {
             <TabsContent value="signin" className="space-y-4">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signin-email">{t("auth.email")}</Label>
+                  <Label htmlFor="signin-email" className="text-white/90 font-medium">{t("auth.email")}</Label>
                   <Input
                     id="signin-email"
                     type="email"
@@ -314,11 +335,12 @@ export default function Auth() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     disabled={loading}
+                    className="bg-white/10 border-white/30 placeholder:text-white/50 text-white backdrop-blur-sm focus:bg-white/20 focus:border-white/50"
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="signin-password">{t("auth.password")}</Label>
+                  <Label htmlFor="signin-password" className="text-white/90 font-medium">{t("auth.password")}</Label>
                   <div className="relative">
                     <Input
                       id="signin-password"
@@ -328,12 +350,13 @@ export default function Auth() {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       disabled={loading}
+                      className="bg-white/10 border-white/30 placeholder:text-white/50 text-white backdrop-blur-sm focus:bg-white/20 focus:border-white/50"
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-white/10 text-white/70 hover:text-white"
                       onClick={() => setShowPassword(!showPassword)}
                       disabled={loading}
                     >
@@ -353,15 +376,16 @@ export default function Auth() {
                        checked={rememberMe}
                        onCheckedChange={(checked) => setRememberMe(checked === true)}
                        disabled={loading}
+                       className="border-white/30 data-[state=checked]:bg-white/20 data-[state=checked]:border-white/50"
                      />
-                      <Label htmlFor="remember-me" className="text-sm font-normal">
+                      <Label htmlFor="remember-me" className="text-sm font-normal text-white/80">
                         {t("auth.rememberMe")}
                       </Label>
                    </div>
                    <Button
                      type="button"
                      variant="link"
-                     className="px-0 text-sm"
+                     className="px-0 text-sm text-white/70 hover:text-white"
                      onClick={() => setShowForgotPassword(true)}
                      disabled={loading}
                    >
@@ -369,7 +393,7 @@ export default function Auth() {
                    </Button>
                  </div>
                  
-                  <Button type="submit" className="w-full" disabled={loading}>
+                  <Button type="submit" className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm" disabled={loading}>
                     {loading ? t("common.loading") : t("auth.signIn")}
                   </Button>
                </form>
@@ -379,7 +403,7 @@ export default function Auth() {
             <TabsContent value="signup" className="space-y-4">
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signup-email">{t("auth.email")}</Label>
+                  <Label htmlFor="signup-email" className="text-white/90 font-medium">{t("auth.email")}</Label>
                   <Input
                     id="signup-email"
                     type="email"
@@ -388,11 +412,12 @@ export default function Auth() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     disabled={loading}
+                    className="bg-white/10 border-white/30 placeholder:text-white/50 text-white backdrop-blur-sm focus:bg-white/20 focus:border-white/50"
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="signup-password">{t("auth.password")}</Label>
+                  <Label htmlFor="signup-password" className="text-white/90 font-medium">{t("auth.password")}</Label>
                   <div className="relative">
                     <Input
                       id="signup-password"
@@ -403,12 +428,13 @@ export default function Auth() {
                       required
                       minLength={6}
                       disabled={loading}
+                      className="bg-white/10 border-white/30 placeholder:text-white/50 text-white backdrop-blur-sm focus:bg-white/20 focus:border-white/50"
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-white/10 text-white/70 hover:text-white"
                       onClick={() => setShowPassword(!showPassword)}
                       disabled={loading}
                     >
@@ -419,13 +445,13 @@ export default function Auth() {
                       )}
                     </Button>
                   </div>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-white/60">
                     Password must be at least 6 characters long
                   </p>
                 </div>
                 
                 
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm" disabled={loading}>
                   {loading ? t("common.loading") : t("auth.signUp")}
                 </Button>
               </form>
@@ -435,22 +461,22 @@ export default function Auth() {
           
           {/* Email Confirmation Alert */}
           {showEmailConfirmation && (
-            <Alert className="mt-6 border-primary/20 bg-primary/5">
-              <Mail className="h-4 w-4" />
+            <Alert className="mt-6 border-white/30 bg-white/10 backdrop-blur-sm text-white">
+              <Mail className="h-4 w-4 text-white" />
               <AlertDescription className="space-y-3">
                 <div className="space-y-2">
-                  <p className="font-medium text-sm">✅ Account Created Successfully!</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="font-medium text-sm text-white">✅ Account Created Successfully!</p>
+                  <p className="text-sm text-white/80">
                     We've sent a confirmation email to <strong>{email}</strong>. 
                     Please check your inbox and click the confirmation link to activate your account.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 pt-2">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-2 text-xs text-white/70">
                     <CheckCircle className="h-3 w-3" />
                     <span>Check your inbox (and spam folder)</span>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-2 text-xs text-white/70">
                     <AlertCircle className="h-3 w-3" />
                     <span>The link will expire in 24 hours</span>
                   </div>
@@ -461,7 +487,7 @@ export default function Auth() {
                     disabled={loading || resendCooldown > 0}
                     variant="outline"
                     size="sm"
-                    className="flex-1"
+                    className="flex-1 bg-white/10 border-white/30 text-white hover:bg-white/20"
                   >
                     {resendCooldown > 0 
                       ? `Resend in ${resendCooldown}s` 
@@ -474,6 +500,7 @@ export default function Auth() {
                     type="button" 
                     variant="ghost" 
                     size="sm"
+                    className="text-white/70 hover:text-white hover:bg-white/10"
                     onClick={() => setShowEmailConfirmation(false)}
                   >
                     Dismiss
@@ -485,11 +512,11 @@ export default function Auth() {
 
           {/* Forgot Password Modal */}
           {showForgotPassword && (
-            <div className="mt-6 p-4 border rounded-lg bg-muted/30">
-              <h3 className="font-semibold mb-3">Reset Password</h3>
+            <div className="mt-6 p-4 border border-white/30 rounded-lg bg-white/10 backdrop-blur-sm">
+              <h3 className="font-semibold mb-3 text-white">Reset Password</h3>
               <form onSubmit={handleForgotPassword} className="space-y-3">
                 <div className="space-y-2">
-                  <Label htmlFor="reset-email">Email</Label>
+                  <Label htmlFor="reset-email" className="text-white/90">Email</Label>
                   <Input
                     id="reset-email"
                     type="email"
@@ -498,15 +525,17 @@ export default function Auth() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     disabled={loading}
+                    className="bg-white/10 border-white/30 placeholder:text-white/50 text-white backdrop-blur-sm focus:bg-white/20 focus:border-white/50"
                   />
                 </div>
                 <div className="flex gap-2">
-                  <Button type="submit" disabled={loading} className="flex-1">
+                  <Button type="submit" disabled={loading} className="flex-1 bg-white/20 hover:bg-white/30 text-white border border-white/30">
                     {loading ? 'Sending...' : 'Send Reset Email'}
                   </Button>
                   <Button 
                     type="button" 
                     variant="outline" 
+                    className="bg-white/10 border-white/30 text-white hover:bg-white/20"
                     onClick={() => setShowForgotPassword(false)}
                     disabled={loading}
                   >
@@ -517,13 +546,13 @@ export default function Auth() {
             </div>
           )}
           
-          <div className="text-center text-xs text-muted-foreground/60 mt-4 pt-4 border-t space-y-2">
+          <div className="text-center text-xs text-white/60 mt-4 pt-4 border-t border-white/20 space-y-2">
             <p>© 2024 Cashsnap Finances. All rights reserved.</p>
             <div className="flex justify-center gap-4">
-              <Button variant="link" size="sm" className="text-xs p-0 h-auto" asChild>
+              <Button variant="link" size="sm" className="text-xs p-0 h-auto text-white/60 hover:text-white/80" asChild>
                 <Link to="/privacy-policy">Privacy Policy</Link>
               </Button>
-              <Button variant="link" size="sm" className="text-xs p-0 h-auto" asChild>
+              <Button variant="link" size="sm" className="text-xs p-0 h-auto text-white/60 hover:text-white/80" asChild>
                 <Link to="/terms-of-service">Terms of Service</Link>
               </Button>
             </div>
