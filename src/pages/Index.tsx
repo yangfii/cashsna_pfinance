@@ -495,9 +495,9 @@ const Index = () => {
                 ✨ {language === 'khmer' ? 'ឥតគិតថ្លៃ • ✨ គ្មានកាតឥណទាន • ✨ ចាប់ផ្តើមបានភ្លាម' : 'Free • ✨ No Credit Card • ✨ Start Instantly'}
               </p>
               
-              <div className="flex flex-wrap justify-center gap-4 mt-8 pt-6 border-t border-border/20 animate-fade-in" style={{
+              <div style={{
               animationDelay: '0.8s'
-            }}>
+            }} className="flex flex-wrap justify-center gap-4 mt-8 pt-6 border-t border-border/20 animate-fade-in my-0 py-[4px]">
                 <Link to="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors hover:underline">
                   Privacy Policy
                 </Link>
