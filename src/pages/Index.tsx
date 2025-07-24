@@ -13,6 +13,7 @@ import { Globe } from 'lucide-react';
 import heroBackground from '@/assets/hero-background.jpg';
 import backgroundImage from '@/assets/background-image.jpg';
 import overlayBackground from '@/assets/overlay-background.jpg';
+
 const Index = () => {
   const {
     user
@@ -47,6 +48,7 @@ const Index = () => {
       }
     }
   }, [user, profile, profileLoading, navigate]);
+
   if (user) {
     return <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
         <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -121,6 +123,7 @@ const Index = () => {
         </div>
       </div>;
   }
+
   return <div className="min-h-screen">
       {/* Hero Section with Professional Gradient */}
       <section className="relative overflow-hidden bg-gradient-hero">
@@ -201,68 +204,176 @@ const Index = () => {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 animate-slide-up">
-            
-            <p className="text-lg text-muted-foreground max-w-2xl my-0 mx-[240px]">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent animate-fade-in">
+              {language === 'khmer' ? 'មុខងារសំខាន់ៗ' : 'Key Features'}
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: '0.2s' }}>
               {language === 'khmer' ? 'ដំណោះស្រាយគ្រប់គ្រងហិរញ្ញវត្ថុដ៏ទំនើបសម្រាប់អ្នក' : 'Complete financial management solution designed for modern users'}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Feature 1 */}
-            
-
-            {/* Feature 2 */}
-            
-
-            {/* Feature 3 */}
-            
-
-            {/* Feature 4 */}
-            
-
-            {/* Feature 5 */}
-            
-
-            {/* Feature 6 */}
-            
-
-            {/* Feature 7 */}
-            
-
-            {/* Feature 8 - AI Assistance (full width) */}
-            <Card className="lg:col-span-4 group hover:shadow-glow transition-smooth hover:-translate-y-1 animate-bounce-in bg-gradient-to-r from-primary/5 to-primary-glow/5" style={{
-            animationDelay: '0.7s'
-          }}>
+            {/* Feature 1 - Smart Expense Tracking */}
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{ animationDelay: '0.1s' }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-smooth">
-                    <span className="text-xl">🤖</span>
+                  <div className="p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 group-hover:scale-110">
+                    <span className="text-xl">📊</span>
                   </div>
-                  <h3 className="text-xl font-semibold">ជំនួយដោយបញ្ញាសិប្បនិម្មិត (AI Assistance)</h3>
+                  <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">
+                    {language === 'khmer' ? 'តាមដានចំណាយ' : 'Smart Tracking'}
+                  </h3>
+                </div>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {language === 'khmer' ? 'តាមដានចំណាយប្រចាំថ្ងៃដោយស្វ័យប្រវត្តិ' : 'Automatically track daily expenses with smart categorization'}
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Feature 2 - Budget Management */}
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{ animationDelay: '0.2s' }}>
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 rounded-lg bg-constructive/10 text-constructive group-hover:bg-constructive group-hover:text-constructive-foreground transition-all duration-300 group-hover:scale-110">
+                    <span className="text-xl">💰</span>
+                  </div>
+                  <h3 className="text-lg font-semibold group-hover:text-constructive transition-colors">
+                    {language === 'khmer' ? 'គ្រប់គ្រងថវិកា' : 'Budget Control'}
+                  </h3>
+                </div>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {language === 'khmer' ? 'កំណត់និងគ្រប់គ្រងថវិកាប្រចាំខែ' : 'Set and manage monthly budgets with alerts'}
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Feature 3 - Financial Goals */}
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{ animationDelay: '0.3s' }}>
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 rounded-lg bg-balance/10 text-balance group-hover:bg-balance group-hover:text-balance-foreground transition-all duration-300 group-hover:scale-110">
+                    <span className="text-xl">🎯</span>
+                  </div>
+                  <h3 className="text-lg font-semibold group-hover:text-balance transition-colors">
+                    {language === 'khmer' ? 'គោលដៅហិរញ្ញវត្ថុ' : 'Financial Goals'}
+                  </h3>
+                </div>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {language === 'khmer' ? 'កំណត់និងតាមដានគោលដៅសន្សំ' : 'Set and track your savings goals effectively'}
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Feature 4 - Crypto Portfolio */}
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{ animationDelay: '0.4s' }}>
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-accent-foreground transition-all duration-300 group-hover:scale-110">
+                    <span className="text-xl">₿</span>
+                  </div>
+                  <h3 className="text-lg font-semibold group-hover:text-accent transition-colors">
+                    {language === 'khmer' ? 'គ្រប់គ្រង Crypto' : 'Crypto Portfolio'}
+                  </h3>
+                </div>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {language === 'khmer' ? 'តាមដានការវិនិយោគ cryptocurrency' : 'Track your cryptocurrency investments'}
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Feature 5 - Reports & Analytics */}
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{ animationDelay: '0.5s' }}>
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 rounded-lg bg-secondary/10 text-secondary group-hover:bg-secondary group-hover:text-secondary-foreground transition-all duration-300 group-hover:scale-110">
+                    <span className="text-xl">📈</span>
+                  </div>
+                  <h3 className="text-lg font-semibold group-hover:text-secondary transition-colors">
+                    {language === 'khmer' ? 'របាយការណ៍' : 'Smart Reports'}
+                  </h3>
+                </div>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {language === 'khmer' ? 'បង្កើតរបាយការណ៍លម្អិត' : 'Generate detailed financial reports'}
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Feature 6 - Multi-language Support */}
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{ animationDelay: '0.6s' }}>
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 rounded-lg bg-muted/10 text-muted-foreground group-hover:bg-muted group-hover:text-muted-foreground transition-all duration-300 group-hover:scale-110">
+                    <span className="text-xl">🌐</span>
+                  </div>
+                  <h3 className="text-lg font-semibold group-hover:text-muted-foreground transition-colors">
+                    {language === 'khmer' ? 'ភាសាខ្មែរ' : 'Khmer Support'}
+                  </h3>
+                </div>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {language === 'khmer' ? 'គាំទ្រភាសាខ្មែរពេញលេញ' : 'Full Khmer language support'}
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Feature 7 - Security */}
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{ animationDelay: '0.7s' }}>
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 rounded-lg bg-destructive/10 text-destructive group-hover:bg-destructive group-hover:text-destructive-foreground transition-all duration-300 group-hover:scale-110">
+                    <span className="text-xl">🔒</span>
+                  </div>
+                  <h3 className="text-lg font-semibold group-hover:text-destructive transition-colors">
+                    {language === 'khmer' ? 'សុវត្ថិភាព' : 'Bank Security'}
+                  </h3>
+                </div>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {language === 'khmer' ? 'ការពារទិន្នន័យដូចធនាគារ' : 'Bank-level security for your data'}
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Feature 8 - AI Assistance (full width) */}
+            <Card className="lg:col-span-4 group hover:shadow-glow transition-all duration-500 hover:-translate-y-1 animate-fade-in bg-gradient-to-r from-primary/5 to-primary-glow/5 border-0" style={{ animationDelay: '0.8s' }}>
+              <CardContent className="p-8">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="p-4 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 group-hover:scale-110">
+                    <span className="text-2xl">🤖</span>
+                  </div>
+                  <h3 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent animate-pulse">
+                    {language === 'khmer' ? 'ជំនួយដោយបញ្ញាសិប្បនិម្មិត (AI Assistance)' : 'AI-Powered Financial Assistant'}
+                  </h3>
                 </div>
                 
-                <p className="text-muted-foreground mb-4">
-                  Cashsnap មានមុខងារ AI ជួយប្រើប្រាស់ ដែលអាច:
+                <p className="text-muted-foreground mb-6 text-base leading-relaxed">
+                  {language === 'khmer' ? 'Cashsnap មានមុខងារ AI ជួយប្រើប្រាស់ ដែលអាច:' : 'CashSnap features an AI assistant that can:'}
                 </p>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                  <div className="flex items-start gap-2">
-                    <span className="text-primary">🔍</span>
-                    <p className="text-sm text-muted-foreground">វិភាគការចំណាយ របស់អ្នកបែបស្វ័យប្រវត្តិ</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                  <div className="flex items-start gap-3 group/item hover:scale-105 transition-transform duration-200">
+                    <span className="text-primary text-xl group-hover/item:animate-bounce">🔍</span>
+                    <p className="text-sm text-muted-foreground group-hover/item:text-foreground transition-colors">
+                      {language === 'khmer' ? 'វិភាគការចំណាយ របស់អ្នកបែបស្វ័យប្រវត្តិ' : 'Analyze your spending patterns automatically'}
+                    </p>
                   </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-primary">📈</span>
-                    <p className="text-sm text-muted-foreground">ផ្តល់អនុសាសន៍ផ្ទាល់ខ្លួន ដើម្បីជួយអោយអ្នកអាចគ្រប់គ្រងសមតុល្យប្រាក់ចំណូល/ចំណាយបានប្រសើរឡើង</p>
+                  <div className="flex items-start gap-3 group/item hover:scale-105 transition-transform duration-200">
+                    <span className="text-primary text-xl group-hover/item:animate-bounce">📈</span>
+                    <p className="text-sm text-muted-foreground group-hover/item:text-foreground transition-colors">
+                      {language === 'khmer' ? 'ផ្តល់អនុសាសន៍ផ្ទាល់ខ្លួន ដើម្បីជួយអោយអ្នកអាចគ្រប់គ្រងសមតុល្យប្រាក់ចំណូល/ចំណាយបានប្រសើរឡើង' : 'Provide personalized recommendations for better financial balance'}
+                    </p>
                   </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-primary">🧠</span>
-                    <p className="text-sm text-muted-foreground">រៀនពីទម្លាប់ហិរញ្ញវត្ថុ របស់អ្នក ហើយជួយបង្កើតផែនការសន្សំប្រាក់ឆ្ពោះទៅរកគោលដៅធំៗ</p>
+                  <div className="flex items-start gap-3 group/item hover:scale-105 transition-transform duration-200">
+                    <span className="text-primary text-xl group-hover/item:animate-bounce">🧠</span>
+                    <p className="text-sm text-muted-foreground group-hover/item:text-foreground transition-colors">
+                      {language === 'khmer' ? 'រៀនពីទម្លាប់ហិរញ្ញវត្ថុ របស់អ្នក ហើយជួយបង្កើតផែនការសន្សំប្រាក់ឆ្ពោះទៅរកគោលដៅធំៗ' : 'Learn from your habits and help create savings plans for major goals'}
+                    </p>
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-2">
-                  <span className="text-xs text-primary font-medium">💡</span>
-                  <p className="text-xs text-primary font-medium">អាចប្រើបានដូចជាការជជែកជាមួយអ្នកប្រឹក្សាហិរញ្ញវត្ថុប្រកបដោយ AI បែបផ្ទាល់ខ្លួន!</p>
+                <div className="flex items-center gap-2 p-4 bg-primary/5 rounded-lg border border-primary/20">
+                  <span className="text-xs text-primary font-bold animate-pulse">💡</span>
+                  <p className="text-sm text-primary font-medium">
+                    {language === 'khmer' ? 'អាចប្រើបានដូចជាការជជែកជាមួយអ្នកប្រឹក្សាហិរញ្ញវត្ថុប្រកបដោយ AI បែបផ្ទាល់ខ្លួន!' : 'Chat with your personal AI financial advisor anytime!'}
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -274,45 +385,47 @@ const Index = () => {
       <section className="py-20 bg-gradient-to-br from-secondary/30 to-accent/20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-6">ប្រយោជន៍សំខាន់</h3>
+            <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-6 animate-fade-in">
+              {language === 'khmer' ? 'ប្រយោជន៍សំខាន់' : 'Key Benefits'}
+            </h3>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <Card className="group hover:shadow-card transition-smooth hover:-translate-y-1">
+            <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0" style={{ animationDelay: '0.1s' }}>
               <CardContent className="p-6 text-center">
                 <div className="mb-4">
-                  <div className="w-12 h-12 bg-constructive/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-constructive/20 transition-colors">
-                    <span className="text-constructive text-xl">⚡</span>
+                  <div className="w-12 h-12 bg-constructive/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-constructive/20 transition-all duration-300 group-hover:scale-110">
+                    <span className="text-constructive text-xl animate-pulse">⚡</span>
                   </div>
                 </div>
-                <p className="text-base leading-relaxed">
-                  សន្សំពេល និងលើកកម្ពស់គុណភាពនៃការសម្រេចចិត្ត
+                <p className="text-base leading-relaxed group-hover:text-foreground transition-colors">
+                  {language === 'khmer' ? 'សន្សំពេល និងលើកកម្ពស់គុណភាពនៃការសម្រេចចិត្ត' : 'Save time and enhance decision quality'}
                 </p>
               </CardContent>
             </Card>
             
-            <Card className="group hover:shadow-card transition-smooth hover:-translate-y-1">
+            <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0" style={{ animationDelay: '0.2s' }}>
               <CardContent className="p-6 text-center">
                 <div className="mb-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-primary/20 transition-colors">
-                    <span className="text-primary text-xl">👥</span>
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
+                    <span className="text-primary text-xl animate-pulse">👥</span>
                   </div>
                 </div>
-                <p className="text-base leading-relaxed">
-                  បំពេញតួនាទី ប្រៀបដូចជាមានជំនួយផ្ទាល់ខ្លួនដ៏ល្អសម្រាប់អ្នក
+                <p className="text-base leading-relaxed group-hover:text-foreground transition-colors">
+                  {language === 'khmer' ? 'បំពេញតួនាទី ប្រៀបដូចជាមានជំនួយផ្ទាល់ខ្លួនដ៏ល្អសម្រាប់អ្នក' : 'Like having a personal financial advisor'}
                 </p>
               </CardContent>
             </Card>
             
-            <Card className="group hover:shadow-card transition-smooth hover:-translate-y-1">
+            <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0" style={{ animationDelay: '0.3s' }}>
               <CardContent className="p-6 text-center">
                 <div className="mb-4">
-                  <div className="w-12 h-12 bg-balance/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-balance/20 transition-colors">
-                    <span className="text-balance text-xl">💎</span>
+                  <div className="w-12 h-12 bg-balance/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-balance/20 transition-all duration-300 group-hover:scale-110">
+                    <span className="text-balance text-xl animate-pulse">💎</span>
                   </div>
                 </div>
-                <p className="text-base leading-relaxed">
-                  ធ្វើអោយអ្នកប្រើចាប់អារម្មណ៍ និងស្ថិតនៅលើវេបសាយបានយូរ
+                <p className="text-base leading-relaxed group-hover:text-foreground transition-colors">
+                  {language === 'khmer' ? 'ធ្វើអោយអ្នកប្រើចាប់អារម្មណ៍ និងស្ថិតនៅលើវេបសាយបានយូរ' : 'Engaging and long-lasting user experience'}
                 </p>
               </CardContent>
             </Card>
@@ -324,42 +437,42 @@ const Index = () => {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center">
-            <div className="bg-gradient-card shadow-card rounded-3xl p-8 md:p-12 max-w-4xl mx-auto border border-border/50 py-[23px]">
+            <div className="bg-gradient-card shadow-card rounded-3xl p-8 md:p-12 max-w-4xl mx-auto border border-border/50 animate-fade-in">
               <div className="mb-6">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-primary text-2xl">✨</span>
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 hover:scale-110 transition-transform duration-300">
+                  <span className="text-primary text-2xl animate-bounce">✨</span>
                 </div>
               </div>
               
-              <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-                ត្រៀមខ្លួនគ្រប់គ្រងលុយកាក់ដូចអ្នកជំនាញ?
+              <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent animate-fade-in">
+                {language === 'khmer' ? 'ត្រៀមខ្លួនគ្រប់គ្រងលុយកាក់ដូចអ្នកជំនាញ?' : 'Ready to manage money like a pro?'}
               </h3>
               
-              <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-                ចាប់ផ្តើមដំណើរហិរញ្ញវត្ថុរបស់អ្នកនៅថ្ងៃនេះ ជាមួយនឹងឧបករណ៍ដ៏ទំនើប និងងាយស្រួលប្រើ
+              <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                {language === 'khmer' ? 'ចាប់ផ្តើមដំណើរហិរញ្ញវត្ថុរបស់អ្នកនៅថ្ងៃនេះ ជាមួយនឹងឧបករណ៍ដ៏ទំនើប និងងាយស្រួលប្រើ' : 'Start your financial journey today with modern and easy-to-use tools'}
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button asChild size="lg" className="text-lg px-12 py-6 shadow-glow hover:shadow-primary/20">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: '0.4s' }}>
+                <Button asChild size="lg" className="text-lg px-12 py-6 shadow-glow hover:shadow-primary/20 hover:scale-105 transition-all duration-300">
                   <Link to="/auth">
-                    ចាប់ផ្តើមឥឡូវនេះ
+                    {language === 'khmer' ? 'ចាប់ផ្តើមឥឡូវនេះ' : 'Start Now'}
                     <span className="ml-2 animate-bounce">→</span>
                   </Link>
                 </Button>
-                <Button variant="outline" size="lg" className="text-lg px-12 py-6">
-                  ស្វែងយល់បន្ថែម
+                <Button variant="outline" size="lg" className="text-lg px-12 py-6 hover:scale-105 transition-all duration-300">
+                  {language === 'khmer' ? 'ស្វែងយល់បន្ថែម' : 'Learn More'}
                 </Button>
               </div>
               
-              <p className="text-sm text-muted-foreground mt-6">
-                ✨ ឥតគិតថ្លៃ • ✨ គ្មានកាតឥណទាន • ✨ ចាប់ផ្តើមបានភ្លាម
+              <p className="text-sm text-muted-foreground mt-6 animate-fade-in" style={{ animationDelay: '0.6s' }}>
+                ✨ {language === 'khmer' ? 'ឥតគិតថ្លៃ • ✨ គ្មានកាតឥណទាន • ✨ ចាប់ផ្តើមបានភ្លាម' : 'Free • ✨ No Credit Card • ✨ Start Instantly'}
               </p>
               
-              <div className="flex flex-wrap justify-center gap-4 mt-8 pt-6 border-t border-border/20">
-                <Link to="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              <div className="flex flex-wrap justify-center gap-4 mt-8 pt-6 border-t border-border/20 animate-fade-in" style={{ animationDelay: '0.8s' }}>
+                <Link to="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors hover:underline">
                   Privacy Policy
                 </Link>
-                <Link to="/terms-of-service" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/terms-of-service" className="text-sm text-muted-foreground hover:text-primary transition-colors hover:underline">
                   Terms of Service
                 </Link>
                 <span className="text-sm text-muted-foreground">•</span>
@@ -373,4 +486,5 @@ const Index = () => {
       </section>
     </div>;
 };
+
 export default Index;
