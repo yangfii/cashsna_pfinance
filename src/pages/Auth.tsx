@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -224,8 +223,17 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/30 p-4">
-      <div className="w-full max-w-md space-y-8">
+    <div 
+      className="min-h-screen flex items-center justify-center p-4 bg-cover bg-center bg-no-repeat relative"
+      style={{
+        backgroundImage: `url('https://i.pinimg.com/1200x/e7/bf/23/e7bf23137788c366a62be0baa10056ea.jpg')`,
+      }}
+    >
+      {/* Overlay for better readability */}
+      <div className="absolute inset-0 bg-background/60 backdrop-blur-sm" />
+      
+      {/* Content */}
+      <div className="relative z-10 w-full max-w-md space-y-8">
         {/* Professional Header */}
         <div className="text-center space-y-3">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
