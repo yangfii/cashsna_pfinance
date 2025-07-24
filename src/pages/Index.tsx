@@ -141,7 +141,7 @@ const Index = () => {
             backgroundRepeat: 'no-repeat',
             filter: 'blur(2px)'
           }}>
-              <span className="text-primary-foreground/60 text-4xl font-bold">កូនខ្មែរ</span>
+              <span className="text-primary-foreground/60 text-4xl font-bold animate-pulse">កូនខ្មែរ</span>
             </div>
           </div>
         </div>
@@ -149,7 +149,7 @@ const Index = () => {
         {/* Language and Theme Controls */}
         <div className="relative z-10 flex justify-end p-4">
           <div className="flex items-center gap-2">
-            <span className="text-primary-foreground/80 text-sm font-medium">កូនខ្មែរ</span>
+            <span className="text-primary-foreground/80 text-sm font-medium animate-bounce">កូនខ្មែរ</span>
             <Button onClick={() => {
             console.log('Current language:', language);
             const newLanguage = language === 'english' ? 'khmer' : 'english';
