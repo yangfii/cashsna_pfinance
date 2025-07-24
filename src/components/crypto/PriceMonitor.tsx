@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -44,10 +45,10 @@ export default function PriceMonitor({ prices, watchlist = [], onRefresh, lastUp
 
   const priceData = Object.entries(prices).map(([symbol, data]) => ({ 
     symbol, 
-    usd: data.usd,
-    usd_24h_change: data.usd_24h_change,
-    usd_24h_vol: data.usd_24h_vol,
-    usd_market_cap: data.usd_market_cap,
+    price: data.price,
+    price_change_24h: data.price_change_24h,
+    volume_24h: data.volume_24h,
+    market_cap: data.market_cap,
     last_updated: data.last_updated
   }));
 
@@ -94,10 +95,10 @@ export default function PriceMonitor({ prices, watchlist = [], onRefresh, lastUp
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="font-medium">{formatPrice(priceInfo.usd)}</div>
-                  <div className={`flex items-center gap-1 text-sm ${getChangeColor(priceInfo.usd_24h_change)}`}>
-                    {getChangeIcon(priceInfo.usd_24h_change)}
-                    {Math.abs(priceInfo.usd_24h_change).toFixed(2)}%
+                  <div className="font-medium">{formatPrice(priceInfo.price)}</div>
+                  <div className={`flex items-center gap-1 text-sm ${getChangeColor(priceInfo.price_change_24h)}`}>
+                    {getChangeIcon(priceInfo.price_change_24h)}
+                    {Math.abs(priceInfo.price_change_24h).toFixed(2)}%
                   </div>
                 </div>
               </div>
