@@ -10,43 +10,14 @@ import AIAssistant from "@/components/AIAssistant";
 import { AddReminderDialog } from "@/components/reminders/AddReminderDialog";
 import { RemindersList } from "@/components/reminders/RemindersList";
 import { useReminders } from "@/hooks/useReminders";
-import { 
-  Plus, 
-  Calendar, 
-  Target, 
-  CheckCircle2, 
-  Circle, 
-  Edit, 
-  Trash2,
-  CalendarDays,
-  TrendingUp,
-  Brain,
-  Clock,
-  Play,
-  Pause,
-  Square,
-  Timer,
-  Bell
-} from "lucide-react";
+import { Plus, Calendar, Target, CheckCircle2, Circle, Edit, Trash2, CalendarDays, TrendingUp, Brain, Clock, Play, Pause, Square, Timer, Bell } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 interface Step {
   id: string;
   text: string;
   completed: boolean;
 }
-
 interface Goal {
   id: string;
   title: string;
@@ -57,7 +28,6 @@ interface Goal {
   completed: boolean;
   createdAt: string;
 }
-
 export default function Planning() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -70,16 +40,20 @@ export default function Planning() {
   });
   const [newStep, setNewStep] = useState('');
   const [steps, setSteps] = useState<Step[]>([]);
-  
+
   // Focus time states
   const [focusTime, setFocusTime] = useState(25); // minutes
   const [remainingTime, setRemainingTime] = useState(0);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
   const [showFocusTimer, setShowFocusTimer] = useState(false);
-  
-  const { toast } = useToast();
-  const { getUpcomingReminders, getOverdueReminders } = useReminders();
+  const {
+    toast
+  } = useToast();
+  const {
+    getUpcomingReminders,
+    getOverdueReminders
+  } = useReminders();
 
   // Load goals from localStorage
   useEffect(() => {
@@ -99,12 +73,12 @@ export default function Planning() {
     let interval: NodeJS.Timeout;
     if (isTimerRunning && remainingTime > 0) {
       interval = setInterval(() => {
-        setRemainingTime((time) => {
+        setRemainingTime(time => {
           if (time <= 1) {
             setIsTimerRunning(false);
             toast({
               title: "Focus Session Complete!",
-              description: `Great job! You've completed a ${focusTime}-minute focus session${selectedGoal ? ` on "${selectedGoal.title}"` : ''}.`,
+              description: `Great job! You've completed a ${focusTime}-minute focus session${selectedGoal ? ` on "${selectedGoal.title}"` : ''}.`
             });
             return 0;
           }
@@ -114,7 +88,6 @@ export default function Planning() {
     }
     return () => clearInterval(interval);
   }, [isTimerRunning, remainingTime, focusTime, selectedGoal, toast]);
-
   const addStep = () => {
     if (newStep.trim()) {
       const step: Step = {
@@ -126,11 +99,9 @@ export default function Planning() {
       setNewStep('');
     }
   };
-
   const removeStep = (stepId: string) => {
     setSteps(steps.filter(s => s.id !== stepId));
   };
-
   const getCurrentPeriod = (type: string) => {
     const now = new Date();
     switch (type) {
@@ -139,26 +110,30 @@ export default function Planning() {
         weekStart.setDate(now.getDate() - now.getDay());
         const weekEnd = new Date(weekStart);
         weekEnd.setDate(weekStart.getDate() + 6);
-        return `Week ${Math.ceil(now.getDate() / 7)} of ${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`;
+        return `Week ${Math.ceil(now.getDate() / 7)} of ${now.toLocaleDateString('en-US', {
+          month: 'long',
+          year: 'numeric'
+        })}`;
       case 'monthly':
-        return now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        return now.toLocaleDateString('en-US', {
+          month: 'long',
+          year: 'numeric'
+        });
       case 'yearly':
         return `Year ${now.getFullYear()}`;
       default:
         return '';
     }
   };
-
   const handleSaveGoal = () => {
     if (!newGoal.title.trim() || steps.length === 0) {
       toast({
         title: "កំហុស",
         description: "សូមបំពេញចំណងជើងគោលដៅ និងយ៉ាងហោចណាស់មួយជំហាន",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-
     const goal: Goal = {
       id: editingGoal?.id || Date.now().toString(),
       title: newGoal.title,
@@ -169,53 +144,57 @@ export default function Planning() {
       completed: false,
       createdAt: editingGoal?.createdAt || new Date().toISOString()
     };
-
     if (editingGoal) {
       setGoals(goals.map(g => g.id === editingGoal.id ? goal : g));
       toast({
         title: "គោលដៅត្រូវបានកែប្រែ",
-        description: "គោលដៅរបស់អ្នកត្រូវបានកែប្រែជោគជ័យ",
+        description: "គោលដៅរបស់អ្នកត្រូវបានកែប្រែជោគជ័យ"
       });
     } else {
       setGoals([...goals, goal]);
       toast({
         title: "គោលដៅត្រូវបានបន្ថែម",
-        description: "គោលដៅថ្មីរបស់អ្នកត្រូវបានបន្ថែមជោគជ័យ",
+        description: "គោលដៅថ្មីរបស់អ្នកត្រូវបានបន្ថែមជោគជ័យ"
       });
     }
-
     resetForm();
   };
-
   const resetForm = () => {
-    setNewGoal({ title: '', description: '', type: 'weekly', period: '' });
+    setNewGoal({
+      title: '',
+      description: '',
+      type: 'weekly',
+      period: ''
+    });
     setSteps([]);
     setShowAddForm(false);
     setEditingGoal(null);
   };
-
   const deleteGoal = (goalId: string) => {
     setGoals(goals.filter(g => g.id !== goalId));
     toast({
       title: "គោលដៅត្រូវបានលុប",
       description: "គោលដៅត្រូវបានលុបជោគជ័យ",
-      variant: "destructive",
+      variant: "destructive"
     });
   };
-
   const toggleStepCompletion = (goalId: string, stepId: string) => {
     setGoals(goals.map(goal => {
       if (goal.id === goalId) {
-        const updatedSteps = goal.steps.map(step =>
-          step.id === stepId ? { ...step, completed: !step.completed } : step
-        );
+        const updatedSteps = goal.steps.map(step => step.id === stepId ? {
+          ...step,
+          completed: !step.completed
+        } : step);
         const allCompleted = updatedSteps.every(step => step.completed);
-        return { ...goal, steps: updatedSteps, completed: allCompleted };
+        return {
+          ...goal,
+          steps: updatedSteps,
+          completed: allCompleted
+        };
       }
       return goal;
     }));
   };
-
   const editGoal = (goal: Goal) => {
     setEditingGoal(goal);
     setNewGoal({
@@ -236,57 +215,56 @@ export default function Planning() {
     setShowFocusTimer(true);
     toast({
       title: "Focus Session Started",
-      description: `Starting ${focusTime}-minute focus session${goal ? ` for "${goal.title}"` : ''}.`,
+      description: `Starting ${focusTime}-minute focus session${goal ? ` for "${goal.title}"` : ''}.`
     });
   };
-
   const pauseTimer = () => {
     setIsTimerRunning(false);
   };
-
   const resumeTimer = () => {
     if (remainingTime > 0) {
       setIsTimerRunning(true);
     }
   };
-
   const stopTimer = () => {
     setIsTimerRunning(false);
     setRemainingTime(0);
     setSelectedGoal(null);
     setShowFocusTimer(false);
   };
-
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
-
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'weekly': return <Calendar className="h-4 w-4" />;
-      case 'monthly': return <CalendarDays className="h-4 w-4" />;
-      case 'yearly': return <TrendingUp className="h-4 w-4" />;
-      default: return <Target className="h-4 w-4" />;
+      case 'weekly':
+        return <Calendar className="h-4 w-4" />;
+      case 'monthly':
+        return <CalendarDays className="h-4 w-4" />;
+      case 'yearly':
+        return <TrendingUp className="h-4 w-4" />;
+      default:
+        return <Target className="h-4 w-4" />;
     }
   };
-
   const getTypeBadgeColor = (type: string) => {
     switch (type) {
-      case 'weekly': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
-      case 'monthly': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
-      case 'yearly': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
+      case 'weekly':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
+      case 'monthly':
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+      case 'yearly':
+        return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300';
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
     }
   };
-
   const weeklyGoals = goals.filter(g => g.type === 'weekly');
   const monthlyGoals = goals.filter(g => g.type === 'monthly');
   const yearlyGoals = goals.filter(g => g.type === 'yearly');
-
-  return (
-    <div className="space-y-6 animate-fade-in">
+  return <div className="space-y-6 animate-fade-in">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
@@ -294,10 +272,7 @@ export default function Planning() {
           <p className="text-muted-foreground">គ្រប់គ្រងគោលដៅរបស់អ្នកតាមសប្តាហ៍ ខែ និងឆ្នាំ</p>
         </div>
         
-        <Button 
-          onClick={() => setShowAddForm(true)} 
-          className="gap-2"
-        >
+        <Button onClick={() => setShowAddForm(true)} className="gap-2">
           <Plus className="h-4 w-4" />
           បន្ថែមគោលដៅថ្មី
         </Button>
@@ -317,29 +292,26 @@ export default function Planning() {
           <TabsTrigger value="reminders" className="flex items-center gap-2 relative">
             <Bell className="h-4 w-4" />
             កំណត់ចងចាំ
-            {getUpcomingReminders().length > 0 && (
-              <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 text-xs">
+            {getUpcomingReminders().length > 0 && <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 text-xs">
                 {getUpcomingReminders().length}
-              </Badge>
-            )}
+              </Badge>}
           </TabsTrigger>
-          <TabsTrigger value="focus" className="flex items-center gap-2">
-            <Timer className="h-4 w-4" />
-            ពេលវេលាយកចិត្តទុកដាក់
-          </TabsTrigger>
+          
         </TabsList>
 
         <TabsContent value="goals" className="mt-6 space-y-6">
           {/* Add/Edit Goal Form */}
-          {showAddForm && (
-            <Card className="animate-slide-down">
+          {showAddForm && <Card className="animate-slide-down">
               <CardHeader>
                 <CardTitle>{editingGoal ? 'កែប្រែគោលដៅ' : 'បន្ថែមគោលដៅថ្មី'}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <label className="text-sm font-medium mb-2 block">ប្រភេទគោលដៅ</label>
-                  <Select value={newGoal.type} onValueChange={(value: 'weekly' | 'monthly' | 'yearly') => setNewGoal({...newGoal, type: value})}>
+                  <Select value={newGoal.type} onValueChange={(value: 'weekly' | 'monthly' | 'yearly') => setNewGoal({
+                ...newGoal,
+                type: value
+              })}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -353,63 +325,46 @@ export default function Planning() {
 
                 <div>
                   <label className="text-sm font-medium mb-2 block">រយៈពេល</label>
-                  <Input
-                    placeholder={getCurrentPeriod(newGoal.type)}
-                    value={newGoal.period}
-                    onChange={(e) => setNewGoal({...newGoal, period: e.target.value})}
-                  />
+                  <Input placeholder={getCurrentPeriod(newGoal.type)} value={newGoal.period} onChange={e => setNewGoal({
+                ...newGoal,
+                period: e.target.value
+              })} />
                 </div>
 
                 <div>
                   <label className="text-sm font-medium mb-2 block">ចំណងជើងគោលដៅ</label>
-                  <Input
-                    placeholder="បញ្ចូលគោលដៅរបស់អ្នក..."
-                    value={newGoal.title}
-                    onChange={(e) => setNewGoal({...newGoal, title: e.target.value})}
-                  />
+                  <Input placeholder="បញ្ចូលគោលដៅរបស់អ្នក..." value={newGoal.title} onChange={e => setNewGoal({
+                ...newGoal,
+                title: e.target.value
+              })} />
                 </div>
 
                 <div>
                   <label className="text-sm font-medium mb-2 block">ពិពណ៌នា (ស្រេចចិត្ត)</label>
-                  <Textarea
-                    placeholder="ពិពណ៌នាលម្អិតអំពីគោលដៅ..."
-                    value={newGoal.description}
-                    onChange={(e) => setNewGoal({...newGoal, description: e.target.value})}
-                  />
+                  <Textarea placeholder="ពិពណ៌នាលម្អិតអំពីគោលដៅ..." value={newGoal.description} onChange={e => setNewGoal({
+                ...newGoal,
+                description: e.target.value
+              })} />
                 </div>
 
                 <div>
                   <label className="text-sm font-medium mb-2 block">ជំហានសម្រាប់សម្រេចគោលដៅ</label>
                   <div className="flex gap-2 mb-3">
-                    <Input
-                      placeholder="បន្ថែមជំហានថ្មី..."
-                      value={newStep}
-                      onChange={(e) => setNewStep(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && addStep()}
-                    />
+                    <Input placeholder="បន្ថែមជំហានថ្មី..." value={newStep} onChange={e => setNewStep(e.target.value)} onKeyPress={e => e.key === 'Enter' && addStep()} />
                     <Button type="button" onClick={addStep} size="sm">
                       <Plus className="h-4 w-4" />
                     </Button>
                   </div>
                   
-                  {steps.length > 0 && (
-                    <div className="space-y-2">
-                      {steps.map((step, index) => (
-                        <div key={step.id} className="flex items-center gap-2 p-2 border rounded">
+                  {steps.length > 0 && <div className="space-y-2">
+                      {steps.map((step, index) => <div key={step.id} className="flex items-center gap-2 p-2 border rounded">
                           <span className="text-sm text-muted-foreground">ជំហាន {index + 1}:</span>
                           <span className="flex-1">{step.text}</span>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeStep(step.id)}
-                          >
+                          <Button type="button" variant="ghost" size="sm" onClick={() => removeStep(step.id)}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                        </div>)}
+                    </div>}
                 </div>
 
                 <div className="flex gap-2 pt-4">
@@ -421,21 +376,18 @@ export default function Planning() {
                   </Button>
                 </div>
               </CardContent>
-            </Card>
-          )}
+            </Card>}
 
           {/* Goals Display */}
           <div className="space-y-8">
             {/* Weekly Goals */}
-            {weeklyGoals.length > 0 && (
-              <div>
+            {weeklyGoals.length > 0 && <div>
                 <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                   <Calendar className="h-5 w-5" />
                   គោលដៅប្រចាំសប្តាហ៍
                 </h2>
                 <div className="grid gap-4">
-                  {weeklyGoals.map((goal) => (
-                    <Card key={goal.id} className="stat-card">
+                  {weeklyGoals.map(goal => <Card key={goal.id} className="stat-card">
                       <CardHeader className="pb-3">
                         <div className="flex items-start justify-between">
                           <div className="space-y-2">
@@ -444,18 +396,14 @@ export default function Planning() {
                                 {getTypeIcon(goal.type)}
                                 <span className="ml-1">សប្តាហ៍</span>
                               </Badge>
-                              {goal.completed && (
-                                <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
+                              {goal.completed && <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
                                   <CheckCircle2 className="h-3 w-3 mr-1" />
                                   បានបញ្ចប់
-                                </Badge>
-                              )}
+                                </Badge>}
                             </div>
                             <CardTitle className="text-lg">{goal.title}</CardTitle>
                             <p className="text-sm text-muted-foreground">{goal.period}</p>
-                            {goal.description && (
-                              <p className="text-sm text-muted-foreground">{goal.description}</p>
-                            )}
+                            {goal.description && <p className="text-sm text-muted-foreground">{goal.description}</p>}
                           </div>
                           <div className="flex gap-2">
                             <Button variant="ghost" size="sm" onClick={() => editGoal(goal)}>
@@ -488,41 +436,28 @@ export default function Planning() {
                       <CardContent>
                         <div className="space-y-2">
                           <h4 className="font-medium text-sm">ជំហានដែលត្រូវអនុវត្ត:</h4>
-                          {goal.steps.map((step) => (
-                            <div key={step.id} className="flex items-center gap-2">
-                              <button
-                                onClick={() => toggleStepCompletion(goal.id, step.id)}
-                                className="flex-shrink-0"
-                              >
-                                {step.completed ? (
-                                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                                ) : (
-                                  <Circle className="h-4 w-4 text-muted-foreground" />
-                                )}
+                          {goal.steps.map(step => <div key={step.id} className="flex items-center gap-2">
+                              <button onClick={() => toggleStepCompletion(goal.id, step.id)} className="flex-shrink-0">
+                                {step.completed ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <Circle className="h-4 w-4 text-muted-foreground" />}
                               </button>
                               <span className={`text-sm ${step.completed ? 'line-through text-muted-foreground' : ''}`}>
                                 {step.text}
                               </span>
-                            </div>
-                          ))}
+                            </div>)}
                         </div>
                       </CardContent>
-                    </Card>
-                  ))}
+                    </Card>)}
                 </div>
-              </div>
-            )}
+              </div>}
 
             {/* Monthly Goals */}
-            {monthlyGoals.length > 0 && (
-              <div>
+            {monthlyGoals.length > 0 && <div>
                 <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                   <CalendarDays className="h-5 w-5" />
                   គោលដៅប្រចាំខែ
                 </h2>
                 <div className="grid gap-4">
-                  {monthlyGoals.map((goal) => (
-                    <Card key={goal.id} className="stat-card">
+                  {monthlyGoals.map(goal => <Card key={goal.id} className="stat-card">
                       <CardHeader className="pb-3">
                         <div className="flex items-start justify-between">
                           <div className="space-y-2">
@@ -531,18 +466,14 @@ export default function Planning() {
                                 {getTypeIcon(goal.type)}
                                 <span className="ml-1">ខែ</span>
                               </Badge>
-                              {goal.completed && (
-                                <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
+                              {goal.completed && <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
                                   <CheckCircle2 className="h-3 w-3 mr-1" />
                                   បានបញ្ចប់
-                                </Badge>
-                              )}
+                                </Badge>}
                             </div>
                             <CardTitle className="text-lg">{goal.title}</CardTitle>
                             <p className="text-sm text-muted-foreground">{goal.period}</p>
-                            {goal.description && (
-                              <p className="text-sm text-muted-foreground">{goal.description}</p>
-                            )}
+                            {goal.description && <p className="text-sm text-muted-foreground">{goal.description}</p>}
                           </div>
                           <div className="flex gap-2">
                             <Button variant="ghost" size="sm" onClick={() => editGoal(goal)}>
@@ -575,41 +506,28 @@ export default function Planning() {
                       <CardContent>
                         <div className="space-y-2">
                           <h4 className="font-medium text-sm">ជំហានដែលត្រូវអនុវត្ត:</h4>
-                          {goal.steps.map((step) => (
-                            <div key={step.id} className="flex items-center gap-2">
-                              <button
-                                onClick={() => toggleStepCompletion(goal.id, step.id)}
-                                className="flex-shrink-0"
-                              >
-                                {step.completed ? (
-                                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                                ) : (
-                                  <Circle className="h-4 w-4 text-muted-foreground" />
-                                )}
+                          {goal.steps.map(step => <div key={step.id} className="flex items-center gap-2">
+                              <button onClick={() => toggleStepCompletion(goal.id, step.id)} className="flex-shrink-0">
+                                {step.completed ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <Circle className="h-4 w-4 text-muted-foreground" />}
                               </button>
                               <span className={`text-sm ${step.completed ? 'line-through text-muted-foreground' : ''}`}>
                                 {step.text}
                               </span>
-                            </div>
-                          ))}
+                            </div>)}
                         </div>
                       </CardContent>
-                    </Card>
-                  ))}
+                    </Card>)}
                 </div>
-              </div>
-            )}
+              </div>}
 
             {/* Yearly Goals */}
-            {yearlyGoals.length > 0 && (
-              <div>
+            {yearlyGoals.length > 0 && <div>
                 <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                   <TrendingUp className="h-5 w-5" />
                   គោលដៅប្រចាំឆ្នាំ
                 </h2>
                 <div className="grid gap-4">
-                  {yearlyGoals.map((goal) => (
-                    <Card key={goal.id} className="stat-card">
+                  {yearlyGoals.map(goal => <Card key={goal.id} className="stat-card">
                       <CardHeader className="pb-3">
                         <div className="flex items-start justify-between">
                           <div className="space-y-2">
@@ -618,18 +536,14 @@ export default function Planning() {
                                 {getTypeIcon(goal.type)}
                                 <span className="ml-1">ឆ្នាំ</span>
                               </Badge>
-                              {goal.completed && (
-                                <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
+                              {goal.completed && <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
                                   <CheckCircle2 className="h-3 w-3 mr-1" />
                                   បានបញ្ចប់
-                                </Badge>
-                              )}
+                                </Badge>}
                             </div>
                             <CardTitle className="text-lg">{goal.title}</CardTitle>
                             <p className="text-sm text-muted-foreground">{goal.period}</p>
-                            {goal.description && (
-                              <p className="text-sm text-muted-foreground">{goal.description}</p>
-                            )}
+                            {goal.description && <p className="text-sm text-muted-foreground">{goal.description}</p>}
                           </div>
                           <div className="flex gap-2">
                             <Button variant="ghost" size="sm" onClick={() => editGoal(goal)}>
@@ -662,34 +576,22 @@ export default function Planning() {
                       <CardContent>
                         <div className="space-y-2">
                           <h4 className="font-medium text-sm">ជំហានដែលត្រូវអនុវត្ត:</h4>
-                          {goal.steps.map((step) => (
-                            <div key={step.id} className="flex items-center gap-2">
-                              <button
-                                onClick={() => toggleStepCompletion(goal.id, step.id)}
-                                className="flex-shrink-0"
-                              >
-                                {step.completed ? (
-                                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                                ) : (
-                                  <Circle className="h-4 w-4 text-muted-foreground" />
-                                )}
+                          {goal.steps.map(step => <div key={step.id} className="flex items-center gap-2">
+                              <button onClick={() => toggleStepCompletion(goal.id, step.id)} className="flex-shrink-0">
+                                {step.completed ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <Circle className="h-4 w-4 text-muted-foreground" />}
                               </button>
                               <span className={`text-sm ${step.completed ? 'line-through text-muted-foreground' : ''}`}>
                                 {step.text}
                               </span>
-                            </div>
-                          ))}
+                            </div>)}
                         </div>
                       </CardContent>
-                    </Card>
-                  ))}
+                    </Card>)}
                 </div>
-              </div>
-            )}
+              </div>}
 
             {/* Empty State */}
-            {goals.length === 0 && (
-              <Card className="text-center py-12">
+            {goals.length === 0 && <Card className="text-center py-12">
                 <CardContent>
                   <Target className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-medium mb-2">មិនទាន់មានគោលដៅ</h3>
@@ -701,8 +603,7 @@ export default function Planning() {
                     បន្ថែមគោលដៅដំបូង
                   </Button>
                 </CardContent>
-              </Card>
-            )}
+              </Card>}
           </div>
 
           {/* Tips Card */}
@@ -811,13 +712,12 @@ export default function Planning() {
               </p>
             </CardHeader>
             <CardContent className="space-y-6">
-              {!showFocusTimer ? (
-                <>
+              {!showFocusTimer ? <>
                   {/* Timer Settings */}
                   <div className="space-y-4">
                     <div>
                       <label className="text-sm font-medium mb-2 block">រយៈពេលយកចិត្តទុកដាក់ (នាទី)</label>
-                      <Select value={focusTime.toString()} onValueChange={(value) => setFocusTime(parseInt(value))}>
+                      <Select value={focusTime.toString()} onValueChange={value => setFocusTime(parseInt(value))}>
                         <SelectTrigger className="w-48">
                           <SelectValue />
                         </SelectTrigger>
@@ -834,108 +734,84 @@ export default function Planning() {
                     {/* Goal Selection */}
                     <div>
                       <label className="text-sm font-medium mb-2 block">ជ្រើសរើសគោលដៅដើម្បីយកចិត្តទុកដាក់ (ស្រេចចិត្ត)</label>
-                      <Select value={selectedGoal?.id || "none"} onValueChange={(value) => {
-                        if (value === "none") {
-                          setSelectedGoal(null);
-                        } else {
-                          const goal = goals.find(g => g.id === value);
-                          setSelectedGoal(goal || null);
-                        }
-                      }}>
+                      <Select value={selectedGoal?.id || "none"} onValueChange={value => {
+                    if (value === "none") {
+                      setSelectedGoal(null);
+                    } else {
+                      const goal = goals.find(g => g.id === value);
+                      setSelectedGoal(goal || null);
+                    }
+                  }}>
                         <SelectTrigger>
                           <SelectValue placeholder="ជ្រើសរើសគោលដៅ..." />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="none">មិនជ្រើសរើសគោលដៅ</SelectItem>
-                          {goals.map((goal) => (
-                            <SelectItem key={goal.id} value={goal.id}>
+                          {goals.map(goal => <SelectItem key={goal.id} value={goal.id}>
                               {goal.title} ({goal.type})
-                            </SelectItem>
-                          ))}
+                            </SelectItem>)}
                         </SelectContent>
                       </Select>
                     </div>
 
-                    {selectedGoal && (
-                      <Card className="bg-muted/50">
+                    {selectedGoal && <Card className="bg-muted/50">
                         <CardContent className="p-4">
                           <div className="flex items-center gap-2 mb-2">
                             <Badge className={getTypeBadgeColor(selectedGoal.type)}>
                               {getTypeIcon(selectedGoal.type)}
                               <span className="ml-1">
-                                {selectedGoal.type === 'weekly' ? 'សប្តាហ៍' : 
-                                 selectedGoal.type === 'monthly' ? 'ខែ' : 'ឆ្នាំ'}
+                                {selectedGoal.type === 'weekly' ? 'សប្តាហ៍' : selectedGoal.type === 'monthly' ? 'ខែ' : 'ឆ្នាំ'}
                               </span>
                             </Badge>
                           </div>
                           <h3 className="font-medium">{selectedGoal.title}</h3>
-                          {selectedGoal.description && (
-                            <p className="text-sm text-muted-foreground mt-1">{selectedGoal.description}</p>
-                          )}
+                          {selectedGoal.description && <p className="text-sm text-muted-foreground mt-1">{selectedGoal.description}</p>}
                         </CardContent>
-                      </Card>
-                    )}
+                      </Card>}
                   </div>
 
-                  <Button 
-                    onClick={() => startFocusSession(selectedGoal)} 
-                    className="w-full gap-2"
-                    size="lg"
-                  >
+                  <Button onClick={() => startFocusSession(selectedGoal)} className="w-full gap-2" size="lg">
                     <Play className="h-4 w-4" />
                     ចាប់ផ្តើមការយកចិត្តទុកដាក់ ({focusTime} នាទី)
                   </Button>
-                </>
-              ) : (
-                <>
+                </> : <>
                   {/* Active Timer Display */}
                   <div className="text-center space-y-6">
                     <div className="text-6xl font-mono font-bold text-primary">
                       {formatTime(remainingTime)}
                     </div>
                     
-                    {selectedGoal && (
-                      <div>
+                    {selectedGoal && <div>
                         <p className="text-sm text-muted-foreground">កំពុងយកចិត្តទុកដាក់លើ:</p>
                         <h3 className="text-xl font-semibold">{selectedGoal.title}</h3>
-                      </div>
-                    )}
+                      </div>}
 
                     <div className="w-full bg-muted rounded-full h-2">
-                      <div 
-                        className="bg-primary h-2 rounded-full transition-all duration-1000"
-                        style={{ 
-                          width: `${((focusTime * 60 - remainingTime) / (focusTime * 60)) * 100}%` 
-                        }}
-                      />
+                      <div className="bg-primary h-2 rounded-full transition-all duration-1000" style={{
+                    width: `${(focusTime * 60 - remainingTime) / (focusTime * 60) * 100}%`
+                  }} />
                     </div>
 
                     <div className="flex gap-4 justify-center">
-                      {isTimerRunning ? (
-                        <Button onClick={pauseTimer} variant="outline" size="lg" className="gap-2">
+                      {isTimerRunning ? <Button onClick={pauseTimer} variant="outline" size="lg" className="gap-2">
                           <Pause className="h-4 w-4" />
                           ផ្អាក
-                        </Button>
-                      ) : (
-                        <Button onClick={resumeTimer} size="lg" className="gap-2" disabled={remainingTime === 0}>
+                        </Button> : <Button onClick={resumeTimer} size="lg" className="gap-2" disabled={remainingTime === 0}>
                           <Play className="h-4 w-4" />
                           បន្ត
-                        </Button>
-                      )}
+                        </Button>}
                       <Button onClick={stopTimer} variant="destructive" size="lg" className="gap-2">
                         <Square className="h-4 w-4" />
                         បញ្ឈប់
                       </Button>
                     </div>
                   </div>
-                </>
-              )}
+                </>}
             </CardContent>
           </Card>
 
           {/* Quick Focus Actions for Goals */}
-          {goals.length > 0 && !showFocusTimer && (
-            <Card>
+          {goals.length > 0 && !showFocusTimer && <Card>
               <CardHeader>
                 <CardTitle>ការយកចិត្តទុកដាក់រហ័ស</CardTitle>
                 <p className="text-muted-foreground">
@@ -944,8 +820,7 @@ export default function Planning() {
               </CardHeader>
               <CardContent>
                 <div className="grid gap-3">
-                  {goals.slice(0, 5).map((goal) => (
-                    <div key={goal.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                  {goals.slice(0, 5).map(goal => <div key={goal.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-3">
                         <Badge className={getTypeBadgeColor(goal.type)} variant="secondary">
                           {getTypeIcon(goal.type)}
@@ -955,22 +830,15 @@ export default function Planning() {
                           <p className="text-sm text-muted-foreground">{goal.period}</p>
                         </div>
                       </div>
-                      <Button 
-                        onClick={() => startFocusSession(goal)}
-                        size="sm"
-                        className="gap-2"
-                      >
+                      <Button onClick={() => startFocusSession(goal)} size="sm" className="gap-2">
                         <Clock className="h-3 w-3" />
                         យកចិត្តទុកដាក់
                       </Button>
-                    </div>
-                  ))}
+                    </div>)}
                 </div>
               </CardContent>
-            </Card>
-          )}
+            </Card>}
         </TabsContent>
       </Tabs>
-    </div>
-  );
+    </div>;
 }
