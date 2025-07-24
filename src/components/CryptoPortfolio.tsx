@@ -22,6 +22,7 @@ import AdvancedFilters, { FilterOptions } from "@/components/crypto/AdvancedFilt
 import AdvancedSorting, { SortOption } from "@/components/crypto/AdvancedSorting";
 import RealTimePriceMonitor from "@/components/crypto/RealTimePriceMonitor";
 import SwingTradeLog from "@/components/crypto/SwingTradeLog";
+import ProfitLossSection from "@/components/crypto/ProfitLossSection";
 
 export default function CryptoPortfolio() {
   const { user } = useAuth();
@@ -565,22 +566,23 @@ export default function CryptoPortfolio() {
 
           <TabsContent value="profit">
             <Card className="mx-1 sm:mx-2">
-              <CardContent className="p-8 lg:p-10 py-0">
-                <h3 className="font-semibold mb-6 text-lg lg:text-xl">Profit & Loss</h3>
-                <div className="space-y-6 lg:space-y-8">
-                  <div className="flex justify-between items-center py-4 lg:py-6 border-b">
-                    <span className="text-base lg:text-lg">Total Gain/Loss:</span>
-                    <span className={`font-bold text-lg lg:text-xl ${isGain ? 'text-green-500' : 'text-red-500'}`}>
-                      {formatCurrency(Math.abs(totalGainLoss))}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center py-4 lg:py-6">
-                    <span className="text-base lg:text-lg">Percentage Change:</span>
-                    <span className={`font-bold text-lg lg:text-xl ${isGain ? 'text-green-500' : 'text-red-500'}`}>
-                      {isGain ? '+' : ''}{portfolioPercentChange.toFixed(2)}%
-                    </span>
-                  </div>
-                </div>
+              <CardContent className="p-6 lg:p-8">
+                <ProfitLossSection
+                  holdings={holdings}
+                  prices={Object.entries(prices).map(([symbol, data]) => ({ 
+                    symbol: symbol.toUpperCase(), 
+                    price: data.usd || 0,
+                    price_change_24h: data.usd_24h_change || 0
+                  }))}
+                  isLoading={loading}
+                  formatCurrency={formatCurrency}
+                  totalValue={portfolioValue}
+                  totalGainLoss={totalGainLoss}
+                  roi={portfolioPercentChange}
+                  onRefresh={updateCryptoPrices}
+                  lastUpdate={lastPriceUpdate}
+                  connectionStatus={connectionStatus}
+                />
               </CardContent>
             </Card>
           </TabsContent>
