@@ -21,6 +21,7 @@ import AdvancedSearch from "@/components/crypto/AdvancedSearch";
 import AdvancedFilters, { FilterOptions } from "@/components/crypto/AdvancedFilters";
 import AdvancedSorting, { SortOption } from "@/components/crypto/AdvancedSorting";
 import RealTimePriceMonitor from "@/components/crypto/RealTimePriceMonitor";
+import SwingTradeLog from "@/components/crypto/SwingTradeLog";
 
 export default function CryptoPortfolio() {
   const { user } = useAuth();
@@ -351,9 +352,10 @@ export default function CryptoPortfolio() {
                   <SelectItem value="balances">BALANCES HISTORY</SelectItem>
                   <SelectItem value="tokens">TOKEN BALANCES HISTORY</SelectItem>
                   <SelectItem value="profit">PROFIT & LOSS</SelectItem>
+                  <SelectItem value="swing-trade">SWING TRADE LOG</SelectItem>
                 </SelectContent>
               </Select> : <>
-                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 lg:gap-3 flex-1 h-12 lg:h-14">
+                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 lg:gap-3 flex-1 h-12 lg:h-14">
                   <TabsTrigger value="portfolio" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
                     <span className="hidden sm:inline truncate">PORTFOLIO</span>
                     <span className="sm:hidden truncate">PORT</span>
@@ -373,6 +375,10 @@ export default function CryptoPortfolio() {
                   <TabsTrigger value="tokens" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
                     <span className="hidden lg:inline truncate">TOKEN BALANCES HISTORY</span>
                     <span className="lg:hidden truncate">TOKENS</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="swing-trade" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
+                    <span className="hidden lg:inline truncate">SWING TRADE LOG</span>
+                    <span className="lg:hidden truncate">SWING</span>
                   </TabsTrigger>
                 </TabsList>
                 
@@ -575,6 +581,14 @@ export default function CryptoPortfolio() {
                     </span>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="swing-trade">
+            <Card className="mx-1 sm:mx-2">
+              <CardContent className="p-6 lg:p-8">
+                <SwingTradeLog formatCurrency={formatCurrency} />
               </CardContent>
             </Card>
           </TabsContent>
