@@ -7,10 +7,11 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { toast } from 'sonner';
-import { Eye, EyeOff, Globe } from 'lucide-react';
+import { Eye, EyeOff, Globe, Mail, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function Auth() {
   const [email, setEmail] = useState('');
@@ -19,7 +20,9 @@ export default function Auth() {
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const { signIn, signUp, signInWithGoogle, resetPassword, user } = useAuth();
+  const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const { signIn, signUp, signInWithGoogle, resetPassword, resendConfirmation, user } = useAuth();
   const { t, language, setLanguage } = useLanguage();
   const navigate = useNavigate();
 
@@ -29,6 +32,55 @@ export default function Auth() {
       navigate('/');
     }
   }, [user, navigate]);
+
+  // Resend cooldown timer
+  useEffect(() => {
+    if (resendCooldown > 0) {
+      const timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendCooldown]);
+
+  const getAuthErrorMessage = (error: any) => {
+    const message = error?.message || '';
+    
+    if (message.includes('Invalid login credentials')) {
+      return {
+        type: 'invalid_credentials',
+        title: 'Invalid Credentials',
+        message: 'The email or password you entered is incorrect. Please check and try again.',
+        action: 'If you recently signed up, you may need to confirm your email first.'
+      };
+    } else if (message.includes('Email not confirmed')) {
+      return {
+        type: 'email_not_confirmed',
+        title: 'Email Not Confirmed',
+        message: 'Please check your email and click the confirmation link before signing in.',
+        action: 'Didn\'t receive the email? You can resend it.'
+      };
+    } else if (message.includes('User not found')) {
+      return {
+        type: 'user_not_found',
+        title: 'Account Not Found',
+        message: 'No account found with this email address.',
+        action: 'Please check your email or create a new account.'
+      };
+    } else if (message.includes('signup_disabled')) {
+      return {
+        type: 'signup_disabled',
+        title: 'Signups Disabled',
+        message: 'New account registrations are currently disabled.',
+        action: 'Please contact support for assistance.'
+      };
+    }
+    
+    return {
+      type: 'unknown',
+      title: 'Sign In Error',
+      message: message || 'An unexpected error occurred during sign in.',
+      action: 'Please try again or contact support if the problem persists.'
+    };
+  };
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,17 +95,16 @@ export default function Auth() {
       const { error } = await signIn(email, password, rememberMe);
       
       if (error) {
-        if (error.message.includes('Invalid login credentials')) {
-          toast.error('Invalid email or password. If you just signed up, please check your email and confirm your account first.');
-        } else if (error.message.includes('Email not confirmed')) {
-          toast.error('Please check your email and confirm your account before signing in.');
-        } else if (error.message.includes('signup_disabled')) {
-          toast.error('New signups are currently disabled. Please contact support.');
+        const errorInfo = getAuthErrorMessage(error);
+        
+        if (errorInfo.type === 'email_not_confirmed') {
+          setShowEmailConfirmation(true);
+          toast.error(errorInfo.message);
         } else {
-          toast.error(error.message || 'An error occurred during sign in');
+          toast.error(errorInfo.message);
         }
       } else {
-        toast.success('Hello, Welcome back!');
+        toast.success('Welcome back! 🎉');
         navigate('/');
       }
     } catch (err) {
@@ -76,7 +127,6 @@ export default function Auth() {
       return;
     }
 
-    
     setLoading(true);
     
     try {
@@ -86,20 +136,44 @@ export default function Auth() {
         if (error.message.includes('User already registered')) {
           toast.error('An account with this email already exists. Please sign in instead.');
         } else if (error.message.includes('Error sending confirmation email') || error.message.includes('SMTP')) {
-          toast.success('Account created successfully! You can now sign in directly (email confirmation is temporarily disabled).');
+          toast.success('Account created successfully! 🎉\nYou can now sign in directly (email confirmation is temporarily disabled).');
           setEmail('');
           setPassword('');
         } else {
           toast.error(error.message || 'An error occurred during registration');
         }
       } else {
-        toast.success('Account created! Please check your email and click the confirmation link before signing in.');
-        setEmail('');
-        setPassword('');
+        setShowEmailConfirmation(true);
+        toast.success('Account created successfully! 🎉');
       }
     } catch (err) {
       toast.error('An unexpected error occurred. Please try again.');
       console.error('Sign up error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    if (!email) {
+      toast.error('Please enter your email address first');
+      return;
+    }
+    
+    setLoading(true);
+    
+    try {
+      const { error } = await resendConfirmation(email);
+      
+      if (error) {
+        toast.error(error.message || 'Failed to resend confirmation email');
+      } else {
+        toast.success('Confirmation email sent! Please check your inbox.');
+        setResendCooldown(60); // 60 second cooldown
+      }
+    } catch (err) {
+      toast.error('An unexpected error occurred. Please try again.');
+      console.error('Resend confirmation error:', err);
     } finally {
       setLoading(false);
     }
@@ -341,6 +415,56 @@ export default function Auth() {
             </TabsContent>
           </Tabs>
           
+          {/* Email Confirmation Alert */}
+          {showEmailConfirmation && (
+            <Alert className="mt-6 border-primary/20 bg-primary/5">
+              <Mail className="h-4 w-4" />
+              <AlertDescription className="space-y-3">
+                <div className="space-y-2">
+                  <p className="font-medium text-sm">✅ Account Created Successfully!</p>
+                  <p className="text-sm text-muted-foreground">
+                    We've sent a confirmation email to <strong>{email}</strong>. 
+                    Please check your inbox and click the confirmation link to activate your account.
+                  </p>
+                </div>
+                <div className="flex flex-col gap-2 pt-2">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <CheckCircle className="h-3 w-3" />
+                    <span>Check your inbox (and spam folder)</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <AlertCircle className="h-3 w-3" />
+                    <span>The link will expire in 24 hours</span>
+                  </div>
+                </div>
+                <div className="flex gap-2 pt-2">
+                  <Button 
+                    onClick={handleResendConfirmation}
+                    disabled={loading || resendCooldown > 0}
+                    variant="outline"
+                    size="sm"
+                    className="flex-1"
+                  >
+                    {resendCooldown > 0 
+                      ? `Resend in ${resendCooldown}s` 
+                      : loading 
+                      ? 'Sending...' 
+                      : 'Resend Email'
+                    }
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => setShowEmailConfirmation(false)}
+                  >
+                    Dismiss
+                  </Button>
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
+
           {/* Forgot Password Modal */}
           {showForgotPassword && (
             <div className="mt-6 p-4 border rounded-lg bg-muted/30">
