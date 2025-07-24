@@ -13,11 +13,13 @@ import { useReminders } from "@/hooks/useReminders";
 import { Plus, Calendar, Target, CheckCircle2, Circle, Edit, Trash2, CalendarDays, TrendingUp, Brain, Clock, Play, Pause, Square, Timer, Bell } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+
 interface Step {
   id: string;
   text: string;
   completed: boolean;
 }
+
 interface Goal {
   id: string;
   title: string;
@@ -28,6 +30,7 @@ interface Goal {
   completed: boolean;
   createdAt: string;
 }
+
 export default function Planning() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -88,6 +91,7 @@ export default function Planning() {
     }
     return () => clearInterval(interval);
   }, [isTimerRunning, remainingTime, focusTime, selectedGoal, toast]);
+
   const addStep = () => {
     if (newStep.trim()) {
       const step: Step = {
@@ -99,9 +103,11 @@ export default function Planning() {
       setNewStep('');
     }
   };
+
   const removeStep = (stepId: string) => {
     setSteps(steps.filter(s => s.id !== stepId));
   };
+
   const getCurrentPeriod = (type: string) => {
     const now = new Date();
     switch (type) {
@@ -125,6 +131,7 @@ export default function Planning() {
         return '';
     }
   };
+
   const handleSaveGoal = () => {
     if (!newGoal.title.trim() || steps.length === 0) {
       toast({
@@ -159,6 +166,7 @@ export default function Planning() {
     }
     resetForm();
   };
+
   const resetForm = () => {
     setNewGoal({
       title: '',
@@ -170,6 +178,7 @@ export default function Planning() {
     setShowAddForm(false);
     setEditingGoal(null);
   };
+
   const deleteGoal = (goalId: string) => {
     setGoals(goals.filter(g => g.id !== goalId));
     toast({
@@ -178,6 +187,7 @@ export default function Planning() {
       variant: "destructive"
     });
   };
+
   const toggleStepCompletion = (goalId: string, stepId: string) => {
     setGoals(goals.map(goal => {
       if (goal.id === goalId) {
@@ -195,6 +205,7 @@ export default function Planning() {
       return goal;
     }));
   };
+
   const editGoal = (goal: Goal) => {
     setEditingGoal(goal);
     setNewGoal({
@@ -218,25 +229,30 @@ export default function Planning() {
       description: `Starting ${focusTime}-minute focus session${goal ? ` for "${goal.title}"` : ''}.`
     });
   };
+
   const pauseTimer = () => {
     setIsTimerRunning(false);
   };
+
   const resumeTimer = () => {
     if (remainingTime > 0) {
       setIsTimerRunning(true);
     }
   };
+
   const stopTimer = () => {
     setIsTimerRunning(false);
     setRemainingTime(0);
     setSelectedGoal(null);
     setShowFocusTimer(false);
   };
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'weekly':
@@ -249,6 +265,7 @@ export default function Planning() {
         return <Target className="h-4 w-4" />;
     }
   };
+
   const getTypeBadgeColor = (type: string) => {
     switch (type) {
       case 'weekly':
@@ -261,9 +278,11 @@ export default function Planning() {
         return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
     }
   };
+
   const weeklyGoals = goals.filter(g => g.type === 'weekly');
   const monthlyGoals = goals.filter(g => g.type === 'monthly');
   const yearlyGoals = goals.filter(g => g.type === 'yearly');
+
   return <div className="space-y-6 animate-fade-in">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -593,7 +612,10 @@ export default function Planning() {
             {/* Empty State */}
             {goals.length === 0 && <Card className="text-center py-12">
                 <CardContent>
-                  <Target className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <Target className="h-12 w-12 mx-auto mb-4 animate-pulse text-primary transition-colors duration-1000" 
+                         style={{
+                           animation: 'pulse 2s ease-in-out infinite, colorShift 3s ease-in-out infinite'
+                         }} />
                   <h3 className="text-lg font-medium mb-2">មិនទាន់មានគោលដៅ</h3>
                   <p className="text-muted-foreground mb-4">
                     ចាប់ផ្តើមដោយការបន្ថែមគោលដៅប្រចាំសប្តាហ៍ ខែ ឬឆ្នាំរបស់អ្នក
@@ -840,5 +862,15 @@ export default function Planning() {
             </Card>}
         </TabsContent>
       </Tabs>
+
+      <style jsx>{`
+        @keyframes colorShift {
+          0% { color: hsl(var(--primary)); }
+          25% { color: hsl(var(--destructive)); }
+          50% { color: hsl(var(--warning)); }
+          75% { color: hsl(var(--success)); }
+          100% { color: hsl(var(--primary)); }
+        }
+      `}</style>
     </div>;
 }
