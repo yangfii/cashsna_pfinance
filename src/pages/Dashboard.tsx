@@ -101,7 +101,9 @@ export default function Dashboard() {
       {/* Header with improved breathing space */}
       <div className="flex flex-col space-y-6 lg:space-y-8 xl:flex-row xl:items-center xl:justify-between xl:space-y-0 px-2 sm:px-4 lg:px-6">
         <div className="space-y-3 lg:space-y-4">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground">{t("dashboard.title")}</h1>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground animate-fade-in transition-all duration-500 hover:tracking-wide hover:text-gradient transform hover:scale-105 cursor-default">
+            {t("dashboard.title")}
+          </h1>
           <p className="text-base sm:text-lg lg:text-xl xl:text-2xl text-muted-foreground">
             ស្ថានភាពហិរញ្ញវត្ថុរបស់អ្នកសម្រាប់ខែ {currentMonth}
           </p>
@@ -285,7 +287,7 @@ export default function Dashboard() {
               <CardContent className="p-8 lg:p-10">
                 <div className="flex items-center space-x-4 lg:space-x-6">
                   <div className="p-4 lg:p-5 bg-gradient-expense rounded-xl flex-shrink-0">
-                    <TrendingDown className="h-6 w-6 lg:h-8 lg:w-8 text-destructive-foreground" />
+                    <TrendingDown className="h-6 w-6 lg:h-8 lg:w-6 text-destructive-foreground" />
                   </div>
                    <div className="min-w-0 flex-1">
                      <h3 className="text-lg lg:text-xl xl:text-2xl font-semibold">បន្ថែមចំណាយ</h3>
