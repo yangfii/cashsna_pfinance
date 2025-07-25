@@ -275,8 +275,8 @@ const Index = () => {
           }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-3 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-accent-foreground transition-all duration-300 group-hover:scale-110">
-                    <span className="text-xl">₿</span>
+                  <div className="p-3 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-accent-foreground transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 animate-bounce hover:animate-pulse group-hover:shadow-lg group-hover:shadow-accent/20">
+                    <span className="text-xl animate-pulse group-hover:animate-bounce">₿</span>
                   </div>
                   <h3 className="text-lg font-semibold group-hover:text-accent transition-colors">
                     {language === 'khmer' ? 'គ្រប់គ្រង Crypto' : 'Crypto Portfolio'}
