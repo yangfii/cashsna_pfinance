@@ -165,7 +165,7 @@ const Index = () => {
             <div className="mb-6">
               <span className="inline-flex items-center px-4 py-2 rounded-full bg-primary-foreground/20 text-primary-foreground text-sm font-medium backdrop-blur-sm border border-primary-foreground/30">
                 <span className="mr-2">✨</span>
-                {language === 'khmer' ? 'គ្រប់គ្រងហិរញ្ញវត្ថុដោយ AI' : 'AI-Powered Finance Management'}
+                {language === 'khmer' ? 'គ្រប់គ្រងហិរញ្ញវត្ថុដ៏ទំនើបសម្រាប់អ្នក' : 'AI-Powered Finance Management'}
               </span>
             </div>
             
@@ -461,17 +461,19 @@ const Index = () => {
           <div className="text-center">
             <div className="bg-gradient-card shadow-card rounded-3xl p-8 md:p-12 max-w-4xl mx-auto border border-border/50 animate-fade-in py-0 px-[47px]">
               <div className="mb-6">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 hover:scale-110 transition-transform duration-300">
+                <div className="w-64 h-64 bg-gradient-to-br from-primary/10 via-primary/5 to-primary-glow/10 rounded-full flex items-center justify-center mx-auto mb-4 hover:scale-110 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20 animate-pulse hover:animate-none relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary-glow/20 rounded-full animate-spin-slow opacity-30"></div>
                   <script src="https://cdn.lordicon.com/lordicon.js"></script>
                   <lord-icon 
                     src="https://cdn.lordicon.com/gixzlhrn.json" 
-                    trigger="in" 
-                    delay="1500" 
+                    trigger="hover" 
+                    delay="500" 
                     stroke="bold" 
-                    state="in-reveal" 
+                    state="hover-reveal" 
                     style={{
-                      width: '250px',
-                      height: '250px'
+                      width: '200px',
+                      height: '200px',
+                      filter: 'drop-shadow(0 0 20px rgba(var(--primary), 0.3))'
                     }} 
                   />
                 </div>
