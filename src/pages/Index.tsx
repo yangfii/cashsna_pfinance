@@ -493,11 +493,7 @@ const Index = () => {
               <p className="text-sm text-muted-foreground mt-6 animate-fade-in flex items-center justify-center gap-2" style={{
               animationDelay: '0.6s'
             }}>
-                <img 
-                  src={awardBadge} 
-                  alt="Award" 
-                  className="w-5 h-5 animate-pulse hover:animate-bounce hover:scale-110 transition-all duration-500 hover:rotate-12" 
-                />
+                
                 {language === 'khmer' ? 'ឥតគិតថ្លៃ • ✨ គ្មានកាតឥណទាន • ✨ ចាប់ផ្តើមបានភ្លាម' : 'Free • ✨ No Credit Card • ✨ Start Instantly'}
               </p>
               
