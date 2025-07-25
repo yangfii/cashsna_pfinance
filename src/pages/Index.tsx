@@ -463,10 +463,17 @@ const Index = () => {
               <div className="mb-6">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 hover:scale-110 transition-transform duration-300">
                   <script src="https://cdn.lordicon.com/lordicon.js"></script>
-                  <lord-icon src="https://cdn.lordicon.com/gixzlhrn.json" trigger="in" delay="1500" stroke="bold" state="in-reveal" style={{
-                  width: '32px',
-                  height: '32px'
-                }} />
+                  <lord-icon 
+                    src="https://cdn.lordicon.com/gixzlhrn.json" 
+                    trigger="in" 
+                    delay="1500" 
+                    stroke="bold" 
+                    state="in-reveal" 
+                    style={{
+                      width: '250px',
+                      height: '250px'
+                    }} 
+                  />
                 </div>
               </div>
               
