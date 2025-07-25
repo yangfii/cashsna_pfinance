@@ -352,7 +352,7 @@ const Index = () => {
               <CardContent className="p-8">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="p-4 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 group-hover:scale-110">
-                    <span className="text-2xl">🤖</span>
+                    <span className="text-2xl animate-pulse group-hover:shadow-glow group-hover:text-primary transition-all duration-300">🤖</span>
                   </div>
                   <h3 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent animate-pulse">
                     {language === 'khmer' ? 'ជំនួយដោយបញ្ញាសិប្បនិម្មិត (AI Assistance)' : 'AI-Powered Financial Assistant'}
