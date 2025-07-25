@@ -13,6 +13,7 @@ import { Globe } from 'lucide-react';
 import heroBackground from '@/assets/hero-background.jpg';
 import backgroundImage from '@/assets/background-image.jpg';
 import overlayBackground from '@/assets/overlay-background.jpg';
+const awardBadge = "/public/lovable-uploads/bd670881-e313-41b8-b0eb-23f2fe1fe109.png";
 const Index = () => {
   const {
     user
@@ -489,10 +490,15 @@ const Index = () => {
                 </Button>
               </div>
               
-              <p className="text-sm text-muted-foreground mt-6 animate-fade-in" style={{
+              <p className="text-sm text-muted-foreground mt-6 animate-fade-in flex items-center justify-center gap-2" style={{
               animationDelay: '0.6s'
             }}>
-                ✨ {language === 'khmer' ? 'ឥតគិតថ្លៃ • ✨ គ្មានកាតឥណទាន • ✨ ចាប់ផ្តើមបានភ្លាម' : 'Free • ✨ No Credit Card • ✨ Start Instantly'}
+                <img 
+                  src={awardBadge} 
+                  alt="Award" 
+                  className="w-5 h-5 animate-pulse hover:animate-bounce hover:scale-110 transition-all duration-500 hover:rotate-12" 
+                />
+                {language === 'khmer' ? 'ឥតគិតថ្លៃ • ✨ គ្មានកាតឥណទាន • ✨ ចាប់ផ្តើមបានភ្លាម' : 'Free • ✨ No Credit Card • ✨ Start Instantly'}
               </p>
               
               <div style={{
