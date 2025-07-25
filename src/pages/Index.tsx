@@ -257,7 +257,7 @@ const Index = () => {
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 rounded-lg bg-balance/10 text-balance group-hover:bg-balance group-hover:text-balance-foreground transition-all duration-300 group-hover:scale-110">
-                    <span className="text-xl">🎯</span>
+                    <span className="text-xl animate-pulse group-hover:animate-bounce group-hover:rotate-180 transition-transform duration-500">🎯</span>
                   </div>
                   <h3 className="text-lg font-semibold group-hover:text-balance transition-colors">
                     {language === 'khmer' ? 'គោលដៅហិរញ្ញវត្ថុ' : 'Financial Goals'}
