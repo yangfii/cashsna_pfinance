@@ -14,7 +14,6 @@ import heroBackground from '@/assets/hero-background.jpg';
 import backgroundImage from '@/assets/background-image.jpg';
 import overlayBackground from '@/assets/overlay-background.jpg';
 const awardBadge = "/public/lovable-uploads/bd670881-e313-41b8-b0eb-23f2fe1fe109.png";
-
 const Index = () => {
   const {
     user
@@ -49,7 +48,6 @@ const Index = () => {
       }
     }
   }, [user, profile, profileLoading, navigate]);
-  
   if (user) {
     return <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
         <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -124,25 +122,23 @@ const Index = () => {
         </div>
       </div>;
   }
-
-  return (
-    <div className="min-h-screen">
+  return <div className="min-h-screen">
       {/* Hero Section with Professional Gradient */}
       <section className="relative overflow-hidden bg-gradient-hero">
         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{
-          backgroundImage: `url(${heroBackground})`
-        }}>
+        backgroundImage: `url(${heroBackground})`
+      }}>
           <div className="absolute inset-0 bg-cover bg-center bg-no-repeat backdrop-blur-sm" style={{
-            backgroundImage: `url(${backgroundImage})`,
-            backgroundBlendMode: 'overlay'
-          }}>
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundBlendMode: 'overlay'
+        }}>
             <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-primary/20 to-primary-glow/30 backdrop-blur-md flex items-center justify-center" style={{
-              backgroundImage: `url(${overlayBackground})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              filter: 'blur(2px)'
-            }}>
+            backgroundImage: `url(${overlayBackground})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            filter: 'blur(2px)'
+          }}>
               <span className="text-primary-foreground/60 text-4xl font-bold animate-pulse">កូនខ្មែរ</span>
             </div>
           </div>
@@ -153,11 +149,11 @@ const Index = () => {
           <div className="flex items-center gap-2">
             <span className="text-primary-foreground/80 text-sm font-medium animate-bounce">កូនខ្មែរ</span>
             <Button onClick={() => {
-              console.log('Current language:', language);
-              const newLanguage = language === 'english' ? 'khmer' : 'english';
-              console.log('Switching to:', newLanguage);
-              setLanguage(newLanguage);
-            }} variant="ghost" size="sm" className="h-10 w-10 p-0 bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20 backdrop-blur-sm" title={language === 'english' ? 'Switch to Khmer' : 'Switch to English'}>
+            console.log('Current language:', language);
+            const newLanguage = language === 'english' ? 'khmer' : 'english';
+            console.log('Switching to:', newLanguage);
+            setLanguage(newLanguage);
+          }} variant="ghost" size="sm" className="h-10 w-10 p-0 bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20 backdrop-blur-sm" title={language === 'english' ? 'Switch to Khmer' : 'Switch to English'}>
               <Globe className="h-4 w-4" />
             </Button>
             <ThemeToggle />
@@ -210,8 +206,8 @@ const Index = () => {
               {language === 'khmer' ? 'មុខងារសំខាន់ៗ' : 'Key Features'}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-fade-in" style={{
-              animationDelay: '0.2s'
-            }}>
+            animationDelay: '0.2s'
+          }}>
               {language === 'khmer' ? 'ដំណោះស្រាយគ្រប់គ្រងហិរញ្ញវត្ថុដ៏ទំនើបសម្រាប់អ្នក' : 'Complete financial management solution designed for modern users'}
             </p>
           </div>
@@ -219,8 +215,8 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Feature 1 - Smart Expense Tracking */}
             <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
-              animationDelay: '0.1s'
-            }}>
+            animationDelay: '0.1s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 group-hover:scale-110">
@@ -238,8 +234,8 @@ const Index = () => {
 
             {/* Feature 2 - Budget Management */}
             <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
-              animationDelay: '0.2s'
-            }}>
+            animationDelay: '0.2s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 rounded-lg bg-constructive/10 text-constructive group-hover:bg-constructive group-hover:text-constructive-foreground transition-all duration-300 group-hover:scale-110">
@@ -257,8 +253,8 @@ const Index = () => {
 
             {/* Feature 3 - Financial Goals */}
             <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
-              animationDelay: '0.3s'
-            }}>
+            animationDelay: '0.3s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 rounded-lg bg-balance/10 text-balance group-hover:bg-balance group-hover:text-balance-foreground transition-all duration-300 group-hover:scale-110">
@@ -276,8 +272,8 @@ const Index = () => {
 
             {/* Feature 4 - Crypto Portfolio */}
             <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
-              animationDelay: '0.4s'
-            }}>
+            animationDelay: '0.4s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-accent-foreground transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 animate-bounce hover:animate-pulse group-hover:shadow-lg group-hover:shadow-accent/20">
@@ -295,8 +291,8 @@ const Index = () => {
 
             {/* Feature 5 - Reports & Analytics */}
             <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
-              animationDelay: '0.5s'
-            }}>
+            animationDelay: '0.5s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 rounded-lg bg-secondary/10 text-secondary group-hover:bg-secondary group-hover:text-secondary-foreground transition-all duration-300 group-hover:scale-110">
@@ -314,8 +310,8 @@ const Index = () => {
 
             {/* Feature 6 - Multi-language Support */}
             <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
-              animationDelay: '0.6s'
-            }}>
+            animationDelay: '0.6s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 rounded-lg bg-muted/10 text-muted-foreground group-hover:bg-muted group-hover:text-muted-foreground transition-all duration-300 group-hover:scale-110">
@@ -333,8 +329,8 @@ const Index = () => {
 
             {/* Feature 7 - Security */}
             <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
-              animationDelay: '0.7s'
-            }}>
+            animationDelay: '0.7s'
+          }}>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 rounded-lg bg-destructive/10 text-destructive group-hover:bg-destructive group-hover:text-destructive-foreground transition-all duration-300 group-hover:scale-110">
@@ -352,8 +348,8 @@ const Index = () => {
 
             {/* Feature 8 - AI Assistance (full width) */}
             <Card className="lg:col-span-4 group hover:shadow-glow transition-all duration-500 hover:-translate-y-1 animate-fade-in bg-gradient-to-r from-primary/5 to-primary-glow/5 border-0" style={{
-              animationDelay: '0.8s'
-            }}>
+            animationDelay: '0.8s'
+          }}>
               <CardContent className="p-8">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="p-4 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 group-hover:scale-110">
@@ -412,8 +408,8 @@ const Index = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0" style={{
-              animationDelay: '0.1s'
-            }}>
+            animationDelay: '0.1s'
+          }}>
               <CardContent className="p-6 text-center">
                 <div className="mb-4">
                   <div className="w-12 h-12 bg-constructive/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-constructive/20 transition-all duration-300 group-hover:scale-110">
@@ -427,8 +423,8 @@ const Index = () => {
             </Card>
             
             <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0" style={{
-              animationDelay: '0.2s'
-            }}>
+            animationDelay: '0.2s'
+          }}>
               <CardContent className="p-6 text-center">
                 <div className="mb-4">
                   <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
@@ -442,8 +438,8 @@ const Index = () => {
             </Card>
             
             <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0" style={{
-              animationDelay: '0.3s'
-            }}>
+            animationDelay: '0.3s'
+          }}>
               <CardContent className="p-6 text-center">
                 <div className="mb-4">
                   <div className="w-12 h-12 bg-balance/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-balance/20 transition-all duration-300 group-hover:scale-110">
@@ -467,14 +463,10 @@ const Index = () => {
               <div className="mb-6">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 hover:scale-110 transition-transform duration-300">
                   <script src="https://cdn.lordicon.com/lordicon.js"></script>
-                  <lord-icon
-                    src="https://cdn.lordicon.com/gixzlhrn.json"
-                    trigger="in"
-                    delay="1500"
-                    stroke="bold"
-                    state="in-reveal"
-                    style={{width: '32px', height: '32px'}}
-                  />
+                  <lord-icon src="https://cdn.lordicon.com/gixzlhrn.json" trigger="in" delay="1500" stroke="bold" state="in-reveal" style={{
+                  width: '32px',
+                  height: '32px'
+                }} />
                 </div>
               </div>
               
@@ -483,14 +475,14 @@ const Index = () => {
               </h3>
               
               <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto animate-fade-in" style={{
-                animationDelay: '0.2s'
-              }}>
+              animationDelay: '0.2s'
+            }}>
                 {language === 'khmer' ? 'ចាប់ផ្តើមដំណើរហិរញ្ញវត្ថុរបស់អ្នកនៅថ្ងៃនេះ ជាមួយនឹងឧបករណ៍ដ៏ទំនើប និងងាយស្រួលប្រើ' : 'Start your financial journey today with modern and easy-to-use tools'}
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{
-                animationDelay: '0.4s'
-              }}>
+              animationDelay: '0.4s'
+            }}>
                 <Button asChild size="lg" className="text-lg px-12 py-6 shadow-glow hover:shadow-primary/20 hover:scale-105 transition-all duration-300">
                   <Link to="/auth">
                     {language === 'khmer' ? 'ចាប់ផ្តើមឥឡូវនេះ' : 'Start Now'}
@@ -503,19 +495,15 @@ const Index = () => {
               </div>
               
               <p className="text-sm text-muted-foreground mt-6 animate-fade-in flex items-center justify-center gap-2" style={{
-                animationDelay: '0.6s'
-              }}>
-                <img 
-                  src={awardBadge} 
-                  alt="Award" 
-                  className="w-5 h-5 animate-pulse hover:animate-bounce hover:scale-110 transition-all duration-500 hover:rotate-12" 
-                />
+              animationDelay: '0.6s'
+            }}>
+                
                 {language === 'khmer' ? 'ឥតគិតថ្លៃ • ✨ គ្មានកាតឥណទាន • ✨ ចាប់ផ្តើមបានភ្លាម' : 'Free • ✨ No Credit Card • ✨ Start Instantly'}
               </p>
               
               <div style={{
-                animationDelay: '0.8s'
-              }} className="flex flex-wrap justify-center gap-4 mt-8 pt-6 border-t border-border/20 animate-fade-in my-0 py-[4px]">
+              animationDelay: '0.8s'
+            }} className="flex flex-wrap justify-center gap-4 mt-8 pt-6 border-t border-border/20 animate-fade-in my-0 py-[4px]">
                 <Link to="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors hover:underline">
                   Privacy Policy
                 </Link>
@@ -531,8 +519,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
