@@ -399,7 +399,7 @@ const Index = () => {
 
       {/* Benefits Section */}
       <section className="bg-gradient-to-br from-secondary/30 to-accent/20 py-0 my-0">
-        <div className="container mx-auto px-0 py-[24px]">
+        <div className="container mx-auto py-[60px] px-[7px]">
           <div className="text-center mb-12">
             <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-6 animate-fade-in">
               {language === 'khmer' ? 'ប្រយោជន៍សំខាន់' : 'Key Benefits'}
