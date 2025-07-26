@@ -203,16 +203,15 @@ const Index = () => {
         </div>
         
         {/* Scroll Down Button */}
-        <div className="scroll-wrapper">
-          <div className="scroll-down" onClick={() => {
-            const section = document.getElementById('main-content');
-            if (section) {
-              section.scrollIntoView({ behavior: 'smooth' });
-            }
-          }}>
-            <span className="arrow">↓</span>
-            <span className="label">អូសចុះក្រោម</span>
-          </div>
+        <div className="scroll-indicator" onClick={() => {
+          const section = document.getElementById('main-content');
+          if (section) {
+            section.scrollIntoView({ behavior: 'smooth' });
+          }
+        }}>
+          <svg className="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M6 9l6 6 6-6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </div>
       </section>
 

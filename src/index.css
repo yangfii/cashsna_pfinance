@@ -345,34 +345,34 @@
   .container-dashboard { @apply max-w-[2200px]; }
 }
 
-/* Scroll down button styles */
-.scroll-wrapper {
+/* Scroll indicator button styles */
+.scroll-indicator {
   position: absolute;
-  bottom: 2rem;
+  bottom: 2.5rem;
   left: 50%;
   transform: translateX(-50%);
+  cursor: pointer;
+  animation: bounce 2s infinite;
+  opacity: 0.6;
+  transition: opacity 0.3s;
   z-index: 10;
 }
 
-.scroll-down {
-  text-align: center;
-  cursor: pointer;
-  animation: bounce 2s infinite;
-  color: #0f766e;
-  font-family: 'Noto Sans Khmer', sans-serif;
+.scroll-indicator:hover {
+  opacity: 1;
 }
 
-.scroll-down .arrow {
-  font-size: 2rem;
-  display: block;
-}
-
-.scroll-down .label {
-  font-size: 0.9rem;
-  margin-top: 4px;
+.arrow-icon {
+  width: 32px;
+  height: 32px;
+  color: #64748b; /* Tailwind slate-500 */
 }
 
 @keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(10px); }
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(8px);
+  }
 }
