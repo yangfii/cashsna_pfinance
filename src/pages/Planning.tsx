@@ -6,13 +6,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import AIAssistant from "@/components/AIAssistant";
 import { AddReminderDialog } from "@/components/reminders/AddReminderDialog";
 import { RemindersList } from "@/components/reminders/RemindersList";
 import { useReminders } from "@/hooks/useReminders";
-import { Plus, Calendar, Target, CheckCircle2, Circle, Edit, Trash2, CalendarDays, TrendingUp, Brain, Clock, Play, Pause, Square, Timer, Bell } from "lucide-react";
+import { Plus, Calendar as CalendarIcon, Target, CheckCircle2, Circle, Edit, Trash2, CalendarDays, TrendingUp, Brain, Clock, Play, Pause, Square, Timer, Bell } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface Step {
   id: string;
@@ -43,6 +47,7 @@ export default function Planning() {
   });
   const [newStep, setNewStep] = useState('');
   const [steps, setSteps] = useState<Step[]>([]);
+  const [selectedDate, setSelectedDate] = useState<Date>();
 
   // Focus time states
   const [focusTime, setFocusTime] = useState(25); // minutes
@@ -175,6 +180,7 @@ export default function Planning() {
       period: ''
     });
     setSteps([]);
+    setSelectedDate(undefined);
     setShowAddForm(false);
     setEditingGoal(null);
   };
@@ -215,6 +221,7 @@ export default function Planning() {
       period: goal.period
     });
     setSteps(goal.steps);
+    setSelectedDate(undefined); // Reset date when editing
     setShowAddForm(true);
   };
 
@@ -256,7 +263,7 @@ export default function Planning() {
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'weekly':
-        return <Calendar className="h-4 w-4" />;
+        return <CalendarIcon className="h-4 w-4" />;
       case 'monthly':
         return <CalendarDays className="h-4 w-4" />;
       case 'yearly':
@@ -343,11 +350,38 @@ export default function Planning() {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium mb-2 block">រយៈពេល</label>
-                  <Input placeholder={getCurrentPeriod(newGoal.type)} value={newGoal.period} onChange={e => setNewGoal({
-                ...newGoal,
-                period: e.target.value
-              })} />
+                  <label className="text-sm font-medium mb-2 block">កាលបរិច្ឆេទ</label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !selectedDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {selectedDate ? format(selectedDate, "PPP") : <span>ជ្រើសរើសកាលបរិច្ឆេទ</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={selectedDate}
+                        onSelect={(date) => {
+                          setSelectedDate(date);
+                          if (date) {
+                            setNewGoal({
+                              ...newGoal,
+                              period: format(date, "PPP")
+                            });
+                          }
+                        }}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
 
                 <div>
@@ -402,7 +436,7 @@ export default function Planning() {
             {/* Weekly Goals */}
             {weeklyGoals.length > 0 && <div>
                 <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                  <Calendar className="h-5 w-5" />
+                  <CalendarIcon className="h-5 w-5" />
                   គោលដៅប្រចាំសប្តាហ៍
                 </h2>
                 <div className="grid gap-4">
