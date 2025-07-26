@@ -465,8 +465,8 @@ const Index = () => {
           <div className="text-center">
             <div className="bg-gradient-card shadow-card rounded-3xl p-8 md:p-12 max-w-4xl mx-auto border border-border/50 animate-fade-in px-[47px] py-[11px]">
               <div className="mb-6">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 hover:scale-110 transition-transform duration-300">
-                  <span className="text-primary text-2xl animate-bounce">✨</span>
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 hover:scale-110 transition-transform duration-300 overflow-hidden">
+                  <img src="/lovable-uploads/bd670881-e313-41b8-b0eb-23f2fe1fe109.png" alt="Financial growth - hand holding a pot with plant growing a dollar sign" className="w-10 h-10 object-contain" />
                 </div>
               </div>
               
