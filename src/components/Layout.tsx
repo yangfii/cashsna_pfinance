@@ -208,7 +208,7 @@ export default function Layout() {
         
         {/* Header */}
         <div className="flex-1 flex flex-col">
-          <header className="flex h-16 lg:h-18 items-center gap-3 sm:gap-4 border-b bg-card/50 backdrop-blur-md px-4 sm:px-6 lg:px-8">
+          <header className="flex h-16 lg:h-18 items-center gap-3 sm:gap-4 border-b bg-card/50 backdrop-blur-md px-4 sm:px-6 lg:px-8" style={{backgroundImage: 'url(https://www.pinterest.com/pin/272397477456943098/)', backgroundSize: 'cover', backgroundPosition: 'center'}}>
             <SidebarTrigger />
             <div className="flex-1" />
             <Button variant="ghost" size="icon" asChild>
