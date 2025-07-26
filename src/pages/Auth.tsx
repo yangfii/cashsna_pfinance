@@ -121,8 +121,14 @@ export default function Auth() {
       return;
     }
     
-    if (password.length < 6) {
-      toast.error('Password must be at least 6 characters long');
+    // Enhanced password validation
+    if (password.length < 8) {
+      toast.error('Password must be at least 8 characters long');
+      return;
+    }
+    
+    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+      toast.error('Password must contain at least one uppercase letter, one lowercase letter, and one number');
       return;
     }
 
@@ -426,7 +432,7 @@ export default function Auth() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      minLength={6}
+                      minLength={8}
                       disabled={loading}
                       className="bg-white/10 border-white/30 placeholder:text-white/50 text-white backdrop-blur-sm focus:bg-white/20 focus:border-white/50"
                     />

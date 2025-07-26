@@ -23,6 +23,9 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   useEffect(() => {
     if (!loading && !user) {
+      // Clear any potentially stored sensitive data
+      localStorage.removeItem('rememberMe');
+      sessionStorage.clear();
       toast.error('Please sign in to access this page');
       navigate('/auth');
     }
