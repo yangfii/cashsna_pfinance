@@ -202,25 +202,16 @@ const Index = () => {
           </div>
         </div>
         
-        {/* Down Arrow Button with Lordicon */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div 
-            className="w-12 h-12 rounded-full bg-primary-foreground/10 border border-primary-foreground/20 backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-primary-foreground/20 flex items-center justify-center cursor-pointer"
-            onClick={() => {
-              const section = document.getElementById('main-content');
-              if (section) {
-                section.scrollIntoView({ behavior: 'smooth' });
-              }
-            }}
-            title={language === 'khmer' ? 'មើលមុខងារ' : 'View Features'}
-          >
-            <lord-icon
-              src="https://cdn.lordicon.com/wired-outline-947-investment-hover-pinch.json"
-              trigger="loop"
-              delay="2000"
-              colors="primary:hsl(var(--primary-foreground))"
-              style={{width: '32px', height: '32px', cursor: 'pointer'}}
-            />
+        {/* Scroll Down Button */}
+        <div className="scroll-wrapper">
+          <div className="scroll-down" onClick={() => {
+            const section = document.getElementById('main-content');
+            if (section) {
+              section.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}>
+            <span className="arrow">↓</span>
+            <span className="label">អូសចុះក្រោម</span>
           </div>
         </div>
       </section>

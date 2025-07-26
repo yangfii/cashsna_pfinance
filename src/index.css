@@ -344,3 +344,35 @@
   .container-portfolio { @apply max-w-[2000px]; }
   .container-dashboard { @apply max-w-[2200px]; }
 }
+
+/* Scroll down button styles */
+.scroll-wrapper {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.scroll-down {
+  text-align: center;
+  cursor: pointer;
+  animation: bounce 2s infinite;
+  color: #0f766e;
+  font-family: 'Noto Sans Khmer', sans-serif;
+}
+
+.scroll-down .arrow {
+  font-size: 2rem;
+  display: block;
+}
+
+.scroll-down .label {
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(10px); }
+}
