@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -210,6 +211,7 @@ export default function Layout() {
           <header className="flex h-16 lg:h-18 items-center gap-3 sm:gap-4 border-b bg-card/50 backdrop-blur-md px-4 sm:px-6 lg:px-8">
             <SidebarTrigger />
             <div className="flex-1" />
+            <LanguageSelector />
             <ThemeToggle />
           </header>
           
