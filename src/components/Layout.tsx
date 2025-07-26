@@ -211,6 +211,12 @@ export default function Layout() {
           <header className="flex h-16 lg:h-18 items-center gap-3 sm:gap-4 border-b bg-card/50 backdrop-blur-md px-4 sm:px-6 lg:px-8">
             <SidebarTrigger />
             <div className="flex-1" />
+            <Button variant="ghost" size="icon" asChild>
+              <a href="https://www.pinterest.com/pin/272397477456943098/" target="_blank" rel="noopener noreferrer" className="h-9 w-9">
+                <span className="sr-only">Pinterest Link</span>
+                📌
+              </a>
+            </Button>
             <LanguageSelector />
             <ThemeToggle />
           </header>
