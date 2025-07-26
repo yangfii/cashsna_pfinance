@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus } from "lucide-react";
 import { CryptoHolding } from "@/hooks/useCryptoData";
+import { AddIcon } from "@/components/ui/action-icons";
 
 interface AddHoldingDialogProps {
   onAddHolding: (holding: Omit<CryptoHolding, 'id'>) => void;
@@ -57,8 +57,8 @@ export default function AddHoldingDialog({ onAddHolding }: AddHoldingDialogProps
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button size="sm">
-          <Plus className="h-4 w-4 mr-1" />
+        <Button size="sm" className="gap-2">
+          <AddIcon size="sm" />
           Add Holding
         </Button>
       </DialogTrigger>

@@ -1,8 +1,9 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { TrendingUp, TrendingDown, Wallet, Trash2 } from "lucide-react";
+import { TrendingUp, TrendingDown } from "lucide-react";
 import { CryptoHolding, CryptoPrice } from "@/hooks/useCryptoData";
+import { DeleteIcon, WalletIcon } from "@/components/ui/action-icons";
 
 interface HoldingsListProps {
   holdings: CryptoHolding[];
@@ -69,8 +70,8 @@ export default function HoldingsList({ holdings, prices, onDeleteHolding }: Hold
                 </div>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
-                      <Trash2 className="h-4 w-4" />
+                    <Button variant="outline" size="sm" className="text-destructive hover:text-destructive p-2">
+                      <DeleteIcon size="sm" />
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
@@ -122,7 +123,7 @@ export default function HoldingsList({ holdings, prices, onDeleteHolding }: Hold
             {holding.wallet_address && (
               <div className="mt-3 pt-3 border-t">
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <Wallet className="h-3 w-3" />
+                  <WalletIcon size={16} variant="inline" />
                   <span>Wallet: {holding.wallet_address.substring(0, 8)}...{holding.wallet_address.slice(-6)}</span>
                 </div>
               </div>

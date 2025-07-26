@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { AlertTriangle, ExternalLink, Key, RefreshCw, CheckCircle, XCircle, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useAnimatedToast } from "@/hooks/useAnimatedToast";
 import { supabase } from "@/integrations/supabase/client";
 import binanceIcon from "@/assets/binance-icon.png";
 import bybitIcon from "@/assets/bybit-icon.png";
@@ -25,6 +26,7 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
   const [isConnecting, setIsConnecting] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const { showSuccess, showLoading, showError } = useAnimatedToast();
 
   const [binanceApiKey, setBinanceApiKey] = useState('');
   const [binanceSecret, setBinanceSecret] = useState('');
@@ -111,7 +113,7 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
 
       if (error) throw error;
       setConnectedAccounts(prev => prev.filter(acc => acc.id !== accountId));
-      toast.success("Account deleted successfully");
+      showSuccess({ description: "Account deleted successfully" });
     } catch (error) {
       console.error('Error deleting account:', error);
       toast.error("Failed to delete account");
@@ -143,7 +145,7 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
           onImportHoldings(data.holdings);
         }
 
-        toast.success(`Successfully connected to Binance. Found ${data.holdings?.length || 0} holdings.`);
+        showSuccess({ description: `Successfully connected to Binance. Found ${data.holdings?.length || 0} holdings.` });
         setBinanceApiKey('');
         setBinanceSecret('');
         setBinanceAccountName('');
@@ -194,7 +196,7 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
           onImportHoldings(data.holdings);
         }
 
-        toast.success(`Successfully connected to Bybit. Found ${data.holdings?.length || 0} holdings.`);
+        showSuccess({ description: `Successfully connected to Bybit. Found ${data.holdings?.length || 0} holdings.` });
         setBybitApiKey('');
         setBybitSecret('');
         setBybitAccountName('');
