@@ -7,13 +7,16 @@ import { WelcomeMessage } from '@/components/WelcomeMessage';
 import { ProfileCard } from '@/components/ProfileCard';
 import LandingLayout from '@/layouts/LandingLayout';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { PurposeDialog } from '@/components/PurposeDialog';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useEffect } from 'react';
 import { Globe } from 'lucide-react';
 import heroBackground from '@/assets/hero-background.jpg';
 import backgroundImage from '@/assets/background-image.jpg';
 import overlayBackground from '@/assets/overlay-background.jpg';
+
 const awardBadge = "/public/lovable-uploads/bd670881-e313-41b8-b0eb-23f2fe1fe109.png";
+
 const Index = () => {
   const {
     user
@@ -48,6 +51,7 @@ const Index = () => {
       }
     }
   }, [user, profile, profileLoading, navigate]);
+
   if (user) {
     return <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
         <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -165,7 +169,7 @@ const Index = () => {
             <div className="mb-6">
               <span className="inline-flex items-center px-4 py-2 rounded-full bg-primary-foreground/20 text-primary-foreground text-sm font-medium backdrop-blur-sm border border-primary-foreground/30">
                 <span className="mr-2">✨</span>
-                {language === 'khmer' ? 'គ្រប់គ្រងហិរញ្ញវត្ថុដោយ AI' : 'AI-Powered Finance Management'}
+                {language === 'khmer' ? 'គ្រប់គ្រងហិរញ្ញវត្ថុដ៏ទំនើបសម្រាប់អ្នក' : 'AI-Powered Finance Management'}
               </span>
             </div>
             
@@ -485,9 +489,11 @@ const Index = () => {
                     <span className="ml-2 animate-bounce">→</span>
                   </Link>
                 </Button>
-                <Button variant="outline" size="lg" className="text-lg px-12 py-6 hover:scale-105 transition-all duration-300">
-                  {language === 'khmer' ? 'ស្វែងយល់បន្ថែម' : 'Learn More'}
-                </Button>
+                <PurposeDialog>
+                  <Button variant="outline" size="lg" className="text-lg px-12 py-6 hover:scale-105 transition-all duration-300">
+                    {language === 'khmer' ? 'ស្វែងយល់បន្ថែម' : 'Learn More'}
+                  </Button>
+                </PurposeDialog>
               </div>
               
               <p className="text-sm text-muted-foreground mt-6 animate-fade-in flex items-center justify-center gap-2" style={{
@@ -517,4 +523,5 @@ const Index = () => {
       </section>
     </div>;
 };
+
 export default Index;
