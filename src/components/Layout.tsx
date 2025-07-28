@@ -205,6 +205,9 @@ export default function Layout() {
           backgroundPosition: 'center'
         }}>
             <SidebarTrigger />
+            <h1 className="text-xl font-bold text-primary bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+              CA$H$NAP FiNANCE
+            </h1>
             <div className="flex-1" />
             <Button variant="ghost" size="icon" asChild>
               
