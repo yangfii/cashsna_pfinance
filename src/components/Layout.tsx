@@ -209,7 +209,7 @@ export default function Layout() {
             <h1 className="text-xl font-bold text-primary bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
               <TypingAnimation 
                 text="CASH$NAP FiNANCE" 
-                typingSpeed={120}
+                duration={1800}
                 startDelay={300}
               />
             </h1>

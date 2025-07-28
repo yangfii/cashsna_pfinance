@@ -125,12 +125,28 @@ export default {
 				'blink': {
 					'0%, 50%': { opacity: '1' },
 					'51%, 100%': { opacity: '0' }
+				},
+				'maskReveal': {
+					'0%': {
+						maskPosition: '0% 0',
+						WebkitMaskPosition: '0% 0',
+						opacity: '0'
+					},
+					'1%': {
+						opacity: '1'
+					},
+					'100%': {
+						maskPosition: '100% 0',
+						WebkitMaskPosition: '100% 0',
+						opacity: '1'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'blink': 'blink 1s infinite'
+				'blink': 'blink 1s infinite',
+				'maskReveal': 'maskReveal 2s ease-out forwards'
 			}
 		}
 	},

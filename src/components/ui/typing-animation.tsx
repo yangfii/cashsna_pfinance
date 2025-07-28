@@ -4,50 +4,48 @@ import { cn } from '@/lib/utils';
 interface TypingAnimationProps {
   text: string;
   className?: string;
-  typingSpeed?: number;
+  duration?: number;
   startDelay?: number;
 }
 
 export function TypingAnimation({ 
   text, 
   className, 
-  typingSpeed = 100,
+  duration = 2000,
   startDelay = 500 
 }: TypingAnimationProps) {
-  const [displayText, setDisplayText] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
+  const [isRevealed, setIsRevealed] = useState(false);
 
   useEffect(() => {
-    const startTyping = setTimeout(() => {
-      setIsTyping(true);
-      let currentIndex = 0;
-      
-      const typeInterval = setInterval(() => {
-        if (currentIndex < text.length) {
-          setDisplayText(text.slice(0, currentIndex + 1));
-          currentIndex++;
-        } else {
-          setIsTyping(false);
-          clearInterval(typeInterval);
-        }
-      }, typingSpeed);
-
-      return () => clearInterval(typeInterval);
+    const timer = setTimeout(() => {
+      setIsRevealed(true);
     }, startDelay);
 
-    return () => clearTimeout(startTyping);
-  }, [text, typingSpeed, startDelay]);
+    return () => clearTimeout(timer);
+  }, [startDelay]);
 
   return (
-    <span className={cn("relative", className)}>
-      {displayText}
+    <span className={cn("relative inline-block overflow-hidden", className)}>
       <span 
         className={cn(
-          "inline-block w-0.5 h-5 bg-current ml-1",
-          "animate-pulse",
-          !isTyping && displayText.length === text.length && "animate-[blink_1s_infinite]"
+          "inline-block transition-all ease-out opacity-0",
+          isRevealed && "opacity-100 animate-[maskReveal_var(--duration)_ease-out_forwards]"
         )}
-      />
+        style={{ 
+          '--duration': `${duration}ms`,
+          maskImage: isRevealed ? 'linear-gradient(90deg, black 0%, black 100%)' : 'linear-gradient(90deg, transparent 0%, transparent 100%)',
+          WebkitMaskImage: isRevealed ? 'linear-gradient(90deg, black 0%, black 100%)' : 'linear-gradient(90deg, transparent 0%, transparent 100%)',
+          maskSize: '200% 100%',
+          WebkitMaskSize: '200% 100%',
+          maskPosition: isRevealed ? '100% 0' : '0% 0',
+          WebkitMaskPosition: isRevealed ? '100% 0' : '0% 0',
+          maskRepeat: 'no-repeat',
+          WebkitMaskRepeat: 'no-repeat',
+          animation: isRevealed ? `maskReveal ${duration}ms ease-out forwards` : 'none'
+        } as React.CSSProperties}
+      >
+        {text}
+      </span>
     </span>
   );
 }
