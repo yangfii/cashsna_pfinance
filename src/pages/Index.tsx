@@ -480,7 +480,7 @@ const Index = () => {
               <div className="mb-6">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 hover:scale-110 transition-transform duration-300">
                   <AnimatedIcon 
-                    src="https://media.lordicon.com/icons/wired/outline/947-investment.json"
+                    src="/src/assets/custom-icon.json"
                     trigger="hover"
                     size="md"
                     colors="primary:hsl(var(--primary)),secondary:hsl(var(--primary-glow))"
