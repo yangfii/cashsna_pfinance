@@ -205,9 +205,6 @@ export default function Layout() {
                   <User className="size-4" />
                 </AvatarFallback>
               </Avatar>
-              <span className="text-sm font-medium transition-all duration-300 group-hover:tracking-wide">
-                {user?.email?.split('@')[0]}
-              </span>
             </NavLink>
             <LanguageSelector />
             <ThemeToggle />
