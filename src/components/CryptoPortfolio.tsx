@@ -23,10 +23,13 @@ import AdvancedSorting, { SortOption } from "@/components/crypto/AdvancedSorting
 import RealTimePriceMonitor from "@/components/crypto/RealTimePriceMonitor";
 import SwingTradeLog from "@/components/crypto/SwingTradeLog";
 import ProfitLossSection from "@/components/crypto/ProfitLossSection";
-
 export default function CryptoPortfolio() {
-  const { user } = useAuth();
-  const { profile } = useProfile();
+  const {
+    user
+  } = useAuth();
+  const {
+    profile
+  } = useProfile();
   const isMobile = useIsMobile();
   const {
     holdings,
@@ -48,7 +51,6 @@ export default function CryptoPortfolio() {
     priceUpdateCount,
     bulkAddHoldings
   } = useCryptoData();
-
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
   const [exchangeRates, setExchangeRates] = useState<CurrencyRates>({
     USD: 1
@@ -58,14 +60,22 @@ export default function CryptoPortfolio() {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [secondarySort, setSecondarySort] = useState<SortOption>();
   const [filters, setFilters] = useState<FilterOptions>({
-    valueRange: { min: null, max: null },
+    valueRange: {
+      min: null,
+      max: null
+    },
     performance: 'all',
     walletType: [],
-    dateRange: { from: null, to: null },
-    amountRange: { min: null, max: null }
+    dateRange: {
+      from: null,
+      to: null
+    },
+    amountRange: {
+      min: null,
+      max: null
+    }
   });
   const [activeTab, setActiveTab] = useState('portfolio');
-
   const formatCurrency = (amount: number) => {
     const convertedAmount = amount * (exchangeRates[selectedCurrency] || 1);
     return new Intl.NumberFormat('en-US', {
@@ -73,12 +83,10 @@ export default function CryptoPortfolio() {
       currency: selectedCurrency
     }).format(convertedAmount);
   };
-
   const handleCurrencyChange = (currency: string, rates: CurrencyRates) => {
     setSelectedCurrency(currency);
     setExchangeRates(rates);
   };
-
   const handleImportHoldings = async (importedHoldings: any[]) => {
     try {
       await bulkAddHoldings(importedHoldings);
@@ -86,43 +94,31 @@ export default function CryptoPortfolio() {
       console.error('Error importing holdings:', error);
     }
   };
-
   const calculatePercentageChange = (currentValue: number, originalValue: number) => {
     return (currentValue - originalValue) / originalValue * 100;
   };
-
   const getHoldingCurrentValue = (holding: any) => {
     const currentPrice = prices[holding.symbol.toLowerCase()]?.usd || 0;
     return currentPrice * holding.amount;
   };
-
   const getHoldingGainLoss = (holding: any) => {
     const currentValue = getHoldingCurrentValue(holding);
     const originalValue = holding.purchase_price * holding.amount;
     return currentValue - originalValue;
   };
-
   const getHoldingPercentChange = (holding: any) => {
     const currentValue = getHoldingCurrentValue(holding);
     const originalValue = holding.purchase_price * holding.amount;
     return calculatePercentageChange(currentValue, originalValue);
   };
-
   const walletTypes = useMemo(() => {
     const types = holdings.map(h => h.wallet_type).filter(Boolean).filter((type, index, arr) => arr.indexOf(type) === index);
     return types as string[];
   }, [holdings]);
-
   const filteredAndSortedHoldings = useMemo(() => {
     let filtered = holdings.filter(holding => {
-      const matchesSearch = !searchTerm || 
-        holding.symbol.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        holding.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        holding.wallet_type?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        holding.notes?.toLowerCase().includes(searchTerm.toLowerCase());
-      
+      const matchesSearch = !searchTerm || holding.symbol.toLowerCase().includes(searchTerm.toLowerCase()) || holding.name.toLowerCase().includes(searchTerm.toLowerCase()) || holding.wallet_type?.toLowerCase().includes(searchTerm.toLowerCase()) || holding.notes?.toLowerCase().includes(searchTerm.toLowerCase());
       if (!matchesSearch) return false;
-
       if (filters.performance !== 'all') {
         const percentChange = getHoldingPercentChange(holding);
         switch (filters.performance) {
@@ -137,20 +133,16 @@ export default function CryptoPortfolio() {
             break;
         }
       }
-
       if (filters.valueRange.min !== null || filters.valueRange.max !== null) {
         const currentValue = getHoldingCurrentValue(holding);
         if (filters.valueRange.min !== null && currentValue < filters.valueRange.min) return false;
         if (filters.valueRange.max !== null && currentValue > filters.valueRange.max) return false;
       }
-
       if (filters.walletType.length > 0) {
         if (!holding.wallet_type || !filters.walletType.includes(holding.wallet_type)) return false;
       }
-
       return true;
     });
-
     return filtered.sort((a, b) => {
       const getSortValue = (holding: any, field: string) => {
         switch (field) {
@@ -176,32 +168,26 @@ export default function CryptoPortfolio() {
             return 0;
         }
       };
-
       const aValue = getSortValue(a, sortBy);
       const bValue = getSortValue(b, sortBy);
       let primaryComparison = 0;
-      
       if (typeof aValue === 'string' && typeof bValue === 'string') {
         primaryComparison = aValue.localeCompare(bValue);
       } else {
         primaryComparison = (aValue as number) - (bValue as number);
       }
-      
       if (sortDirection === 'desc') {
         primaryComparison = -primaryComparison;
       }
-
       if (primaryComparison === 0 && secondarySort) {
         const aSecondary = getSortValue(a, secondarySort.field);
         const bSecondary = getSortValue(b, secondarySort.field);
         let secondaryComparison = 0;
-        
         if (typeof aSecondary === 'string' && typeof bSecondary === 'string') {
           secondaryComparison = aSecondary.localeCompare(bSecondary);
         } else {
           secondaryComparison = (aSecondary as number) - (bSecondary as number);
         }
-        
         if (secondarySort.direction === 'desc') {
           secondaryComparison = -secondaryComparison;
         }
@@ -210,7 +196,6 @@ export default function CryptoPortfolio() {
       return primaryComparison;
     });
   }, [holdings, searchTerm, filters, sortBy, sortDirection, secondarySort, prices]);
-
   const activeFiltersCount = useMemo(() => {
     let count = 0;
     if (filters.performance !== 'all') count++;
@@ -220,31 +205,20 @@ export default function CryptoPortfolio() {
     if (filters.amountRange.min !== null || filters.amountRange.max !== null) count++;
     return count;
   }, [filters]);
-
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
+    return <div className="flex items-center justify-center h-64">
         <div className="animate-pulse text-muted-foreground">Loading portfolio...</div>
-      </div>
-    );
+      </div>;
   }
-
   const portfolioValue = calculatePortfolioValue();
   const totalGainLoss = calculateTotalGainLoss();
   const isGain = totalGainLoss >= 0;
-  const portfolioPercentChange = portfolioValue > 0 ? 
-    calculatePercentageChange(portfolioValue, portfolioValue - totalGainLoss) : 0;
-
-  return (
-    <div className="space-y-8 lg:space-y-10">
+  const portfolioPercentChange = portfolioValue > 0 ? calculatePercentageChange(portfolioValue, portfolioValue - totalGainLoss) : 0;
+  return <div className="space-y-8 lg:space-y-10">
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 lg:gap-8 p-1 sm:p-2">
         <div className="flex items-center gap-4 lg:gap-6">
           <Avatar className="h-14 w-14 lg:h-18 lg:w-18 xl:h-20 xl:w-20 ring-2 ring-primary/20">
-            <AvatarImage 
-              src={profile?.avatar_url || undefined} 
-              alt="Profile picture"
-              className="object-cover object-center"
-            />
+            <AvatarImage src={profile?.avatar_url || undefined} alt="Profile picture" className="object-cover object-center" />
             <AvatarFallback className="text-lg lg:text-xl xl:text-2xl bg-gradient-to-br from-primary/20 to-primary/10 font-semibold">
               {profile?.first_name?.[0] || user?.email?.[0]?.toUpperCase()}
             </AvatarFallback>
@@ -260,11 +234,7 @@ export default function CryptoPortfolio() {
                   <span className="truncate">Verified</span>
                 </Badge>
                 <Badge variant={connectionStatus === 'connected' ? 'default' : 'destructive'} className="text-xs px-2 py-1 inline-flex items-center gap-1.5">
-                  {connectionStatus === 'connected' ? (
-                    <Wifi className="w-3 h-3" />
-                  ) : (
-                    <WifiOff className="w-3 h-3" />
-                  )}
+                  {connectionStatus === 'connected' ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
                   <span className="capitalize">{connectionStatus}</span>
                 </Badge>
               </div>
@@ -288,20 +258,13 @@ export default function CryptoPortfolio() {
           </div>
           <div className="flex flex-wrap gap-2 sm:gap-3 flex-1 lg:flex-initial">
             <PriceAlertsDialog holdings={holdings} alerts={alerts} onAddAlert={addAlert} onRefreshAlerts={fetchAlerts} />
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="text-xs lg:text-sm px-3 py-2 h-9 lg:h-10"
-              onClick={updateCryptoPrices}
-              disabled={loading}
-            >
+            <Button variant="outline" size="sm" className="text-xs lg:text-sm px-3 py-2 h-9 lg:h-10" onClick={updateCryptoPrices} disabled={loading}>
               <RefreshCw className="h-4 w-4 mr-2" />
               <span className="hidden sm:inline">Refresh Prices</span>
               <span className="sm:hidden">Refresh</span>
             </Button>
             <CurrencySettings onCurrencyChange={handleCurrencyChange} />
-            {holdings.length > 0 && (
-              <AlertDialog>
+            {holdings.length > 0 && <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button variant="destructive" size="sm" className="text-xs lg:text-sm px-3 py-2 h-9 lg:h-10">
                     <Trash2 className="h-4 w-4 mr-2" />
@@ -323,14 +286,12 @@ export default function CryptoPortfolio() {
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
-              </AlertDialog>
-            )}
+              </AlertDialog>}
           </div>
         </div>
       </div>
 
-      {holdings.length === 0 ? (
-        <Card className="mx-1 sm:mx-2">
+      {holdings.length === 0 ? <Card className="mx-1 sm:mx-2">
           <CardContent className="text-center py-12 lg:py-16 text-muted-foreground">
             <div className="space-y-6">
               <p className="text-lg lg:text-xl">No crypto holdings yet</p>
@@ -338,9 +299,7 @@ export default function CryptoPortfolio() {
               <AddHoldingDialog onAddHolding={addHolding} />
             </div>
           </CardContent>
-        </Card>
-      ) : (
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8 lg:space-y-10">
+        </Card> : <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8 lg:space-y-10">
           <div className="flex items-center gap-3 lg:gap-4 px-1 sm:px-2">
             {isMobile ? <Select value={activeTab} onValueChange={setActiveTab}>
                 <SelectTrigger className="flex-1 h-12">
@@ -369,10 +328,7 @@ export default function CryptoPortfolio() {
                     <span className="hidden lg:inline truncate">PORTFOLIO ARCHIVE</span>
                     <span className="lg:hidden truncate">ARCHIVE</span>
                   </TabsTrigger>
-                  <TabsTrigger value="balances" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
-                    <span className="hidden lg:inline truncate">BALANCES HISTORY</span>
-                    <span className="lg:hidden truncate">BALANCES</span>
-                  </TabsTrigger>
+                  
                   <TabsTrigger value="tokens" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
                     <span className="hidden lg:inline truncate">TOKEN BALANCES HISTORY</span>
                     <span className="lg:hidden truncate">TOKENS</span>
@@ -402,33 +358,20 @@ export default function CryptoPortfolio() {
                       
                       <div className="flex flex-col xl:flex-row gap-6 lg:gap-8 xl:items-start">
                         <div className="flex-1">
-                          <AdvancedFilters 
-                            filters={filters} 
-                            onFiltersChange={setFilters} 
-                            walletTypes={walletTypes} 
-                            activeFiltersCount={activeFiltersCount} 
-                          />
+                          <AdvancedFilters filters={filters} onFiltersChange={setFilters} walletTypes={walletTypes} activeFiltersCount={activeFiltersCount} />
                         </div>
                         
                         <div className="xl:w-auto">
-                          <AdvancedSorting 
-                            sortBy={sortBy} 
-                            sortDirection={sortDirection} 
-                            onSortChange={(field, direction) => {
-                              setSortBy(field);
-                              setSortDirection(direction);
-                            }} 
-                            secondarySort={secondarySort} 
-                            onSecondarySortChange={setSecondarySort} 
-                          />
+                          <AdvancedSorting sortBy={sortBy} sortDirection={sortDirection} onSortChange={(field, direction) => {
+                        setSortBy(field);
+                        setSortDirection(direction);
+                      }} secondarySort={secondarySort} onSecondarySortChange={setSecondarySort} />
                         </div>
                       </div>
 
-                      {filteredAndSortedHoldings.length !== holdings.length && (
-                        <div className="text-sm lg:text-base text-muted-foreground">
+                      {filteredAndSortedHoldings.length !== holdings.length && <div className="text-sm lg:text-base text-muted-foreground">
                           Showing {filteredAndSortedHoldings.length} of {holdings.length} assets
-                        </div>
-                      )}
+                        </div>}
                     </div>
                     
                     <div className="overflow-x-auto">
@@ -443,21 +386,16 @@ export default function CryptoPortfolio() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {filteredAndSortedHoldings.length === 0 ? (
-                            <TableRow>
+                          {filteredAndSortedHoldings.length === 0 ? <TableRow>
                               <TableCell colSpan={5} className="text-center py-12 lg:py-16 text-muted-foreground text-base lg:text-lg">
                                 No assets match your current filters
                               </TableCell>
-                            </TableRow>
-                          ) : (
-                            filteredAndSortedHoldings.map((holding, index) => {
-                              const currentPrice = prices[holding.symbol.toLowerCase()]?.usd || 0;
-                              const currentValue = getHoldingCurrentValue(holding);
-                              const percentChange = getHoldingPercentChange(holding);
-                              const isPositive = percentChange >= 0;
-                              
-                              return (
-                                <TableRow key={holding.id} className="hover:bg-muted/30">
+                            </TableRow> : filteredAndSortedHoldings.map((holding, index) => {
+                        const currentPrice = prices[holding.symbol.toLowerCase()]?.usd || 0;
+                        const currentValue = getHoldingCurrentValue(holding);
+                        const percentChange = getHoldingPercentChange(holding);
+                        const isPositive = percentChange >= 0;
+                        return <TableRow key={holding.id} className="hover:bg-muted/30">
                                   <TableCell className="font-medium text-xs sm:text-sm lg:text-base py-4 lg:py-6">
                                     {index + 1}
                                   </TableCell>
@@ -470,11 +408,9 @@ export default function CryptoPortfolio() {
                                       </div>
                                       <div>
                                         <span className="font-medium text-sm lg:text-base">{holding.symbol}</span>
-                                        {holding.wallet_type && (
-                                          <div className="text-xs lg:text-sm text-muted-foreground/80 capitalize">
+                                        {holding.wallet_type && <div className="text-xs lg:text-sm text-muted-foreground/80 capitalize">
                                             {holding.wallet_type}
-                                          </div>
-                                        )}
+                                          </div>}
                                       </div>
                                     </div>
                                   </TableCell>
@@ -502,10 +438,8 @@ export default function CryptoPortfolio() {
                                       </span>
                                     </div>
                                   </TableCell>
-                                </TableRow>
-                              );
-                            })
-                          )}
+                                </TableRow>;
+                      })}
                         </TableBody>
                       </Table>
                     </div>
@@ -514,14 +448,7 @@ export default function CryptoPortfolio() {
               </div>
 
               <div className="xl:col-span-1">
-                <RealTimePriceMonitor
-                  prices={prices}
-                  holdings={holdings}
-                  onRefresh={fetchCryptoPrices}
-                  lastUpdate={lastPriceUpdate}
-                  updateCount={priceUpdateCount}
-                  connectionStatus={connectionStatus}
-                />
+                <RealTimePriceMonitor prices={prices} holdings={holdings} onRefresh={fetchCryptoPrices} lastUpdate={lastPriceUpdate} updateCount={priceUpdateCount} connectionStatus={connectionStatus} />
               </div>
             </div>
           </TabsContent>
@@ -567,22 +494,11 @@ export default function CryptoPortfolio() {
           <TabsContent value="profit">
             <Card className="mx-1 sm:mx-2">
               <CardContent className="p-6 lg:p-8">
-                <ProfitLossSection
-                  holdings={holdings}
-                  prices={Object.entries(prices).map(([symbol, data]) => ({ 
-                    symbol: symbol.toUpperCase(), 
-                    price: data.usd || 0,
-                    price_change_24h: data.usd_24h_change || 0
-                  }))}
-                  isLoading={loading}
-                  formatCurrency={formatCurrency}
-                  totalValue={portfolioValue}
-                  totalGainLoss={totalGainLoss}
-                  roi={portfolioPercentChange}
-                  onRefresh={updateCryptoPrices}
-                  lastUpdate={lastPriceUpdate}
-                  connectionStatus={connectionStatus}
-                />
+                <ProfitLossSection holdings={holdings} prices={Object.entries(prices).map(([symbol, data]) => ({
+              symbol: symbol.toUpperCase(),
+              price: data.usd || 0,
+              price_change_24h: data.usd_24h_change || 0
+            }))} isLoading={loading} formatCurrency={formatCurrency} totalValue={portfolioValue} totalGainLoss={totalGainLoss} roi={portfolioPercentChange} onRefresh={updateCryptoPrices} lastUpdate={lastPriceUpdate} connectionStatus={connectionStatus} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -594,8 +510,6 @@ export default function CryptoPortfolio() {
               </CardContent>
             </Card>
           </TabsContent>
-        </Tabs>
-      )}
-    </div>
-  );
+        </Tabs>}
+    </div>;
 }
