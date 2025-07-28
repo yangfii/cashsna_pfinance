@@ -205,7 +205,7 @@ export default function Layout() {
           backgroundPosition: 'center'
         }}>
             <SidebarTrigger />
-            <h1 className="text-xl font-bold text-primary bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+            <h1 className="text-xl font-bold text-primary bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent animate-fade-in hover-scale cursor-pointer transition-all duration-300 hover:tracking-wider">
               CASH$NAP FiNANCE
             </h1>
             <div className="flex-1" />
