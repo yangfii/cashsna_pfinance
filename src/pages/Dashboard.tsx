@@ -111,7 +111,17 @@ export default function Dashboard() {
         
         {/* Enhanced button layout with better spacing and wrapping */}
         <div className="flex flex-col sm:flex-row gap-4 lg:gap-6">
-          <Button variant="outline" size="sm" className="gap-3 w-full sm:w-auto h-12 lg:h-14 px-6 lg:px-8">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="gap-3 w-full sm:w-auto h-12 lg:h-14 px-6 lg:px-8"
+            onClick={() => {
+              toast({
+                title: "ប្រែប្រួលខែ",
+                description: "មុខងារនេះនឹងបានបន្ថែមក្នុងភាគខាងមុខ",
+              });
+            }}
+          >
             <Calendar className="h-5 w-5 lg:h-6 lg:w-6" />
             <span className="text-sm lg:text-base">ប្រែប្រួលខែ</span>
           </Button>
