@@ -908,7 +908,6 @@ export default function Planning() {
           }
         `
       }} />
-    </div>;
+    </div>
+  );
 }
-
-
