@@ -284,11 +284,16 @@ export default function Auth() {
         ">
           <CardHeader className="text-center pb-4 relative z-10">
             <Button
-              onClick={() => setLanguage(language === 'english' ? 'khmer' : 'english')}
+              onClick={() => {
+                const newLanguage = language === 'english' ? 'khmer' : 'english';
+                console.log('Language button clicked. Switching from', language, 'to', newLanguage);
+                setLanguage(newLanguage);
+                toast.success(`Language switched to ${newLanguage === 'english' ? 'English' : 'ខ្មែរ'}`);
+              }}
               variant="ghost"
               size="sm"
               className="absolute top-4 right-4 h-8 w-8 p-0 bg-white/10 hover:bg-white/20 text-white/80 hover:text-white border border-white/20"
-              title="Select app language"
+              title={language === 'english' ? 'Switch to Khmer' : 'Switch to English'}
             >
               <Globe className="h-4 w-4" />
             </Button>
