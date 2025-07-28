@@ -129,26 +129,6 @@ function AppSidebar() {
       
       <SidebarFooter>
         <SidebarMenu>
-          <SidebarMenuItem className="px-0 mx-0 my-[14px] py-0">
-            <SidebarMenuButton asChild tooltip={t('nav.profile')}>
-              <NavLink to="/dashboard/settings" className={cn("flex items-center gap-3 p-3 group", location.pathname === "/dashboard/settings" ? "bg-accent" : "")}>
-                <Avatar className="size-10 transition-transform duration-300 group-hover:scale-105">
-                  <AvatarImage src={profile?.avatar_url || undefined} alt="Profile picture" />
-                  <AvatarFallback className="bg-gradient-primary text-primary-foreground">
-                    <User className="size-5" />
-                  </AvatarFallback>
-                </Avatar>
-                {state === "expanded" && <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold text-foreground transition-all duration-300 group-hover:tracking-wide">
-                      {user?.email?.split('@')[0]}
-                    </span>
-                    <span className="truncate text-xs text-muted-foreground transition-all duration-300 group-hover:font-medium">
-                      {t("nav.profile")}
-                    </span>
-                  </div>}
-              </NavLink>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
           <SidebarMenuItem>
             <ReportDialog trigger={<SidebarMenuButton tooltip={t('layout.reportToDevelopers')} className="group">
                   <Bug className="transition-transform duration-300 group-hover:scale-110" />
@@ -171,6 +151,7 @@ function AppSidebar() {
 }
 export default function Layout() {
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     t
   } = useLanguage();
@@ -178,6 +159,9 @@ export default function Layout() {
     user,
     loading
   } = useAuth();
+  const {
+    profile
+  } = useProfile();
   useEffect(() => {
     if (!loading && !user) {
       navigate('/auth');
@@ -214,9 +198,17 @@ export default function Layout() {
               />
             </h1>
             <div className="flex-1" />
-            <Button variant="ghost" size="icon" asChild>
-              
-            </Button>
+            <NavLink to="/dashboard/settings" className={cn("flex items-center gap-2 p-2 rounded-lg group hover:bg-accent", location.pathname === "/dashboard/settings" ? "bg-accent" : "")}>
+              <Avatar className="size-8 transition-transform duration-300 group-hover:scale-105">
+                <AvatarImage src={profile?.avatar_url || undefined} alt="Profile picture" />
+                <AvatarFallback className="bg-gradient-primary text-primary-foreground">
+                  <User className="size-4" />
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-sm font-medium transition-all duration-300 group-hover:tracking-wide">
+                {user?.email?.split('@')[0]}
+              </span>
+            </NavLink>
             <LanguageSelector />
             <ThemeToggle />
           </header>
