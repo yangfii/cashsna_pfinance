@@ -286,9 +286,11 @@ export default function Auth() {
             <Button
               onClick={() => {
                 const newLanguage = language === 'english' ? 'khmer' : 'english';
-                console.log('Language button clicked. Switching from', language, 'to', newLanguage);
+                console.log('Language button clicked. Current:', language, 'New:', newLanguage);
                 setLanguage(newLanguage);
                 toast.success(`Language switched to ${newLanguage === 'english' ? 'English' : 'ខ្មែរ'}`);
+                // Force re-render by updating state
+                window.location.reload();
               }}
               variant="ghost"
               size="sm"
