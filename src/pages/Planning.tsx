@@ -751,34 +751,34 @@ export default function Planning() {
           </div>
 
           {/* Tips Card */}
-          <Card className="stat-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5" />
+          <div className="glass-panel p-6 hover:scale-[1.02] transition-all duration-300">
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold flex items-center gap-2">
+                <Target className="h-5 w-5 text-primary" />
                 គន្លឹះសម្រាប់សរសេរគោលដៅល្អ
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+              </h3>
+            </div>
+            <div className="space-y-4">
+              <ul className="space-y-3 text-sm">
+                <li className="flex items-start gap-3 p-3 glass-overlay rounded-lg hover:scale-105 transition-all duration-300">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
                   <span>ជ្រើសរើសគោលដៅច្បាស់លាស់ និងជាក់លាក់ (SMART Goals)</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-3 p-3 glass-overlay rounded-lg hover:scale-105 transition-all duration-300">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
                   <span>បំបែកវាទៅជាជំហានដែលអាចធ្វើបាន</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-3 p-3 glass-overlay rounded-lg hover:scale-105 transition-all duration-300">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
                   <span>ចាប់ផ្តើមតូចៗ ហើយបង្កើនបន្តិចម្តង</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-3 p-3 glass-overlay rounded-lg hover:scale-105 transition-all duration-300">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
                   <span>ពិនិត្យ និងតាមដានការវិឱ្ឌឍន៍ជាទៀងទាត់</span>
                 </li>
               </ul>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </TabsContent>
 
         <TabsContent value="ai-assistant" className="mt-6">
