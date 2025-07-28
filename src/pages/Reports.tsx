@@ -4,40 +4,65 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3, PieChart, Download, Calendar, TrendingUp, TrendingDown, FileText, AlertCircle } from "lucide-react";
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
-  PieChart as RechartsPieChart,
-  Pie,
-  Cell
-} from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell } from 'recharts';
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 // Mock data for charts
-const monthlyData = [
-  { month: "មករា", income: 1800, expense: 1200 },
-  { month: "កុម្ភៈ", income: 2200, expense: 1500 },
-  { month: "មីនា", income: 1900, expense: 1300 },
-  { month: "មេសា", income: 2100, expense: 1400 },
-  { month: "ឧសភា", income: 2400, expense: 1600 },
-  { month: "មិថុនា", income: 2000, expense: 1350 },
-  { month: "កក្កដា", income: 2300, expense: 1450 }
-];
-
-const categoryExpenses = [
-  { category: "អាហារ", amount: 450, percentage: 31 },
-  { category: "ដឹកជញ្ជូន", amount: 320, percentage: 22 },
-  { category: "ការកម្សាន្ត", amount: 280, percentage: 19 },
-  { category: "សុខភាព", amount: 200, percentage: 14 },
-  { category: "សំលៀកបំពាក់", amount: 150, percentage: 10 },
-  { category: "ផ្សេងៗ", amount: 50, percentage: 4 }
-];
+const monthlyData = [{
+  month: "មករា",
+  income: 1800,
+  expense: 1200
+}, {
+  month: "កុម្ភៈ",
+  income: 2200,
+  expense: 1500
+}, {
+  month: "មីនា",
+  income: 1900,
+  expense: 1300
+}, {
+  month: "មេសា",
+  income: 2100,
+  expense: 1400
+}, {
+  month: "ឧសភា",
+  income: 2400,
+  expense: 1600
+}, {
+  month: "មិថុនា",
+  income: 2000,
+  expense: 1350
+}, {
+  month: "កក្កដា",
+  income: 2300,
+  expense: 1450
+}];
+const categoryExpenses = [{
+  category: "អាហារ",
+  amount: 450,
+  percentage: 31
+}, {
+  category: "ដឹកជញ្ជូន",
+  amount: 320,
+  percentage: 22
+}, {
+  category: "ការកម្សាន្ត",
+  amount: 280,
+  percentage: 19
+}, {
+  category: "សុខភាព",
+  amount: 200,
+  percentage: 14
+}, {
+  category: "សំលៀកបំពាក់",
+  amount: 150,
+  percentage: 10
+}, {
+  category: "ផ្សេងៗ",
+  amount: 50,
+  percentage: 4
+}];
 
 // Colors for charts
 const COLORS = {
@@ -49,12 +74,16 @@ const COLORS = {
 // Format data for pie chart
 const getPieData = () => {
   const currentMonth = monthlyData[monthlyData.length - 1];
-  return [
-    { name: 'ចំណូល', value: currentMonth.income, color: COLORS.income },
-    { name: 'ចំណាយ', value: currentMonth.expense, color: COLORS.expense }
-  ];
+  return [{
+    name: 'ចំណូល',
+    value: currentMonth.income,
+    color: COLORS.income
+  }, {
+    name: 'ចំណាយ',
+    value: currentMonth.expense,
+    color: COLORS.expense
+  }];
 };
-
 export default function Reports() {
   const [selectedPeriod, setSelectedPeriod] = useState("thisMonth");
   const [chartType, setChartType] = useState("bar");
@@ -66,33 +95,27 @@ export default function Reports() {
     const checkForTransactions = async () => {
       try {
         // Check if user has any real transactions in database
-        const { data: transactions } = await supabase
-          .from('transactions')
-          .select('id')
-          .limit(1);
-        
+        const {
+          data: transactions
+        } = await supabase.from('transactions').select('id').limit(1);
         setIsNewUser(!transactions || transactions.length === 0);
       } catch (error) {
         // If error occurs, assume new user and show demo data
         setIsNewUser(true);
       }
     };
-
     checkForTransactions();
   }, []);
-
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
-      minimumFractionDigits: 0,
+      minimumFractionDigits: 0
     }).format(amount);
   };
-
   const totalIncome = monthlyData[monthlyData.length - 1].income;
   const totalExpense = monthlyData[monthlyData.length - 1].expense;
-  const savingsRate = ((totalIncome - totalExpense) / totalIncome * 100);
-
+  const savingsRate = (totalIncome - totalExpense) / totalIncome * 100;
   const handleExportPDF = async () => {
     setIsGeneratingPDF(true);
     try {
@@ -106,8 +129,11 @@ export default function Reports() {
       };
 
       // Get the session to include Authorization header
-      const { data: { session } } = await supabase.auth.getSession();
-      
+      const {
+        data: {
+          session
+        }
+      } = await supabase.auth.getSession();
       if (!session) {
         throw new Error('User not authenticated');
       }
@@ -117,11 +143,13 @@ export default function Reports() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
+          'Authorization': `Bearer ${session.access_token}`
         },
-        body: JSON.stringify({ reportData, period: selectedPeriod })
+        body: JSON.stringify({
+          reportData,
+          period: selectedPeriod
+        })
       });
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
@@ -137,7 +165,6 @@ export default function Reports() {
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
-
       toast.success('PDF នាំចេញបានជោគជ័យ!');
     } catch (error) {
       console.error('Error generating PDF:', error);
@@ -146,9 +173,7 @@ export default function Reports() {
       setIsGeneratingPDF(false);
     }
   };
-
-  return (
-    <div className="space-y-6 animate-fade-in">
+  return <div className="space-y-6 animate-fade-in">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
@@ -181,8 +206,7 @@ export default function Reports() {
       </div>
 
       {/* New User Financial Statement */}
-      {isNewUser && (
-        <Card className="stat-card animate-bounce-in border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
+      {isNewUser && <Card className="stat-card animate-bounce-in border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-primary">
               <FileText className="h-5 w-5" />
@@ -235,8 +259,7 @@ export default function Reports() {
               </div>
             </div>
           </CardContent>
-        </Card>
-      )}
+        </Card>}
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -257,7 +280,9 @@ export default function Reports() {
           </CardContent>
         </Card>
 
-        <Card className="stat-card expense-card animate-bounce-in" style={{animationDelay: '0.1s'}}>
+        <Card className="stat-card expense-card animate-bounce-in" style={{
+        animationDelay: '0.1s'
+      }}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-red-700 dark:text-red-400">
               ចំណាយប្រចាំខែ
@@ -274,7 +299,9 @@ export default function Reports() {
           </CardContent>
         </Card>
 
-        <Card className="stat-card balance-card animate-bounce-in" style={{animationDelay: '0.2s'}}>
+        <Card className="stat-card balance-card animate-bounce-in" style={{
+        animationDelay: '0.2s'
+      }}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-400">
               អត្រាសន្សំ
@@ -310,29 +337,11 @@ export default function Reports() {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button
-                variant={chartType === "bar" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setChartType("bar")}
-                className={`gap-2 transition-all duration-300 ${
-                  chartType === "bar" 
-                    ? "bg-gradient-primary border-0 shadow-glow" 
-                    : "hover:bg-primary/10 hover:border-primary/30"
-                }`}
-              >
+              <Button variant={chartType === "bar" ? "default" : "outline"} size="sm" onClick={() => setChartType("bar")} className={`gap-2 transition-all duration-300 ${chartType === "bar" ? "bg-gradient-primary border-0 shadow-glow" : "hover:bg-primary/10 hover:border-primary/30"}`}>
                 <BarChart3 className="h-4 w-4" />
                 របារ
               </Button>
-              <Button
-                variant={chartType === "pie" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setChartType("pie")}
-                className={`gap-2 transition-all duration-300 ${
-                  chartType === "pie" 
-                    ? "bg-gradient-primary border-0 shadow-glow" 
-                    : "hover:bg-primary/10 hover:border-primary/30"
-                }`}
-              >
+              <Button variant={chartType === "pie" ? "default" : "outline"} size="sm" onClick={() => setChartType("pie")} className={`gap-2 transition-all duration-300 ${chartType === "pie" ? "bg-gradient-primary border-0 shadow-glow" : "hover:bg-primary/10 hover:border-primary/30"}`}>
                 <PieChart className="h-4 w-4" />
                 វង់
               </Button>
@@ -342,157 +351,96 @@ export default function Reports() {
         <CardContent className="p-6 bg-gradient-to-b from-transparent to-muted/20">
           <div className="h-96 relative">
             <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 rounded-lg -z-10"></div>
-            {chartType === "bar" ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={monthlyData.slice(-6)} margin={{ top: 20, right: 30, left: 40, bottom: 60 }}>
+            {chartType === "bar" ? <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={monthlyData.slice(-6)} margin={{
+              top: 20,
+              right: 30,
+              left: 40,
+              bottom: 60
+            }}>
                   <defs>
                     <linearGradient id="incomeBar" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(var(--chart-1))" stopOpacity={1}/>
-                      <stop offset="50%" stopColor="hsl(var(--chart-1))" stopOpacity={0.9}/>
-                      <stop offset="100%" stopColor="hsl(var(--chart-1))" stopOpacity={0.7}/>
+                      <stop offset="0%" stopColor="hsl(var(--chart-1))" stopOpacity={1} />
+                      <stop offset="50%" stopColor="hsl(var(--chart-1))" stopOpacity={0.9} />
+                      <stop offset="100%" stopColor="hsl(var(--chart-1))" stopOpacity={0.7} />
                     </linearGradient>
                     <linearGradient id="expenseBar" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={1}/>
-                      <stop offset="50%" stopColor="hsl(var(--chart-2))" stopOpacity={0.9}/>
-                      <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0.7}/>
+                      <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={1} />
+                      <stop offset="50%" stopColor="hsl(var(--chart-2))" stopOpacity={0.9} />
+                      <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0.7} />
                     </linearGradient>
                     <filter id="glow">
-                      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                      <feGaussianBlur stdDeviation="3" result="coloredBlur" />
                       <feMerge> 
-                        <feMergeNode in="coloredBlur"/>
-                        <feMergeNode in="SourceGraphic"/>
+                        <feMergeNode in="coloredBlur" />
+                        <feMergeNode in="SourceGraphic" />
                       </feMerge>
                     </filter>
                   </defs>
-                  <CartesianGrid 
-                    strokeDasharray="3 3" 
-                    stroke="hsl(var(--muted-foreground))" 
-                    strokeOpacity={0.1} 
-                    vertical={false}
-                  />
-                  <XAxis 
-                    dataKey="month" 
-                    className="text-sm fill-muted-foreground" 
-                    tick={{ fontSize: 12, fill: 'hsl(var(--foreground))' }}
-                    axisLine={false}
-                    tickLine={false}
-                    angle={-45}
-                    textAnchor="end"
-                    height={60}
-                  />
-                  <YAxis 
-                    className="text-sm fill-muted-foreground" 
-                    tick={{ fontSize: 12, fill: 'hsl(var(--foreground))' }}
-                    tickFormatter={(value) => `$${value}`}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <Tooltip 
-                    formatter={(value, name) => [
-                      `${formatCurrency(value as number)}`, 
-                      name === 'income' ? 'ចំណូល' : 'ចំណាយ'
-                    ]}
-                    labelFormatter={(label) => `ខែ: ${label}`}
-                    contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
-                      border: '1px solid hsl(var(--border))',
-                      borderRadius: '12px',
-                      color: 'hsl(var(--foreground))',
-                      boxShadow: '0 20px 40px -10px hsl(var(--primary) / 0.4)',
-                      backdropFilter: 'blur(10px)'
-                    }}
-                    cursor={{
-                      fill: 'hsl(var(--muted))',
-                      fillOpacity: 0.1
-                    }}
-                  />
-                  <Bar 
-                    dataKey="income" 
-                    fill="url(#incomeBar)" 
-                    radius={[4, 4, 0, 0]} 
-                    stroke="hsl(var(--chart-1))"
-                    strokeWidth={0}
-                    filter="url(#glow)"
-                  />
-                  <Bar 
-                    dataKey="expense" 
-                    fill="url(#expenseBar)" 
-                    radius={[4, 4, 0, 0]}
-                    stroke="hsl(var(--chart-2))"
-                    strokeWidth={0}
-                    filter="url(#glow)"
-                  />
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted-foreground))" strokeOpacity={0.1} vertical={false} />
+                  <XAxis dataKey="month" className="text-sm fill-muted-foreground" tick={{
+                fontSize: 12,
+                fill: 'hsl(var(--foreground))'
+              }} axisLine={false} tickLine={false} angle={-45} textAnchor="end" height={60} />
+                  <YAxis className="text-sm fill-muted-foreground" tick={{
+                fontSize: 12,
+                fill: 'hsl(var(--foreground))'
+              }} tickFormatter={value => `$${value}`} axisLine={false} tickLine={false} />
+                  <Tooltip formatter={(value, name) => [`${formatCurrency(value as number)}`, name === 'income' ? 'ចំណូល' : 'ចំណាយ']} labelFormatter={label => `ខែ: ${label}`} contentStyle={{
+                backgroundColor: 'hsl(var(--card))',
+                border: '1px solid hsl(var(--border))',
+                borderRadius: '12px',
+                color: 'hsl(var(--foreground))',
+                boxShadow: '0 20px 40px -10px hsl(var(--primary) / 0.4)',
+                backdropFilter: 'blur(10px)'
+              }} cursor={{
+                fill: 'hsl(var(--muted))',
+                fillOpacity: 0.1
+              }} />
+                  <Bar dataKey="income" fill="url(#incomeBar)" radius={[4, 4, 0, 0]} stroke="hsl(var(--chart-1))" strokeWidth={0} filter="url(#glow)" />
+                  <Bar dataKey="expense" fill="url(#expenseBar)" radius={[4, 4, 0, 0]} stroke="hsl(var(--chart-2))" strokeWidth={0} filter="url(#glow)" />
                 </BarChart>
-              </ResponsiveContainer>
-            ) : (
-              <ResponsiveContainer width="100%" height="100%">
+              </ResponsiveContainer> : <ResponsiveContainer width="100%" height="100%">
                 <RechartsPieChart>
                   <defs>
                     <linearGradient id="incomeSlice" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor="hsl(var(--chart-1))" stopOpacity={1}/>
-                      <stop offset="100%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
+                      <stop offset="0%" stopColor="hsl(var(--chart-1))" stopOpacity={1} />
+                      <stop offset="100%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8} />
                     </linearGradient>
                     <linearGradient id="expenseSlice" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={1}/>
-                      <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
+                      <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={1} />
+                      <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8} />
                     </linearGradient>
                     <filter id="pieGlow">
-                      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                      <feGaussianBlur stdDeviation="4" result="coloredBlur" />
                       <feMerge> 
-                        <feMergeNode in="coloredBlur"/>
-                        <feMergeNode in="SourceGraphic"/>
+                        <feMergeNode in="coloredBlur" />
+                        <feMergeNode in="SourceGraphic" />
                       </feMerge>
                     </filter>
                   </defs>
-                  <Pie
-                    data={getPieData()}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={120}
-                    paddingAngle={5}
-                    dataKey="value"
-                    stroke="hsl(var(--background))"
-                    strokeWidth={4}
-                    animationBegin={0}
-                    animationDuration={1000}
-                    filter="url(#pieGlow)"
-                  >
-                    {getPieData().map((entry, index) => (
-                      <Cell 
-                        key={`cell-${index}`} 
-                        fill={index === 0 ? "url(#incomeSlice)" : "url(#expenseSlice)"}
-                      />
-                    ))}
+                  <Pie data={getPieData()} cx="50%" cy="50%" innerRadius={60} outerRadius={120} paddingAngle={5} dataKey="value" stroke="hsl(var(--background))" strokeWidth={4} animationBegin={0} animationDuration={1000} filter="url(#pieGlow)">
+                    {getPieData().map((entry, index) => <Cell key={`cell-${index}`} fill={index === 0 ? "url(#incomeSlice)" : "url(#expenseSlice)"} />)}
                   </Pie>
-                  <Tooltip 
-                    formatter={(value, name) => [
-                      `${formatCurrency(value as number)}`, 
-                      name
-                    ]}
-                    contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
-                      border: '1px solid hsl(var(--border))',
-                      borderRadius: '12px',
-                      color: 'hsl(var(--foreground))',
-                      boxShadow: '0 20px 40px -10px hsl(var(--primary) / 0.4)',
-                      backdropFilter: 'blur(10px)'
-                    }}
-                  />
+                  <Tooltip formatter={(value, name) => [`${formatCurrency(value as number)}`, name]} contentStyle={{
+                backgroundColor: 'hsl(var(--card))',
+                border: '1px solid hsl(var(--border))',
+                borderRadius: '12px',
+                color: 'hsl(var(--foreground))',
+                boxShadow: '0 20px 40px -10px hsl(var(--primary) / 0.4)',
+                backdropFilter: 'blur(10px)'
+              }} />
                   {/* Center text */}
                   <g>
-                    <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle" 
-                          className="text-sm fill-muted-foreground">
+                    <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle" className="text-sm fill-muted-foreground">
                       សរុប
                     </text>
-                    <text x="50%" y="55%" textAnchor="middle" dominantBaseline="middle" 
-                          className="text-lg font-bold fill-foreground">
+                    <text x="50%" y="55%" textAnchor="middle" dominantBaseline="middle" className="text-lg font-bold fill-foreground">
                       {formatCurrency(totalIncome + totalExpense)}
                     </text>
                   </g>
                 </RechartsPieChart>
-              </ResponsiveContainer>
-            )}
+              </ResponsiveContainer>}
           </div>
         </CardContent>
       </Card>
@@ -506,8 +454,7 @@ export default function Reports() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {categoryExpenses.map((category, index) => (
-                <div key={category.category} className="space-y-2">
+              {categoryExpenses.map((category, index) => <div key={category.category} className="space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium">{category.category}</span>
                     <div className="flex items-center gap-2">
@@ -520,13 +467,11 @@ export default function Reports() {
                     </div>
                   </div>
                   <div className="w-full bg-muted rounded-full h-2">
-                    <div
-                      className="bg-gradient-expense h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${category.percentage}%` }}
-                    />
+                    <div className="bg-gradient-expense h-2 rounded-full transition-all duration-500" style={{
+                  width: `${category.percentage}%`
+                }} />
                   </div>
-                </div>
-              ))}
+                </div>)}
             </div>
           </CardContent>
         </Card>
@@ -534,7 +479,7 @@ export default function Reports() {
         {/* Monthly Comparison */}
         <Card className="stat-card animate-slide-up">
           <CardHeader>
-            <CardTitle>ការប្រៀបធៀបរាយខែ</CardTitle>
+            <CardTitle>ការប្រៀបធៀបរាល់ខែ</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
@@ -577,82 +522,20 @@ export default function Reports() {
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-4">
-            <Button 
-              variant="outline" 
-              className="gap-2"
-              onClick={() => {
-                const csvContent = [
-                  ['Period', 'Income', 'Expense', 'Savings'],
-                  ...monthlyData.map(item => [item.month, item.income, item.expense, item.income - item.expense])
-                ].map(row => row.join(',')).join('\n');
-                
-                const blob = new Blob([csvContent], { type: 'text/csv' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `financial-data-${selectedPeriod}.csv`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-                toast.success('CSV នាំចេញបានជោគជ័យ!');
-              }}
-            >
+            <Button variant="outline" className="gap-2">
               <Download className="h-4 w-4" />
               CSV File
             </Button>
-            <Button 
-              variant="outline" 
-              className="gap-2"
-              onClick={handleExportPDF}
-              disabled={isGeneratingPDF}
-            >
+            <Button variant="outline" className="gap-2">
               <Download className="h-4 w-4" />
-              {isGeneratingPDF ? 'កំពុងបង្កើត...' : 'PDF Report'}
+              PDF Report
             </Button>
-            <Button 
-              variant="outline" 
-              className="gap-2"
-              onClick={() => {
-                const summaryData = {
-                  period: selectedPeriod,
-                  totalIncome: formatCurrency(totalIncome),
-                  totalExpense: formatCurrency(totalExpense),
-                  savings: formatCurrency(totalIncome - totalExpense),
-                  savingsRate: `${savingsRate.toFixed(1)}%`,
-                  topExpenses: categoryExpenses.slice(0, 3).map(item => `${item.category}: ${formatCurrency(item.amount)}`)
-                };
-                
-                const summaryText = `
-បទបង្ហាញសង្ខេប - ${summaryData.period}
-=====================================
-ចំណូល: ${summaryData.totalIncome}
-ចំណាយ: ${summaryData.totalExpense}
-សន្សំ: ${summaryData.savings}
-អត្រាសន្សំ: ${summaryData.savingsRate}
-
-ចំណាយធំបំផុត:
-${summaryData.topExpenses.join('\n')}
-                `.trim();
-                
-                const blob = new Blob([summaryText], { type: 'text/plain;charset=utf-8' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `monthly-summary-${selectedPeriod}.txt`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-                toast.success('បទបង្ហាញសង្ខេបនាំចេញបានជោគជ័យ!');
-              }}
-            >
+            <Button variant="outline" className="gap-2">
               <Calendar className="h-4 w-4" />
               Monthly Summary
             </Button>
           </div>
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 }
