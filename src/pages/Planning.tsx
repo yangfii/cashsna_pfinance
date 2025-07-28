@@ -42,6 +42,7 @@ export default function Planning() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("goals");
   const { theme } = useTheme();
   const [newGoal, setNewGoal] = useState({
     title: '',
@@ -326,18 +327,28 @@ export default function Planning() {
             <p className="text-muted-foreground">គ្រប់គ្រងគោលដៅរបស់អ្នកតាមសប្តាហ៍ ខែ និងឆ្នាំ</p>
           </div>
           
-          <Button onClick={() => setShowAddForm(true)} className="gap-2 glass-effect hover:scale-105 transition-all duration-300">
-            <Plus className="h-4 w-4" />
-            បន្ថែមគោលដៅថ្មី
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              onClick={() => setActiveTab("customization")} 
+              className="gap-2 glass-effect hover:scale-105 transition-all duration-300"
+            >
+              <Palette className="h-4 w-4" />
+              ការកំណត់រូបរាង
+            </Button>
+            <Button onClick={() => setShowAddForm(true)} className="gap-2 glass-effect hover:scale-105 transition-all duration-300">
+              <Plus className="h-4 w-4" />
+              បន្ថែមគោលដៅថ្មី
+            </Button>
+          </div>
         </div>
       </div>
 
       {/* Main Content Tabs */}
       <div className="relative z-10">
-        <Tabs defaultValue="goals" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="glass-overlay p-2 rounded-xl mb-6">
-            <TabsList className="grid w-full grid-cols-3 bg-transparent border-0">
+            <TabsList className="grid w-full grid-cols-2 bg-transparent border-0">
               <TabsTrigger value="ai-assistant" className="flex items-center gap-2 glass-card data-[state=active]:glass-strong">
                 <Brain className="h-4 w-4" />
                 ជំនួយការ AI
@@ -348,10 +359,6 @@ export default function Planning() {
                 {getUpcomingReminders().length > 0 && <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 text-xs">
                     {getUpcomingReminders().length}
                   </Badge>}
-              </TabsTrigger>
-              <TabsTrigger value="customization" className="flex items-center gap-2 glass-card data-[state=active]:glass-strong">
-                <Palette className="h-4 w-4" />
-                ការកំណត់រូបរាង
               </TabsTrigger>
             </TabsList>
           </div>
