@@ -303,52 +303,66 @@ export default function Planning() {
   }, []);
 
   return (
-    <div className="space-y-6 animate-fade-in" style={{
-      backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundAttachment: 'fixed'
-    }}>
+    <div 
+      className="min-h-screen space-y-6 animate-fade-in relative"
+      style={{
+        backgroundImage: backgroundImage ? `url(${backgroundImage})` : 
+          'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--primary) / 0.05) 50%, hsl(var(--secondary) / 0.08) 100%)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      {/* Dreamy background overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background/60 via-background/40 to-background/60 backdrop-blur-[1px]" />
+      
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">ការរៀបចំគំរោង</h1>
-          <p className="text-muted-foreground">គ្រប់គ្រងគោលដៅរបស់អ្នកតាមសប្តាហ៍ ខែ និងឆ្នាំ</p>
+      <div className="relative z-10 glass-panel p-6 mb-6">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              ការរៀបចំគំរោង
+            </h1>
+            <p className="text-muted-foreground">គ្រប់គ្រងគោលដៅរបស់អ្នកតាមសប្តាហ៍ ខែ និងឆ្នាំ</p>
+          </div>
+          
+          <Button onClick={() => setShowAddForm(true)} className="gap-2 glass-effect hover:scale-105 transition-all duration-300">
+            <Plus className="h-4 w-4" />
+            បន្ថែមគោលដៅថ្មី
+          </Button>
         </div>
-        
-        <Button onClick={() => setShowAddForm(true)} className="gap-2">
-          <Plus className="h-4 w-4" />
-          បន្ថែមគោលដៅថ្មី
-        </Button>
       </div>
 
       {/* Main Content Tabs */}
-      <Tabs defaultValue="goals" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="ai-assistant" className="flex items-center gap-2">
-            <Brain className="h-4 w-4" />
-            ជំនួយការ AI
-          </TabsTrigger>
-          <TabsTrigger value="goals" className="flex items-center gap-2">
-            <Target className="h-4 w-4" />
-            គោលដៅ & កំណត់ចងចាំ
-            {getUpcomingReminders().length > 0 && <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 text-xs">
-                {getUpcomingReminders().length}
-              </Badge>}
-          </TabsTrigger>
-          <TabsTrigger value="customization" className="flex items-center gap-2">
-            <Palette className="h-4 w-4" />
-            ការកំណត់រូបរាង
-          </TabsTrigger>
-        </TabsList>
+      <div className="relative z-10">
+        <Tabs defaultValue="goals" className="w-full">
+          <div className="glass-overlay p-2 rounded-xl mb-6">
+            <TabsList className="grid w-full grid-cols-3 bg-transparent border-0">
+              <TabsTrigger value="ai-assistant" className="flex items-center gap-2 glass-card data-[state=active]:glass-strong">
+                <Brain className="h-4 w-4" />
+                ជំនួយការ AI
+              </TabsTrigger>
+              <TabsTrigger value="goals" className="flex items-center gap-2 glass-card data-[state=active]:glass-strong">
+                <Target className="h-4 w-4" />
+                គោលដៅ & កំណត់ចងចាំ
+                {getUpcomingReminders().length > 0 && <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 text-xs">
+                    {getUpcomingReminders().length}
+                  </Badge>}
+              </TabsTrigger>
+              <TabsTrigger value="customization" className="flex items-center gap-2 glass-card data-[state=active]:glass-strong">
+                <Palette className="h-4 w-4" />
+                ការកំណត់រូបរាង
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-        <TabsContent value="goals" className="mt-6 space-y-6">
-          {/* Add/Edit Goal Form */}
-          {showAddForm && <Card className="animate-slide-down">
-              <CardHeader>
-                <CardTitle>{editingGoal ? 'កែប្រែគោលដៅ' : 'បន្ថែមគោលដៅថ្មី'}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+          <TabsContent value="goals" className="mt-6 space-y-6">
+            {/* Add/Edit Goal Form */}
+            {showAddForm && <div className="glass-panel p-6 animate-slide-down">
+                <div className="mb-6">
+                  <h3 className="text-xl font-semibold text-foreground">{editingGoal ? 'កែប្រែគោលដៅ' : 'បន្ថែមគោលដៅថ្មី'}</h3>
+                </div>
+              <div className="space-y-4">
                 <div>
                   <label className="text-sm font-medium mb-2 block">ប្រភេទគោលដៅ</label>
                   <Select value={newGoal.type} onValueChange={(value: 'weekly' | 'monthly' | 'yearly') => setNewGoal({
@@ -445,8 +459,8 @@ export default function Planning() {
                     បោះបង់
                   </Button>
                 </div>
-              </CardContent>
-            </Card>}
+                </div>
+              </div>}
 
           {/* Goals Display */}
           <div className="space-y-8">
@@ -456,9 +470,9 @@ export default function Planning() {
                   <CalendarIcon className="h-5 w-5" />
                   គោលដៅប្រចាំសប្តាហ៍
                 </h2>
-                <div className="grid gap-4">
-                  {weeklyGoals.map(goal => <Card key={goal.id} className="stat-card">
-                      <CardHeader className="pb-3">
+                 <div className="grid gap-4">
+                  {weeklyGoals.map(goal => <div key={goal.id} className="glass-card p-6 hover:scale-[1.02] transition-all duration-300">
+                      <div className="pb-3">
                         <div className="flex items-start justify-between">
                           <div className="space-y-2">
                             <div className="flex items-center gap-2">
@@ -471,7 +485,7 @@ export default function Planning() {
                                   បានបញ្ចប់
                                 </Badge>}
                             </div>
-                            <CardTitle className="text-lg">{goal.title}</CardTitle>
+                            <h3 className="text-lg font-semibold">{goal.title}</h3>
                             <p className="text-sm text-muted-foreground">{goal.period}</p>
                             {goal.description && <p className="text-sm text-muted-foreground">{goal.description}</p>}
                           </div>
@@ -502,8 +516,8 @@ export default function Planning() {
                             </AlertDialog>
                           </div>
                         </div>
-                      </CardHeader>
-                      <CardContent>
+                      </div>
+                      <div>
                         <div className="space-y-2">
                           <h4 className="font-medium text-sm">ជំហានដែលត្រូវអនុវត្ត:</h4>
                           {goal.steps.map(step => <div key={step.id} className="flex items-center gap-2">
@@ -515,8 +529,8 @@ export default function Planning() {
                               </span>
                             </div>)}
                         </div>
-                      </CardContent>
-                    </Card>)}
+                      </div>
+                    </div>)}
                 </div>
               </div>}
 
@@ -527,8 +541,8 @@ export default function Planning() {
                   គោលដៅប្រចាំខែ
                 </h2>
                 <div className="grid gap-4">
-                  {monthlyGoals.map(goal => <Card key={goal.id} className="stat-card">
-                      <CardHeader className="pb-3">
+                  {monthlyGoals.map(goal => <div key={goal.id} className="glass-card p-6 hover:scale-[1.02] transition-all duration-300">
+                      <div className="pb-3">
                         <div className="flex items-start justify-between">
                           <div className="space-y-2">
                             <div className="flex items-center gap-2">
@@ -541,7 +555,7 @@ export default function Planning() {
                                   បានបញ្ចប់
                                 </Badge>}
                             </div>
-                            <CardTitle className="text-lg">{goal.title}</CardTitle>
+                            <h3 className="text-lg font-semibold">{goal.title}</h3>
                             <p className="text-sm text-muted-foreground">{goal.period}</p>
                             {goal.description && <p className="text-sm text-muted-foreground">{goal.description}</p>}
                           </div>
@@ -572,8 +586,8 @@ export default function Planning() {
                             </AlertDialog>
                           </div>
                         </div>
-                      </CardHeader>
-                      <CardContent>
+                      </div>
+                      <div>
                         <div className="space-y-2">
                           <h4 className="font-medium text-sm">ជំហានដែលត្រូវអនុវត្ត:</h4>
                           {goal.steps.map(step => <div key={step.id} className="flex items-center gap-2">
@@ -585,8 +599,8 @@ export default function Planning() {
                               </span>
                             </div>)}
                         </div>
-                      </CardContent>
-                    </Card>)}
+                      </div>
+                    </div>)}
                 </div>
               </div>}
 
@@ -596,9 +610,9 @@ export default function Planning() {
                   <TrendingUp className="h-5 w-5" />
                   គោលដៅប្រចាំឆ្នាំ
                 </h2>
-                <div className="grid gap-4">
-                  {yearlyGoals.map(goal => <Card key={goal.id} className="stat-card">
-                      <CardHeader className="pb-3">
+                 <div className="grid gap-4">
+                  {yearlyGoals.map(goal => <div key={goal.id} className="glass-card p-6 hover:scale-[1.02] transition-all duration-300">
+                      <div className="pb-3">
                         <div className="flex items-start justify-between">
                           <div className="space-y-2">
                             <div className="flex items-center gap-2">
@@ -611,7 +625,7 @@ export default function Planning() {
                                   បានបញ្ចប់
                                 </Badge>}
                             </div>
-                            <CardTitle className="text-lg">{goal.title}</CardTitle>
+                            <h3 className="text-lg font-semibold">{goal.title}</h3>
                             <p className="text-sm text-muted-foreground">{goal.period}</p>
                             {goal.description && <p className="text-sm text-muted-foreground">{goal.description}</p>}
                           </div>
@@ -642,8 +656,8 @@ export default function Planning() {
                             </AlertDialog>
                           </div>
                         </div>
-                      </CardHeader>
-                      <CardContent>
+                      </div>
+                      <div>
                         <div className="space-y-2">
                           <h4 className="font-medium text-sm">ជំហានដែលត្រូវអនុវត្ត:</h4>
                           {goal.steps.map(step => <div key={step.id} className="flex items-center gap-2">
@@ -655,28 +669,26 @@ export default function Planning() {
                               </span>
                             </div>)}
                         </div>
-                      </CardContent>
-                    </Card>)}
+                      </div>
+                    </div>)}
                 </div>
               </div>}
 
             {/* Empty State */}
-            {goals.length === 0 && <Card className="text-center py-12">
-                <CardContent>
-                  <Target className="h-12 w-12 mx-auto mb-4 animate-pulse text-primary transition-colors duration-1000" 
-                         style={{
-                           animation: 'pulse 2s ease-in-out infinite, colorShift 3s ease-in-out infinite'
-                         }} />
-                  <h3 className="text-lg font-medium mb-2">មិនទាន់មានគោលដៅ</h3>
-                  <p className="text-muted-foreground mb-4">
-                    ចាប់ផ្តើមដោយការបន្ថែមគោលដៅប្រចាំសប្តាហ៍ ខែ ឬឆ្នាំរបស់អ្នក
-                  </p>
-                  <Button onClick={() => setShowAddForm(true)} className="gap-2">
-                    <Plus className="h-4 w-4" />
-                    បន្ថែមគោលដៅដំបូង
-                  </Button>
-                </CardContent>
-              </Card>}
+            {goals.length === 0 && <div className="glass-panel text-center py-12">
+                <Target className="h-12 w-12 mx-auto mb-4 animate-pulse text-primary transition-colors duration-1000" 
+                       style={{
+                         animation: 'pulse 2s ease-in-out infinite, colorShift 3s ease-in-out infinite'
+                       }} />
+                <h3 className="text-lg font-medium mb-2">មិនទាន់មានគោលដៅ</h3>
+                <p className="text-muted-foreground mb-4">
+                  ចាប់ផ្តើមដោយការបន្ថែមគោលដៅប្រចាំសប្តាហ៍ ខែ ឬឆ្នាំរបស់អ្នក
+                </p>
+                <Button onClick={() => setShowAddForm(true)} className="gap-2">
+                  <Plus className="h-4 w-4" />
+                  បន្ថែមគោលដៅដំបូង
+                </Button>
+              </div>}
           </div>
 
           {/* Reminders Section */}
@@ -774,17 +786,17 @@ export default function Planning() {
         </TabsContent>
 
         <TabsContent value="customization" className="mt-6 space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+          <div className="glass-panel p-6">
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold flex items-center gap-2">
                 <Palette className="h-5 w-5" />
                 ការកំណត់រូបរាង
-              </CardTitle>
+              </h3>
               <p className="text-muted-foreground">
                 កែប្រែពណ៌ និងរូបភាពផ្ទៃខាងក្រោយ
               </p>
-            </CardHeader>
-            <CardContent className="space-y-6">
+            </div>
+            <div className="space-y-6">
               {/* Theme Selection */}
               <div className="space-y-4">
                 <div>
@@ -867,18 +879,16 @@ export default function Planning() {
               </div>
 
               {/* Customization Tips */}
-              <Card className="bg-muted/50">
-                <CardContent className="p-4">
-                  <h4 className="font-medium mb-2">គន្លឹះការកំណត់រូបរាង</h4>
-                  <ul className="text-sm space-y-1 text-muted-foreground">
-                    <li>• រូបភាពដែលមានគុណភាពល្អបំផុតគឺ 1920x1080 pixels</li>
-                    <li>• ជ្រើសរើសរូបភាពដែលមិនរំខានដល់ការអាន</li>
-                    <li>• ប្រើពណ៌ស្រាលសម្រាប់ការងារយូរ</li>
-                  </ul>
-                </CardContent>
-              </Card>
-            </CardContent>
-          </Card>
+              <div className="glass-overlay p-4 rounded-lg">
+                <h4 className="font-medium mb-2">គន្លឹះការកំណត់រូបរាង</h4>
+                <ul className="text-sm space-y-1 text-muted-foreground">
+                  <li>• រូបភាពដែលមានគុណភាពល្អបំផុតគឺ 1920x1080 pixels</li>
+                  <li>• ជ្រើសរើសរូបភាពដែលមិនរំខានដល់ការអាន</li>
+                  <li>• ប្រើពណ៌ស្រាលសម្រាប់ការងារយូរ</li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </TabsContent>
 
 
@@ -1022,7 +1032,8 @@ export default function Planning() {
               </CardContent>
             </Card>}
         </TabsContent>
-      </Tabs>
+        </Tabs>
+      </div>
 
       <style dangerouslySetInnerHTML={{
         __html: `
