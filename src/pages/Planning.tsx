@@ -307,23 +307,18 @@ export default function Planning() {
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="goals" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="ai-assistant" className="flex items-center gap-2">
             <Brain className="h-4 w-4" />
             ជំនួយការ AI
           </TabsTrigger>
           <TabsTrigger value="goals" className="flex items-center gap-2">
             <Target className="h-4 w-4" />
-            គោលដៅ
-          </TabsTrigger>
-          <TabsTrigger value="reminders" className="flex items-center gap-2 relative">
-            <Bell className="h-4 w-4" />
-            កំណត់ចងចាំ
+            គោលដៅ & កំណត់ចងចាំ
             {getUpcomingReminders().length > 0 && <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 text-xs">
                 {getUpcomingReminders().length}
               </Badge>}
           </TabsTrigger>
-          
         </TabsList>
 
         <TabsContent value="goals" className="mt-6 space-y-6">
@@ -663,6 +658,65 @@ export default function Planning() {
               </Card>}
           </div>
 
+          {/* Reminders Section */}
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">កំណត់ចងចាំ</h2>
+                <p className="text-muted-foreground">
+                  គ្រប់គ្រងការរំលឹក ព្រឹត្តិការណ៍ និងការងារសំខាន់ៗ
+                </p>
+              </div>
+              <AddReminderDialog>
+                <Button className="flex items-center gap-2">
+                  <Bell className="h-4 w-4" />
+                  បន្ថែមការរំលឹកថ្មី
+                </Button>
+              </AddReminderDialog>
+            </div>
+
+            {/* Quick stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-yellow-600" />
+                    <span className="text-sm font-medium">ខាងមុខ (២៤ម៉ោង)</span>
+                  </div>
+                  <p className="text-2xl font-bold text-yellow-600">
+                    {getUpcomingReminders().length}
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-2">
+                    <Bell className="h-4 w-4 text-red-600" />
+                    <span className="text-sm font-medium">ហួសកំណត់</span>
+                  </div>
+                  <p className="text-2xl font-bold text-red-600">
+                    {getOverdueReminders().length}
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    <span className="text-sm font-medium">សរុបសកម្ម</span>
+                  </div>
+                  <p className="text-2xl font-bold text-green-600">
+                    {getUpcomingReminders().length + getOverdueReminders().length}
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <RemindersList />
+          </div>
+
           {/* Tips Card */}
           <Card className="stat-card">
             <CardHeader>
@@ -698,63 +752,6 @@ export default function Planning() {
           <AIAssistant />
         </TabsContent>
 
-        <TabsContent value="reminders" className="mt-6 space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold">កំណត់ចងចាំ</h2>
-              <p className="text-muted-foreground">
-                គ្រប់គ្រងការរំលឹក ព្រឹត្តិការណ៍ និងការងារសំខាន់ៗ
-              </p>
-            </div>
-            <AddReminderDialog>
-              <Button className="flex items-center gap-2">
-                <Bell className="h-4 w-4" />
-                បន្ថែមការរំលឹកថ្មី
-              </Button>
-            </AddReminderDialog>
-          </div>
-
-          {/* Quick stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-yellow-600" />
-                  <span className="text-sm font-medium">ខាងមុខ (២៤ម៉ោង)</span>
-                </div>
-                <p className="text-2xl font-bold text-yellow-600">
-                  {getUpcomingReminders().length}
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2">
-                  <Bell className="h-4 w-4 text-red-600" />
-                  <span className="text-sm font-medium">ហួសកំណត់</span>
-                </div>
-                <p className="text-2xl font-bold text-red-600">
-                  {getOverdueReminders().length}
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-green-600" />
-                  <span className="text-sm font-medium">សរុបសកម្ម</span>
-                </div>
-                <p className="text-2xl font-bold text-green-600">
-                  {getUpcomingReminders().length + getOverdueReminders().length}
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-
-          <RemindersList />
-        </TabsContent>
 
         <TabsContent value="focus" className="mt-6 space-y-6">
           {/* Focus Timer Section */}
