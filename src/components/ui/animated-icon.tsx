@@ -47,17 +47,27 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
   const iconSize = typeof size === 'number' ? size : sizeMap[size];
 
   useEffect(() => {
+    // Check if script already exists
+    const existingScript = document.querySelector('script[src="https://cdn.lordicon.com/lordicon.js"]');
+    
+    if (existingScript) {
+      setIsLoaded(true);
+      return;
+    }
+
     // Load Lordicon script dynamically
     const script = document.createElement('script');
     script.src = 'https://cdn.lordicon.com/lordicon.js';
     script.async = true;
-    script.onload = () => setIsLoaded(true);
-    
-    if (!document.querySelector('script[src="https://cdn.lordicon.com/lordicon.js"]')) {
-      document.head.appendChild(script);
-    } else {
+    script.onload = () => {
       setIsLoaded(true);
-    }
+    };
+    script.onerror = () => {
+      console.error('Failed to load Lordicon script');
+      setIsLoaded(true); // Still show fallback
+    };
+    
+    document.head.appendChild(script);
 
     return () => {
       // Script cleanup is handled by the browser
