@@ -3,6 +3,7 @@ import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { TypingAnimation } from "@/components/ui/typing-animation";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -205,8 +206,12 @@ export default function Layout() {
           backgroundPosition: 'center'
         }}>
             <SidebarTrigger />
-            <h1 className="text-xl font-bold text-primary bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent animate-fade-in hover-scale cursor-pointer transition-all duration-300 hover:tracking-wider">
-              CASH$NAP FiNANCE
+            <h1 className="text-xl font-bold text-primary bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+              <TypingAnimation 
+                text="CASH$NAP FiNANCE" 
+                typingSpeed={120}
+                startDelay={300}
+              />
             </h1>
             <div className="flex-1" />
             <Button variant="ghost" size="icon" asChild>
