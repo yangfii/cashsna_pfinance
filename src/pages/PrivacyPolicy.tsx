@@ -124,7 +124,7 @@ export default function PrivacyPolicy() {
               <p className="text-muted-foreground">
                 For inquiries or data requests, contact:<br />
                 Privacy Officer, CashSnap Finance<br />
-                Telegram Group Supporter: https://t.me/cashsnapfinance
+                Telegram Group Supporter: <a href="https://t.me/cashsnapfinance" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">https://t.me/cashsnapfinance</a>
               </p>
             </section>
           </CardContent>
