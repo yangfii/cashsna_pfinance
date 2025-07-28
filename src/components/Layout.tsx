@@ -3,7 +3,7 @@ import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
-import { TypingAnimation } from "@/components/ui/typing-animation";
+import { GlobalSearch } from "@/components/GlobalSearch";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -190,13 +190,7 @@ export default function Layout() {
           backgroundPosition: 'center'
         }}>
             <SidebarTrigger />
-            <h1 className="text-xl font-bold text-primary bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-              <TypingAnimation 
-                text="CASH$NAP FiNANCE" 
-                duration={1800}
-                startDelay={300}
-              />
-            </h1>
+            <GlobalSearch />
             <div className="flex-1" />
             <NavLink to="/dashboard/settings" className={cn("flex items-center gap-2 p-2 rounded-lg group hover:bg-accent", location.pathname === "/dashboard/settings" ? "bg-accent" : "")}>
               <Avatar className="size-8 transition-transform duration-300 group-hover:scale-105">

@@ -1,0 +1,250 @@
+import { useState, useEffect } from 'react';
+import { Search, Brain, Coins, BarChart3, Target, FolderOpen, ArrowLeftRight, Settings, LayoutDashboard, TrendingUp, Calculator, PieChart, Zap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '@/hooks/useLanguage';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
+
+interface SearchItem {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  route: string;
+  icon: any;
+  keywords: string[];
+}
+
+export function GlobalSearch() {
+  const { t } = useLanguage();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const [filteredItems, setFilteredItems] = useState<SearchItem[]>([]);
+
+  const searchItems: SearchItem[] = [
+    {
+      id: 'dashboard',
+      title: t('nav.dashboard'),
+      description: 'Overview of your financial status',
+      category: 'Navigation',
+      route: '/dashboard',
+      icon: LayoutDashboard,
+      keywords: ['home', 'overview', 'main', 'summary']
+    },
+    {
+      id: 'portfolio',
+      title: t('nav.portfolio'),
+      description: 'Manage your crypto investments',
+      category: 'Crypto',
+      route: '/dashboard/portfolio',
+      icon: Coins,
+      keywords: ['crypto', 'investments', 'holdings', 'coins', 'bitcoin', 'ethereum']
+    },
+    {
+      id: 'transactions',
+      title: t('nav.transactions'),
+      description: 'View and manage transactions',
+      category: 'Finance',
+      route: '/dashboard/transactions',
+      icon: ArrowLeftRight,
+      keywords: ['payments', 'transfers', 'history', 'money']
+    },
+    {
+      id: 'categories',
+      title: t('nav.categories'),
+      description: 'Organize your expenses',
+      category: 'Finance',
+      route: '/dashboard/categories',
+      icon: FolderOpen,
+      keywords: ['organize', 'tags', 'groups', 'budget']
+    },
+    {
+      id: 'assistant',
+      title: t('nav.assistant'),
+      description: 'AI-powered financial advice',
+      category: 'AI',
+      route: '/dashboard/assistant',
+      icon: Brain,
+      keywords: ['ai', 'help', 'advice', 'chat', 'support']
+    },
+    {
+      id: 'planning',
+      title: t('nav.planning'),
+      description: 'Financial planning and goals',
+      category: 'Planning',
+      route: '/dashboard/planning',
+      icon: Target,
+      keywords: ['goals', 'budget', 'planning', 'future', 'savings']
+    },
+    {
+      id: 'reports',
+      title: t('nav.reports'),
+      description: 'Financial reports and analytics',
+      category: 'Analytics',
+      route: '/dashboard/reports',
+      icon: BarChart3,
+      keywords: ['analytics', 'charts', 'data', 'insights', 'performance']
+    },
+    {
+      id: 'settings',
+      title: t('nav.settings'),
+      description: 'App preferences and configuration',
+      category: 'Settings',
+      route: '/dashboard/settings',
+      icon: Settings,
+      keywords: ['preferences', 'config', 'profile', 'account']
+    },
+    // Crypto functions
+    {
+      id: 'price-alerts',
+      title: 'Price Alerts',
+      description: 'Set up cryptocurrency price notifications',
+      category: 'Crypto',
+      route: '/dashboard/portfolio',
+      icon: Zap,
+      keywords: ['alerts', 'notifications', 'price', 'crypto', 'notify']
+    },
+    {
+      id: 'portfolio-analytics',
+      title: 'Portfolio Analytics',
+      description: 'Detailed analysis of your investments',
+      category: 'Analytics',
+      route: '/dashboard/portfolio',
+      icon: TrendingUp,
+      keywords: ['analysis', 'performance', 'roi', 'profit', 'loss']
+    },
+    {
+      id: 'profit-calculator',
+      title: 'Profit Calculator',
+      description: 'Calculate potential profits and losses',
+      category: 'Tools',
+      route: '/dashboard/portfolio',
+      icon: Calculator,
+      keywords: ['calculator', 'profit', 'loss', 'calculate', 'math']
+    },
+    {
+      id: 'donut-chart',
+      title: 'Portfolio Distribution',
+      description: 'Visual breakdown of your holdings',
+      category: 'Analytics',
+      route: '/dashboard/portfolio',
+      icon: PieChart,
+      keywords: ['chart', 'distribution', 'breakdown', 'visual', 'pie']
+    }
+  ];
+
+  useEffect(() => {
+    if (query.trim() === '') {
+      setFilteredItems(searchItems);
+      return;
+    }
+
+    const filtered = searchItems.filter(item => {
+      const searchText = query.toLowerCase();
+      return (
+        item.title.toLowerCase().includes(searchText) ||
+        item.description.toLowerCase().includes(searchText) ||
+        item.category.toLowerCase().includes(searchText) ||
+        item.keywords.some(keyword => keyword.toLowerCase().includes(searchText))
+      );
+    });
+
+    setFilteredItems(filtered);
+  }, [query]);
+
+  const handleItemSelect = (item: SearchItem) => {
+    navigate(item.route);
+    setOpen(false);
+    setQuery('');
+  };
+
+  const categories = [...new Set(filteredItems.map(item => item.category))];
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <div className="flex items-center gap-2 px-3 py-2 bg-muted/50 rounded-lg cursor-pointer hover:bg-muted transition-colors group">
+          <Search className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+          <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+            Search functions...
+          </span>
+          <Badge variant="outline" className="ml-auto text-xs">
+            ⌘K
+          </Badge>
+        </div>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl p-0">
+        <div className="flex items-center border-b px-3">
+          <Search className="size-4 text-muted-foreground mr-2" />
+          <Input
+            placeholder="Search all functions..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+            autoFocus
+          />
+        </div>
+        <ScrollArea className="max-h-96">
+          <div className="p-2">
+            {categories.map(category => {
+              const categoryItems = filteredItems.filter(item => item.category === category);
+              if (categoryItems.length === 0) return null;
+
+              return (
+                <div key={category} className="mb-4">
+                  <div className="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    {category}
+                  </div>
+                  <div className="space-y-1">
+                    {categoryItems.map(item => (
+                      <div
+                        key={item.id}
+                        onClick={() => handleItemSelect(item)}
+                        className={cn(
+                          "flex items-center gap-3 px-2 py-2 rounded-md cursor-pointer transition-colors",
+                          "hover:bg-accent hover:text-accent-foreground"
+                        )}
+                      >
+                        <item.icon className="size-4 text-muted-foreground" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium">{item.title}</div>
+                          <div className="text-xs text-muted-foreground">{item.description}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+            {filteredItems.length === 0 && (
+              <div className="text-center py-6 text-muted-foreground">
+                <Search className="size-8 mx-auto mb-2 opacity-50" />
+                <p>No functions found</p>
+                <p className="text-xs">Try a different search term</p>
+              </div>
+            )}
+          </div>
+        </ScrollArea>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// Keyboard shortcut hook
+export function useGlobalSearchShortcut(callback: () => void) {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        callback();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [callback]);
+}
