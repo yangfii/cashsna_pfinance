@@ -2,10 +2,8 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
-
 export default function PrivacyPolicy() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 p-4">
+  return <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 p-4">
       <div className="max-w-4xl mx-auto py-8">
         <div className="mb-6">
           <Link to="/auth">
@@ -25,9 +23,7 @@ export default function PrivacyPolicy() {
           <CardContent className="prose prose-sm max-w-none space-y-6">
             <section>
               <h2 className="text-lg font-semibold mb-3">1. Introduction</h2>
-              <p className="text-muted-foreground">
-                This Privacy Policy explains how CashSnap Finance ("we," "us," "our") collects, uses, and protects your personal and financial information when you visit [yoursite.com] or use our dashboard services.
-              </p>
+              <p className="text-muted-foreground">This Privacy Policy explains how CashSnap Finance we collects, uses, and protects your personal and financial information when you visit [yoursite.com] or use our dashboard services.</p>
             </section>
 
             <section>
@@ -124,12 +120,11 @@ export default function PrivacyPolicy() {
               <p className="text-muted-foreground">
                 For inquiries or data requests, contact:<br />
                 Privacy Officer, CashSnap Finance<br />
-                Telegram Group Supporter: <a href="https://t.me/cashsnapfinance" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">https://t.me/cashsnapfinance</a>
+                Email: privacy@[yoursite].com
               </p>
             </section>
           </CardContent>
         </Card>
       </div>
-    </div>
-  );
+    </div>;
 }
