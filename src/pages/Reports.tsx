@@ -577,15 +577,76 @@ export default function Reports() {
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-4">
-            <Button variant="outline" className="gap-2">
+            <Button 
+              variant="outline" 
+              className="gap-2"
+              onClick={() => {
+                const csvContent = [
+                  ['Period', 'Income', 'Expense', 'Savings'],
+                  ...monthlyData.map(item => [item.month, item.income, item.expense, item.income - item.expense])
+                ].map(row => row.join(',')).join('\n');
+                
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `financial-data-${selectedPeriod}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                toast.success('CSV នាំចេញបានជោគជ័យ!');
+              }}
+            >
               <Download className="h-4 w-4" />
               CSV File
             </Button>
-            <Button variant="outline" className="gap-2">
+            <Button 
+              variant="outline" 
+              className="gap-2"
+              onClick={handleExportPDF}
+              disabled={isGeneratingPDF}
+            >
               <Download className="h-4 w-4" />
-              PDF Report
+              {isGeneratingPDF ? 'កំពុងបង្កើត...' : 'PDF Report'}
             </Button>
-            <Button variant="outline" className="gap-2">
+            <Button 
+              variant="outline" 
+              className="gap-2"
+              onClick={() => {
+                const summaryData = {
+                  period: selectedPeriod,
+                  totalIncome: formatCurrency(totalIncome),
+                  totalExpense: formatCurrency(totalExpense),
+                  savings: formatCurrency(totalIncome - totalExpense),
+                  savingsRate: `${savingsRate.toFixed(1)}%`,
+                  topExpenses: categoryExpenses.slice(0, 3).map(item => `${item.category}: ${formatCurrency(item.amount)}`)
+                };
+                
+                const summaryText = `
+បទបង្ហាញសង្ខេប - ${summaryData.period}
+=====================================
+ចំណូល: ${summaryData.totalIncome}
+ចំណាយ: ${summaryData.totalExpense}
+សន្សំ: ${summaryData.savings}
+អត្រាសន្សំ: ${summaryData.savingsRate}
+
+ចំណាយធំបំផុត:
+${summaryData.topExpenses.join('\n')}
+                `.trim();
+                
+                const blob = new Blob([summaryText], { type: 'text/plain;charset=utf-8' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `monthly-summary-${selectedPeriod}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                toast.success('បទបង្ហាញសង្ខេបនាំចេញបានជោគជ័យ!');
+              }}
+            >
               <Calendar className="h-4 w-4" />
               Monthly Summary
             </Button>
