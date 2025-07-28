@@ -77,76 +77,76 @@ export function RemindersList() {
 
   if (loading) {
     return (
-      <Card>
-        <CardContent className="p-6">
-          <div className="space-y-3">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="animate-pulse">
-                <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
-                <div className="h-3 bg-muted rounded w-1/2"></div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="glass-panel p-6">
+        <div className="space-y-3">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="glass-card p-4 animate-pulse">
+              <div className="h-4 bg-muted/50 rounded w-3/4 mb-2"></div>
+              <div className="h-3 bg-muted/30 rounded w-1/2"></div>
+            </div>
+          ))}
+        </div>
+      </div>
     );
   }
 
   return (
     <div className="space-y-4">
       {/* Filter buttons */}
-      <div className="flex gap-2 flex-wrap">
-        <Button
-          variant={filter === 'all' ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => setFilter('all')}
-        >
-          All ({reminders.length})
-        </Button>
-        <Button
-          variant={filter === 'upcoming' ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => setFilter('upcoming')}
-          className="relative"
-        >
-          Upcoming
-          {upcomingCount > 0 && (
-            <Badge variant="secondary" className="ml-1 text-xs">
-              {upcomingCount}
-            </Badge>
-          )}
-        </Button>
-        <Button
-          variant={filter === 'overdue' ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => setFilter('overdue')}
-          className="relative"
-        >
-          Overdue
-          {overdueCount > 0 && (
-            <Badge variant="destructive" className="ml-1 text-xs">
-              {overdueCount}
-            </Badge>
-          )}
-        </Button>
-        <Button
-          variant={filter === 'completed' ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => setFilter('completed')}
-        >
-          Completed ({reminders.filter(r => r.is_completed).length})
-        </Button>
+      <div className="glass-overlay p-3 rounded-xl">
+        <div className="flex gap-2 flex-wrap">
+          <Button
+            variant={filter === 'all' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setFilter('all')}
+            className="glass-card hover:scale-105 transition-all duration-300"
+          >
+            All ({reminders.length})
+          </Button>
+          <Button
+            variant={filter === 'upcoming' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setFilter('upcoming')}
+            className="relative glass-card hover:scale-105 transition-all duration-300"
+          >
+            Upcoming
+            {upcomingCount > 0 && (
+              <Badge variant="secondary" className="ml-1 text-xs">
+                {upcomingCount}
+              </Badge>
+            )}
+          </Button>
+          <Button
+            variant={filter === 'overdue' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setFilter('overdue')}
+            className="relative glass-card hover:scale-105 transition-all duration-300"
+          >
+            Overdue
+            {overdueCount > 0 && (
+              <Badge variant="destructive" className="ml-1 text-xs">
+                {overdueCount}
+              </Badge>
+            )}
+          </Button>
+          <Button
+            variant={filter === 'completed' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setFilter('completed')}
+            className="glass-card hover:scale-105 transition-all duration-300"
+          >
+            Completed ({reminders.filter(r => r.is_completed).length})
+          </Button>
+        </div>
       </div>
 
       {/* Reminders list */}
       <div className="space-y-3">
         {filteredReminders.length === 0 ? (
-          <Card>
-            <CardContent className="p-6 text-center text-muted-foreground">
-              <AlertCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
-              <p>No reminders found for this filter.</p>
-            </CardContent>
-          </Card>
+          <div className="glass-panel text-center py-12">
+            <AlertCircle className="h-12 w-12 mx-auto mb-4 animate-pulse text-primary transition-colors duration-1000" />
+            <p className="text-muted-foreground">No reminders found for this filter.</p>
+          </div>
         ) : (
           filteredReminders.map((reminder) => {
             const IconComponent = reminderTypeIcons[reminder.reminder_type];
@@ -154,16 +154,15 @@ export function RemindersList() {
             const isOverdue = isPast(dueDate) && !reminder.is_completed;
             
             return (
-              <Card 
+              <div 
                 key={reminder.id} 
                 className={cn(
-                  "transition-all duration-200",
+                  "glass-card p-4 hover:scale-[1.02] transition-all duration-300",
                   reminder.is_completed && "opacity-60",
-                  isOverdue && "border-red-200 bg-red-50/50"
+                  isOverdue && "border-red-300/50 bg-red-50/20"
                 )}
               >
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-3">
+                <div className="flex items-start gap-3">
                     <Checkbox
                       checked={reminder.is_completed}
                       onCheckedChange={() => toggleCompletion(reminder.id)}
@@ -248,9 +247,8 @@ export function RemindersList() {
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             );
           })
         )}
