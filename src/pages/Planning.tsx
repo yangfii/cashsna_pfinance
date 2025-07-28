@@ -290,7 +290,8 @@ export default function Planning() {
   const monthlyGoals = goals.filter(g => g.type === 'monthly');
   const yearlyGoals = goals.filter(g => g.type === 'yearly');
 
-  return <div className="space-y-6 animate-fade-in">
+  return (
+    <div className="space-y-6 animate-fade-in">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
