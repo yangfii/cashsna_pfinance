@@ -12,11 +12,13 @@ import AIAssistant from "@/components/AIAssistant";
 import { AddReminderDialog } from "@/components/reminders/AddReminderDialog";
 import { RemindersList } from "@/components/reminders/RemindersList";
 import { useReminders } from "@/hooks/useReminders";
-import { Plus, Calendar as CalendarIcon, Target, CheckCircle2, Circle, Edit, Trash2, CalendarDays, TrendingUp, Brain, Clock, Play, Pause, Square, Timer, Bell } from "lucide-react";
+import { Plus, Calendar as CalendarIcon, Target, CheckCircle2, Circle, Edit, Trash2, CalendarDays, TrendingUp, Brain, Clock, Play, Pause, Square, Timer, Bell, Palette, Upload, Image } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { useTheme } from "next-themes";
 
 interface Step {
   id: string;
@@ -39,6 +41,8 @@ export default function Planning() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
+  const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
+  const { theme } = useTheme();
   const [newGoal, setNewGoal] = useState({
     title: '',
     description: '',
@@ -290,8 +294,21 @@ export default function Planning() {
   const monthlyGoals = goals.filter(g => g.type === 'monthly');
   const yearlyGoals = goals.filter(g => g.type === 'yearly');
 
+  // Load background image from localStorage
+  useEffect(() => {
+    const savedBackground = localStorage.getItem('planning-background');
+    if (savedBackground) {
+      setBackgroundImage(savedBackground);
+    }
+  }, []);
+
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in" style={{
+      backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed'
+    }}>
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
@@ -307,7 +324,7 @@ export default function Planning() {
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="goals" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="ai-assistant" className="flex items-center gap-2">
             <Brain className="h-4 w-4" />
             ជំនួយការ AI
@@ -318,6 +335,10 @@ export default function Planning() {
             {getUpcomingReminders().length > 0 && <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 text-xs">
                 {getUpcomingReminders().length}
               </Badge>}
+          </TabsTrigger>
+          <TabsTrigger value="customization" className="flex items-center gap-2">
+            <Palette className="h-4 w-4" />
+            ការកំណត់រូបរាង
           </TabsTrigger>
         </TabsList>
 
@@ -750,6 +771,114 @@ export default function Planning() {
 
         <TabsContent value="ai-assistant" className="mt-6">
           <AIAssistant />
+        </TabsContent>
+
+        <TabsContent value="customization" className="mt-6 space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Palette className="h-5 w-5" />
+                ការកំណត់រូបរាង
+              </CardTitle>
+              <p className="text-muted-foreground">
+                កែប្រែពណ៌ និងរូបភាពផ្ទៃខាងក្រោយ
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Theme Selection */}
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium mb-2 block">ប្រព័ន្ធពណ៌</label>
+                  <div className="flex items-center gap-4">
+                    <ThemeToggle />
+                    <span className="text-sm text-muted-foreground">
+                      ពណ៌បច្ចុប្បន្ន: {theme === 'dark' ? 'ងងឹត' : theme === 'light' ? 'ភ្លឺ' : 'ស្វ័យប្រវត្តិ'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Background Image Upload */}
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium mb-2 block">រូបភាពផ្ទៃខាងក្រោយ</label>
+                  <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6">
+                    <div className="text-center space-y-4">
+                      <Image className="h-12 w-12 mx-auto text-muted-foreground" />
+                      <div>
+                        <label htmlFor="background-upload" className="cursor-pointer">
+                          <Button variant="outline" className="gap-2" asChild>
+                            <span>
+                              <Upload className="h-4 w-4" />
+                              ជ្រើសរើសរូបភាព
+                            </span>
+                          </Button>
+                        </label>
+                        <input
+                          id="background-upload"
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const reader = new FileReader();
+                              reader.onload = (event) => {
+                                const result = event.target?.result as string;
+                                setBackgroundImage(result);
+                                localStorage.setItem('planning-background', result);
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                        />
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        បញ្ចូលរូបភាពពីឧបករណ៍របស់អ្នក (JPG, PNG, GIF)
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Background Preview */}
+                {backgroundImage && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">មុខតាវ</label>
+                    <div className="relative">
+                      <img 
+                        src={backgroundImage} 
+                        alt="Background preview" 
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-2 right-2"
+                        onClick={() => {
+                          setBackgroundImage(null);
+                          localStorage.removeItem('planning-background');
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Customization Tips */}
+              <Card className="bg-muted/50">
+                <CardContent className="p-4">
+                  <h4 className="font-medium mb-2">គន្លឹះការកំណត់រូបរាង</h4>
+                  <ul className="text-sm space-y-1 text-muted-foreground">
+                    <li>• រូបភាពដែលមានគុណភាពល្អបំផុតគឺ 1920x1080 pixels</li>
+                    <li>• ជ្រើសរើសរូបភាពដែលមិនរំខានដល់ការអាន</li>
+                    <li>• ប្រើពណ៌ស្រាលសម្រាប់ការងារយូរ</li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </CardContent>
+          </Card>
         </TabsContent>
 
 
