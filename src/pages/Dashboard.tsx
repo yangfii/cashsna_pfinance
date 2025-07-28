@@ -2,11 +2,14 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, TrendingUp, TrendingDown, Wallet, Plus, Calendar } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { DollarSign, TrendingUp, TrendingDown, Wallet, Plus, Calendar, CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { WelcomeMessage } from '@/components/WelcomeMessage';
 import { ProfileCard } from '@/components/ProfileCard';
 import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -30,6 +33,7 @@ export default function Dashboard() {
   const [currentMonth] = useState("កក្កដា ២០២៤");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState<Date>();
   const { user } = useAuth();
   const { toast } = useToast();
   const { t } = useLanguage();
@@ -111,20 +115,32 @@ export default function Dashboard() {
         
         {/* Enhanced button layout with better spacing and wrapping */}
         <div className="flex flex-col sm:flex-row gap-4 lg:gap-6">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="gap-3 w-full sm:w-auto h-12 lg:h-14 px-6 lg:px-8"
-            onClick={() => {
-              toast({
-                title: "ប្រែប្រួលខែ",
-                description: "មុខងារនេះនឹងបានបន្ថែមក្នុងភាគខាងមុខ",
-              });
-            }}
-          >
-            <Calendar className="h-5 w-5 lg:h-6 lg:w-6" />
-            <span className="text-sm lg:text-base">ប្រែប្រួលខែ</span>
-          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className={cn(
+                  "gap-3 w-full sm:w-auto h-12 lg:h-14 px-6 lg:px-8",
+                  !selectedDate && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="h-5 w-5 lg:h-6 lg:w-6" />
+                <span className="text-sm lg:text-base">
+                  {selectedDate ? format(selectedDate, "PPP") : "ពិនិត្យប្រតិបត្តិការ"}
+                </span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <CalendarComponent
+                mode="single"
+                selected={selectedDate}
+                onSelect={setSelectedDate}
+                initialFocus
+                className="p-3 pointer-events-auto"
+              />
+            </PopoverContent>
+          </Popover>
           <Button 
             className="gap-3 bg-gradient-primary border-0 hover:shadow-glow transition-smooth w-full sm:w-auto h-12 lg:h-14 px-6 lg:px-8"
             onClick={() => navigate('/dashboard/transactions')}
