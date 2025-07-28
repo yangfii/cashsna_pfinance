@@ -709,42 +709,45 @@ export default function Planning() {
             </div>
 
             {/* Quick stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-yellow-600" />
-                    <span className="text-sm font-medium">ខាងមុខ (២៤ម៉ោង)</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="glass-card p-6 hover:scale-105 transition-all duration-300 group">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2 rounded-full bg-gradient-to-br from-yellow-400/20 to-orange-500/20 group-hover:from-yellow-400/30 group-hover:to-orange-500/30 transition-all duration-300">
+                    <Clock className="h-5 w-5 text-yellow-600" />
                   </div>
-                  <p className="text-2xl font-bold text-yellow-600">
-                    {getUpcomingReminders().length}
-                  </p>
-                </CardContent>
-              </Card>
+                  <span className="text-sm font-medium text-muted-foreground">ខាងមុខ (២៤ម៉ោង)</span>
+                </div>
+                <p className="text-3xl font-bold text-yellow-600 mb-1">
+                  {getUpcomingReminders().length}
+                </p>
+                <div className="h-1 w-full bg-gradient-to-r from-yellow-400/30 to-orange-500/30 rounded-full" />
+              </div>
               
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-2">
-                    <Bell className="h-4 w-4 text-red-600" />
-                    <span className="text-sm font-medium">ហួសកំណត់</span>
+              <div className="glass-card p-6 hover:scale-105 transition-all duration-300 group">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2 rounded-full bg-gradient-to-br from-red-400/20 to-pink-500/20 group-hover:from-red-400/30 group-hover:to-pink-500/30 transition-all duration-300">
+                    <Bell className="h-5 w-5 text-red-600" />
                   </div>
-                  <p className="text-2xl font-bold text-red-600">
-                    {getOverdueReminders().length}
-                  </p>
-                </CardContent>
-              </Card>
+                  <span className="text-sm font-medium text-muted-foreground">ហួសកំណត់</span>
+                </div>
+                <p className="text-3xl font-bold text-red-600 mb-1">
+                  {getOverdueReminders().length}
+                </p>
+                <div className="h-1 w-full bg-gradient-to-r from-red-400/30 to-pink-500/30 rounded-full" />
+              </div>
               
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-green-600" />
-                    <span className="text-sm font-medium">សរុបសកម្ម</span>
+              <div className="glass-card p-6 hover:scale-105 transition-all duration-300 group">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2 rounded-full bg-gradient-to-br from-green-400/20 to-emerald-500/20 group-hover:from-green-400/30 group-hover:to-emerald-500/30 transition-all duration-300">
+                    <CheckCircle2 className="h-5 w-5 text-green-600" />
                   </div>
-                  <p className="text-2xl font-bold text-green-600">
-                    {getUpcomingReminders().length + getOverdueReminders().length}
-                  </p>
-                </CardContent>
-              </Card>
+                  <span className="text-sm font-medium text-muted-foreground">សរុបសកម្ម</span>
+                </div>
+                <p className="text-3xl font-bold text-green-600 mb-1">
+                  {getUpcomingReminders().length + getOverdueReminders().length}
+                </p>
+                <div className="h-1 w-full bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full" />
+              </div>
             </div>
 
             <RemindersList />
