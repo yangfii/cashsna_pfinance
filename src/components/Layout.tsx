@@ -12,7 +12,6 @@ import { cn } from "@/lib/utils";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ReportDialog } from "@/components/ReportDialog";
-
 const getNavItems = (t: (key: string) => string) => [{
   to: "/dashboard",
   icon: LayoutDashboard,
@@ -54,20 +53,29 @@ const getNavItems = (t: (key: string) => string) => [{
   label: t("nav.settings"),
   key: "settings"
 }];
-
 function AppSidebar() {
-  const { user, signOut } = useAuth();
-  const { profile } = useProfile();
-  const { t } = useLanguage();
+  const {
+    user,
+    signOut
+  } = useAuth();
+  const {
+    profile
+  } = useProfile();
+  const {
+    t
+  } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
-  const { state } = useSidebar();
+  const {
+    state
+  } = useSidebar();
   const navItems = getNavItems(t);
-
   const handleSignOut = async () => {
     try {
       console.log('Starting sign out process...');
-      const { error } = await signOut();
+      const {
+        error
+      } = await signOut();
       if (error) {
         console.error('Sign out error:', error);
         toast.error(`Error signing out: ${error.message || 'Unknown error'}`);
@@ -81,9 +89,7 @@ function AppSidebar() {
       toast.error('Unexpected error during sign out');
     }
   };
-
-  return (
-    <Sidebar variant="inset" collapsible="icon" className="py-0 my-0 mx-px px-0">
+  return <Sidebar variant="inset" collapsible="icon" className="py-0 my-0 mx-px px-0">
       <SidebarHeader className="mx-0 px-0 py-[7px] my-0">
         <div className="flex items-center gap-2 py-1 my-0 mx-[4px] px-[12px]">
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -105,8 +111,7 @@ function AppSidebar() {
           <SidebarGroupLabel>{t('layout.navigation')}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map(item => (
-                <SidebarMenuItem key={item.key}>
+              {navItems.map(item => <SidebarMenuItem key={item.key}>
                   <SidebarMenuButton asChild isActive={location.pathname === item.to} tooltip={item.label}>
                     <NavLink to={item.to} className="group">
                       <item.icon className="transition-transform duration-300 group-hover:scale-110" />
@@ -115,8 +120,7 @@ function AppSidebar() {
                       </span>
                     </NavLink>
                   </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+                </SidebarMenuItem>)}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -126,40 +130,31 @@ function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem className="px-0 mx-0 my-[14px] py-0">
             <SidebarMenuButton asChild tooltip={t('nav.profile')}>
-              <NavLink to="/dashboard/settings" className={cn(
-                "flex items-center gap-3 p-3 group", 
-                location.pathname === "/dashboard/settings" ? "bg-accent" : ""
-              )}>
+              <NavLink to="/dashboard/settings" className={cn("flex items-center gap-3 p-3 group", location.pathname === "/dashboard/settings" ? "bg-accent" : "")}>
                 <Avatar className="size-10 transition-transform duration-300 group-hover:scale-105">
                   <AvatarImage src={profile?.avatar_url || undefined} alt="Profile picture" />
                   <AvatarFallback className="bg-gradient-primary text-primary-foreground">
                     <User className="size-5" />
                   </AvatarFallback>
                 </Avatar>
-                {state === "expanded" && (
-                  <div className="grid flex-1 text-left text-sm leading-tight">
+                {state === "expanded" && <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold text-foreground transition-all duration-300 group-hover:tracking-wide">
                       {user?.email?.split('@')[0]}
                     </span>
                     <span className="truncate text-xs text-muted-foreground transition-all duration-300 group-hover:font-medium">
                       {t("nav.profile")}
                     </span>
-                  </div>
-                )}
+                  </div>}
               </NavLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <ReportDialog 
-              trigger={
-                <SidebarMenuButton tooltip={t('layout.reportToDevelopers')} className="group">
+            <ReportDialog trigger={<SidebarMenuButton tooltip={t('layout.reportToDevelopers')} className="group">
                   <Bug className="transition-transform duration-300 group-hover:scale-110" />
                   <span className="transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
                     {t('layout.reportToDevelopers')}
                   </span>
-                </SidebarMenuButton>
-              } 
-            />
+                </SidebarMenuButton>} />
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={handleSignOut} tooltip={t("nav.signOut")} className="group">
@@ -171,51 +166,48 @@ function AppSidebar() {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
-    </Sidebar>
-  );
+    </Sidebar>;
 }
-
 export default function Layout() {
   const navigate = useNavigate();
-  const { t } = useLanguage();
-  const { user, loading } = useAuth();
-
+  const {
+    t
+  } = useLanguage();
+  const {
+    user,
+    loading
+  } = useAuth();
   useEffect(() => {
     if (!loading && !user) {
       navigate('/auth');
     }
   }, [user, loading, navigate]);
-
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5">
+    return <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
           <p className="mt-4 text-muted-foreground">{t("common.loading")}</p>
         </div>
-      </div>
-    );
+      </div>;
   }
-
   if (!user) {
     return null;
   }
-
-  return (
-    <SidebarProvider>
+  return <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-to-br from-background via-background to-primary/5">
         <AppSidebar />
         
         {/* Header */}
         <div className="flex-1 flex flex-col">
-          <header className="flex h-16 lg:h-18 items-center gap-3 sm:gap-4 border-b bg-card/50 backdrop-blur-md px-4 sm:px-6 lg:px-8" style={{backgroundImage: 'url(https://www.pinterest.com/pin/272397477456943098/)', backgroundSize: 'cover', backgroundPosition: 'center'}}>
+          <header className="flex h-16 lg:h-18 items-center gap-3 sm:gap-4 border-b bg-card/50 backdrop-blur-md px-4 sm:px-6 lg:px-8" style={{
+          backgroundImage: 'url(https://www.pinterest.com/pin/272397477456943098/)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}>
             <SidebarTrigger />
             <div className="flex-1" />
             <Button variant="ghost" size="icon" asChild>
-              <a href="https://www.pinterest.com/pin/272397477456943098/" target="_blank" rel="noopener noreferrer" className="h-9 w-9">
-                <span className="sr-only">Pinterest Link</span>
-                📌
-              </a>
+              
             </Button>
             <LanguageSelector />
             <ThemeToggle />
@@ -229,6 +221,5 @@ export default function Layout() {
           </main>
         </div>
       </div>
-    </SidebarProvider>
-  );
+    </SidebarProvider>;
 }
