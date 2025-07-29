@@ -169,7 +169,9 @@ const Index = () => {
           <div className="animate-fade-in">
             <div className="mb-6">
               <span className="inline-flex items-center px-4 py-2 rounded-full bg-primary-foreground/20 text-primary-foreground text-sm font-medium backdrop-blur-sm border border-primary-foreground/30">
-                <span className="mr-2">✨</span>
+                <span className="mr-2">
+                  <img src="/src/assets/new-icon.png" alt="Icon" className="w-5 h-5 inline" />
+                </span>
                 {language === 'khmer' ? 'គ្រប់គ្រងហិរញ្ញវត្ថុដ៏ទំនើបសម្រាប់អ្នក' : 'AI-Powered Finance Management'}
               </span>
             </div>
