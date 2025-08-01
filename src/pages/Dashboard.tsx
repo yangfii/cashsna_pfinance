@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { DollarSign, TrendingUp, TrendingDown, Wallet, Plus, Calendar, CalendarIcon } from "lucide-react";
+import { DollarSign, TrendingUp, TrendingDown, Wallet, Plus, Calendar, CalendarIcon, Settings, Palette } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { WelcomeMessage } from '@/components/WelcomeMessage';
 import { ProfileCard } from '@/components/ProfileCard';
@@ -96,9 +96,39 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="w-full container-dashboard space-y-10 lg:space-y-12 animate-fade-in relative">
-      {/* Dreamy background overlay */}
-      <div className="absolute inset-0 glass-overlay opacity-30 pointer-events-none" />
+    <div className="w-full container-dashboard space-y-10 lg:space-y-12 animate-fade-in relative overflow-hidden">
+      {/* Enhanced Aesthetic Background with Parallax Effect */}
+      <div 
+        className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-transform duration-1000 ease-out"
+        style={{
+          backgroundImage: `url('/lovable-uploads/a5ad6ef9-79f1-492c-8698-f22960973926.png')`,
+          transform: 'scale(1.1)',
+          filter: 'blur(1px) brightness(0.7) contrast(1.1)',
+          zIndex: -2
+        }}
+      />
+      
+      {/* Multi-layered Glass Overlay for Enhanced Visual Depth */}
+      <div className="fixed inset-0 bg-gradient-to-br from-background/85 via-background/70 to-background/80 backdrop-blur-sm" style={{ zIndex: -1 }} />
+      <div className="fixed inset-0 bg-gradient-to-t from-primary/5 via-transparent to-accent/5" style={{ zIndex: -1 }} />
+      
+      {/* Floating Customization Button */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <Button
+          size="sm"
+          className="glass-panel shadow-2xl hover:shadow-glow transition-all duration-300 group border-0 bg-background/20 backdrop-blur-md"
+          onClick={() => {
+            // TODO: Implement background customization dialog
+            toast({
+              title: "Background Customization",
+              description: "Background customization feature coming soon!",
+            });
+          }}
+        >
+          <Palette className="h-4 w-4 mr-2 group-hover:rotate-12 transition-transform duration-300" />
+          <span className="text-sm">Customize</span>
+        </Button>
+      </div>
       
       {/* Welcome Message with enhanced spacing */}
       <div className="px-2 sm:px-4 lg:px-6 relative z-10">
