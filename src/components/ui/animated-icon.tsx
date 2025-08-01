@@ -93,35 +93,61 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
     
     // Trigger animation on click
     if (iconRef.current && trigger === 'click') {
-      iconRef.current.playerInstance?.play();
+      try {
+        iconRef.current.playerInstance?.play();
+      } catch (error) {
+        console.warn('Failed to trigger icon animation:', error);
+      }
     }
   };
 
-  if (!isLoaded && loading === 'lazy') {
-    // Show a fallback while loading
+  // Always show fallback if loading is lazy and not loaded, or if script failed
+  if (!isLoaded) {
     return (
       <div 
         className={cn(
-          "inline-flex items-center justify-center bg-muted/50 rounded-md animate-pulse",
+          "inline-flex items-center justify-center bg-muted/50 rounded-md",
+          "transition-colors hover:bg-muted cursor-pointer",
           className
         )}
         style={{ width: iconSize, height: iconSize }}
+        onClick={onClick}
+        role="button"
+        tabIndex={0}
       />
     );
   }
 
-  return (
-    <lord-icon
-      ref={iconRef}
-      src={src}
-      trigger={trigger}
-      colors={colors}
-      delay={delay}
-      speed={speed}
-      style={{ width: iconSize, height: iconSize }}
-      className={cn("inline-block", className)}
-      onClick={handleClick}
-      loading={loading}
-    />
-  );
+  try {
+    return (
+      <lord-icon
+        ref={iconRef}
+        src={src}
+        trigger={trigger}
+        colors={colors}
+        delay={delay}
+        speed={speed}
+        style={{ width: iconSize, height: iconSize }}
+        className={cn("inline-block", className)}
+        onClick={handleClick}
+        loading={loading}
+      />
+    );
+  } catch (error) {
+    console.warn('Failed to render lord-icon:', error);
+    // Return fallback on any render error
+    return (
+      <div 
+        className={cn(
+          "inline-flex items-center justify-center bg-muted/50 rounded-md",
+          "transition-colors hover:bg-muted cursor-pointer",
+          className
+        )}
+        style={{ width: iconSize, height: iconSize }}
+        onClick={onClick}
+        role="button"
+        tabIndex={0}
+      />
+    );
+  }
 };
