@@ -215,11 +215,11 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Section with Cards */}
-      <section id="features" className="py-20 bg-cover bg-center bg-no-repeat relative" style={{
-        backgroundImage: `url('https://i.pinimg.com/736x/70/01/76/700176dc0a287dafa5f15a019198f7b8.jpg')`,
-      }}>
-        {/* Background overlay and blur removed */}
+      {/* Smooth Transition Gradient */}
+      <div className="h-32 bg-gradient-to-b from-primary/30 via-primary/10 to-background"></div>
+      
+      {/* Features Section with Enhanced Background */}
+      <section id="features" className="py-20 bg-background relative">
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-16 animate-slide-up">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent animate-fade-in">
