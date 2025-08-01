@@ -7,7 +7,7 @@ export default function MainContainer({ children }: MainContainerProps) {
     <div
       className="min-h-screen bg-cover bg-center bg-no-repeat relative"
       style={{
-        backgroundImage: `url('https://i.pinimg.com/736x/a8/48/6e/a8486ea9d7b9d0f4cb98e30cbb8b8e5f.jpg')`,
+        backgroundImage: `url('https://i.pinimg.com/736x/70/01/76/700176dc0a287dafa5f15a019198f7b8.jpg')`,
       }}
     >
       {/* Optional overlay to make content readable */}
