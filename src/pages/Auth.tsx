@@ -235,8 +235,7 @@ export default function Auth() {
         backgroundImage: `url('https://i.pinimg.com/736x/70/01/76/700176dc0a287dafa5f15a019198f7b8.jpg')`,
       }}
     >
-      {/* Overlay for better readability */}
-      <div className="absolute inset-0 bg-background/40 z-1" />
+      {/* Background overlay removed */}
       
       {/* Content */}
       <div className="relative z-10 w-full max-w-md space-y-8">
