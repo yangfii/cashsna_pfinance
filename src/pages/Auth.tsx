@@ -236,7 +236,7 @@ export default function Auth() {
       }}
     >
       {/* Overlay for better readability */}
-      <div className="absolute inset-0 bg-background/40 backdrop-blur-sm z-1" />
+      <div className="absolute inset-0 bg-background/40 z-1" />
       
       {/* Content */}
       <div className="relative z-10 w-full max-w-md space-y-8">
