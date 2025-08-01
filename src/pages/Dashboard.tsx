@@ -96,14 +96,17 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="w-full container-dashboard space-y-10 lg:space-y-12 animate-fade-in">
+    <div className="w-full container-dashboard space-y-10 lg:space-y-12 animate-fade-in relative">
+      {/* Dreamy background overlay */}
+      <div className="absolute inset-0 glass-overlay opacity-30 pointer-events-none" />
+      
       {/* Welcome Message with enhanced spacing */}
-      <div className="px-2 sm:px-4 lg:px-6">
+      <div className="px-2 sm:px-4 lg:px-6 relative z-10">
         <WelcomeMessage />
       </div>
       
       {/* Header with improved breathing space */}
-      <div className="flex flex-col space-y-6 lg:space-y-8 xl:flex-row xl:items-center xl:justify-between xl:space-y-0 px-2 sm:px-4 lg:px-6">
+      <div className="flex flex-col space-y-6 lg:space-y-8 xl:flex-row xl:items-center xl:justify-between xl:space-y-0 px-2 sm:px-4 lg:px-6 relative z-10">
         <div className="space-y-3 lg:space-y-4">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground animate-fade-in transition-all duration-500 hover:tracking-wide hover:text-gradient transform hover:scale-105 cursor-default">
             {t("dashboard.title")}
@@ -151,10 +154,10 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Enhanced Stats Cards with better spacing and responsive grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8 xl:gap-10 px-2 sm:px-4 lg:px-6">
+      {/* Enhanced Stats Cards with dreamy glassmorphism */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8 xl:gap-10 px-2 sm:px-4 lg:px-6 relative z-10">
         {/* Total Income */}
-        <Card className="income-card stat-card animate-bounce-in">
+        <Card className="income-card-glass stat-card animate-bounce-in hover:scale-105 transition-all duration-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 lg:pb-4">
             <CardTitle className="text-sm lg:text-base font-medium text-muted-foreground">
               {t("dashboard.totalIncome")}
@@ -172,7 +175,7 @@ export default function Dashboard() {
         </Card>
 
         {/* Total Expenses */}
-        <Card className="expense-card stat-card animate-bounce-in" style={{animationDelay: '0.1s'}}>
+        <Card className="expense-card-glass stat-card animate-bounce-in hover:scale-105 transition-all duration-500" style={{animationDelay: '0.1s'}}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 lg:pb-4">
             <CardTitle className="text-sm lg:text-base font-medium text-muted-foreground">
               {t("dashboard.totalExpenses")}
@@ -190,7 +193,7 @@ export default function Dashboard() {
         </Card>
 
         {/* Net Balance */}
-        <Card className="balance-card stat-card animate-bounce-in" style={{animationDelay: '0.2s'}}>
+        <Card className="balance-card-glass stat-card animate-bounce-in hover:scale-105 transition-all duration-500" style={{animationDelay: '0.2s'}}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 lg:pb-4">
             <CardTitle className="text-sm lg:text-base font-medium text-muted-foreground">
               {t("dashboard.currentBalance")}
@@ -213,7 +216,7 @@ export default function Dashboard() {
         </Card>
 
         {/* This Month */}
-        <Card className="stat-card animate-bounce-in" style={{animationDelay: '0.3s'}}>
+        <Card className="stat-card-glass animate-bounce-in hover:scale-105 transition-all duration-500" style={{animationDelay: '0.3s'}}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 lg:pb-4">
             <CardTitle className="text-sm lg:text-base font-medium text-muted-foreground">
               ប្រតិបត្តិការខែនេះ
@@ -231,9 +234,9 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      {/* Enhanced Recent Transactions with better spacing */}
-      <div className="px-2 sm:px-4 lg:px-6">
-        <Card className="stat-card animate-slide-up">
+      {/* Enhanced Recent Transactions with dreamy glassmorphism */}
+      <div className="px-2 sm:px-4 lg:px-6 relative z-10">
+        <Card className="glass-panel animate-slide-up hover:shadow-2xl transition-all duration-700">
           <CardHeader className="pb-6 lg:pb-8">
             <div className="flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:justify-between">
               <CardTitle className="text-xl lg:text-2xl xl:text-3xl font-semibold">{t("dashboard.recentTransactions")}</CardTitle>
@@ -256,7 +259,7 @@ export default function Dashboard() {
                 {transactions.slice(0, 5).map((transaction) => (
                 <div
                   key={transaction.id}
-                  className="flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:justify-between p-6 lg:p-8 rounded-lg bg-muted/30 hover:bg-muted/50 transition-smooth"
+                  className="flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:justify-between p-6 lg:p-8 transaction-item-glass hover:scale-[1.02] transition-all duration-300"
                 >
                   <div className="flex items-center space-x-4 lg:space-x-6 min-w-0 flex-1">
                     <div className={cn(
@@ -290,33 +293,33 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      {/* Enhanced Main Dashboard Grid with better spacing */}
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-8 lg:gap-10 xl:gap-12 px-2 sm:px-4 lg:px-6">
+      {/* Enhanced Main Dashboard Grid with dreamy glassmorphism */}
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-8 lg:gap-10 xl:gap-12 px-2 sm:px-4 lg:px-6 relative z-10">
         <div className="xl:col-span-3 space-y-8 lg:space-y-10">
-          {/* Enhanced Quick Actions with better spacing */}
+          {/* Enhanced Quick Actions with dreamy glassmorphism */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 xl:gap-10 animate-slide-up">
-            <Card className="stat-card hover:shadow-glow transition-smooth cursor-pointer">
+            <Card className="glass-panel hover:shadow-2xl hover:scale-105 transition-all duration-500 cursor-pointer group">
               <CardContent className="p-8 lg:p-10">
                 <div className="flex items-center space-x-4 lg:space-x-6">
-                  <div className="p-4 lg:p-5 bg-gradient-income rounded-xl flex-shrink-0">
+                  <div className="p-4 lg:p-5 bg-gradient-income rounded-xl flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                     <TrendingUp className="h-6 w-6 lg:h-8 lg:w-8 text-constructive-foreground" />
                   </div>
                    <div className="min-w-0 flex-1">
-                     <h3 className="text-lg lg:text-xl xl:text-2xl font-semibold">បន្ថែមចំណូល</h3>
+                     <h3 className="text-lg lg:text-xl xl:text-2xl font-semibold group-hover:text-constructive transition-colors duration-300">បន្ថែមចំណូល</h3>
                      <p className="text-sm lg:text-base text-muted-foreground">កត់ត្រាចំណូលថ្មី</p>
                    </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="stat-card hover:shadow-glow transition-smooth cursor-pointer">
+            <Card className="glass-panel hover:shadow-2xl hover:scale-105 transition-all duration-500 cursor-pointer group">
               <CardContent className="p-8 lg:p-10">
                 <div className="flex items-center space-x-4 lg:space-x-6">
-                  <div className="p-4 lg:p-5 bg-gradient-expense rounded-xl flex-shrink-0">
+                  <div className="p-4 lg:p-5 bg-gradient-expense rounded-xl flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                     <TrendingDown className="h-6 w-6 lg:h-8 lg:w-6 text-destructive-foreground" />
                   </div>
                    <div className="min-w-0 flex-1">
-                     <h3 className="text-lg lg:text-xl xl:text-2xl font-semibold">បន្ថែមចំណាយ</h3>
+                     <h3 className="text-lg lg:text-xl xl:text-2xl font-semibold group-hover:text-destructive transition-colors duration-300">បន្ថែមចំណាយ</h3>
                      <p className="text-sm lg:text-base text-muted-foreground">កត់ត្រាចំណាយថ្មី</p>
                    </div>
                 </div>
