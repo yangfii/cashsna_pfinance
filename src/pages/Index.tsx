@@ -234,7 +234,7 @@ const Index = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Feature 1 - Smart Expense Tracking */}
-            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border border-white/20 bg-white/20 backdrop-blur-md rounded-xl shadow-lg hover:shadow-2xl hover:shadow-primary/20" style={{
             animationDelay: '0.1s'
           }}>
               <CardContent className="p-6">
@@ -253,7 +253,7 @@ const Index = () => {
             </Card>
 
             {/* Feature 2 - Budget Management */}
-            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border border-white/20 bg-white/20 backdrop-blur-md rounded-xl shadow-lg hover:shadow-2xl hover:shadow-constructive/20" style={{
             animationDelay: '0.2s'
           }}>
               <CardContent className="p-6">
@@ -272,7 +272,7 @@ const Index = () => {
             </Card>
 
             {/* Feature 3 - Financial Goals */}
-            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border border-white/20 bg-white/20 backdrop-blur-md rounded-xl shadow-lg hover:shadow-2xl hover:shadow-balance/20" style={{
             animationDelay: '0.3s'
           }}>
               <CardContent className="p-6">
@@ -291,7 +291,7 @@ const Index = () => {
             </Card>
 
             {/* Feature 4 - Crypto Portfolio */}
-            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border border-white/20 bg-white/20 backdrop-blur-md rounded-xl shadow-lg hover:shadow-2xl hover:shadow-accent/20" style={{
             animationDelay: '0.4s'
           }}>
               <CardContent className="p-6">
@@ -310,7 +310,7 @@ const Index = () => {
             </Card>
 
             {/* Feature 5 - Reports & Analytics */}
-            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border border-white/20 bg-white/20 backdrop-blur-md rounded-xl shadow-lg hover:shadow-2xl hover:shadow-secondary/20" style={{
             animationDelay: '0.5s'
           }}>
               <CardContent className="p-6">
@@ -329,7 +329,7 @@ const Index = () => {
             </Card>
 
             {/* Feature 6 - Multi-language Support */}
-            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border border-white/20 bg-white/20 backdrop-blur-md rounded-xl shadow-lg hover:shadow-2xl hover:shadow-muted/20" style={{
             animationDelay: '0.6s'
           }}>
               <CardContent className="p-6">
@@ -348,7 +348,7 @@ const Index = () => {
             </Card>
 
             {/* Feature 7 - Security */}
-            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0 bg-gradient-to-br from-card via-card to-card/95" style={{
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border border-white/20 bg-white/20 backdrop-blur-md rounded-xl shadow-lg hover:shadow-2xl hover:shadow-destructive/20" style={{
             animationDelay: '0.7s'
           }}>
               <CardContent className="p-6">
