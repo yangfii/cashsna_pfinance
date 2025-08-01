@@ -189,7 +189,7 @@ export function ProfileCard() {
             }} className="sm:flex-none">
                   Cancel
                 </Button>
-              </> : <Button variant="outline" onClick={() => setIsEditing(true)} className="w-full">
+              </> : <Button variant="outline" onClick={() => setIsEditing(true)} className="w-full my-[15px] mx-0">
                 Edit Profile
               </Button>}
           </div>
