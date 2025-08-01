@@ -194,7 +194,7 @@ const Index = () => {
                 </Link>
               </Button>
               <Button variant="outline" asChild size="lg" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
-                <Link to="/assistant">
+                <Link to="/dashboard/assistant">
                   {language === 'khmer' ? '🤖 AI ជួយណែនាំ' : '🤖 AI Guide'}
                 </Link>
               </Button>

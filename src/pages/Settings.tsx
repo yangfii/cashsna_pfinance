@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useNavigate } from "react-router-dom";
 import { ProfileCard } from "@/components/ProfileCard";
 import { TwoFactorSetup } from "@/components/TwoFactorSetup";
 import { TrustedDevicesManager } from "@/components/TrustedDevicesManager";
@@ -41,6 +42,7 @@ export default function Settings() {
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
   const { language, setLanguage, t } = useLanguage();
+  const navigate = useNavigate();
   const [settings, setSettings] = useState({
     currency: "USD",
     language: language,
@@ -102,9 +104,9 @@ export default function Settings() {
         variant: "destructive",
       });
       
-      // Optionally reload the page to reset everything
+      // Redirect to dashboard after clearing data
       setTimeout(() => {
-        window.location.reload();
+        navigate('/dashboard');
       }, 2000);
       
     } catch (error) {

@@ -22,13 +22,21 @@ const NotFound = () => {
           <p className="text-sm text-muted-foreground mb-8">
             The page you're looking for doesn't exist or has been moved.
           </p>
-          <Link 
-            to="/" 
-            className="inline-flex items-center justify-center rounded-xl text-sm font-medium ring-offset-background transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-white px-6 py-3"
-            style={{ background: 'var(--gradient-primary)' }}
-          >
-            Return to Home
-          </Link>
+          <div className="space-y-3">
+            <Link 
+              to="/dashboard" 
+              className="block w-full inline-flex items-center justify-center rounded-xl text-sm font-medium ring-offset-background transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-white px-6 py-3"
+              style={{ background: 'var(--gradient-primary)' }}
+            >
+              Go to Dashboard
+            </Link>
+            <Link 
+              to="/" 
+              className="block w-full inline-flex items-center justify-center rounded-xl text-sm font-medium ring-offset-background transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-primary/20 text-primary px-6 py-3 hover:bg-primary/5"
+            >
+              Return to Home
+            </Link>
+          </div>
         </div>
       </div>
     </div>

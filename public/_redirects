@@ -1,1 +1,11 @@
+# SPA routing - serve index.html for all routes
 /*    /index.html   200
+
+# API redirects for Supabase functions (if needed)
+/api/functions/*  https://giziyaymzuydlnbjzhsc.supabase.co/functions/v1/:splat  200
+/functions/*      https://giziyaymzuydlnbjzhsc.supabase.co/functions/v1/:splat  200
+
+# Static asset handling
+/assets/*         /assets/:splat                                                200
+/images/*         /images/:splat                                                200
+/_app/*           /_app/:splat                                                  200
