@@ -8,11 +8,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useLanguage } from "@/hooks/useLanguage";
 import { toast } from "sonner";
-import { LayoutDashboard, ArrowLeftRight, FolderOpen, BarChart3, Settings, LogOut, User, Target, Coins, Brain, Bug, Globe, ChevronDown } from "lucide-react";
+import { LayoutDashboard, ArrowLeftRight, FolderOpen, BarChart3, Settings, LogOut, User, Target, Coins, Brain, Bug } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ReportDialog } from "@/components/ReportDialog";
 const getNavItems = (t: (key: string) => string) => [{
   to: "/dashboard",
@@ -161,8 +160,7 @@ export default function Layout() {
   } = useLanguage();
   const {
     user,
-    loading,
-    signOut
+    loading
   } = useAuth();
   const {
     profile
@@ -197,59 +195,14 @@ export default function Layout() {
             <SidebarTrigger />
             <GlobalSearch />
             <div className="flex-1" />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-2 p-2 rounded-lg group hover:bg-accent">
-                  <Avatar className="size-8 transition-transform duration-300 group-hover:scale-105">
-                    <AvatarImage src={profile?.avatar_url || undefined} alt="Profile picture" />
-                    <AvatarFallback className="bg-gradient-primary text-primary-foreground">
-                      <User className="size-4" />
-                    </AvatarFallback>
-                  </Avatar>
-                  <ChevronDown className="size-4 text-muted-foreground opacity-50" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent 
-                align="end" 
-                className="w-56 bg-background/95 backdrop-blur-md border border-border/50 shadow-lg z-50"
-              >
-                <DropdownMenuItem 
-                  onClick={() => navigate("/dashboard/settings")}
-                  className="cursor-pointer"
-                >
-                  <Settings className="size-4 mr-2" />
-                  {t("nav.settings")}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem 
-                  onClick={() => navigate("/")}
-                  className="cursor-pointer"
-                >
-                  <Globe className="size-4 mr-2" />
-                  Public View
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem 
-                  onClick={async () => {
-                    try {
-                      const { error } = await signOut();
-                      if (error) {
-                        toast.error(`Error signing out: ${error.message || 'Unknown error'}`);
-                      } else {
-                        toast.success('Signed out successfully');
-                        navigate('/auth');
-                      }
-                    } catch (err) {
-                      toast.error('Unexpected error during sign out');
-                    }
-                  }}
-                  className="cursor-pointer text-destructive focus:text-destructive"
-                >
-                  <LogOut className="size-4 mr-2" />
-                  {t("nav.signOut")}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <NavLink to="/dashboard/settings" className={cn("flex items-center gap-2 p-2 rounded-lg group hover:bg-accent", location.pathname === "/dashboard/settings" ? "bg-accent" : "")}>
+              <Avatar className="size-8 transition-transform duration-300 group-hover:scale-105">
+                <AvatarImage src={profile?.avatar_url || undefined} alt="Profile picture" />
+                <AvatarFallback className="bg-gradient-primary text-primary-foreground">
+                  <User className="size-4" />
+                </AvatarFallback>
+              </Avatar>
+            </NavLink>
             <LanguageSelector />
             <ThemeToggle />
           </header>
