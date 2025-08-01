@@ -187,23 +187,19 @@ export default function Layout() {
     return null;
   }
   return <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-background via-background to-primary/5">
+      <div className="min-h-screen flex w-full">
         <AppSidebar />
         
         {/* Header */}
         <div className="flex-1 flex flex-col">
-          <header className="flex h-16 lg:h-18 items-center gap-3 sm:gap-4 border-b bg-card/50 backdrop-blur-md px-4 sm:px-6 lg:px-8" style={{
-          backgroundImage: 'url(https://www.pinterest.com/pin/272397477456943098/)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}>
+          <header className="flex h-16 lg:h-18 items-center gap-3 sm:gap-4 border-b bg-card/90 backdrop-blur-md px-4 sm:px-6 lg:px-8 border-border/50">
             <SidebarTrigger />
             <GlobalSearch />
             <div className="flex-1" />
-            <NavLink to="/dashboard/settings" className={cn("flex items-center gap-2 p-2 rounded-lg group hover:bg-accent", location.pathname === "/dashboard/settings" ? "bg-accent" : "")}>
-              <Avatar className="size-8 transition-all duration-300 group-hover:scale-110 group-hover:rotate-2 hover:animate-pulse active:scale-95">
+            <NavLink to="/dashboard/settings" className={cn("flex items-center gap-2 p-2 rounded-lg group hover:bg-accent transition-colors", location.pathname === "/dashboard/settings" ? "bg-accent" : "")}>
+              <Avatar className="size-8 transition-all duration-300 group-hover:scale-110 group-hover:rotate-2 hover:animate-pulse active:scale-95 ring-2 ring-primary/20">
                 <AvatarImage src={profile?.avatar_url || undefined} alt="Profile picture" />
-                <AvatarFallback className="bg-gradient-primary text-primary-foreground">
+                <AvatarFallback className="bg-primary text-primary-foreground">
                   <User className="size-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3" />
                 </AvatarFallback>
               </Avatar>
@@ -213,7 +209,7 @@ export default function Layout() {
           </header>
           
           {/* Main Content */}
-          <main className="flex-1 overflow-auto">
+          <main className="flex-1 overflow-auto bg-background/20 backdrop-blur-sm">
             <div className="w-full max-w-[1800px] mx-auto px-4 py-8 sm:px-6 lg:px-8 lg:py-10 xl:py-12">
               <Outlet />
             </div>
