@@ -75,13 +75,13 @@
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
-    --sidebar-background: 0 0% 98%;
+    --sidebar-background: 240 20% 99% / 0.85;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent: 240 4.8% 95.9% / 0.7;
     --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
+    --sidebar-border: 220 13% 91% / 0.2;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -146,13 +146,13 @@
     --shadow-soft: 0 2px 20px hsl(0 0% 0% / 0.3);
     --shadow-card: 0 4px 30px hsl(0 0% 0% / 0.2);
     --shadow-glow: 0 0 50px hsl(160 70% 60% / 0.2);
-    --sidebar-background: 240 5.9% 10%;
+    --sidebar-background: 222 84% 4.9% / 0.9;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent: 240 3.7% 15.9% / 0.8;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-border: 240 3.7% 15.9% / 0.15;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
@@ -495,6 +495,55 @@
     box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.4),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  /* Dreamy glassmorphism sidebar */
+  .glass-sidebar {
+    background: linear-gradient(135deg, 
+      hsla(var(--background) / 0.85) 0%,
+      hsla(var(--muted) / 0.7) 50%,
+      hsla(var(--background) / 0.85) 100%);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid hsla(var(--border) / 0.2);
+    box-shadow: 
+      0 8px 32px hsla(var(--foreground) / 0.08),
+      inset 0 1px 0 hsla(255, 255, 255, 0.1),
+      inset 0 -1px 0 hsla(var(--border) / 0.1);
+    position: relative;
+  }
+
+  .glass-sidebar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+      hsla(var(--primary) / 0.03) 0%,
+      transparent 50%,
+      hsla(var(--accent) / 0.02) 100%);
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  .dark .glass-sidebar {
+    background: linear-gradient(135deg, 
+      hsla(var(--background) / 0.9) 0%,
+      hsla(var(--muted) / 0.6) 50%,
+      hsla(var(--background) / 0.9) 100%);
+    border: 1px solid hsla(var(--border) / 0.15);
+    box-shadow: 
+      0 8px 32px hsla(0, 0%, 0% / 0.2),
+      inset 0 1px 0 hsla(255, 255, 255, 0.05);
+  }
+
+  .dark .glass-sidebar::before {
+    background: linear-gradient(135deg, 
+      hsla(var(--primary) / 0.05) 0%,
+      transparent 50%,
+      hsla(var(--accent) / 0.03) 100%);
   }
 
   .dark .transaction-item-glass {
