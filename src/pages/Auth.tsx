@@ -250,28 +250,40 @@ export default function Auth() {
           </p>
         </div>
 
-        {/* Glassmorphism Card */}
+        {/* Enhanced Glassmorphism Card */}
         <Card className="
-          backdrop-blur-xl 
-          bg-white/10 
-          dark:bg-white/5 
+          backdrop-blur-2xl 
+          bg-white/15 
+          dark:bg-white/10 
           border 
-          border-white/20 
-          dark:border-white/10 
+          border-white/30 
+          dark:border-white/20 
           shadow-2xl 
-          shadow-black/20 
-          dark:shadow-black/40
-          rounded-2xl
+          shadow-cyan-500/20
+          drop-shadow-2xl
+          rounded-3xl
           overflow-hidden
           relative
           before:absolute 
           before:inset-0 
           before:bg-gradient-to-br 
-          before:from-white/20 
-          before:via-white/5 
+          before:from-white/25 
+          before:via-white/10 
           before:to-transparent 
-          before:rounded-2xl 
+          before:rounded-3xl 
           before:pointer-events-none
+          after:absolute
+          after:inset-0
+          after:rounded-3xl
+          after:bg-gradient-to-t
+          after:from-transparent
+          after:via-white/5
+          after:to-white/10
+          after:pointer-events-none
+          hover:shadow-cyan-400/30
+          hover:border-white/40
+          transition-all
+          duration-300
         ">
           <CardHeader className="text-center pb-4 relative z-10">
             <Button
