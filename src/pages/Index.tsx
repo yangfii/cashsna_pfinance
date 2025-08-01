@@ -219,7 +219,7 @@ const Index = () => {
       <section id="features" className="py-20 bg-cover bg-center bg-no-repeat relative" style={{
         backgroundImage: `url('https://i.pinimg.com/736x/70/01/76/700176dc0a287dafa5f15a019198f7b8.jpg')`,
       }}>
-        <div className="absolute inset-0 bg-background/70 backdrop-blur-sm"></div>
+        {/* Background overlay and blur removed */}
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-16 animate-slide-up">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent animate-fade-in">
