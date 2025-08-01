@@ -418,59 +418,61 @@ const Index = () => {
       </section>
 
       {/* Benefits Section */}
-      <section className="bg-white/20 backdrop-blur-md border-t border-white/20 py-0 my-0">
+      <section className="py-0 my-0">
         <div className="container mx-auto py-[60px] px-[7px]">
-          <div className="text-center mb-12">
-            <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-6 animate-fade-in">
-              {language === 'khmer' ? 'ប្រយោជន៍សំខាន់' : 'Key Benefits'}
-            </h3>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0" style={{
-            animationDelay: '0.1s'
-          }}>
-              <CardContent className="p-6 text-center">
-                <div className="mb-4">
-                  <div className="w-12 h-12 bg-constructive/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-constructive/20 transition-all duration-300 group-hover:scale-110">
-                    <span className="text-constructive text-xl animate-pulse">⚡</span>
-                  </div>
-                </div>
-                <p className="text-base leading-relaxed group-hover:text-foreground transition-colors">
-                  {language === 'khmer' ? 'សន្សំពេល និងលើកកម្ពស់គុណភាពនៃការសម្រេចចិត្ត' : 'Save time and enhance decision quality'}
-                </p>
-              </CardContent>
-            </Card>
+          <div className="border border-white/20 bg-white/20 backdrop-blur-md rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-8 max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-6 animate-fade-in">
+                {language === 'khmer' ? 'ប្រយោជន៍សំខាន់' : 'Key Benefits'}
+              </h3>
+            </div>
             
-            <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0" style={{
-            animationDelay: '0.2s'
-          }}>
-              <CardContent className="p-6 text-center">
-                <div className="mb-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
-                    <span className="text-primary text-xl animate-pulse">👥</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0" style={{
+              animationDelay: '0.1s'
+            }}>
+                <CardContent className="p-6 text-center">
+                  <div className="mb-4">
+                    <div className="w-12 h-12 bg-constructive/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-constructive/20 transition-all duration-300 group-hover:scale-110">
+                      <span className="text-constructive text-xl animate-pulse">⚡</span>
+                    </div>
                   </div>
-                </div>
-                <p className="text-base leading-relaxed group-hover:text-foreground transition-colors">
-                  {language === 'khmer' ? 'បំពេញតួនាទី ប្រៀបដូចជាមានជំនួយផ្ទាល់ខ្លួនដ៏ល្អសម្រាប់អ្នក' : 'Like having a personal financial advisor'}
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0" style={{
-            animationDelay: '0.3s'
-          }}>
-              <CardContent className="p-6 text-center">
-                <div className="mb-4">
-                  <div className="w-12 h-12 bg-balance/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-balance/20 transition-all duration-300 group-hover:scale-110">
-                    <span className="text-balance text-xl animate-pulse">💎</span>
+                  <p className="text-base leading-relaxed group-hover:text-foreground transition-colors">
+                    {language === 'khmer' ? 'សន្សំពេល និងលើកកម្ពស់គុណភាពនៃការសម្រេចចិត្ត' : 'Save time and enhance decision quality'}
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0" style={{
+              animationDelay: '0.2s'
+            }}>
+                <CardContent className="p-6 text-center">
+                  <div className="mb-4">
+                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
+                      <span className="text-primary text-xl animate-pulse">👥</span>
+                    </div>
                   </div>
-                </div>
-                <p className="text-base leading-relaxed group-hover:text-foreground transition-colors">
-                  {language === 'khmer' ? 'ធ្វើអោយអ្នកប្រើចាប់អារម្មណ៍ និងស្ថិតនៅលើវេបសាយបានយូរ' : 'Engaging and long-lasting user experience'}
-                </p>
-              </CardContent>
-            </Card>
+                  <p className="text-base leading-relaxed group-hover:text-foreground transition-colors">
+                    {language === 'khmer' ? 'បំពេញតួនាទី ប្រៀបដូចជាមានជំនួយផ្ទាល់ខ្លួនដ៏ល្អសម្រាប់អ្នក' : 'Like having a personal financial advisor'}
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-2 animate-fade-in border-0" style={{
+              animationDelay: '0.3s'
+            }}>
+                <CardContent className="p-6 text-center">
+                  <div className="mb-4">
+                    <div className="w-12 h-12 bg-balance/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-balance/20 transition-all duration-300 group-hover:scale-110">
+                      <span className="text-balance text-xl animate-pulse">💎</span>
+                    </div>
+                  </div>
+                  <p className="text-base leading-relaxed group-hover:text-foreground transition-colors">
+                    {language === 'khmer' ? 'ធ្វើអោយអ្នកប្រើចាប់អារម្មណ៍ និងស្ថិតនៅលើវេបសាយបានយូរ' : 'Engaging and long-lasting user experience'}
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
