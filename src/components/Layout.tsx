@@ -48,11 +48,6 @@ const getNavItems = (t: (key: string) => string) => [{
   icon: BarChart3,
   label: t("nav.reports"),
   key: "reports"
-}, {
-  to: "/dashboard/settings",
-  icon: Settings,
-  label: t("nav.settings"),
-  key: "settings"
 }];
 function AppSidebar() {
   const {
@@ -132,6 +127,16 @@ function AppSidebar() {
       
       <SidebarFooter>
         <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={location.pathname === "/dashboard/settings"} tooltip={t("nav.settings")} className="group">
+              <NavLink to="/dashboard/settings">
+                <Settings className="size-5 transition-all duration-300 group-hover:scale-125 group-hover:rotate-3 hover:animate-pulse active:scale-90 active:rotate-6" />
+                <span className="text-base transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
+                  {t("nav.settings")}
+                </span>
+              </NavLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <ReportDialog trigger={<SidebarMenuButton tooltip={t('layout.reportToDevelopers')} className="group">
                   <Bug className="size-5 transition-all duration-300 group-hover:scale-125 group-hover:rotate-3 hover:animate-pulse active:scale-90 active:rotate-6" />
