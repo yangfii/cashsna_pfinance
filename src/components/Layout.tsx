@@ -95,9 +95,9 @@ function AppSidebar() {
         <div className="flex items-center gap-2 py-1 my-0 mx-[4px] px-[12px]">
           <button 
             onClick={() => navigate('/dashboard')}
-            className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer"
+            className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 cursor-pointer group"
           >
-            <LayoutDashboard className="size-5" />
+            <LayoutDashboard className="size-5 transition-all duration-300 group-hover:scale-125 group-hover:rotate-3 hover:animate-pulse active:scale-90 active:rotate-6" />
           </button>
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-semibold text-foreground">
@@ -118,7 +118,7 @@ function AppSidebar() {
               {navItems.map(item => <SidebarMenuItem key={item.key}>
                   <SidebarMenuButton asChild isActive={location.pathname === item.to} tooltip={item.label}>
                     <NavLink to={item.to} className="group">
-                      <item.icon className="size-5 transition-transform duration-300 group-hover:scale-110" />
+                      <item.icon className="size-5 transition-all duration-300 group-hover:scale-125 group-hover:rotate-3 hover:animate-pulse active:scale-90 active:rotate-6" />
                       <span className="text-base transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
                         {item.label}
                       </span>
@@ -134,7 +134,7 @@ function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <ReportDialog trigger={<SidebarMenuButton tooltip={t('layout.reportToDevelopers')} className="group">
-                  <Bug className="size-5 transition-transform duration-300 group-hover:scale-110" />
+                  <Bug className="size-5 transition-all duration-300 group-hover:scale-125 group-hover:rotate-3 hover:animate-pulse active:scale-90 active:rotate-6" />
                   <span className="text-base transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
                     {t('layout.reportToDevelopers')}
                   </span>
@@ -142,7 +142,7 @@ function AppSidebar() {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={handleSignOut} tooltip={t("nav.signOut")} className="group">
-              <LogOut className="size-5 transition-transform duration-300 group-hover:scale-110" />
+              <LogOut className="size-5 transition-all duration-300 group-hover:scale-125 group-hover:rotate-3 hover:animate-pulse active:scale-90 active:rotate-6" />
               <span className="text-base transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
                 {t("nav.signOut")}
               </span>
@@ -196,10 +196,10 @@ export default function Layout() {
             <GlobalSearch />
             <div className="flex-1" />
             <NavLink to="/dashboard/settings" className={cn("flex items-center gap-2 p-2 rounded-lg group hover:bg-accent", location.pathname === "/dashboard/settings" ? "bg-accent" : "")}>
-              <Avatar className="size-8 transition-transform duration-300 group-hover:scale-105">
+              <Avatar className="size-8 transition-all duration-300 group-hover:scale-110 group-hover:rotate-2 hover:animate-pulse active:scale-95">
                 <AvatarImage src={profile?.avatar_url || undefined} alt="Profile picture" />
                 <AvatarFallback className="bg-gradient-primary text-primary-foreground">
-                  <User className="size-4" />
+                  <User className="size-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3" />
                 </AvatarFallback>
               </Avatar>
             </NavLink>
