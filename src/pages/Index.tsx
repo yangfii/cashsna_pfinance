@@ -367,7 +367,7 @@ const Index = () => {
             </Card>
 
             {/* Feature 8 - AI Assistance (full width) */}
-            <Card className="lg:col-span-4 group hover:shadow-glow transition-all duration-500 hover:-translate-y-1 animate-fade-in bg-gradient-to-r from-primary/5 to-primary-glow/5 border-0" style={{
+            <Card className="lg:col-span-4 group hover:shadow-glow transition-all duration-500 hover:-translate-y-1 animate-fade-in border border-white/20 bg-white/20 backdrop-blur-md rounded-xl shadow-lg hover:shadow-2xl hover:shadow-primary/20" style={{
             animationDelay: '0.8s'
           }}>
               <CardContent className="p-8">
