@@ -11,7 +11,7 @@ import { PurposeDialog } from '@/components/PurposeDialog';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useEffect } from 'react';
 import { Globe } from 'lucide-react';
-import { AnimatedIcon } from '@/components/ui/animated-icon';
+
 import heroBackground from '@/assets/hero-background.jpg';
 import backgroundImage from '@/assets/background-image.jpg';
 import overlayBackground from '@/assets/overlay-background.jpg';
