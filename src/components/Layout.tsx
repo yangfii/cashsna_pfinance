@@ -97,7 +97,7 @@ function AppSidebar() {
             onClick={() => navigate('/dashboard')}
             className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer"
           >
-            <LayoutDashboard className="size-4" />
+            <LayoutDashboard className="size-5" />
           </button>
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-semibold text-foreground">
@@ -112,14 +112,14 @@ function AppSidebar() {
       
       <SidebarContent className="mx-[6px]">
         <SidebarGroup>
-          <SidebarGroupLabel>{t('layout.navigation')}</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-sm font-medium">{t('layout.navigation')}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map(item => <SidebarMenuItem key={item.key}>
                   <SidebarMenuButton asChild isActive={location.pathname === item.to} tooltip={item.label}>
                     <NavLink to={item.to} className="group">
-                      <item.icon className="transition-transform duration-300 group-hover:scale-110" />
-                      <span className="transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
+                      <item.icon className="size-5 transition-transform duration-300 group-hover:scale-110" />
+                      <span className="text-base transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
                         {item.label}
                       </span>
                     </NavLink>
@@ -134,16 +134,16 @@ function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <ReportDialog trigger={<SidebarMenuButton tooltip={t('layout.reportToDevelopers')} className="group">
-                  <Bug className="transition-transform duration-300 group-hover:scale-110" />
-                  <span className="transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
+                  <Bug className="size-5 transition-transform duration-300 group-hover:scale-110" />
+                  <span className="text-base transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
                     {t('layout.reportToDevelopers')}
                   </span>
                 </SidebarMenuButton>} />
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={handleSignOut} tooltip={t("nav.signOut")} className="group">
-              <LogOut className="transition-transform duration-300 group-hover:scale-110" />
-              <span className="transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
+              <LogOut className="size-5 transition-transform duration-300 group-hover:scale-110" />
+              <span className="text-base transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
                 {t("nav.signOut")}
               </span>
             </SidebarMenuButton>
