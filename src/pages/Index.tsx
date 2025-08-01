@@ -479,12 +479,7 @@ const Index = () => {
             <div className="bg-gradient-card shadow-card rounded-3xl p-8 md:p-12 max-w-4xl mx-auto border border-border/50 animate-fade-in px-[47px] py-[11px]">
               <div className="mb-6">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 hover:scale-110 transition-transform duration-300">
-                  <AnimatedIcon 
-                    src="/src/assets/custom-icon.json"
-                    trigger="hover"
-                    size="md"
-                    colors="primary:hsl(var(--primary)),secondary:hsl(var(--primary-glow))"
-                  />
+                  <Globe className="w-8 h-8 text-primary" />
                 </div>
               </div>
               
