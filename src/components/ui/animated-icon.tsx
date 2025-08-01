@@ -55,22 +55,34 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
       return;
     }
 
-    // Load Lordicon script dynamically
+    // Load Lordicon script dynamically with better error handling
     const script = document.createElement('script');
     script.src = 'https://cdn.lordicon.com/lordicon.js';
     script.async = true;
-    script.onload = () => {
+    script.crossOrigin = 'anonymous';
+    
+    const handleLoad = () => {
       setIsLoaded(true);
     };
-    script.onerror = () => {
-      console.error('Failed to load Lordicon script');
-      setIsLoaded(true); // Still show fallback
+    
+    const handleError = (error: Event) => {
+      console.warn('Lordicon script failed to load, using fallback:', error);
+      setIsLoaded(true); // Show fallback
     };
     
-    document.head.appendChild(script);
+    script.addEventListener('load', handleLoad);
+    script.addEventListener('error', handleError);
+    
+    try {
+      document.head.appendChild(script);
+    } catch (error) {
+      console.warn('Failed to add Lordicon script:', error);
+      setIsLoaded(true); // Show fallback
+    }
 
     return () => {
-      // Script cleanup is handled by the browser
+      script.removeEventListener('load', handleLoad);
+      script.removeEventListener('error', handleError);
     };
   }, []);
 

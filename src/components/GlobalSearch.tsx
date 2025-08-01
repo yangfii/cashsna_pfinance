@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Search, Brain, Coins, BarChart3, Target, FolderOpen, ArrowLeftRight, Settings, LayoutDashboard, TrendingUp, Calculator, PieChart, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
@@ -178,6 +178,9 @@ export function GlobalSearch() {
         </div>
       </DialogTrigger>
       <DialogContent className="max-w-2xl p-0">
+        <DialogHeader className="sr-only">
+          <DialogTitle>Global Search</DialogTitle>
+        </DialogHeader>
         <div className="flex items-center border-b px-3">
           <Search className="size-4 text-muted-foreground mr-2" />
           <Input
