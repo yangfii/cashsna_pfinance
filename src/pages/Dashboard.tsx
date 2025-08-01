@@ -300,7 +300,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 xl:gap-10 animate-slide-up">
             <Card 
               className="glass-panel hover:shadow-2xl hover:scale-105 transition-all duration-500 cursor-pointer group"
-              onClick={() => navigate('/dashboard/transactions?type=income')}
+              onClick={() => navigate('/dashboard/transactions', { state: { filterType: 'income', showIncomeOnly: true } })}
             >
               <CardContent className="p-8 lg:p-10">
                 <div className="flex items-center space-x-4 lg:space-x-6">
