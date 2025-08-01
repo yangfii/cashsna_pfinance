@@ -476,10 +476,10 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-background">
+      <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center">
-            <div className="bg-gradient-card shadow-card rounded-3xl p-8 md:p-12 max-w-4xl mx-auto border border-border/50 animate-fade-in px-[47px] py-[11px]">
+            <div className="border border-white/20 bg-white/20 backdrop-blur-md rounded-3xl shadow-lg hover:shadow-2xl hover:shadow-primary/20 p-8 md:p-12 max-w-4xl mx-auto transition-all duration-300 animate-fade-in px-[47px] py-[11px]">
               <div className="mb-6">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 hover:scale-110 transition-transform duration-300">
                   <Globe className="w-8 h-8 text-primary" />
