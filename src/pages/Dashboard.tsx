@@ -97,13 +97,12 @@ export default function Dashboard() {
 
   return (
     <div className="w-full container-dashboard space-y-10 lg:space-y-12 animate-fade-in relative overflow-hidden">
-      {/* Enhanced Aesthetic Background with Parallax Effect */}
+      {/* Enhanced Aesthetic Background */}
       <div 
-        className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-transform duration-1000 ease-out"
+        className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url('/lovable-uploads/a5ad6ef9-79f1-492c-8698-f22960973926.png')`,
-          transform: 'scale(1.1)',
-          filter: 'blur(1px) brightness(0.7) contrast(1.1)',
+          filter: 'blur(2px) brightness(0.5) contrast(1.2) saturate(1.1)',
           zIndex: -2
         }}
       />
