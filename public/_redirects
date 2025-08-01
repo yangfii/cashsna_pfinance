@@ -1,5 +1,9 @@
-# SPA routing - serve index.html for all routes
+# Netlify SPA routing configuration
 /*    /index.html   200
+
+# Handle specific routes
+/dashboard    /index.html   200
+/dashboard/*  /index.html   200
 
 # API redirects for Supabase functions (if needed)
 /api/functions/*  https://giziyaymzuydlnbjzhsc.supabase.co/functions/v1/:splat  200
