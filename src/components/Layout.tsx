@@ -88,10 +88,7 @@ function AppSidebar() {
   return <Sidebar variant="inset" collapsible="icon" className="py-0 my-0 mx-px px-0">
       <SidebarHeader className="mx-0 px-0 py-[7px] my-0">
         <div className="flex items-center gap-2 py-1 my-0 mx-[4px] px-[12px]">
-          <button 
-            onClick={() => navigate('/dashboard')}
-            className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 cursor-pointer group"
-          >
+          <button onClick={() => navigate('/dashboard')} className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 cursor-pointer group">
             <LayoutDashboard className="size-5 transition-all duration-300 group-hover:scale-125 group-hover:rotate-3 hover:animate-pulse active:scale-90 active:rotate-6" />
           </button>
           <div className="grid flex-1 text-left text-sm leading-tight">
@@ -139,7 +136,7 @@ function AppSidebar() {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <ReportDialog trigger={<SidebarMenuButton tooltip={t('layout.reportToDevelopers')} className="group">
-                  <Bug className="size-5 transition-all duration-300 group-hover:scale-125 group-hover:rotate-3 hover:animate-pulse active:scale-90 active:rotate-6" />
+                  
                   <span className="text-base transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
                     {t('layout.reportToDevelopers')}
                   </span>
