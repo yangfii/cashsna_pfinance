@@ -298,11 +298,14 @@ export default function Dashboard() {
         <div className="xl:col-span-3 space-y-8 lg:space-y-10">
           {/* Enhanced Quick Actions with dreamy glassmorphism */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 xl:gap-10 animate-slide-up">
-            <Card className="glass-panel hover:shadow-2xl hover:scale-105 transition-all duration-500 cursor-pointer group">
+            <Card 
+              className="glass-panel hover:shadow-2xl hover:scale-105 transition-all duration-500 cursor-pointer group"
+              onClick={() => navigate('/dashboard/transactions?type=income')}
+            >
               <CardContent className="p-8 lg:p-10">
                 <div className="flex items-center space-x-4 lg:space-x-6">
-                  <div className="p-4 lg:p-5 bg-gradient-income rounded-xl flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                    <TrendingUp className="h-6 w-6 lg:h-8 lg:w-8 text-constructive-foreground" />
+                  <div className="p-4 lg:p-5 bg-gradient-income rounded-xl flex-shrink-0 group-hover:scale-125 group-hover:rotate-3 transition-all duration-300 group-active:scale-90">
+                    <TrendingUp className="h-6 w-6 lg:h-8 lg:w-8 text-constructive-foreground transition-all duration-300 group-hover:rotate-6 group-hover:animate-pulse" />
                   </div>
                    <div className="min-w-0 flex-1">
                      <h3 className="text-lg lg:text-xl xl:text-2xl font-semibold group-hover:text-constructive transition-colors duration-300">បន្ថែមចំណូល</h3>
@@ -312,11 +315,14 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
-            <Card className="glass-panel hover:shadow-2xl hover:scale-105 transition-all duration-500 cursor-pointer group">
+            <Card 
+              className="glass-panel hover:shadow-2xl hover:scale-105 transition-all duration-500 cursor-pointer group"
+              onClick={() => navigate('/dashboard/transactions?type=expense')}
+            >
               <CardContent className="p-8 lg:p-10">
                 <div className="flex items-center space-x-4 lg:space-x-6">
-                  <div className="p-4 lg:p-5 bg-gradient-expense rounded-xl flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                    <TrendingDown className="h-6 w-6 lg:h-8 lg:w-6 text-destructive-foreground" />
+                  <div className="p-4 lg:p-5 bg-gradient-expense rounded-xl flex-shrink-0 group-hover:scale-125 group-hover:rotate-3 transition-all duration-300 group-active:scale-90">
+                    <TrendingDown className="h-6 w-6 lg:h-8 lg:w-6 text-destructive-foreground transition-all duration-300 group-hover:rotate-6 group-hover:animate-pulse" />
                   </div>
                    <div className="min-w-0 flex-1">
                      <h3 className="text-lg lg:text-xl xl:text-2xl font-semibold group-hover:text-destructive transition-colors duration-300">បន្ថែមចំណាយ</h3>
