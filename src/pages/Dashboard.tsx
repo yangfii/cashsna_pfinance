@@ -4,19 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { DollarSign, TrendingUp, TrendingDown, Wallet, Plus, Calendar, CalendarIcon, Settings, Palette } from "lucide-react";
+import { DollarSign, TrendingUp, TrendingDown, Wallet, Plus, Calendar, CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { WelcomeMessage } from '@/components/WelcomeMessage';
 import { ProfileCard } from '@/components/ProfileCard';
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
-
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useIsMobile } from "@/hooks/use-mobile";
-
 type Transaction = {
   id: string;
   user_id: string;
@@ -28,15 +26,20 @@ type Transaction = {
   created_at: string;
   updated_at: string;
 };
-
 export default function Dashboard() {
   const [currentMonth] = useState("កក្កដា ២០២៤");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date>();
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const { t } = useLanguage();
+  const {
+    user
+  } = useAuth();
+  const {
+    toast
+  } = useToast();
+  const {
+    t
+  } = useLanguage();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
@@ -44,22 +47,19 @@ export default function Dashboard() {
   useEffect(() => {
     fetchTransactions();
   }, [user]);
-
   const fetchTransactions = async () => {
     if (!user) {
       setLoading(false);
       return;
     }
-    
     try {
-      const { data, error } = await supabase
-        .from('transactions')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('date', { ascending: false });
-
+      const {
+        data,
+        error
+      } = await supabase.from('transactions').select('*').eq('user_id', user.id).order('date', {
+        ascending: false
+      });
       if (error) throw error;
-      
       setTransactions((data || []).map(item => ({
         ...item,
         type: item.type as "income" | "expense"
@@ -75,59 +75,21 @@ export default function Dashboard() {
       setLoading(false);
     }
   };
-  
-  // Calculate totals from real data
-  const totalIncome = transactions
-    .filter(t => t.type === "income")
-    .reduce((sum, t) => sum + t.amount, 0);
-  
-  const totalExpense = transactions
-    .filter(t => t.type === "expense")
-    .reduce((sum, t) => sum + t.amount, 0);
-  
-  const netBalance = totalIncome - totalExpense;
 
+  // Calculate totals from real data
+  const totalIncome = transactions.filter(t => t.type === "income").reduce((sum, t) => sum + t.amount, 0);
+  const totalExpense = transactions.filter(t => t.type === "expense").reduce((sum, t) => sum + t.amount, 0);
+  const netBalance = totalIncome - totalExpense;
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('km-KH', {
       style: 'currency',
       currency: 'USD',
-      minimumFractionDigits: 0,
+      minimumFractionDigits: 0
     }).format(amount);
   };
-
-  return (
-    <div className="w-full container-dashboard space-y-10 lg:space-y-12 animate-fade-in relative overflow-hidden">
-      {/* Enhanced Aesthetic Background */}
-      <div 
-        className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url('/lovable-uploads/a5ad6ef9-79f1-492c-8698-f22960973926.png')`,
-          filter: 'blur(2px) brightness(0.5) contrast(1.2) saturate(1.1)',
-          zIndex: -2
-        }}
-      />
+  return <div className="w-full container-dashboard space-y-10 lg:space-y-12 animate-fade-in relative">
+      {/* Dreamy background overlay */}
       
-      {/* Multi-layered Glass Overlay for Enhanced Visual Depth */}
-      <div className="fixed inset-0 bg-gradient-to-br from-background/85 via-background/70 to-background/80 backdrop-blur-sm" style={{ zIndex: -1 }} />
-      <div className="fixed inset-0 bg-gradient-to-t from-primary/5 via-transparent to-accent/5" style={{ zIndex: -1 }} />
-      
-      {/* Floating Customization Button */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <Button
-          size="sm"
-          className="glass-panel shadow-2xl hover:shadow-glow transition-all duration-300 group border-0 bg-background/20 backdrop-blur-md"
-          onClick={() => {
-            // TODO: Implement background customization dialog
-            toast({
-              title: "Background Customization",
-              description: "Background customization feature coming soon!",
-            });
-          }}
-        >
-          <Palette className="h-4 w-4 mr-2 group-hover:rotate-12 transition-transform duration-300" />
-          <span className="text-sm">Customize</span>
-        </Button>
-      </div>
       
       {/* Welcome Message with enhanced spacing */}
       <div className="px-2 sm:px-4 lg:px-6 relative z-10">
@@ -149,14 +111,7 @@ export default function Dashboard() {
         <div className="flex flex-col sm:flex-row gap-4 lg:gap-6">
           <Popover>
             <PopoverTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className={cn(
-                  "gap-3 w-full sm:w-auto h-12 lg:h-14 px-6 lg:px-8",
-                  !selectedDate && "text-muted-foreground"
-                )}
-              >
+              <Button variant="outline" size="sm" className={cn("gap-3 w-full sm:w-auto h-12 lg:h-14 px-6 lg:px-8", !selectedDate && "text-muted-foreground")}>
                 <CalendarIcon className="h-5 w-5 lg:h-6 lg:w-6" />
                 <span className="text-sm lg:text-base">
                   {selectedDate ? format(selectedDate, "PPP") : "ពិនិត្យប្រតិបត្តិការ"}
@@ -164,19 +119,10 @@ export default function Dashboard() {
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
-              <CalendarComponent
-                mode="single"
-                selected={selectedDate}
-                onSelect={setSelectedDate}
-                initialFocus
-                className="p-3 pointer-events-auto"
-              />
+              <CalendarComponent mode="single" selected={selectedDate} onSelect={setSelectedDate} initialFocus className="p-3 pointer-events-auto" />
             </PopoverContent>
           </Popover>
-          <Button 
-            className="gap-3 bg-gradient-primary border-0 hover:shadow-glow transition-smooth w-full sm:w-auto h-12 lg:h-14 px-6 lg:px-8"
-            onClick={() => navigate('/dashboard/transactions')}
-          >
+          <Button className="gap-3 bg-gradient-primary border-0 hover:shadow-glow transition-smooth w-full sm:w-auto h-12 lg:h-14 px-6 lg:px-8" onClick={() => navigate('/dashboard/transactions')}>
             <Plus className="h-5 w-5 lg:h-6 lg:w-6" />
             <span className="text-sm lg:text-base">{t("dashboard.addTransaction")}</span>
           </Button>
@@ -204,7 +150,9 @@ export default function Dashboard() {
         </Card>
 
         {/* Total Expenses */}
-        <Card className="expense-card-glass stat-card animate-bounce-in hover:scale-105 transition-all duration-500" style={{animationDelay: '0.1s'}}>
+        <Card className="expense-card-glass stat-card animate-bounce-in hover:scale-105 transition-all duration-500" style={{
+        animationDelay: '0.1s'
+      }}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 lg:pb-4">
             <CardTitle className="text-sm lg:text-base font-medium text-muted-foreground">
               {t("dashboard.totalExpenses")}
@@ -222,7 +170,9 @@ export default function Dashboard() {
         </Card>
 
         {/* Net Balance */}
-        <Card className="balance-card-glass stat-card animate-bounce-in hover:scale-105 transition-all duration-500" style={{animationDelay: '0.2s'}}>
+        <Card className="balance-card-glass stat-card animate-bounce-in hover:scale-105 transition-all duration-500" style={{
+        animationDelay: '0.2s'
+      }}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 lg:pb-4">
             <CardTitle className="text-sm lg:text-base font-medium text-muted-foreground">
               {t("dashboard.currentBalance")}
@@ -230,12 +180,7 @@ export default function Dashboard() {
             <Wallet className="h-5 w-5 lg:h-6 lg:w-6 text-blue-600" />
           </CardHeader>
           <CardContent className="pt-0">
-            <div className={cn(
-              "text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold",
-              netBalance >= 0 
-                ? "text-blue-800 dark:text-blue-300" 
-                : "text-red-800 dark:text-red-300"
-            )}>
+            <div className={cn("text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold", netBalance >= 0 ? "text-blue-800 dark:text-blue-300" : "text-red-800 dark:text-red-300")}>
               {formatCurrency(netBalance)}
             </div>
             <p className="text-xs lg:text-sm text-blue-600 dark:text-blue-500 mt-2 lg:mt-3">
@@ -245,11 +190,9 @@ export default function Dashboard() {
         </Card>
 
         {/* This Month */}
-        <Card 
-          className="stat-card-glass animate-bounce-in hover:scale-105 transition-all duration-500 cursor-pointer" 
-          style={{animationDelay: '0.3s'}}
-          onClick={() => navigate('/dashboard/transactions')}
-        >
+        <Card className="stat-card-glass animate-bounce-in hover:scale-105 transition-all duration-500" style={{
+        animationDelay: '0.3s'
+      }}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 lg:pb-4">
             <CardTitle className="text-sm lg:text-base font-medium text-muted-foreground">
               ប្រតិបត្តិការខែនេះ
@@ -279,49 +222,27 @@ export default function Dashboard() {
             </div>
           </CardHeader>
           <CardContent className="pt-0">
-            {loading ? (
-              <div className="text-center py-12 lg:py-16 text-muted-foreground">
+            {loading ? <div className="text-center py-12 lg:py-16 text-muted-foreground">
                 <p className="text-base lg:text-lg">{t("common.loading")}</p>
-              </div>
-            ) : transactions.length === 0 ? (
-              <div className="text-center py-12 lg:py-16 text-muted-foreground">
+              </div> : transactions.length === 0 ? <div className="text-center py-12 lg:py-16 text-muted-foreground">
                 <p className="text-base lg:text-lg">{t("dashboard.noTransactions")}</p>
-              </div>
-            ) : (
-              <div className="space-y-4 lg:space-y-6">
-                {transactions.slice(0, 5).map((transaction) => (
-                <div
-                  key={transaction.id}
-                  className="flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:justify-between p-6 lg:p-8 transaction-item-glass hover:scale-[1.02] transition-all duration-300"
-                >
+              </div> : <div className="space-y-4 lg:space-y-6">
+                {transactions.slice(0, 5).map(transaction => <div key={transaction.id} className="flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:justify-between p-6 lg:p-8 transaction-item-glass hover:scale-[1.02] transition-all duration-300">
                   <div className="flex items-center space-x-4 lg:space-x-6 min-w-0 flex-1">
-                    <div className={cn(
-                      "w-2 h-10 lg:h-12 rounded-full flex-shrink-0",
-                      transaction.type === "income" ? "bg-gradient-income" : "bg-gradient-expense"
-                    )} />
+                    <div className={cn("w-2 h-10 lg:h-12 rounded-full flex-shrink-0", transaction.type === "income" ? "bg-gradient-income" : "bg-gradient-expense")} />
                      <div className="min-w-0 flex-1">
                        <p className="text-base lg:text-lg xl:text-xl font-semibold truncate">{transaction.category}</p>
                        <p className="text-sm lg:text-base text-muted-foreground truncate">{transaction.note}</p>
                      </div>
                   </div>
                   <div className="flex items-center justify-between lg:flex-col lg:items-end lg:text-right lg:space-y-2">
-                    <Badge 
-                      variant={transaction.type === "income" ? "secondary" : "destructive"}
-                      className={cn(
-                        "text-sm lg:text-base px-3 py-1 lg:px-4 lg:py-2",
-                        transaction.type === "income" 
-                          ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" 
-                          : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-                      )}
-                    >
+                    <Badge variant={transaction.type === "income" ? "secondary" : "destructive"} className={cn("text-sm lg:text-base px-3 py-1 lg:px-4 lg:py-2", transaction.type === "income" ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400")}>
                       {transaction.type === "income" ? "+" : "-"}{formatCurrency(transaction.amount)}
                     </Badge>
                     <p className="text-xs lg:text-sm text-muted-foreground mt-0 lg:mt-1">{transaction.date}</p>
                   </div>
-                </div>
-                ))}
-              </div>
-            )}
+                </div>)}
+              </div>}
           </CardContent>
         </Card>
       </div>
@@ -331,10 +252,12 @@ export default function Dashboard() {
         <div className="xl:col-span-3 space-y-8 lg:space-y-10">
           {/* Enhanced Quick Actions with dreamy glassmorphism */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 xl:gap-10 animate-slide-up">
-            <Card 
-              className="glass-panel hover:shadow-2xl hover:scale-105 transition-all duration-500 cursor-pointer group"
-              onClick={() => navigate('/dashboard/transactions', { state: { filterType: 'income', showIncomeOnly: true } })}
-            >
+            <Card className="glass-panel hover:shadow-2xl hover:scale-105 transition-all duration-500 cursor-pointer group" onClick={() => navigate('/dashboard/transactions', {
+            state: {
+              filterType: 'income',
+              showIncomeOnly: true
+            }
+          })}>
               <CardContent className="p-8 lg:p-10">
                 <div className="flex items-center space-x-4 lg:space-x-6">
                   <div className="p-4 lg:p-5 bg-gradient-income rounded-xl flex-shrink-0 group-hover:scale-125 group-hover:rotate-3 transition-all duration-300 group-active:scale-90">
@@ -348,10 +271,7 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
-            <Card 
-              className="glass-panel hover:shadow-2xl hover:scale-105 transition-all duration-500 cursor-pointer group"
-              onClick={() => navigate('/dashboard/transactions?type=expense')}
-            >
+            <Card className="glass-panel hover:shadow-2xl hover:scale-105 transition-all duration-500 cursor-pointer group" onClick={() => navigate('/dashboard/transactions?type=expense')}>
               <CardContent className="p-8 lg:p-10">
                 <div className="flex items-center space-x-4 lg:space-x-6">
                   <div className="p-4 lg:p-5 bg-gradient-expense rounded-xl flex-shrink-0 group-hover:scale-125 group-hover:rotate-3 transition-all duration-300 group-active:scale-90">
@@ -372,6 +292,5 @@ export default function Dashboard() {
           <ProfileCard />
         </div>
       </div>
-    </div>
-  );
+    </div>;
 }
