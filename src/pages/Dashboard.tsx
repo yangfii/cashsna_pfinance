@@ -245,7 +245,11 @@ export default function Dashboard() {
         </Card>
 
         {/* This Month */}
-        <Card className="stat-card-glass animate-bounce-in hover:scale-105 transition-all duration-500" style={{animationDelay: '0.3s'}}>
+        <Card 
+          className="stat-card-glass animate-bounce-in hover:scale-105 transition-all duration-500 cursor-pointer" 
+          style={{animationDelay: '0.3s'}}
+          onClick={() => navigate('/dashboard/transactions')}
+        >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 lg:pb-4">
             <CardTitle className="text-sm lg:text-base font-medium text-muted-foreground">
               ប្រតិបត្តិការខែនេះ
