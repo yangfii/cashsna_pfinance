@@ -164,7 +164,8 @@
   }
 
   body {
-    @apply bg-background text-foreground font-khmer;
+    @apply bg-background text-foreground;
+    font-family: 'Kantumruy Pro', sans-serif;
   }
 
   /* Enhanced Typography Design Tokens with better responsive spacing */
