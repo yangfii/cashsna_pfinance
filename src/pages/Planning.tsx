@@ -19,13 +19,11 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "next-themes";
-
 interface Step {
   id: string;
   text: string;
   completed: boolean;
 }
-
 interface Goal {
   id: string;
   title: string;
@@ -36,14 +34,15 @@ interface Goal {
   completed: boolean;
   createdAt: string;
 }
-
 export default function Planning() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("goals");
-  const { theme } = useTheme();
+  const {
+    theme
+  } = useTheme();
   const [newGoal, setNewGoal] = useState({
     title: '',
     description: '',
@@ -101,7 +100,6 @@ export default function Planning() {
     }
     return () => clearInterval(interval);
   }, [isTimerRunning, remainingTime, focusTime, selectedGoal, toast]);
-
   const addStep = () => {
     if (newStep.trim()) {
       const step: Step = {
@@ -113,11 +111,9 @@ export default function Planning() {
       setNewStep('');
     }
   };
-
   const removeStep = (stepId: string) => {
     setSteps(steps.filter(s => s.id !== stepId));
   };
-
   const getCurrentPeriod = (type: string) => {
     const now = new Date();
     switch (type) {
@@ -141,7 +137,6 @@ export default function Planning() {
         return '';
     }
   };
-
   const handleSaveGoal = () => {
     if (!newGoal.title.trim() || steps.length === 0) {
       toast({
@@ -176,7 +171,6 @@ export default function Planning() {
     }
     resetForm();
   };
-
   const resetForm = () => {
     setNewGoal({
       title: '',
@@ -189,7 +183,6 @@ export default function Planning() {
     setShowAddForm(false);
     setEditingGoal(null);
   };
-
   const deleteGoal = (goalId: string) => {
     setGoals(goals.filter(g => g.id !== goalId));
     toast({
@@ -198,7 +191,6 @@ export default function Planning() {
       variant: "destructive"
     });
   };
-
   const toggleStepCompletion = (goalId: string, stepId: string) => {
     setGoals(goals.map(goal => {
       if (goal.id === goalId) {
@@ -216,7 +208,6 @@ export default function Planning() {
       return goal;
     }));
   };
-
   const editGoal = (goal: Goal) => {
     setEditingGoal(goal);
     setNewGoal({
@@ -241,30 +232,25 @@ export default function Planning() {
       description: `Starting ${focusTime}-minute focus session${goal ? ` for "${goal.title}"` : ''}.`
     });
   };
-
   const pauseTimer = () => {
     setIsTimerRunning(false);
   };
-
   const resumeTimer = () => {
     if (remainingTime > 0) {
       setIsTimerRunning(true);
     }
   };
-
   const stopTimer = () => {
     setIsTimerRunning(false);
     setRemainingTime(0);
     setSelectedGoal(null);
     setShowFocusTimer(false);
   };
-
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
-
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'weekly':
@@ -277,7 +263,6 @@ export default function Planning() {
         return <Target className="h-4 w-4" />;
     }
   };
-
   const getTypeBadgeColor = (type: string) => {
     switch (type) {
       case 'weekly':
@@ -290,7 +275,6 @@ export default function Planning() {
         return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
     }
   };
-
   const weeklyGoals = goals.filter(g => g.type === 'weekly');
   const monthlyGoals = goals.filter(g => g.type === 'monthly');
   const yearlyGoals = goals.filter(g => g.type === 'yearly');
@@ -302,18 +286,12 @@ export default function Planning() {
       setBackgroundImage(savedBackground);
     }
   }, []);
-
-  return (
-    <div 
-      className="min-h-screen space-y-6 animate-fade-in relative"
-      style={{
-        backgroundImage: backgroundImage ? `url(${backgroundImage})` : 
-          'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--primary) / 0.05) 50%, hsl(var(--secondary) / 0.08) 100%)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
-      }}
-    >
+  return <div className="min-h-screen space-y-6 animate-fade-in relative" style={{
+    backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--primary) / 0.05) 50%, hsl(var(--secondary) / 0.08) 100%)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundAttachment: 'fixed'
+  }}>
       {/* Dreamy background overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-background/60 via-background/40 to-background/60 backdrop-blur-[1px]" />
       
@@ -328,11 +306,7 @@ export default function Planning() {
           </div>
           
           <div className="flex gap-2">
-            <Button 
-              variant="outline" 
-              onClick={() => setActiveTab("customization")} 
-              className="gap-2 glass-effect hover:scale-105 transition-all duration-300"
-            >
+            <Button variant="outline" onClick={() => setActiveTab("customization")} className="gap-2 glass-effect hover:scale-105 transition-all duration-300">
               <Palette className="h-4 w-4" />
               ការកំណត់រូបរាង
             </Button>
@@ -349,10 +323,7 @@ export default function Planning() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="glass-overlay p-2 rounded-xl mb-6">
             <TabsList className="grid w-full grid-cols-2 bg-transparent border-0">
-              <TabsTrigger value="ai-assistant" className="flex items-center gap-2 glass-card data-[state=active]:glass-strong">
-                <Brain className="h-4 w-4" />
-                ជំនួយការ AI
-              </TabsTrigger>
+              
               <TabsTrigger value="goals" className="flex items-center gap-2 glass-card data-[state=active]:glass-strong">
                 <Target className="h-4 w-4" />
                 គោលដៅ & កំណត់ចងចាំ
@@ -373,9 +344,9 @@ export default function Planning() {
                 <div>
                   <label className="text-sm font-medium mb-2 block">ប្រភេទគោលដៅ</label>
                   <Select value={newGoal.type} onValueChange={(value: 'weekly' | 'monthly' | 'yearly') => setNewGoal({
-                ...newGoal,
-                type: value
-              })}>
+                  ...newGoal,
+                  type: value
+                })}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -391,33 +362,21 @@ export default function Planning() {
                   <label className="text-sm font-medium mb-2 block">កាលបរិច្ឆេទ</label>
                   <Popover>
                     <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !selectedDate && "text-muted-foreground"
-                        )}
-                      >
+                      <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !selectedDate && "text-muted-foreground")}>
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {selectedDate ? format(selectedDate, "PPP") : <span>ជ្រើសរើសកាលបរិច្ឆេទ</span>}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={selectedDate}
-                        onSelect={(date) => {
-                          setSelectedDate(date);
-                          if (date) {
-                            setNewGoal({
-                              ...newGoal,
-                              period: format(date, "PPP")
-                            });
-                          }
-                        }}
-                        initialFocus
-                        className={cn("p-3 pointer-events-auto")}
-                      />
+                      <Calendar mode="single" selected={selectedDate} onSelect={date => {
+                      setSelectedDate(date);
+                      if (date) {
+                        setNewGoal({
+                          ...newGoal,
+                          period: format(date, "PPP")
+                        });
+                      }
+                    }} initialFocus className={cn("p-3 pointer-events-auto")} />
                     </PopoverContent>
                   </Popover>
                 </div>
@@ -425,17 +384,17 @@ export default function Planning() {
                 <div>
                   <label className="text-sm font-medium mb-2 block">ចំណងជើងគោលដៅ</label>
                   <Input placeholder="បញ្ចូលគោលដៅរបស់អ្នក..." value={newGoal.title} onChange={e => setNewGoal({
-                ...newGoal,
-                title: e.target.value
-              })} />
+                  ...newGoal,
+                  title: e.target.value
+                })} />
                 </div>
 
                 <div>
                   <label className="text-sm font-medium mb-2 block">ពិពណ៌នា (ស្រេចចិត្ត)</label>
                   <Textarea placeholder="ពិពណ៌នាលម្អិតអំពីគោលដៅ..." value={newGoal.description} onChange={e => setNewGoal({
-                ...newGoal,
-                description: e.target.value
-              })} />
+                  ...newGoal,
+                  description: e.target.value
+                })} />
                 </div>
 
                 <div>
@@ -683,10 +642,9 @@ export default function Planning() {
 
             {/* Empty State */}
             {goals.length === 0 && <div className="glass-panel text-center py-12">
-                <Target className="h-12 w-12 mx-auto mb-4 animate-pulse text-primary transition-colors duration-1000" 
-                       style={{
-                         animation: 'pulse 2s ease-in-out infinite, colorShift 3s ease-in-out infinite'
-                       }} />
+                <Target className="h-12 w-12 mx-auto mb-4 animate-pulse text-primary transition-colors duration-1000" style={{
+                animation: 'pulse 2s ease-in-out infinite, colorShift 3s ease-in-out infinite'
+              }} />
                 <h3 className="text-lg font-medium mb-2">មិនទាន់មានគោលដៅ</h3>
                 <p className="text-muted-foreground mb-4">
                   ចាប់ផ្តើមដោយការបន្ថែមគោលដៅប្រចាំសប្តាហ៍ ខែ ឬឆ្នាំរបស់អ្នក
@@ -836,24 +794,18 @@ export default function Planning() {
                             </span>
                           </Button>
                         </label>
-                        <input
-                          id="background-upload"
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              const reader = new FileReader();
-                              reader.onload = (event) => {
-                                const result = event.target?.result as string;
-                                setBackgroundImage(result);
-                                localStorage.setItem('planning-background', result);
-                              };
-                              reader.readAsDataURL(file);
-                            }
-                          }}
-                        />
+                        <input id="background-upload" type="file" accept="image/*" className="hidden" onChange={e => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onload = event => {
+                              const result = event.target?.result as string;
+                              setBackgroundImage(result);
+                              localStorage.setItem('planning-background', result);
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }} />
                       </div>
                       <p className="text-xs text-muted-foreground">
                         បញ្ចូលរូបភាពពីឧបករណ៍របស់អ្នក (JPG, PNG, GIF)
@@ -863,29 +815,18 @@ export default function Planning() {
                 </div>
 
                 {/* Background Preview */}
-                {backgroundImage && (
-                  <div className="space-y-2">
+                {backgroundImage && <div className="space-y-2">
                     <label className="text-sm font-medium">មុខតាវ</label>
                     <div className="relative">
-                      <img 
-                        src={backgroundImage} 
-                        alt="Background preview" 
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        className="absolute top-2 right-2"
-                        onClick={() => {
-                          setBackgroundImage(null);
-                          localStorage.removeItem('planning-background');
-                        }}
-                      >
+                      <img src={backgroundImage} alt="Background preview" className="w-full h-32 object-cover rounded-lg" />
+                      <Button variant="destructive" size="sm" className="absolute top-2 right-2" onClick={() => {
+                      setBackgroundImage(null);
+                      localStorage.removeItem('planning-background');
+                    }}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
-                  </div>
-                )}
+                  </div>}
               </div>
 
               {/* Customization Tips */}
@@ -938,13 +879,13 @@ export default function Planning() {
                     <div>
                       <label className="text-sm font-medium mb-2 block">ជ្រើសរើសគោលដៅដើម្បីយកចិត្តទុកដាក់ (ស្រេចចិត្ត)</label>
                       <Select value={selectedGoal?.id || "none"} onValueChange={value => {
-                    if (value === "none") {
-                      setSelectedGoal(null);
-                    } else {
-                      const goal = goals.find(g => g.id === value);
-                      setSelectedGoal(goal || null);
-                    }
-                  }}>
+                      if (value === "none") {
+                        setSelectedGoal(null);
+                      } else {
+                        const goal = goals.find(g => g.id === value);
+                        setSelectedGoal(goal || null);
+                      }
+                    }}>
                         <SelectTrigger>
                           <SelectValue placeholder="ជ្រើសរើសគោលដៅ..." />
                         </SelectTrigger>
@@ -991,8 +932,8 @@ export default function Planning() {
 
                     <div className="w-full bg-muted rounded-full h-2">
                       <div className="bg-primary h-2 rounded-full transition-all duration-1000" style={{
-                    width: `${(focusTime * 60 - remainingTime) / (focusTime * 60) * 100}%`
-                  }} />
+                      width: `${(focusTime * 60 - remainingTime) / (focusTime * 60) * 100}%`
+                    }} />
                     </div>
 
                     <div className="flex gap-4 justify-center">
@@ -1046,7 +987,7 @@ export default function Planning() {
       </div>
 
       <style dangerouslySetInnerHTML={{
-        __html: `
+      __html: `
           @keyframes colorShift {
             0% { color: hsl(var(--primary)); }
             25% { color: hsl(var(--destructive)); }
@@ -1055,7 +996,6 @@ export default function Planning() {
             100% { color: hsl(var(--primary)); }
           }
         `
-      }} />
-    </div>
-  );
+    }} />
+    </div>;
 }
