@@ -7,82 +7,82 @@
 
 @layer base {
   :root {
-    /* Dark professional theme inspired by Outlook */
-    --background: 220 25% 8%;
-    --foreground: 210 40% 95%;
+    /* Professional banking theme */
+    --background: 0 0% 100%;
+    --foreground: 222 84% 4.9%;
 
-    --card: 220 30% 10%;
-    --card-foreground: 210 40% 95%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 84% 4.9%;
 
-    --popover: 220 30% 10%;
-    --popover-foreground: 210 40% 95%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 84% 4.9%;
 
-    /* Blue primary colors for professional look */
-    --primary: 210 100% 65%;
-    --primary-foreground: 220 25% 8%;
-    --primary-glow: 210 90% 75%;
+    /* Professional navy blue primary */
+    --primary: 221 83% 53%;
+    --primary-foreground: 210 40% 98%;
+    --primary-glow: 221 83% 63%;
 
-    --secondary: 220 20% 15%;
-    --secondary-foreground: 210 40% 90%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 220 20% 18%;
-    --muted-foreground: 210 25% 65%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 210 80% 55%;
-    --accent-foreground: 220 25% 8%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 220 25% 8%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
 
-    --constructive: 142 75% 55%;
-    --constructive-foreground: 220 25% 8%;
+    --constructive: 142 71% 45%;
+    --constructive-foreground: 210 40% 98%;
 
-    --border: 220 20% 20%;
-    --input: 220 20% 18%;
-    --ring: 210 100% 65%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    /* Finance app specific colors */
-    --income: 142 75% 55%;
-    --income-foreground: 220 25% 8%;
-    --expense: 0 84% 65%;
-    --expense-foreground: 220 25% 8%;
-    --balance: 210 100% 65%;
-    --balance-foreground: 220 25% 8%;
+    /* Professional finance colors */
+    --income: 142 71% 45%;
+    --income-foreground: 210 40% 98%;
+    --expense: 0 84% 60%;
+    --expense-foreground: 210 40% 98%;
+    --balance: 221 83% 53%;
+    --balance-foreground: 210 40% 98%;
 
-    /* Chart colors */
-    --chart-1: 210 100% 65%;
-    --chart-2: 190 85% 55%;
-    --chart-3: 240 75% 65%;
-    --chart-4: 180 70% 60%;
-    --chart-5: 200 80% 50%;
-    --chart-6: 260 70% 60%;
+    /* Professional chart colors */
+    --chart-1: 221 83% 53%;
+    --chart-2: 142 71% 45%;
+    --chart-3: 0 84% 60%;
+    --chart-4: 47 96% 89%;
+    --chart-5: 27 96% 61%;
+    --chart-6: 262 83% 58%;
 
     /* Professional gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(210 100% 65%), hsl(210 90% 75%));
-    --gradient-income: linear-gradient(135deg, hsl(142 75% 55%), hsl(142 70% 65%));
-    --gradient-expense: linear-gradient(135deg, hsl(0 84% 65%), hsl(15 80% 70%));
-    --gradient-hero: linear-gradient(135deg, hsl(210 100% 65%) 0%, hsl(210 90% 75%) 50%, hsl(190 85% 60%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(220 30% 10%) 0%, hsl(220 25% 12%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(221 83% 53%), hsl(221 83% 63%));
+    --gradient-income: linear-gradient(135deg, hsl(142 71% 45%), hsl(142 71% 55%));
+    --gradient-expense: linear-gradient(135deg, hsl(0 84% 60%), hsl(0 84% 70%));
+    --gradient-hero: linear-gradient(135deg, hsl(221 83% 53%) 0%, hsl(221 83% 63%) 50%, hsl(210 80% 60%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(210 40% 98%) 100%);
 
     /* Professional shadows */
-    --shadow-soft: 0 2px 20px hsl(0 0% 0% / 0.3);
-    --shadow-card: 0 4px 30px hsl(0 0% 0% / 0.25);
-    --shadow-glow: 0 0 50px hsl(210 100% 65% / 0.2);
+    --shadow-soft: 0 1px 3px 0 hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+    --shadow-card: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -2px hsl(0 0% 0% / 0.1);
+    --shadow-glow: 0 0 0 1px hsl(221 83% 53% / 0.05);
 
     /* Animations */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
-    --sidebar-background: 220 30% 6%;
-    --sidebar-foreground: 210 40% 90%;
-    --sidebar-primary: 210 100% 65%;
-    --sidebar-primary-foreground: 220 30% 6%;
-    --sidebar-accent: 220 25% 12%;
-    --sidebar-accent-foreground: 210 40% 90%;
-    --sidebar-border: 220 25% 15%;
-    --sidebar-ring: 210 100% 65%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 222 84% 4.9%;
+    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222 84% 4.9%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 221 83% 53%;
   }
 
   .dark {
