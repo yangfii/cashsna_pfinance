@@ -76,24 +76,43 @@ export default function ProfitLossSection({
     return statusConfig[connectionStatus as keyof typeof statusConfig] || statusConfig.disconnected;
   };
 
-  // Calculate individual holding metrics
-  const holdingMetrics = holdings.map(holding => {
-    const price = prices.find(p => p.symbol === holding.symbol);
-    const currentValue = holding.amount * (price?.price || 0);
-    const investedValue = holding.amount * holding.purchase_price;
-    const gainLoss = currentValue - investedValue;
-    const gainLossPercent = investedValue > 0 ? (gainLoss / investedValue) * 100 : 0;
-    
-    return {
-      ...holding,
-      currentValue,
-      investedValue,
-      gainLoss,
-      gainLossPercent,
-      currentPrice: price?.price || 0,
-      priceChange24h: price?.price_change_24h || 0
-    };
-  }).sort((a, b) => b.gainLoss - a.gainLoss);
+  // Calculate individual holding metrics with proper validation
+  const holdingMetrics = holdings
+    .filter(holding => holding && holding.amount > 0 && holding.purchase_price > 0)
+    .map(holding => {
+      const price = prices.find(p => p.symbol === holding.symbol);
+      const currentPrice = price?.price || 0;
+      
+      // Only calculate if we have valid price data
+      if (currentPrice === 0) {
+        return {
+          ...holding,
+          currentValue: 0,
+          investedValue: holding.amount * holding.purchase_price,
+          gainLoss: -(holding.amount * holding.purchase_price), // Show as loss if no price
+          gainLossPercent: -100,
+          currentPrice: 0,
+          priceChange24h: 0,
+          hasValidPrice: false
+        };
+      }
+      
+      const currentValue = holding.amount * currentPrice;
+      const investedValue = holding.amount * holding.purchase_price;
+      const gainLoss = currentValue - investedValue;
+      const gainLossPercent = investedValue > 0 ? (gainLoss / investedValue) * 100 : 0;
+      
+      return {
+        ...holding,
+        currentValue,
+        investedValue,
+        gainLoss,
+        gainLossPercent,
+        currentPrice,
+        priceChange24h: price?.price_change_24h || 0,
+        hasValidPrice: true
+      };
+    }).sort((a, b) => b.gainLoss - a.gainLoss);
 
   const topPerformers = holdingMetrics.filter(h => h.gainLoss > 0).slice(0, 3);
   const worstPerformers = holdingMetrics.filter(h => h.gainLoss < 0).slice(-3).reverse();
@@ -132,6 +151,17 @@ export default function ProfitLossSection({
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Data Accuracy Warning */}
+        {holdingMetrics.some(h => !h.hasValidPrice) && (
+          <div className="col-span-full">
+            <div className="flex items-center gap-2 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+              <AlertTriangle className="h-4 w-4 text-yellow-600" />
+              <span className="text-sm text-yellow-700 dark:text-yellow-300">
+                Some assets missing price data - calculations may be incomplete
+              </span>
+            </div>
+          </div>
+        )}
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
