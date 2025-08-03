@@ -39,15 +39,17 @@ export default function ProfitLossSection({
   const handleRefresh = useCallback(async () => {
     setIsRefreshing(true);
     try {
+      // Call the refresh function which fetches fresh price data from external APIs
       await onRefresh();
       toast({
-        title: "Portfolio Updated",
-        description: "Your P&L data has been refreshed successfully!",
+        title: "Portfolio Updated", 
+        description: "Fresh price data fetched successfully from exchanges!",
       });
     } catch (error) {
+      console.error('P&L refresh error:', error);
       toast({
         title: "Refresh Failed",
-        description: "Unable to update portfolio data. Please try again.",
+        description: "Unable to fetch latest price data. Please try again.",
         variant: "destructive",
       });
     } finally {
