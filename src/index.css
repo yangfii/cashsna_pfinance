@@ -165,7 +165,12 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Kantumruy Pro', sans-serif;
+    font-family: 'Kantumruy Pro', 'Noto Sans Khmer', sans-serif;
+  }
+
+  /* Ensure Kantumruy Pro is used for all text elements */
+  * {
+    font-family: 'Kantumruy Pro', 'Noto Sans Khmer', sans-serif;
   }
 
   /* Enhanced Typography Design Tokens with better responsive spacing */
