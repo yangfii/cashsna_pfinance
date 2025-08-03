@@ -91,7 +91,7 @@ export default {
 				}
 			},
 			fontFamily: {
-				'kantumruy': ['Kantumruy Pro', 'sans-serif'],
+				'khmer': ['Battambang', 'Noto Sans Khmer', 'sans-serif'],
 			},
 			backgroundImage: {
 				'gradient-primary': 'var(--gradient-primary)',
