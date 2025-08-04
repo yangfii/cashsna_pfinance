@@ -4,15 +4,21 @@ import { useAuth } from './useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
+export interface Step {
+  id: string;
+  text: string;
+  completed: boolean;
+}
+
 export interface Goal {
   id: string;
   user_id: string;
   title: string;
   description?: string;
-  type: 'weekly' | 'monthly' | 'yearly';
+  goal_type: 'weekly' | 'monthly' | 'yearly';
   period: string;
-  steps: string[];
-  completed: boolean;
+  steps: Step[];
+  is_completed: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -28,7 +34,7 @@ export const useGoals = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('goals')
+        .from('goals' as any)
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
@@ -39,7 +45,7 @@ export const useGoals = () => {
         return;
       }
 
-      setGoals(data || []);
+      setGoals((data as unknown as Goal[]) || []);
     } catch (err) {
       console.error('Unexpected error loading goals:', err);
       toast.error('An unexpected error occurred while loading goals');
@@ -57,7 +63,7 @@ export const useGoals = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('goals')
+        .from('goals' as any)
         .insert([{
           ...goalData,
           user_id: user.id
@@ -71,7 +77,7 @@ export const useGoals = () => {
         return null;
       }
 
-      setGoals(prev => [data, ...prev]);
+      setGoals(prev => [data as unknown as Goal, ...prev]);
       toast.success('Goal created successfully!');
       return data;
     } catch (err) {
@@ -92,7 +98,7 @@ export const useGoals = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('goals')
+        .from('goals' as any)
         .update(updates)
         .eq('id', id)
         .eq('user_id', user.id)
@@ -105,7 +111,7 @@ export const useGoals = () => {
         return null;
       }
 
-      setGoals(prev => prev.map(goal => goal.id === id ? data : goal));
+      setGoals(prev => prev.map(goal => goal.id === id ? data as unknown as Goal : goal));
       toast.success('Goal updated successfully!');
       return data;
     } catch (err) {
@@ -126,7 +132,7 @@ export const useGoals = () => {
     setLoading(true);
     try {
       const { error } = await supabase
-        .from('goals')
+        .from('goals' as any)
         .delete()
         .eq('id', id)
         .eq('user_id', user.id);
@@ -153,7 +159,7 @@ export const useGoals = () => {
     const goal = goals.find(g => g.id === id);
     if (!goal) return null;
 
-    return await updateGoal(id, { completed: !goal.completed });
+    return await updateGoal(id, { is_completed: !goal.is_completed });
   };
 
   // Migrate localStorage data to database
@@ -161,7 +167,7 @@ export const useGoals = () => {
     if (!user) return;
 
     try {
-      const localGoals = localStorage.getItem('finance-goals');
+      const localGoals = localStorage.getItem('planning-goals');
       if (!localGoals) return;
 
       const parsedGoals = JSON.parse(localGoals);
@@ -173,15 +179,15 @@ export const useGoals = () => {
         await createGoal({
           title: localGoal.title || 'Untitled Goal',
           description: localGoal.description || '',
-          type: localGoal.type || 'monthly',
+          goal_type: localGoal.type || 'monthly',
           period: localGoal.period || new Date().toISOString().slice(0, 7),
           steps: Array.isArray(localGoal.steps) ? localGoal.steps : [],
-          completed: Boolean(localGoal.completed)
+          is_completed: Boolean(localGoal.completed)
         });
       }
 
       // Clear localStorage after successful migration
-      localStorage.removeItem('finance-goals');
+      localStorage.removeItem('planning-goals');
       toast.success('Your goals have been migrated to the cloud!');
     } catch (err) {
       console.error('Error migrating localStorage data:', err);
@@ -196,6 +202,40 @@ export const useGoals = () => {
     }
   }, [user]);
 
+  // Helper functions for step management
+  const toggleStepCompletion = async (goalId: string, stepId: string) => {
+    const goal = goals.find(g => g.id === goalId);
+    if (!goal) return null;
+
+    const updatedSteps = goal.steps.map(step =>
+      step.id === stepId ? { ...step, completed: !step.completed } : step
+    );
+
+    return await updateGoal(goalId, { steps: updatedSteps });
+  };
+
+  const addStep = async (goalId: string, stepText: string) => {
+    const goal = goals.find(g => g.id === goalId);
+    if (!goal) return null;
+
+    const newStep: Step = {
+      id: Date.now().toString(),
+      text: stepText,
+      completed: false
+    };
+
+    const updatedSteps = [...goal.steps, newStep];
+    return await updateGoal(goalId, { steps: updatedSteps });
+  };
+
+  const removeStep = async (goalId: string, stepId: string) => {
+    const goal = goals.find(g => g.id === goalId);
+    if (!goal) return null;
+
+    const updatedSteps = goal.steps.filter(step => step.id !== stepId);
+    return await updateGoal(goalId, { steps: updatedSteps });
+  };
+
   return {
     goals,
     loading,
@@ -204,6 +244,9 @@ export const useGoals = () => {
     updateGoal,
     deleteGoal,
     toggleGoalCompletion,
+    toggleStepCompletion,
+    addStep,
+    removeStep,
     migrateLocalStorageData
   };
 };

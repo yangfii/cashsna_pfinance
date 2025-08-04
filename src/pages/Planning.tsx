@@ -12,6 +12,7 @@ import AIAssistant from "@/components/AIAssistant";
 import { AddReminderDialog } from "@/components/reminders/AddReminderDialog";
 import { RemindersList } from "@/components/reminders/RemindersList";
 import { useReminders } from "@/hooks/useReminders";
+import { useGoals } from "@/hooks/useGoals";
 import { Plus, Calendar as CalendarIcon, Target, CheckCircle2, Circle, Edit, Trash2, CalendarDays, TrendingUp, Brain, Clock, Play, Pause, Square, Timer, Bell, Palette, Upload, Image } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -19,34 +20,29 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "next-themes";
-interface Step {
-  id: string;
-  text: string;
-  completed: boolean;
-}
-interface Goal {
-  id: string;
-  title: string;
-  description?: string;
-  type: 'weekly' | 'monthly' | 'yearly';
-  period: string;
-  steps: Step[];
-  completed: boolean;
-  createdAt: string;
-}
+import type { Goal, Step } from "@/hooks/useGoals";
+
 export default function Planning() {
-  const [goals, setGoals] = useState<Goal[]>([]);
+  const {
+    goals,
+    loading: goalsLoading,
+    createGoal,
+    updateGoal,
+    deleteGoal: deleteGoalFromDB,
+    toggleGoalCompletion,
+    toggleStepCompletion: toggleStepCompletionDB,
+    addStep: addStepToDB,
+    removeStep: removeStepFromDB,
+  } = useGoals();
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("goals");
-  const {
-    theme
-  } = useTheme();
+  const { theme } = useTheme();
   const [newGoal, setNewGoal] = useState({
     title: '',
     description: '',
-    type: 'weekly' as 'weekly' | 'monthly' | 'yearly',
+    goal_type: 'weekly' as 'weekly' | 'monthly' | 'yearly',
     period: ''
   });
   const [newStep, setNewStep] = useState('');
@@ -67,18 +63,6 @@ export default function Planning() {
     getOverdueReminders
   } = useReminders();
 
-  // Load goals from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem('planning-goals');
-    if (saved) {
-      setGoals(JSON.parse(saved));
-    }
-  }, []);
-
-  // Save goals to localStorage
-  useEffect(() => {
-    localStorage.setItem('planning-goals', JSON.stringify(goals));
-  }, [goals]);
 
   // Focus timer effect
   useEffect(() => {
@@ -114,9 +98,9 @@ export default function Planning() {
   const removeStep = (stepId: string) => {
     setSteps(steps.filter(s => s.id !== stepId));
   };
-  const getCurrentPeriod = (type: string) => {
+  const getCurrentPeriod = (goal_type: string) => {
     const now = new Date();
-    switch (type) {
+    switch (goal_type) {
       case 'weekly':
         const weekStart = new Date(now);
         weekStart.setDate(now.getDate() - now.getDay());
@@ -137,7 +121,7 @@ export default function Planning() {
         return '';
     }
   };
-  const handleSaveGoal = () => {
+  const handleSaveGoal = async () => {
     if (!newGoal.title.trim() || steps.length === 0) {
       toast({
         title: "កំហុស",
@@ -146,28 +130,20 @@ export default function Planning() {
       });
       return;
     }
-    const goal: Goal = {
-      id: editingGoal?.id || Date.now().toString(),
+
+    const goalData = {
       title: newGoal.title,
       description: newGoal.description,
-      type: newGoal.type,
-      period: newGoal.period || getCurrentPeriod(newGoal.type),
+      goal_type: newGoal.goal_type,
+      period: newGoal.period || getCurrentPeriod(newGoal.goal_type),
       steps: steps,
-      completed: false,
-      createdAt: editingGoal?.createdAt || new Date().toISOString()
+      is_completed: false,
     };
+
     if (editingGoal) {
-      setGoals(goals.map(g => g.id === editingGoal.id ? goal : g));
-      toast({
-        title: "គោលដៅត្រូវបានកែប្រែ",
-        description: "គោលដៅរបស់អ្នកត្រូវបានកែប្រែជោគជ័យ"
-      });
+      await updateGoal(editingGoal.id, goalData);
     } else {
-      setGoals([...goals, goal]);
-      toast({
-        title: "គោលដៅត្រូវបានបន្ថែម",
-        description: "គោលដៅថ្មីរបស់អ្នកត្រូវបានបន្ថែមជោគជ័យ"
-      });
+      await createGoal(goalData);
     }
     resetForm();
   };
@@ -175,7 +151,7 @@ export default function Planning() {
     setNewGoal({
       title: '',
       description: '',
-      type: 'weekly',
+      goal_type: 'weekly',
       period: ''
     });
     setSteps([]);
@@ -183,37 +159,18 @@ export default function Planning() {
     setShowAddForm(false);
     setEditingGoal(null);
   };
-  const deleteGoal = (goalId: string) => {
-    setGoals(goals.filter(g => g.id !== goalId));
-    toast({
-      title: "គោលដៅត្រូវបានលុប",
-      description: "គោលដៅត្រូវបានលុបជោគជ័យ",
-      variant: "destructive"
-    });
+  const handleDeleteGoal = async (goalId: string) => {
+    await deleteGoalFromDB(goalId);
   };
-  const toggleStepCompletion = (goalId: string, stepId: string) => {
-    setGoals(goals.map(goal => {
-      if (goal.id === goalId) {
-        const updatedSteps = goal.steps.map(step => step.id === stepId ? {
-          ...step,
-          completed: !step.completed
-        } : step);
-        const allCompleted = updatedSteps.every(step => step.completed);
-        return {
-          ...goal,
-          steps: updatedSteps,
-          completed: allCompleted
-        };
-      }
-      return goal;
-    }));
+  const handleToggleStepCompletion = async (goalId: string, stepId: string) => {
+    await toggleStepCompletionDB(goalId, stepId);
   };
   const editGoal = (goal: Goal) => {
     setEditingGoal(goal);
     setNewGoal({
       title: goal.title,
       description: goal.description || '',
-      type: goal.type,
+      goal_type: goal.goal_type,
       period: goal.period
     });
     setSteps(goal.steps);
@@ -251,8 +208,8 @@ export default function Planning() {
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
-  const getTypeIcon = (type: string) => {
-    switch (type) {
+  const getTypeIcon = (goal_type: string) => {
+    switch (goal_type) {
       case 'weekly':
         return <CalendarIcon className="h-4 w-4" />;
       case 'monthly':
@@ -263,8 +220,8 @@ export default function Planning() {
         return <Target className="h-4 w-4" />;
     }
   };
-  const getTypeBadgeColor = (type: string) => {
-    switch (type) {
+  const getTypeBadgeColor = (goal_type: string) => {
+    switch (goal_type) {
       case 'weekly':
         return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
       case 'monthly':
@@ -275,9 +232,9 @@ export default function Planning() {
         return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
     }
   };
-  const weeklyGoals = goals.filter(g => g.type === 'weekly');
-  const monthlyGoals = goals.filter(g => g.type === 'monthly');
-  const yearlyGoals = goals.filter(g => g.type === 'yearly');
+  const weeklyGoals = goals.filter(g => g.goal_type === 'weekly');
+  const monthlyGoals = goals.filter(g => g.goal_type === 'monthly');
+  const yearlyGoals = goals.filter(g => g.goal_type === 'yearly');
 
   // Load background image from localStorage
   useEffect(() => {
@@ -343,11 +300,11 @@ export default function Planning() {
               <div className="space-y-4">
                 <div>
                   <label className="text-sm font-medium mb-2 block">ប្រភេទគោលដៅ</label>
-                  <Select value={newGoal.type} onValueChange={(value: 'weekly' | 'monthly' | 'yearly') => setNewGoal({
+                   <Select value={newGoal.goal_type} onValueChange={(value: 'weekly' | 'monthly' | 'yearly') => setNewGoal({
                   ...newGoal,
-                  type: value
+                  goal_type: value
                 })}>
-                    <SelectTrigger>
+                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -442,11 +399,11 @@ export default function Planning() {
                         <div className="flex items-start justify-between">
                           <div className="space-y-2">
                             <div className="flex items-center gap-2">
-                              <Badge className={getTypeBadgeColor(goal.type)}>
-                                {getTypeIcon(goal.type)}
+                              <Badge className={getTypeBadgeColor(goal.goal_type)}>
+                                {getTypeIcon(goal.goal_type)}
                                 <span className="ml-1">សប្តាហ៍</span>
                               </Badge>
-                              {goal.completed && <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
+                              {goal.is_completed && <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
                                   <CheckCircle2 className="h-3 w-3 mr-1" />
                                   បានបញ្ចប់
                                 </Badge>}
@@ -474,7 +431,7 @@ export default function Planning() {
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                   <AlertDialogCancel>បោះបង់</AlertDialogCancel>
-                                  <AlertDialogAction onClick={() => deleteGoal(goal.id)}>
+                                  <AlertDialogAction onClick={() => handleDeleteGoal(goal.id)}>
                                     លុប
                                   </AlertDialogAction>
                                 </AlertDialogFooter>
@@ -487,7 +444,7 @@ export default function Planning() {
                         <div className="space-y-2">
                           <h4 className="font-medium text-sm">ជំហានដែលត្រូវអនុវត្ត:</h4>
                           {goal.steps.map(step => <div key={step.id} className="flex items-center gap-2">
-                              <button onClick={() => toggleStepCompletion(goal.id, step.id)} className="flex-shrink-0">
+                              <button onClick={() => handleToggleStepCompletion(goal.id, step.id)} className="flex-shrink-0">
                                 {step.completed ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <Circle className="h-4 w-4 text-muted-foreground" />}
                               </button>
                               <span className={`text-sm ${step.completed ? 'line-through text-muted-foreground' : ''}`}>
@@ -512,11 +469,11 @@ export default function Planning() {
                         <div className="flex items-start justify-between">
                           <div className="space-y-2">
                             <div className="flex items-center gap-2">
-                              <Badge className={getTypeBadgeColor(goal.type)}>
-                                {getTypeIcon(goal.type)}
+                              <Badge className={getTypeBadgeColor(goal.goal_type)}>
+                                {getTypeIcon(goal.goal_type)}
                                 <span className="ml-1">ខែ</span>
                               </Badge>
-                              {goal.completed && <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
+                              {goal.is_completed && <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
                                   <CheckCircle2 className="h-3 w-3 mr-1" />
                                   បានបញ្ចប់
                                 </Badge>}
@@ -544,7 +501,7 @@ export default function Planning() {
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                   <AlertDialogCancel>បោះបង់</AlertDialogCancel>
-                                  <AlertDialogAction onClick={() => deleteGoal(goal.id)}>
+                                  <AlertDialogAction onClick={() => handleDeleteGoal(goal.id)}>
                                     លុប
                                   </AlertDialogAction>
                                 </AlertDialogFooter>
@@ -557,7 +514,7 @@ export default function Planning() {
                         <div className="space-y-2">
                           <h4 className="font-medium text-sm">ជំហានដែលត្រូវអនុវត្ត:</h4>
                           {goal.steps.map(step => <div key={step.id} className="flex items-center gap-2">
-                              <button onClick={() => toggleStepCompletion(goal.id, step.id)} className="flex-shrink-0">
+                              <button onClick={() => handleToggleStepCompletion(goal.id, step.id)} className="flex-shrink-0">
                                 {step.completed ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <Circle className="h-4 w-4 text-muted-foreground" />}
                               </button>
                               <span className={`text-sm ${step.completed ? 'line-through text-muted-foreground' : ''}`}>
@@ -582,11 +539,11 @@ export default function Planning() {
                         <div className="flex items-start justify-between">
                           <div className="space-y-2">
                             <div className="flex items-center gap-2">
-                              <Badge className={getTypeBadgeColor(goal.type)}>
-                                {getTypeIcon(goal.type)}
+                              <Badge className={getTypeBadgeColor(goal.goal_type)}>
+                                {getTypeIcon(goal.goal_type)}
                                 <span className="ml-1">ឆ្នាំ</span>
                               </Badge>
-                              {goal.completed && <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
+                              {goal.is_completed && <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
                                   <CheckCircle2 className="h-3 w-3 mr-1" />
                                   បានបញ្ចប់
                                 </Badge>}
@@ -614,7 +571,7 @@ export default function Planning() {
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                   <AlertDialogCancel>បោះបង់</AlertDialogCancel>
-                                  <AlertDialogAction onClick={() => deleteGoal(goal.id)}>
+                                  <AlertDialogAction onClick={() => handleDeleteGoal(goal.id)}>
                                     លុប
                                   </AlertDialogAction>
                                 </AlertDialogFooter>
@@ -627,7 +584,7 @@ export default function Planning() {
                         <div className="space-y-2">
                           <h4 className="font-medium text-sm">ជំហានដែលត្រូវអនុវត្ត:</h4>
                           {goal.steps.map(step => <div key={step.id} className="flex items-center gap-2">
-                              <button onClick={() => toggleStepCompletion(goal.id, step.id)} className="flex-shrink-0">
+                              <button onClick={() => handleToggleStepCompletion(goal.id, step.id)} className="flex-shrink-0">
                                 {step.completed ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <Circle className="h-4 w-4 text-muted-foreground" />}
                               </button>
                               <span className={`text-sm ${step.completed ? 'line-through text-muted-foreground' : ''}`}>
@@ -892,7 +849,7 @@ export default function Planning() {
                         <SelectContent>
                           <SelectItem value="none">មិនជ្រើសរើសគោលដៅ</SelectItem>
                           {goals.map(goal => <SelectItem key={goal.id} value={goal.id}>
-                              {goal.title} ({goal.type})
+                              {goal.title} ({goal.goal_type})
                             </SelectItem>)}
                         </SelectContent>
                       </Select>
@@ -901,10 +858,10 @@ export default function Planning() {
                     {selectedGoal && <Card className="bg-muted/50">
                         <CardContent className="p-4">
                           <div className="flex items-center gap-2 mb-2">
-                            <Badge className={getTypeBadgeColor(selectedGoal.type)}>
-                              {getTypeIcon(selectedGoal.type)}
+                            <Badge className={getTypeBadgeColor(selectedGoal.goal_type)}>
+                              {getTypeIcon(selectedGoal.goal_type)}
                               <span className="ml-1">
-                                {selectedGoal.type === 'weekly' ? 'សប្តាហ៍' : selectedGoal.type === 'monthly' ? 'ខែ' : 'ឆ្នាំ'}
+                                {selectedGoal.goal_type === 'weekly' ? 'សប្តាហ៍' : selectedGoal.goal_type === 'monthly' ? 'ខែ' : 'ឆ្នាំ'}
                               </span>
                             </Badge>
                           </div>
@@ -966,8 +923,8 @@ export default function Planning() {
                 <div className="grid gap-3">
                   {goals.slice(0, 5).map(goal => <div key={goal.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-3">
-                        <Badge className={getTypeBadgeColor(goal.type)} variant="secondary">
-                          {getTypeIcon(goal.type)}
+                        <Badge className={getTypeBadgeColor(goal.goal_type)} variant="secondary">
+                          {getTypeIcon(goal.goal_type)}
                         </Badge>
                         <div>
                           <h4 className="font-medium">{goal.title}</h4>
