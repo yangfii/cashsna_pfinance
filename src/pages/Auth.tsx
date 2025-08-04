@@ -188,17 +188,51 @@ export default function Auth() {
     setLoading(true);
     
     try {
+      console.log('Starting Google OAuth flow...');
+      console.log('Current URL:', window.location.href);
+      console.log('Origin:', window.location.origin);
+      
       const { error } = await signInWithGoogle();
       
       if (error) {
-        toast.error(error.message || 'An error occurred during Google sign in');
+        console.error('Google OAuth error details:', {
+          message: error.message,
+          status: error.status,
+          statusText: error.statusText,
+          url: window.location.href
+        });
+        
+        // Enhanced error messages for common Google OAuth issues
+        let userMessage = 'Failed to sign in with Google';
+        
+        if (error.message?.includes('popup_blocked')) {
+          userMessage = 'Popup was blocked. Please allow popups for this site and try again.';
+        } else if (error.message?.includes('popup_closed_by_user')) {
+          userMessage = 'Sign-in was cancelled. Please try again.';
+        } else if (error.message?.includes('unauthorized_client')) {
+          userMessage = 'Google authentication is not properly configured. Please contact support.';
+        } else if (error.message?.includes('redirect_uri_mismatch')) {
+          userMessage = 'Authentication configuration error. Please contact support.';
+        } else if (error.message?.includes('access_denied')) {
+          userMessage = 'Access was denied. Please check your Google account permissions.';
+        } else if (error.message?.includes('invalid_request')) {
+          userMessage = 'Invalid authentication request. Please try again or contact support.';
+        } else if (error.message) {
+          userMessage = `Google sign-in failed: ${error.message}`;
+        }
+        
+        toast.error(userMessage);
+      } else {
+        console.log('Google OAuth initiated successfully');
+        toast.success('Redirecting to Google...');
       }
       // Success handling will be done by the auth state change listener
     } catch (err) {
-      toast.error('An unexpected error occurred. Please try again.');
-      console.error('Google sign in error:', err);
+      console.error('Google sign in unexpected error:', err);
+      toast.error('An unexpected error occurred during Google sign-in. Please try again.');
     } finally {
-      setLoading(false);
+      // Don't set loading false immediately for OAuth flows since they redirect
+      setTimeout(() => setLoading(false), 3000);
     }
   };
 
