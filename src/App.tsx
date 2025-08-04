@@ -37,6 +37,18 @@ const queryClient = new QueryClient({
   },
 });
 
+// Global error handler for unhandled promise rejections
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('Unhandled promise rejection:', event.reason);
+  // Prevent the error from causing a blank screen
+  event.preventDefault();
+});
+
+// Global error handler for uncaught exceptions
+window.addEventListener('error', (event) => {
+  console.error('Global error caught:', event.error || event.message);
+});
+
 const App = () => (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
@@ -48,24 +60,26 @@ const App = () => (
               <Sonner />
               <Analytics />
               <BrowserRouter>
-                <Routes>
-                  <Route path="/auth" element={<Auth />} />
-                  <Route path="/profile-setup" element={<ProfileSetup />} />
-                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                  <Route path="/terms-of-service" element={<TermsOfService />} />
-                  <Route path="/" element={<Index />} />
-                  <Route path="/dashboard" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-                    <Route index element={<Dashboard />} />
-                    <Route path="transactions" element={<Transactions />} />
-                    <Route path="categories" element={<Categories />} />
-                    <Route path="portfolio" element={<Portfolio />} />
-                    <Route path="assistant" element={<Assistant />} />
-                    <Route path="planning" element={<Planning />} />
-                    <Route path="reports" element={<Reports />} />
-                    <Route path="settings" element={<Settings />} />
-                  </Route>
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
+                <ErrorBoundary>
+                  <Routes>
+                    <Route path="/auth" element={<Auth />} />
+                    <Route path="/profile-setup" element={<ProfileSetup />} />
+                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                    <Route path="/terms-of-service" element={<TermsOfService />} />
+                    <Route path="/" element={<Index />} />
+                    <Route path="/dashboard" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+                      <Route index element={<Dashboard />} />
+                      <Route path="transactions" element={<Transactions />} />
+                      <Route path="categories" element={<Categories />} />
+                      <Route path="portfolio" element={<Portfolio />} />
+                      <Route path="assistant" element={<Assistant />} />
+                      <Route path="planning" element={<Planning />} />
+                      <Route path="reports" element={<Reports />} />
+                      <Route path="settings" element={<Settings />} />
+                    </Route>
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </ErrorBoundary>
               </BrowserRouter>
             </TooltipProvider>
           </AuthProvider>
