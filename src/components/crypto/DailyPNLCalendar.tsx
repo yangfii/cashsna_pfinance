@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, BarChart3, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronRight, BarChart3, Calendar, Edit3, Check, X } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
 interface DailyPNLData {
@@ -45,6 +46,37 @@ const mockPNLData: DailyPNLData[] = [
 
 export default function DailyPNLCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date(2025, 3, 1)); // April 2025
+  const [pnlData, setPnlData] = useState<DailyPNLData[]>(mockPNLData);
+  const [editingCell, setEditingCell] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState<string>('');
+
+  const updatePNL = (date: string, value: number) => {
+    setPnlData(prev => {
+      const existing = prev.find(d => d.date === date);
+      if (existing) {
+        return prev.map(d => d.date === date ? { ...d, pnl: value } : d);
+      } else {
+        return [...prev, { date, pnl: value }];
+      }
+    });
+  };
+
+  const startEditing = (date: string, currentValue: number) => {
+    setEditingCell(date);
+    setEditValue(currentValue.toString());
+  };
+
+  const saveEdit = (date: string) => {
+    const numValue = parseFloat(editValue) || 0;
+    updatePNL(date, numValue);
+    setEditingCell(null);
+    setEditValue('');
+  };
+
+  const cancelEdit = () => {
+    setEditingCell(null);
+    setEditValue('');
+  };
 
   const formatPNL = (value: number) => {
     if (value === 0) return '0.00';
@@ -96,21 +128,70 @@ export default function DailyPNLCalendar() {
     // Days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      const pnlData = mockPNLData.find(d => d.date === dateStr);
-      const pnl = pnlData?.pnl || 0;
+      const dayData = pnlData.find(d => d.date === dateStr);
+      const pnl = dayData?.pnl || 0;
+      const isEditing = editingCell === dateStr;
 
       days.push(
         <div
           key={day}
           className={cn(
-            "h-20 border rounded-lg p-2 flex flex-col justify-between text-center transition-all duration-200 hover:scale-105",
-            getPNLBackground(pnl)
+            "h-20 border rounded-lg p-2 flex flex-col justify-between text-center transition-all duration-200 hover:scale-105 cursor-pointer relative group",
+            getPNLBackground(pnl),
+            isEditing && "ring-2 ring-primary"
           )}
+          onClick={() => !isEditing && startEditing(dateStr, pnl)}
         >
           <div className="text-foreground font-medium text-lg">{day}</div>
-          <div className={cn("text-sm font-semibold", getPNLColor(pnl))}>
-            {formatPNL(pnl)}
-          </div>
+          
+          {isEditing ? (
+            <div className="flex items-center gap-1 text-xs">
+              <Input
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                className={cn(
+                  "h-6 text-xs text-center border-0 p-0 bg-transparent focus:ring-1 focus:ring-primary",
+                  parseFloat(editValue) > 0 ? "text-green-400" : parseFloat(editValue) < 0 ? "text-red-400" : "text-muted-foreground"
+                )}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') saveEdit(dateStr);
+                  if (e.key === 'Escape') cancelEdit();
+                }}
+                autoFocus
+              />
+              <div className="flex flex-col gap-0.5">
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-3 w-3 p-0 text-green-500 hover:text-green-400"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    saveEdit(dateStr);
+                  }}
+                >
+                  <Check className="h-2 w-2" />
+                </Button>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-3 w-3 p-0 text-red-500 hover:text-red-400"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    cancelEdit();
+                  }}
+                >
+                  <X className="h-2 w-2" />
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center gap-1">
+              <div className={cn("text-sm font-semibold", getPNLColor(pnl))}>
+                {formatPNL(pnl)}
+              </div>
+              <Edit3 className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+          )}
         </div>
       );
     }
