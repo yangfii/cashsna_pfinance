@@ -166,6 +166,7 @@ export default function Planning() {
     await toggleStepCompletionDB(goalId, stepId);
   };
   const editGoal = (goal: Goal) => {
+    console.log('editGoal called with goal:', goal);
     setEditingGoal(goal);
     setNewGoal({
       title: goal.title,
@@ -176,6 +177,7 @@ export default function Planning() {
     setSteps(goal.steps);
     setSelectedDate(undefined); // Reset date when editing
     setShowAddForm(true);
+    console.log('showAddForm set to true');
   };
 
   // Focus timer functions
@@ -483,7 +485,10 @@ export default function Planning() {
                             {goal.description && <p className="text-sm text-muted-foreground">{goal.description}</p>}
                           </div>
                           <div className="flex gap-2">
-                            <Button variant="ghost" size="sm" onClick={() => editGoal(goal)}>
+                            <Button variant="ghost" size="sm" onClick={() => {
+                              console.log('Edit button clicked');
+                              editGoal(goal);
+                            }}>
                               <Edit className="h-4 w-4" />
                             </Button>
                             <AlertDialog>
