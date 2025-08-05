@@ -14,7 +14,7 @@ import { AddReminderDialog } from "@/components/reminders/AddReminderDialog";
 import { RemindersList } from "@/components/reminders/RemindersList";
 import { useReminders } from "@/hooks/useReminders";
 import { useGoals } from "@/hooks/useGoals";
-import { Plus, Calendar as CalendarIcon, Target, CheckCircle2, Circle, Edit, Trash2, CalendarDays, TrendingUp, Brain, Clock, Play, Pause, Square, Timer, Bell, Palette, Upload, Image } from "lucide-react";
+import { Plus, Calendar as CalendarIcon, Target, CheckCircle2, Circle, Edit, Trash2, CalendarDays, TrendingUp, Brain, Clock, Play, Pause, Square, Timer, Bell, Palette, Upload, Image, StickyNote } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { format } from "date-fns";
@@ -292,7 +292,7 @@ export default function Planning() {
                 គោលដៅ
               </TabsTrigger>
               <TabsTrigger value="reminders" className="flex items-center gap-2 glass-card data-[state=active]:glass-strong">
-                <Bell className="h-4 w-4" />
+                <StickyNote className="h-4 w-4" />
                 note
                 {getUpcomingReminders().length > 0 && <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 text-xs">
                     {getUpcomingReminders().length}
