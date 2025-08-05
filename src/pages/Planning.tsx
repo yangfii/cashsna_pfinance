@@ -376,7 +376,7 @@ export default function Planning() {
 
                 <div className="flex gap-2 pt-4">
                   <Button onClick={handleSaveGoal} className="flex-1">
-                    {editingGoal ? 'កែប្រែ' : 'រក្សាទុក'}
+                    {editingGoal ? 'រក្សាទុក' : 'រក្សាទុក'}
                   </Button>
                   <Button variant="outline" onClick={resetForm}>
                     បោះបង់
