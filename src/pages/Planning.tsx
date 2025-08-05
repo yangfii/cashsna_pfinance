@@ -285,14 +285,21 @@ export default function Planning() {
             
             {showNote}
             
-            <TabsList className="grid w-full grid-cols-2 bg-transparent border-0">
-              
+            <TabsList className="grid w-full grid-cols-3 bg-transparent border-0">
               <TabsTrigger value="goals" className="flex items-center gap-2 glass-card data-[state=active]:glass-strong">
                 <Target className="h-4 w-4" />
-                គោលដៅ & note
+                គោលដៅ
+              </TabsTrigger>
+              <TabsTrigger value="reminders" className="flex items-center gap-2 glass-card data-[state=active]:glass-strong">
+                <Bell className="h-4 w-4" />
+                note
                 {getUpcomingReminders().length > 0 && <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 text-xs">
                     {getUpcomingReminders().length}
                   </Badge>}
+              </TabsTrigger>
+              <TabsTrigger value="ai-assistant" className="flex items-center gap-2 glass-card data-[state=active]:glass-strong">
+                <Brain className="h-4 w-4" />
+                AI
               </TabsTrigger>
             </TabsList>
           </div>
@@ -621,7 +628,9 @@ export default function Planning() {
                 </Button>
               </div>}
           </div>
+        </TabsContent>
 
+        <TabsContent value="reminders" className="mt-6 space-y-6">
           {/* Reminders Section */}
           <div className="space-y-6">
             <div className="flex items-center justify-between">
