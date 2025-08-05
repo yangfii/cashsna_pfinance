@@ -88,7 +88,6 @@ function AppSidebar() {
   return <Sidebar variant="inset" collapsible="icon" className="py-0 my-0 mx-px px-0">
       <SidebarHeader className="mx-0 px-0 py-[7px] my-0">
         <div className="flex items-center gap-2 py-1 my-0 mx-[4px] px-[12px]">
-          <SidebarTrigger />
           <button onClick={() => navigate('/dashboard')} className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 cursor-pointer group">
             <LayoutDashboard className="size-5 transition-all duration-300 group-hover:scale-125 group-hover:rotate-3 hover:animate-pulse active:scale-90 active:rotate-6" />
           </button>
@@ -191,6 +190,7 @@ export default function Layout() {
         {/* Header */}
         <div className="flex-1 flex flex-col">
           <header className="flex h-16 lg:h-18 items-center gap-3 sm:gap-4 border-b bg-card/90 backdrop-blur-md px-4 sm:px-6 lg:px-8 border-border/50">
+            <SidebarTrigger />
             <GlobalSearch />
             <div className="flex-1" />
             <NavLink to="/dashboard/settings" className={cn("flex items-center gap-2 p-2 rounded-lg group hover:bg-accent transition-colors", location.pathname === "/dashboard/settings" ? "bg-accent" : "")}>
