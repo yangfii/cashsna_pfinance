@@ -260,7 +260,7 @@ export default function Planning() {
       <div className="relative z-10 glass-panel p-6 mb-6">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold text-foreground mb-2">
               {t('nav.planning')}
             </h1>
             <p className="text-muted-foreground">{t('planning.subtitle')}</p>
