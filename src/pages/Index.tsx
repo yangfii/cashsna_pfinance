@@ -11,13 +11,10 @@ import { PurposeDialog } from '@/components/PurposeDialog';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useEffect } from 'react';
 import { Globe } from 'lucide-react';
-
 import heroBackground from '@/assets/hero-background.jpg';
 import backgroundImage from '@/assets/background-image.jpg';
 import overlayBackground from '@/assets/overlay-background.jpg';
-
 const awardBadge = "/public/lovable-uploads/bd670881-e313-41b8-b0eb-23f2fe1fe109.png";
-
 const Index = () => {
   const {
     user
@@ -52,7 +49,6 @@ const Index = () => {
       }
     }
   }, [user, profile, profileLoading, navigate]);
-
   if (user) {
     return <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
         <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -204,14 +200,14 @@ const Index = () => {
         
         {/* Scroll Down Button */}
         <div className="scroll-indicator" onClick={() => {
-          const section = document.getElementById('main-content');
-          if (section) {
-            section.scrollIntoView({ behavior: 'smooth' });
-          }
-        }}>
-          <svg className="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M6 9l6 6 6-6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+        const section = document.getElementById('main-content');
+        if (section) {
+          section.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }
+      }}>
+          
         </div>
       </section>
 
@@ -541,5 +537,4 @@ const Index = () => {
       </section>
     </div>;
 };
-
 export default Index;
