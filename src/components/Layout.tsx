@@ -189,7 +189,7 @@ export default function Layout() {
         
         {/* Header */}
         <div className="flex-1 flex flex-col">
-          <header className="flex h-16 lg:h-18 items-center gap-3 sm:gap-4 border-b bg-card/90 backdrop-blur-md px-4 sm:px-6 lg:px-8 border-border/50">
+          <header className="sticky top-0 z-50 flex h-16 lg:h-18 items-center gap-3 sm:gap-4 border-b bg-card/90 backdrop-blur-md px-4 sm:px-6 lg:px-8 border-border/50">
             <SidebarTrigger />
             <GlobalSearch />
             <div className="flex-1" />
