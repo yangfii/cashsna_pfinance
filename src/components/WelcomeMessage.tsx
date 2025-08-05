@@ -22,7 +22,7 @@ export function WelcomeMessage() {
     : displayName[0]?.toUpperCase() || 'U';
 
   return (
-    <Card className="glass-effect border-primary/20 bg-gradient-to-r from-primary/10 to-primary/5">
+    <Card className="border-primary/20 bg-gradient-to-r from-primary/10 to-primary/5 text-foreground">
       <CardContent className="p-6">
         <div className="flex items-center space-x-4">
           <Avatar className="h-12 w-12">
@@ -32,7 +32,7 @@ export function WelcomeMessage() {
             </AvatarFallback>
           </Avatar>
           <div>
-            <h2 className="text-h4">
+            <h2 className="text-h4 text-foreground">
               Hello, {profile?.first_name || displayName}
             </h2>
             <p className="text-sm text-muted-foreground">

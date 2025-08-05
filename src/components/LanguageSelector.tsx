@@ -27,17 +27,17 @@ export const LanguageSelector: React.FC = () => {
           <span className="sr-only">Select language</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-[150px] bg-background/95 backdrop-blur-sm border shadow-lg">
+      <DropdownMenuContent align="end" className="min-w-[150px] bg-popover text-popover-foreground border shadow-lg">
         {languages.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
             onClick={() => setLanguage(lang.code)}
-            className={`flex items-center gap-2 cursor-pointer ${
-              language === lang.code ? 'bg-accent text-accent-foreground' : ''
+            className={`flex items-center gap-2 cursor-pointer text-foreground ${
+              language === lang.code ? 'bg-accent text-accent-foreground' : 'hover:bg-accent hover:text-accent-foreground'
             }`}
           >
             <span className="text-lg">{lang.flag}</span>
-            <span className="font-medium">{lang.name}</span>
+            <span className="font-medium text-inherit">{lang.name}</span>
             {language === lang.code && (
               <span className="ml-auto text-primary">✓</span>
             )}
