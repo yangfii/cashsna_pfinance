@@ -154,7 +154,7 @@ const Index = () => {
             const newLanguage = language === 'english' ? 'khmer' : 'english';
             console.log('Switching to:', newLanguage);
             setLanguage(newLanguage);
-          }} variant="ghost" size="sm" className="h-10 w-10 p-0 bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20 backdrop-blur-sm" title={language === 'english' ? 'Switch to Khmer' : 'Switch to English'}>
+          }} variant="ghost" size="sm" className="h-10 w-10 p-0 bg-white/10 border border-white/20 text-white hover:bg-white/20 dark:bg-white/10 dark:border-white/20 dark:text-white dark:hover:bg-white/20 backdrop-blur-sm transition-transform duration-200 hover:scale-110" title={language === 'english' ? 'Switch to Khmer' : 'Switch to English'}>
               <Globe className="h-4 w-4" />
             </Button>
             <ThemeToggle />
