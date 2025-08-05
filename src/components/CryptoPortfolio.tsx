@@ -370,17 +370,85 @@ export default function CryptoPortfolio() {
                         </div>}
                     </div>
                     
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead className="w-8 sm:w-12 text-xs sm:text-sm lg:text-base">#</TableHead>
-                            <TableHead className="text-xs sm:text-sm lg:text-base">ASSET</TableHead>
-                            <TableHead className="text-xs sm:text-sm lg:text-base hidden sm:table-cell">PRICE</TableHead>
-                            <TableHead className="text-xs sm:text-sm lg:text-base">HOLDINGS</TableHead>
-                            <TableHead className="text-xs sm:text-sm lg:text-base">VALUE</TableHead>
-                          </TableRow>
-                        </TableHeader>
+                    {isMobile ? (
+                      // Mobile card layout
+                      <div className="space-y-3">
+                        {filteredAndSortedHoldings.length === 0 ? (
+                          <Card className="p-6 text-center text-muted-foreground">
+                            No assets match your current filters
+                          </Card>
+                        ) : (
+                          filteredAndSortedHoldings.map((holding, index) => {
+                            const currentPrice = prices[holding.symbol.toLowerCase()]?.usd || 0;
+                            const currentValue = getHoldingCurrentValue(holding);
+                            const gainLoss = getHoldingGainLoss(holding);
+                            const percentChange = getHoldingPercentChange(holding);
+                            const isGain = gainLoss >= 0;
+
+                            return (
+                              <Card key={holding.id} className="p-4">
+                                <div className="flex items-center justify-between mb-3">
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-muted-foreground text-sm">#{index + 1}</span>
+                                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                                      <span className="text-sm font-bold">{holding.symbol.charAt(0)}</span>
+                                    </div>
+                                    <div>
+                                      <div className="font-semibold text-sm">{holding.symbol}</div>
+                                      {holding.wallet_type && (
+                                        <div className="text-xs text-muted-foreground capitalize">{holding.wallet_type}</div>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => deleteHolding(holding.id)}
+                                    className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                                
+                                <div className="grid grid-cols-2 gap-3 text-sm">
+                                  <div>
+                                    <div className="text-muted-foreground text-xs">Price</div>
+                                    <div className="font-medium">{formatCurrency(currentPrice)}</div>
+                                  </div>
+                                  <div>
+                                    <div className="text-muted-foreground text-xs">Holdings</div>
+                                    <div className="font-medium">{holding.amount.toFixed(4)}</div>
+                                  </div>
+                                  <div>
+                                    <div className="text-muted-foreground text-xs">Value</div>
+                                    <div className="font-medium">{formatCurrency(currentValue)}</div>
+                                  </div>
+                                  <div>
+                                    <div className="text-muted-foreground text-xs">P&L</div>
+                                    <div className={`font-medium flex items-center gap-1 ${isGain ? 'text-green-500' : 'text-red-500'}`}>
+                                      {isGain ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                                      {percentChange.toFixed(2)}%
+                                    </div>
+                                  </div>
+                                </div>
+                              </Card>
+                            );
+                          })
+                        )}
+                      </div>
+                    ) : (
+                      // Desktop table layout
+                      <div className="overflow-x-auto">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead className="w-8 sm:w-12 text-xs sm:text-sm lg:text-base">#</TableHead>
+                              <TableHead className="text-xs sm:text-sm lg:text-base">ASSET</TableHead>
+                              <TableHead className="text-xs sm:text-sm lg:text-base hidden sm:table-cell">PRICE</TableHead>
+                              <TableHead className="text-xs sm:text-sm lg:text-base">HOLDINGS</TableHead>
+                              <TableHead className="text-xs sm:text-sm lg:text-base">VALUE</TableHead>
+                            </TableRow>
+                          </TableHeader>
                         <TableBody>
                           {filteredAndSortedHoldings.length === 0 ? <TableRow>
                               <TableCell colSpan={5} className="text-center py-12 lg:py-16 text-muted-foreground text-base lg:text-lg">
@@ -436,9 +504,10 @@ export default function CryptoPortfolio() {
                                   </TableCell>
                                 </TableRow>;
                       })}
-                        </TableBody>
-                      </Table>
-                    </div>
+                          </TableBody>
+                        </Table>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </div>

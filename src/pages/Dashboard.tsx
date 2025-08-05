@@ -99,10 +99,10 @@ export default function Dashboard() {
       {/* Header with improved breathing space */}
       <div className="flex flex-col space-y-6 lg:space-y-8 xl:flex-row xl:items-center xl:justify-between xl:space-y-0 px-2 sm:px-4 lg:px-6 relative z-10">
         <div className="space-y-3 lg:space-y-4">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground animate-fade-in transition-all duration-500 hover:tracking-wide hover:text-gradient transform hover:scale-105 cursor-default">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground animate-fade-in transition-all duration-500 hover:tracking-wide hover:text-gradient transform hover:scale-105 cursor-default">
             {t("dashboard.title")}
           </h1>
-          <p className="text-base sm:text-lg lg:text-xl xl:text-2xl text-muted-foreground">
+          <p className="text-sm sm:text-base lg:text-lg xl:text-xl text-muted-foreground">
             ស្ថានភាពហិរញ្ញវត្ថុរបស់អ្នកសម្រាប់ខែ {currentMonth}
           </p>
         </div>
@@ -130,7 +130,7 @@ export default function Dashboard() {
       </div>
 
       {/* Enhanced Stats Cards with dreamy glassmorphism */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8 xl:gap-10 px-2 sm:px-4 lg:px-6 relative z-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 px-2 sm:px-4 lg:px-6 relative z-10">
         {/* Total Income */}
         <Card className="income-card-glass stat-card animate-bounce-in hover:scale-105 transition-all duration-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 lg:pb-4">
@@ -140,7 +140,7 @@ export default function Dashboard() {
             <TrendingUp className="h-5 w-5 lg:h-6 lg:w-6 text-emerald-600" />
           </CardHeader>
           <CardContent className="pt-0">
-            <div className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-emerald-800 dark:text-emerald-300">
+            <div className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-emerald-800 dark:text-emerald-300">
               {formatCurrency(totalIncome)}
             </div>
             <p className="text-xs lg:text-sm text-emerald-600 dark:text-emerald-500 mt-2 lg:mt-3">
@@ -160,7 +160,7 @@ export default function Dashboard() {
             <TrendingDown className="h-5 w-5 lg:h-6 lg:w-6 text-red-600" />
           </CardHeader>
           <CardContent className="pt-0">
-            <div className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-red-800 dark:text-red-300">
+            <div className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-red-800 dark:text-red-300">
               {formatCurrency(totalExpense)}
             </div>
             <p className="text-xs lg:text-sm text-red-600 dark:text-red-500 mt-2 lg:mt-3">
@@ -180,7 +180,7 @@ export default function Dashboard() {
             <Wallet className="h-5 w-5 lg:h-6 lg:w-6 text-blue-600" />
           </CardHeader>
           <CardContent className="pt-0">
-            <div className={cn("text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold", netBalance >= 0 ? "text-blue-800 dark:text-blue-300" : "text-red-800 dark:text-red-300")}>
+            <div className={cn("text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold", netBalance >= 0 ? "text-blue-800 dark:text-blue-300" : "text-red-800 dark:text-red-300")}>
               {formatCurrency(netBalance)}
             </div>
             <p className="text-xs lg:text-sm text-blue-600 dark:text-blue-500 mt-2 lg:mt-3">
@@ -200,7 +200,7 @@ export default function Dashboard() {
             <DollarSign className="h-5 w-5 lg:h-6 lg:w-6 text-muted-foreground" />
           </CardHeader>
           <CardContent className="pt-0">
-            <div className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold">
+            <div className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold">
               {loading ? "..." : transactions.length}
             </div>
             <p className="text-xs lg:text-sm text-muted-foreground mt-2 lg:mt-3">
@@ -250,8 +250,8 @@ export default function Dashboard() {
       {/* Enhanced Main Dashboard Grid with dreamy glassmorphism */}
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-8 lg:gap-10 xl:gap-12 px-2 sm:px-4 lg:px-6 relative z-10">
         <div className="xl:col-span-3 space-y-8 lg:space-y-10">
-          {/* Enhanced Quick Actions with dreamy glassmorphism */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 xl:gap-10 animate-slide-up">
+        {/* Enhanced Quick Actions with dreamy glassmorphism */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 animate-slide-up">
             <Card className="glass-panel hover:shadow-2xl hover:scale-105 transition-all duration-500 cursor-pointer group" onClick={() => navigate('/dashboard/transactions', {
             state: {
               filterType: 'income',

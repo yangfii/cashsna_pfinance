@@ -189,7 +189,7 @@ export default function Layout() {
         
         {/* Header */}
         <div className="flex-1 flex flex-col">
-          <header className="sticky top-0 z-50 flex h-16 lg:h-18 items-center gap-3 sm:gap-4 border-b bg-card/90 backdrop-blur-md px-4 sm:px-6 lg:px-8 border-border/50">
+          <header className="sticky top-0 z-50 flex h-14 sm:h-16 lg:h-18 items-center gap-2 sm:gap-3 lg:gap-4 border-b bg-card/90 backdrop-blur-md px-3 sm:px-4 lg:px-6 xl:px-8 border-border/50">
             <SidebarTrigger />
             <GlobalSearch />
             <div className="flex-1" />
@@ -207,7 +207,7 @@ export default function Layout() {
           
           {/* Main Content */}
           <main className="flex-1 overflow-auto bg-background/20 backdrop-blur-sm">
-            <div className="w-full max-w-[1800px] mx-auto px-4 py-8 sm:px-6 lg:px-8 lg:py-10 xl:py-12">
+            <div className="w-full max-w-[1800px] mx-auto px-3 py-4 sm:px-6 sm:py-8 lg:px-8 lg:py-10 xl:py-12">
               <Outlet />
             </div>
           </main>

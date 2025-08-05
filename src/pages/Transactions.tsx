@@ -463,35 +463,35 @@ export default function Transactions() {
           {loading ? <div className="text-center py-8 text-muted-foreground">
               <p>កំពុងទាញយកទិន្នន័យ...</p>
             </div> : <div className="space-y-3">
-              {filteredTransactions.length === 0 ? <div className="text-center py-8 text-muted-foreground">
+                {filteredTransactions.length === 0 ? <div className="text-center py-8 text-muted-foreground">
                   <p>រកមិនឃើញប្រតិបត្តិការ</p>
-                </div> : filteredTransactions.map((transaction, index) => <div key={transaction.id} className="flex items-center justify-between p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-smooth animate-slide-up" style={{
+                </div> : filteredTransactions.map((transaction, index) => <div key={transaction.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-smooth animate-slide-up gap-3" style={{
             animationDelay: `${index * 0.05}s`
           }}>
-                     <div className="flex items-center space-x-4">
-                       <div className={cn("w-3 h-10 rounded-full", transaction.type === "income" ? "bg-gradient-income" : "bg-gradient-expense")} />
-                       <div>
-                         <div className="flex items-center gap-2 mb-1">
-                           <p className="font-medium">{transaction.category}</p>
-                           <Badge variant={transaction.type === "income" ? "secondary" : "destructive"} className={cn("text-xs", transaction.type === "income" ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400")}>
+                     <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
+                       <div className={cn("w-3 h-8 sm:h-10 rounded-full flex-shrink-0", transaction.type === "income" ? "bg-gradient-income" : "bg-gradient-expense")} />
+                       <div className="min-w-0 flex-1">
+                         <div className="flex flex-wrap items-center gap-2 mb-1">
+                           <p className="font-medium text-sm sm:text-base truncate">{transaction.category}</p>
+                           <Badge variant={transaction.type === "income" ? "secondary" : "destructive"} className={cn("text-xs flex-shrink-0", transaction.type === "income" ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400")}>
                              {transaction.type === "income" ? "ចំណូល" : "ចំណាយ"}
                            </Badge>
-                           {transaction.image_url && <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => setViewingImage(transaction.image_url)}>
+                           {transaction.image_url && <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0" onClick={() => setViewingImage(transaction.image_url)}>
                                <Eye className="h-3 w-3 text-primary" />
                              </Button>}
                          </div>
-                         <p className="text-sm text-muted-foreground">{transaction.note}</p>
+                         <p className="text-xs sm:text-sm text-muted-foreground truncate">{transaction.note}</p>
                          <p className="text-xs text-muted-foreground">{transaction.date}</p>
                        </div>
                      </div>
                     
-                    <div className="flex items-center gap-3">
-                      <div className="text-right">
-                        <p className={cn("font-bold text-lg", transaction.type === "income" ? "text-emerald-600" : "text-red-600")}>
+                    <div className="flex items-center justify-between sm:justify-end gap-3 flex-shrink-0">
+                      <div className="text-left sm:text-right">
+                        <p className={cn("font-bold text-base sm:text-lg", transaction.type === "income" ? "text-emerald-600" : "text-red-600")}>
                           {transaction.type === "income" ? "+" : "-"}{formatCurrency(transaction.amount)}
                         </p>
                       </div>
-                       <div className="flex gap-1">
+                       <div className="flex gap-1 flex-shrink-0">
                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => handleEditTransaction(transaction)}>
                            <Edit className="h-3 w-3" />
                          </Button>
