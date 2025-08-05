@@ -10,6 +10,13 @@ interface DailyPNLData {
   pnl: number;
 }
 
+interface DailyPNLCalendarProps {
+  positiveColor?: string;
+  negativeColor?: string;
+  positiveBgColor?: string;
+  negativeBgColor?: string;
+}
+
 // Mock data for demonstration - in real app this would come from props or API
 const mockPNLData: DailyPNLData[] = [
   { date: '2025-04-01', pnl: 0.00 },
@@ -44,7 +51,12 @@ const mockPNLData: DailyPNLData[] = [
   { date: '2025-04-30', pnl: 0.00 },
 ];
 
-export default function DailyPNLCalendar() {
+export default function DailyPNLCalendar({
+  positiveColor = "text-emerald-400",
+  negativeColor = "text-rose-400", 
+  positiveBgColor = "bg-emerald-500/10 border-emerald-500/20",
+  negativeBgColor = "bg-rose-500/10 border-rose-500/20"
+}: DailyPNLCalendarProps = {}) {
   const [currentDate, setCurrentDate] = useState(new Date(2025, 3, 1)); // April 2025
   const [pnlData, setPnlData] = useState<DailyPNLData[]>(mockPNLData);
   const [editingCell, setEditingCell] = useState<string | null>(null);
@@ -84,14 +96,14 @@ export default function DailyPNLCalendar() {
   };
 
   const getPNLColor = (value: number) => {
-    if (value > 0) return 'text-green-400';
-    if (value < 0) return 'text-red-400';
+    if (value > 0) return positiveColor;
+    if (value < 0) return negativeColor;
     return 'text-muted-foreground';
   };
 
   const getPNLBackground = (value: number) => {
-    if (value > 0) return 'bg-green-500/10 border-green-500/20';
-    if (value < 0) return 'bg-red-500/10 border-red-500/20';
+    if (value > 0) return positiveBgColor;
+    if (value < 0) return negativeBgColor;
     return 'bg-muted/50 border-border';
   };
 
@@ -151,7 +163,7 @@ export default function DailyPNLCalendar() {
                 onChange={(e) => setEditValue(e.target.value)}
                 className={cn(
                   "h-6 text-xs text-center border-0 p-0 bg-transparent focus:ring-1 focus:ring-primary",
-                  parseFloat(editValue) > 0 ? "text-green-400" : parseFloat(editValue) < 0 ? "text-red-400" : "text-muted-foreground"
+                  parseFloat(editValue) > 0 ? positiveColor : parseFloat(editValue) < 0 ? negativeColor : "text-muted-foreground"
                 )}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') saveEdit(dateStr);

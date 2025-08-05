@@ -19,7 +19,12 @@ export default function Portfolio() {
       </div>
       
       <div className="px-1 sm:px-2 lg:px-4">
-        <DailyPNLCalendar />
+        <DailyPNLCalendar 
+          positiveColor="text-green-400"
+          negativeColor="text-red-400"
+          positiveBgColor="bg-green-500/10 border-green-500/20"
+          negativeBgColor="bg-red-500/10 border-red-500/20"
+        />
       </div>
       
       <div className="px-1 sm:px-2 lg:px-4">
