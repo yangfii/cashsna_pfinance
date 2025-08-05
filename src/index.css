@@ -744,7 +744,7 @@
 .arrow-icon {
   width: 32px;
   height: 32px;
-  color: #64748b; /* Tailwind slate-500 */
+  color: hsl(var(--muted-foreground));
 }
 
 @keyframes bounce {

@@ -32,12 +32,12 @@ export function ThemeToggle() {
   const getIcon = () => {
     switch (theme) {
       case "light":
-        return <Sun className="h-4 w-4 text-amber-500" />;
+        return <Sun className="h-4 w-4 text-foreground" />;
       case "dark":
-        return <Moon className="h-4 w-4 text-blue-400" />;
+        return <Moon className="h-4 w-4 text-foreground" />;
       case "system":
       default:
-        return <Monitor className="h-4 w-4 text-muted-foreground" />;
+        return <Monitor className="h-4 w-4 text-foreground" />;
     }
   };
 
