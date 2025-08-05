@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { RefreshCw, TrendingUp, TrendingDown, Clock, Target, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import DailyPNLCalendar from "./DailyPNLCalendar";
 
 interface ProfitLossSectionProps {
   holdings: any[];
@@ -302,6 +303,14 @@ export default function ProfitLossSection({
           )}
         </div>
       )}
+
+      {/* Daily PNL Calendar */}
+      <DailyPNLCalendar 
+        positiveColor="text-green-400"
+        negativeColor="text-red-400"
+        positiveBgColor="bg-green-500/10 border-green-500/20"
+        negativeBgColor="bg-red-500/10 border-red-500/20"
+      />
 
       {/* Detailed Holdings Breakdown */}
       {holdingMetrics.length > 0 && (

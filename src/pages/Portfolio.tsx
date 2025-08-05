@@ -1,6 +1,5 @@
 
 import CryptoPortfolio from "@/components/CryptoPortfolio";
-import DailyPNLCalendar from "@/components/crypto/DailyPNLCalendar";
 import { PortfolioIcon } from "@/components/ui/action-icons";
 
 export default function Portfolio() {
@@ -16,15 +15,6 @@ export default function Portfolio() {
         <p className="text-muted-foreground text-base lg:text-lg">
           Track your cryptocurrency investments and performance
         </p>
-      </div>
-      
-      <div className="px-1 sm:px-2 lg:px-4">
-        <DailyPNLCalendar 
-          positiveColor="text-green-400"
-          negativeColor="text-red-400"
-          positiveBgColor="bg-green-500/10 border-green-500/20"
-          negativeBgColor="bg-red-500/10 border-red-500/20"
-        />
       </div>
       
       <div className="px-1 sm:px-2 lg:px-4">
