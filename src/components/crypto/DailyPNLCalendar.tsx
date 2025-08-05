@@ -92,7 +92,8 @@ export default function DailyPNLCalendar({
 
   const formatPNL = (value: number) => {
     if (value === 0) return '0.00';
-    return value > 0 ? `+${value.toFixed(2)}` : value.toFixed(2);
+    if (value > 0) return `+${value.toFixed(2)}`;
+    return value.toFixed(2); // Already has minus sign
   };
 
   const getPNLColor = (value: number) => {
