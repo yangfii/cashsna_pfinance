@@ -47,46 +47,61 @@ window.addEventListener('unhandledrejection', (event) => {
 // Global error handler for uncaught exceptions
 window.addEventListener('error', (event) => {
   console.error('Global error caught:', event.error || event.message);
+  console.error('Event details:', {
+    filename: event.filename,
+    lineno: event.lineno,
+    colno: event.colno,
+    error: event.error,
+    message: event.message
+  });
 });
 
-const App = () => (
-  <ErrorBoundary>
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <LanguageProvider>
-          <AuthProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <Analytics />
-              <BrowserRouter>
-                <ErrorBoundary>
-                  <Routes>
-                    <Route path="/auth" element={<Auth />} />
-                    <Route path="/profile-setup" element={<ProfileSetup />} />
-                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                    <Route path="/terms-of-service" element={<TermsOfService />} />
-                    <Route path="/" element={<Index />} />
-                    <Route path="/dashboard" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-                      <Route index element={<Dashboard />} />
-                      <Route path="transactions" element={<Transactions />} />
-                      <Route path="categories" element={<Categories />} />
-                      <Route path="portfolio" element={<Portfolio />} />
-                      <Route path="assistant" element={<Assistant />} />
-                      <Route path="planning" element={<Planning />} />
-                      <Route path="reports" element={<Reports />} />
-                      <Route path="settings" element={<Settings />} />
-                    </Route>
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </ErrorBoundary>
-              </BrowserRouter>
-            </TooltipProvider>
-          </AuthProvider>
-        </LanguageProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
-  </ErrorBoundary>
-);
+const App = () => {
+  try {
+    console.log('App component rendering...');
+    return (
+      <ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <LanguageProvider>
+              <AuthProvider>
+                <TooltipProvider>
+                  <Toaster />
+                  <Sonner />
+                  <Analytics />
+                  <BrowserRouter>
+                    <ErrorBoundary>
+                      <Routes>
+                        <Route path="/auth" element={<Auth />} />
+                        <Route path="/profile-setup" element={<ProfileSetup />} />
+                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                        <Route path="/terms-of-service" element={<TermsOfService />} />
+                        <Route path="/" element={<Index />} />
+                        <Route path="/dashboard" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+                          <Route index element={<Dashboard />} />
+                          <Route path="transactions" element={<Transactions />} />
+                          <Route path="categories" element={<Categories />} />
+                          <Route path="portfolio" element={<Portfolio />} />
+                          <Route path="assistant" element={<Assistant />} />
+                          <Route path="planning" element={<Planning />} />
+                          <Route path="reports" element={<Reports />} />
+                          <Route path="settings" element={<Settings />} />
+                        </Route>
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </ErrorBoundary>
+                  </BrowserRouter>
+                </TooltipProvider>
+              </AuthProvider>
+            </LanguageProvider>
+          </ThemeProvider>
+        </QueryClientProvider>
+      </ErrorBoundary>
+    );
+  } catch (error) {
+    console.error('App component error:', error);
+    return <div>App initialization error: {error instanceof Error ? error.message : 'Unknown error'}</div>;
+  }
+};
 
 export default App;
