@@ -281,6 +281,136 @@ export type Database = {
         }
         Relationships: []
       }
+      note_folders: {
+        Row: {
+          color: string | null
+          created_at: string
+          id: string
+          name: string
+          parent_folder_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          parent_folder_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          parent_folder_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_folder_parent"
+            columns: ["parent_folder_id"]
+            isOneToOne: false
+            referencedRelation: "note_folders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      note_tags: {
+        Row: {
+          color: string | null
+          created_at: string
+          id: string
+          name: string
+          usage_count: number | null
+          user_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          usage_count?: number | null
+          user_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          usage_count?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notes: {
+        Row: {
+          collaboration_settings: Json | null
+          content: Json
+          created_at: string
+          folder_id: string | null
+          id: string
+          is_favorite: boolean
+          is_locked: boolean
+          last_viewed_at: string | null
+          media_attachments: Json | null
+          password_hash: string | null
+          plain_text_content: string | null
+          tags: string[] | null
+          template_type: string | null
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          collaboration_settings?: Json | null
+          content?: Json
+          created_at?: string
+          folder_id?: string | null
+          id?: string
+          is_favorite?: boolean
+          is_locked?: boolean
+          last_viewed_at?: string | null
+          media_attachments?: Json | null
+          password_hash?: string | null
+          plain_text_content?: string | null
+          tags?: string[] | null
+          template_type?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          collaboration_settings?: Json | null
+          content?: Json
+          created_at?: string
+          folder_id?: string | null
+          id?: string
+          is_favorite?: boolean
+          is_locked?: boolean
+          last_viewed_at?: string | null
+          media_attachments?: Json | null
+          password_hash?: string | null
+          plain_text_content?: string | null
+          tags?: string[] | null
+          template_type?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_notes_folder"
+            columns: ["folder_id"]
+            isOneToOne: false
+            referencedRelation: "note_folders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portfolio_snapshots: {
         Row: {
           created_at: string
