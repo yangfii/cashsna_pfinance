@@ -148,7 +148,7 @@ const Index = () => {
         {/* Language and Theme Controls */}
         <div className="relative z-10 flex justify-end p-4">
           <div className="flex items-center gap-2">
-            <span className="text-primary-foreground/80 text-sm font-medium animate-bounce">កូនខ្មែរ</span>
+            <span className="text-white text-sm font-medium animate-bounce">កូនខ្មែរ</span>
             <Button onClick={() => {
             console.log('Current language:', language);
             const newLanguage = language === 'english' ? 'khmer' : 'english';
