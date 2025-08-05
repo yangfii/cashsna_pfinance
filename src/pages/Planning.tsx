@@ -281,6 +281,19 @@ export default function Planning() {
       <div className="relative z-10">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="glass-overlay p-2 rounded-xl mb-6">
+            {/* iPhone Note */}
+            <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/30 rounded-lg p-4 mb-4 shadow-sm">
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-2 h-2 bg-amber-500 rounded-full mt-2"></div>
+                <div className="flex-1">
+                  <div className="text-amber-800 dark:text-amber-200 text-sm leading-relaxed">
+                    <p className="font-medium mb-1">Quick Note</p>
+                    <p>Remember to break down your goals into smaller, actionable steps. Each step completed brings you closer to success!</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
             <TabsList className="grid w-full grid-cols-2 bg-transparent border-0">
               
               <TabsTrigger value="goals" className="flex items-center gap-2 glass-card data-[state=active]:glass-strong">
