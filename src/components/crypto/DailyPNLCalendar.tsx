@@ -1,0 +1,179 @@
+import React, { useState } from 'react';
+import { ChevronLeft, ChevronRight, BarChart3, Calendar } from 'lucide-react';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+
+interface DailyPNLData {
+  date: string;
+  pnl: number;
+}
+
+// Mock data for demonstration - in real app this would come from props or API
+const mockPNLData: DailyPNLData[] = [
+  { date: '2025-04-01', pnl: 0.00 },
+  { date: '2025-04-02', pnl: -1.50 },
+  { date: '2025-04-03', pnl: -0.00 },
+  { date: '2025-04-04', pnl: -0.00 },
+  { date: '2025-04-05', pnl: 0.00 },
+  { date: '2025-04-06', pnl: -0.00 },
+  { date: '2025-04-07', pnl: 17.21 },
+  { date: '2025-04-08', pnl: -17.12 },
+  { date: '2025-04-09', pnl: 3.55 },
+  { date: '2025-04-10', pnl: -63.69 },
+  { date: '2025-04-11', pnl: 0.00 },
+  { date: '2025-04-12', pnl: 0.00 },
+  { date: '2025-04-13', pnl: 0.00 },
+  { date: '2025-04-14', pnl: -4.22 },
+  { date: '2025-04-15', pnl: -11.52 },
+  { date: '2025-04-16', pnl: -13.54 },
+  { date: '2025-04-17', pnl: -25.01 },
+  { date: '2025-04-18', pnl: 109.37 },
+  { date: '2025-04-19', pnl: 70.03 },
+  { date: '2025-04-20', pnl: 4.57 },
+  { date: '2025-04-21', pnl: -352.53 },
+  { date: '2025-04-22', pnl: 0.00 },
+  { date: '2025-04-23', pnl: 85.88 },
+  { date: '2025-04-24', pnl: -181.21 },
+  { date: '2025-04-25', pnl: 0.00 },
+  { date: '2025-04-26', pnl: 0.00 },
+  { date: '2025-04-27', pnl: 0.00 },
+  { date: '2025-04-28', pnl: 0.00 },
+  { date: '2025-04-29', pnl: 0.00 },
+  { date: '2025-04-30', pnl: 0.00 },
+];
+
+export default function DailyPNLCalendar() {
+  const [currentDate, setCurrentDate] = useState(new Date(2025, 3, 1)); // April 2025
+
+  const formatPNL = (value: number) => {
+    if (value === 0) return '0.00';
+    return value > 0 ? `+${value.toFixed(2)}` : value.toFixed(2);
+  };
+
+  const getPNLColor = (value: number) => {
+    if (value > 0) return 'text-green-400';
+    if (value < 0) return 'text-red-400';
+    return 'text-muted-foreground';
+  };
+
+  const getPNLBackground = (value: number) => {
+    if (value > 0) return 'bg-green-500/10 border-green-500/20';
+    if (value < 0) return 'bg-red-500/10 border-red-500/20';
+    return 'bg-muted/50 border-border';
+  };
+
+  const getDaysInMonth = (date: Date) => {
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  };
+
+  const getFirstDayOfMonth = (date: Date) => {
+    return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+  };
+
+  const navigateMonth = (direction: 'prev' | 'next') => {
+    setCurrentDate(prev => {
+      const newDate = new Date(prev);
+      if (direction === 'prev') {
+        newDate.setMonth(prev.getMonth() - 1);
+      } else {
+        newDate.setMonth(prev.getMonth() + 1);
+      }
+      return newDate;
+    });
+  };
+
+  const renderCalendarDays = () => {
+    const daysInMonth = getDaysInMonth(currentDate);
+    const firstDay = getFirstDayOfMonth(currentDate);
+    const days = [];
+
+    // Empty cells for days before the first day of the month
+    for (let i = 0; i < firstDay; i++) {
+      days.push(<div key={`empty-${i}`} className="h-20" />);
+    }
+
+    // Days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const pnlData = mockPNLData.find(d => d.date === dateStr);
+      const pnl = pnlData?.pnl || 0;
+
+      days.push(
+        <div
+          key={day}
+          className={cn(
+            "h-20 border rounded-lg p-2 flex flex-col justify-between text-center transition-all duration-200 hover:scale-105",
+            getPNLBackground(pnl)
+          )}
+        >
+          <div className="text-foreground font-medium text-lg">{day}</div>
+          <div className={cn("text-sm font-semibold", getPNLColor(pnl))}>
+            {formatPNL(pnl)}
+          </div>
+        </div>
+      );
+    }
+
+    return days;
+  };
+
+  const monthYear = currentDate.toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: '2-digit' 
+  });
+
+  return (
+    <Card className="w-full">
+      <CardHeader className="pb-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-foreground">Daily PNL</h2>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
+              <BarChart3 className="h-5 w-5" />
+            </Button>
+            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
+              <Calendar className="h-5 w-5" />
+            </Button>
+          </div>
+        </div>
+        
+        <div className="flex items-center justify-center gap-4 mt-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigateMonth('prev')}
+            className="text-foreground hover:text-foreground"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
+          <span className="text-xl font-semibold text-foreground min-w-[120px] text-center">
+            {monthYear}
+          </span>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigateMonth('next')}
+            className="text-foreground hover:text-foreground"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </Button>
+        </div>
+      </CardHeader>
+
+      <CardContent>
+        <div className="grid grid-cols-7 gap-2 mb-4">
+          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day) => (
+            <div key={day} className="text-center text-muted-foreground font-medium py-2">
+              {day}
+            </div>
+          ))}
+        </div>
+        
+        <div className="grid grid-cols-7 gap-2">
+          {renderCalendarDays()}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
