@@ -289,7 +289,7 @@ export default function Planning() {
               
               <TabsTrigger value="goals" className="flex items-center gap-2 glass-card data-[state=active]:glass-strong">
                 <Target className="h-4 w-4" />
-                គោលដៅ & កំណត់ចងចាំ
+                គោលដៅ & note
                 {getUpcomingReminders().length > 0 && <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 text-xs">
                     {getUpcomingReminders().length}
                   </Badge>}
@@ -626,7 +626,7 @@ export default function Planning() {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold">កំណត់ចងចាំ</h2>
+                <h2 className="text-2xl font-bold">note</h2>
                 <p className="text-muted-foreground">
                   គ្រប់គ្រងការរំលឹក ព្រឹត្តិការណ៍ និងការងារសំខាន់ៗ
                 </p>
