@@ -27,7 +27,7 @@ type Transaction = {
   updated_at: string;
 };
 export default function Dashboard() {
-  const [currentMonth] = useState("កក្កដា ២០២៤");
+  const [currentMonth] = useState("កក្កដា ២០២៥");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date>();
