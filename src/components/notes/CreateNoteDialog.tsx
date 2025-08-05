@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Plus } from 'lucide-react';
 import { useNotes } from '@/hooks/useNotes';
+import { RichTextEditor } from './RichTextEditor';
 
 interface CreateNoteDialogProps {
   children?: React.ReactNode;
@@ -21,7 +21,8 @@ export function CreateNoteDialog({ children }: CreateNoteDialogProps) {
     
     if (!title.trim()) return;
 
-    await createNote(title, content);
+    // Create note with rich text content
+    await createNote(title, content || '<p></p>');
     setTitle('');
     setContent('');
     setOpen(false);
@@ -51,11 +52,11 @@ export function CreateNoteDialog({ children }: CreateNoteDialogProps) {
             />
           </div>
           <div>
-            <Textarea
+            <RichTextEditor
+              content={content}
+              onChange={setContent}
               placeholder="Start writing your note..."
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className="min-h-[200px] resize-none"
+              className="min-h-[200px]"
             />
           </div>
           <div className="flex justify-end gap-2">

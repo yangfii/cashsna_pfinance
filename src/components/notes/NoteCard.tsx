@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Edit3, Trash2, Heart, Save, X, Calendar } from 'lucide-react';
 import { Note, useNotes } from '@/hooks/useNotes';
 import { format } from 'date-fns';
+import { RichTextEditor } from './RichTextEditor';
+import { RichTextViewer } from './RichTextViewer';
 
 interface NoteCardProps {
   note: Note;
@@ -15,21 +16,27 @@ interface NoteCardProps {
 export function NoteCard({ note }: NoteCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(note.title || '');
-  const [content, setContent] = useState(note.plain_text_content || '');
+  const [content, setContent] = useState(() => {
+    // Use the rich content if available, otherwise convert plain text to HTML
+    if (note.content && typeof note.content === 'object' && 'content' in note.content) {
+      return JSON.stringify(note.content);
+    }
+    return note.plain_text_content ? `<p>${note.plain_text_content}</p>` : '<p></p>';
+  });
   const { updateNote, deleteNote, toggleFavorite } = useNotes();
 
   const handleSave = async () => {
+    // Extract plain text from HTML for search
+    const temp = document.createElement('div');
+    temp.innerHTML = content;
+    const plainText = temp.textContent || temp.innerText || '';
+
     await updateNote(note.id, {
       title: title || 'Untitled Note',
-      plain_text_content: content,
+      plain_text_content: plainText,
       content: {
-        type: "doc",
-        content: [
-          {
-            type: "paragraph",
-            content: [{ text: content, type: "text" }]
-          }
-        ]
+        type: "html",
+        html: content
       }
     });
     setIsEditing(false);
@@ -37,7 +44,12 @@ export function NoteCard({ note }: NoteCardProps) {
 
   const handleCancel = () => {
     setTitle(note.title || '');
-    setContent(note.plain_text_content || '');
+    // Reset to original content
+    if (note.content && typeof note.content === 'object' && 'content' in note.content) {
+      setContent(JSON.stringify(note.content));
+    } else {
+      setContent(note.plain_text_content ? `<p>${note.plain_text_content}</p>` : '<p></p>');
+    }
     setIsEditing(false);
   };
 
@@ -100,16 +112,18 @@ export function NoteCard({ note }: NoteCardProps) {
         {/* Content */}
         <div className="space-y-2">
           {isEditing ? (
-            <Textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className="min-h-[100px] resize-none bg-transparent border-none p-0 focus-visible:ring-0"
+            <RichTextEditor
+              content={content}
+              onChange={setContent}
               placeholder="Start writing your note..."
+              className="min-h-[100px] bg-transparent border-none"
             />
           ) : (
-            <p className="text-amber-800 dark:text-amber-200 text-sm line-clamp-4 whitespace-pre-wrap">
-              {note.plain_text_content || 'No content'}
-            </p>
+            <RichTextViewer
+              content={content}
+              showPreview={true}
+              className="text-sm"
+            />
           )}
         </div>
 

@@ -41,24 +41,24 @@ export function useNotes() {
     }
   };
 
-  const createNote = async (title: string, content: string = '') => {
+  const createNote = async (title: string, content: string = '<p></p>') => {
     if (!user) return;
 
     try {
+      // Extract plain text from HTML for search
+      const temp = document.createElement('div');
+      temp.innerHTML = content;
+      const plainText = temp.textContent || temp.innerText || '';
+
       const { data, error } = await supabase
         .from('notes')
         .insert({
           user_id: user.id,
           title: title || 'Untitled Note',
-          plain_text_content: content,
+          plain_text_content: plainText,
           content: {
-            type: "doc",
-            content: [
-              {
-                type: "paragraph",
-                content: [{ text: content, type: "text" }]
-              }
-            ]
+            type: "html",
+            html: content
           }
         })
         .select()
