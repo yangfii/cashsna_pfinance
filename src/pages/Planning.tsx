@@ -16,6 +16,7 @@ import { useReminders } from "@/hooks/useReminders";
 import { useGoals } from "@/hooks/useGoals";
 import { Plus, Calendar as CalendarIcon, Target, CheckCircle2, Circle, Edit, Trash2, CalendarDays, TrendingUp, Brain, Clock, Play, Pause, Square, Timer, Bell, Palette, Upload, Image, StickyNote } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/hooks/useLanguage";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -23,6 +24,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "next-themes";
 import type { Goal, Step } from "@/hooks/useGoals";
 export default function Planning() {
+  const { t } = useLanguage();
   const {
     goals,
     loading: goalsLoading,
@@ -259,9 +261,9 @@ export default function Planning() {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-foreground mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              ការរៀបចំគំរោង
+              {t('nav.planning')}
             </h1>
-            <p className="text-muted-foreground">គ្រប់គ្រងគោលដៅរបស់អ្នកតាមសប្តាហ៍ ខែ និងឆ្នាំ</p>
+            <p className="text-muted-foreground">{t('planning.subtitle')}</p>
           </div>
           
           <div className="flex gap-2">
