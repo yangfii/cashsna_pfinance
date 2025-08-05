@@ -21,7 +21,6 @@ import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "next-themes";
 import type { Goal, Step } from "@/hooks/useGoals";
-
 export default function Planning() {
   const {
     goals,
@@ -32,14 +31,16 @@ export default function Planning() {
     toggleGoalCompletion,
     toggleStepCompletion: toggleStepCompletionDB,
     addStep: addStepToDB,
-    removeStep: removeStepFromDB,
+    removeStep: removeStepFromDB
   } = useGoals();
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("goals");
   const [showNote, setShowNote] = useState(false);
-  const { theme } = useTheme();
+  const {
+    theme
+  } = useTheme();
   const [newGoal, setNewGoal] = useState({
     title: '',
     description: '',
@@ -63,7 +64,6 @@ export default function Planning() {
     getUpcomingReminders,
     getOverdueReminders
   } = useReminders();
-
 
   // Focus timer effect
   useEffect(() => {
@@ -131,16 +131,14 @@ export default function Planning() {
       });
       return;
     }
-
     const goalData = {
       title: newGoal.title,
       description: newGoal.description,
       goal_type: newGoal.goal_type,
       period: newGoal.period || getCurrentPeriod(newGoal.goal_type),
       steps: steps,
-      is_completed: false,
+      is_completed: false
     };
-
     if (editingGoal) {
       await updateGoal(editingGoal.id, goalData);
     } else {
@@ -283,28 +281,9 @@ export default function Planning() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="glass-overlay p-2 rounded-xl mb-6">
             {/* iPhone Note Button */}
-            <Button 
-              variant="ghost" 
-              onClick={() => setShowNote(!showNote)}
-              className="w-full mb-4 justify-start text-left p-3 h-auto bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/30 hover:bg-amber-100 dark:hover:bg-amber-950/30 transition-all duration-200"
-            >
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-2 h-2 bg-amber-500 rounded-full mt-2"></div>
-                <div className="flex-1">
-                  <div className="text-amber-800 dark:text-amber-200 text-sm">
-                    <p className="font-medium">Quick Note {showNote ? '▼' : '▶'}</p>
-                  </div>
-                </div>
-              </div>
-            </Button>
             
-            {showNote && (
-              <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/30 rounded-lg p-4 mb-4 shadow-sm animate-slide-down">
-                <div className="text-amber-800 dark:text-amber-200 text-sm leading-relaxed">
-                  <p>Remember to break down your goals into smaller, actionable steps. Each step completed brings you closer to success!</p>
-                </div>
-              </div>
-            )}
+            
+            {showNote}
             
             <TabsList className="grid w-full grid-cols-2 bg-transparent border-0">
               
@@ -511,9 +490,9 @@ export default function Planning() {
                           </div>
                           <div className="flex gap-2">
                             <Button variant="ghost" size="sm" onClick={() => {
-                              console.log('Edit button clicked');
-                              editGoal(goal);
-                            }}>
+                          console.log('Edit button clicked');
+                          editGoal(goal);
+                        }}>
                               <Edit className="h-4 w-4" />
                             </Button>
                             <AlertDialog>
@@ -984,5 +963,5 @@ export default function Planning() {
           }
         `
     }} />
-    </div>
+    </div>;
 }
