@@ -328,23 +328,19 @@ export default function CryptoPortfolio() {
                     <span className="hidden lg:inline truncate">PORTFOLIO ARCHIVE</span>
                     <span className="lg:hidden truncate">ARCHIVE</span>
                   </TabsTrigger>
-                  
+                  <TabsTrigger value="balances" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
+                    <span className="hidden lg:inline truncate">BALANCES HISTORY</span>
+                    <span className="lg:hidden truncate">BALANCES</span>
+                  </TabsTrigger>
                   <TabsTrigger value="tokens" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
                     <span className="hidden lg:inline truncate">TOKEN BALANCES HISTORY</span>
                     <span className="lg:hidden truncate">TOKENS</span>
                   </TabsTrigger>
-                  <TabsTrigger value="swing-trade" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
-                    <span className="hidden lg:inline truncate">SWING TRADE LOG</span>
-                    <span className="lg:hidden truncate">SWING</span>
+                  <TabsTrigger value="profit" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
+                    <span className="hidden lg:inline truncate">PROFIT & LOSS</span>
+                    <span className="lg:hidden truncate">P&L</span>
                   </TabsTrigger>
                 </TabsList>
-                
-                <div className="flex items-center gap-3">
-                  <Button variant={activeTab === 'profit' ? 'default' : 'outline'} size="sm" className="text-xs lg:text-sm border rounded-md px-4 py-3 h-12 lg:h-14 whitespace-nowrap" onClick={() => setActiveTab('profit')}>
-                    <span className="hidden lg:inline">PROFIT & LOSS</span>
-                    <span className="lg:hidden">P&L</span>
-                  </Button>
-                </div>
               </>}
           </div>
 
