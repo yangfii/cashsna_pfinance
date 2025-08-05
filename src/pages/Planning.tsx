@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import AIAssistant from "@/components/AIAssistant";
+import { NotesGrid } from "@/components/notes/NotesGrid";
 import { AddReminderDialog } from "@/components/reminders/AddReminderDialog";
 import { RemindersList } from "@/components/reminders/RemindersList";
 import { useReminders } from "@/hooks/useReminders";
@@ -661,68 +662,7 @@ export default function Planning() {
         </TabsContent>
 
         <TabsContent value="reminders" className="mt-6 space-y-6">
-          {/* Reminders Section */}
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">note</h2>
-                <p className="text-muted-foreground">
-                  គ្រប់គ្រងការរំលឹក ព្រឹត្តិការណ៍ និងការងារសំខាន់ៗ
-                </p>
-              </div>
-              <AddReminderDialog>
-                <Button className="flex items-center gap-2">
-                  <Bell className="h-4 w-4" />
-                  បន្ថែមការរំលឹកថ្មី
-                </Button>
-              </AddReminderDialog>
-            </div>
-
-            {/* Quick stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="glass-card p-6 hover:scale-105 transition-all duration-300 group">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 rounded-full bg-gradient-to-br from-yellow-400/20 to-orange-500/20 group-hover:from-yellow-400/30 group-hover:to-orange-500/30 transition-all duration-300">
-                    <Clock className="h-5 w-5 text-yellow-600" />
-                  </div>
-                  <span className="text-sm font-medium text-muted-foreground">ខាងមុខ (២៤ម៉ោង)</span>
-                </div>
-                <p className="text-3xl font-bold text-yellow-600 mb-1">
-                  {getUpcomingReminders().length}
-                </p>
-                <div className="h-1 w-full bg-gradient-to-r from-yellow-400/30 to-orange-500/30 rounded-full" />
-              </div>
-              
-              <div className="glass-card p-6 hover:scale-105 transition-all duration-300 group">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 rounded-full bg-gradient-to-br from-red-400/20 to-pink-500/20 group-hover:from-red-400/30 group-hover:to-pink-500/30 transition-all duration-300">
-                    <Bell className="h-5 w-5 text-red-600" />
-                  </div>
-                  <span className="text-sm font-medium text-muted-foreground">ហួសកំណត់</span>
-                </div>
-                <p className="text-3xl font-bold text-red-600 mb-1">
-                  {getOverdueReminders().length}
-                </p>
-                <div className="h-1 w-full bg-gradient-to-r from-red-400/30 to-pink-500/30 rounded-full" />
-              </div>
-              
-              <div className="glass-card p-6 hover:scale-105 transition-all duration-300 group">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 rounded-full bg-gradient-to-br from-green-400/20 to-emerald-500/20 group-hover:from-green-400/30 group-hover:to-emerald-500/30 transition-all duration-300">
-                    <CheckCircle2 className="h-5 w-5 text-green-600" />
-                  </div>
-                  <span className="text-sm font-medium text-muted-foreground">សរុបសកម្ម</span>
-                </div>
-                <p className="text-3xl font-bold text-green-600 mb-1">
-                  {getUpcomingReminders().length + getOverdueReminders().length}
-                </p>
-                <div className="h-1 w-full bg-gradient-to-r from-green-400/30 to-emerald-500/30 rounded-full" />
-              </div>
-            </div>
-
-            <RemindersList />
-          </div>
-
+          <NotesGrid />
         </TabsContent>
 
         <TabsContent value="ai-assistant" className="mt-6">
