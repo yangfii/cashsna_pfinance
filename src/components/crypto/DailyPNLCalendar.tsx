@@ -19,36 +19,25 @@ interface DailyPNLCalendarProps {
 
 // Mock data for demonstration - in real app this would come from props or API
 const mockPNLData: DailyPNLData[] = [
-  { date: '2025-04-01', pnl: 0.00 },
-  { date: '2025-04-02', pnl: -1.50 },
-  { date: '2025-04-03', pnl: -0.00 },
-  { date: '2025-04-04', pnl: -0.00 },
-  { date: '2025-04-05', pnl: 0.00 },
-  { date: '2025-04-06', pnl: -0.00 },
+  { date: '2025-08-01', pnl: 12.45 },
+  { date: '2025-08-02', pnl: -5.20 },
+  { date: '2025-08-03', pnl: 23.67 },
+  { date: '2025-08-04', pnl: -12.34 },
+  { date: '2025-08-05', pnl: 8.90 },
+  { date: '2025-08-06', pnl: 15.75 }, // Today
+  { date: '2025-08-07', pnl: 0.00 },
+  { date: '2025-08-08', pnl: -7.25 },
+  { date: '2025-08-09', pnl: 18.50 },
+  { date: '2025-08-10', pnl: -3.80 },
   { date: '2025-04-07', pnl: 17.21 },
   { date: '2025-04-08', pnl: -17.12 },
   { date: '2025-04-09', pnl: 3.55 },
   { date: '2025-04-10', pnl: -63.69 },
-  { date: '2025-04-11', pnl: 0.00 },
-  { date: '2025-04-12', pnl: 0.00 },
-  { date: '2025-04-13', pnl: 0.00 },
-  { date: '2025-04-14', pnl: -4.22 },
-  { date: '2025-04-15', pnl: -11.52 },
-  { date: '2025-04-16', pnl: -13.54 },
-  { date: '2025-04-17', pnl: -25.01 },
   { date: '2025-04-18', pnl: 109.37 },
   { date: '2025-04-19', pnl: 70.03 },
-  { date: '2025-04-20', pnl: 4.57 },
   { date: '2025-04-21', pnl: -352.53 },
-  { date: '2025-04-22', pnl: 0.00 },
   { date: '2025-04-23', pnl: 85.88 },
   { date: '2025-04-24', pnl: -181.21 },
-  { date: '2025-04-25', pnl: 0.00 },
-  { date: '2025-04-26', pnl: 0.00 },
-  { date: '2025-04-27', pnl: 0.00 },
-  { date: '2025-04-28', pnl: 0.00 },
-  { date: '2025-04-29', pnl: 0.00 },
-  { date: '2025-04-30', pnl: 0.00 },
 ];
 
 export default function DailyPNLCalendar({
@@ -57,7 +46,7 @@ export default function DailyPNLCalendar({
   positiveBgColor = "bg-emerald-500/10 border-emerald-500/20",
   negativeBgColor = "bg-rose-500/10 border-rose-500/20"
 }: DailyPNLCalendarProps = {}) {
-  const [currentDate, setCurrentDate] = useState(new Date(2025, 3, 1)); // April 2025
+  const [currentDate, setCurrentDate] = useState(new Date(2025, 7, 6)); // August 6, 2025 (month is 0-indexed)
   const [pnlData, setPnlData] = useState<DailyPNLData[]>(mockPNLData);
   const [editingCell, setEditingCell] = useState<string | null>(null);
   const [editValue, setEditValue] = useState<string>('');
@@ -144,6 +133,12 @@ export default function DailyPNLCalendar({
       const dayData = pnlData.find(d => d.date === dateStr);
       const pnl = dayData?.pnl || 0;
       const isEditing = editingCell === dateStr;
+      
+      // Check if this is today (August 6, 2025)
+      const today = new Date(2025, 7, 6); // August 6, 2025
+      const isToday = currentDate.getFullYear() === today.getFullYear() && 
+                     currentDate.getMonth() === today.getMonth() && 
+                     day === today.getDate();
 
       days.push(
         <div
@@ -151,11 +146,15 @@ export default function DailyPNLCalendar({
           className={cn(
             "h-20 border rounded-lg p-2 flex flex-col justify-between text-center transition-all duration-200 hover:scale-105 cursor-pointer relative group",
             getPNLBackground(pnl),
-            isEditing && "ring-2 ring-primary"
+            isEditing && "ring-2 ring-primary",
+            isToday && "ring-2 ring-blue-500 border-blue-500 bg-blue-50/50 dark:bg-blue-950/50"
           )}
           onClick={() => !isEditing && startEditing(dateStr, pnl)}
         >
-          <div className="text-foreground font-medium text-lg">{day}</div>
+          <div className={cn("text-foreground font-medium text-lg", isToday && "text-blue-600 dark:text-blue-400 font-bold")}>
+            {day}
+            {isToday && <div className="text-xs text-blue-600 dark:text-blue-400 font-normal">Today</div>}
+          </div>
           
           {isEditing ? (
             <div className="flex items-center gap-1 text-xs">
@@ -214,7 +213,7 @@ export default function DailyPNLCalendar({
 
   const monthYear = currentDate.toLocaleDateString('en-US', { 
     year: 'numeric', 
-    month: '2-digit' 
+    month: 'long' 
   });
 
   return (
