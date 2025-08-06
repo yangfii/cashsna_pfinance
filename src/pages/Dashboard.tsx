@@ -132,7 +132,7 @@ export default function Dashboard() {
       {/* Enhanced Stats Cards with dreamy glassmorphism */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 px-2 sm:px-4 lg:px-6 relative z-10">
         {/* Total Income */}
-        <Card className="income-card-glass stat-card animate-bounce-in hover:scale-105 transition-all duration-500">
+        <Card className="income-card stat-card animate-bounce-in hover:scale-105 transition-all duration-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 lg:pb-4">
             <CardTitle className="text-sm lg:text-base font-medium text-muted-foreground">
               {t("dashboard.totalIncome")}
@@ -150,7 +150,7 @@ export default function Dashboard() {
         </Card>
 
         {/* Total Expenses */}
-        <Card className="expense-card-glass stat-card animate-bounce-in hover:scale-105 transition-all duration-500" style={{
+        <Card className="expense-card stat-card animate-bounce-in hover:scale-105 transition-all duration-500" style={{
         animationDelay: '0.1s'
       }}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 lg:pb-4">
@@ -170,7 +170,7 @@ export default function Dashboard() {
         </Card>
 
         {/* Net Balance */}
-        <Card className="balance-card-glass stat-card animate-bounce-in hover:scale-105 transition-all duration-500" style={{
+        <Card className="balance-card stat-card animate-bounce-in hover:scale-105 transition-all duration-500" style={{
         animationDelay: '0.2s'
       }}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 lg:pb-4">
@@ -190,7 +190,7 @@ export default function Dashboard() {
         </Card>
 
         {/* This Month */}
-        <Card className="stat-card-glass animate-bounce-in hover:scale-105 transition-all duration-500" style={{
+        <Card className="stat-card animate-bounce-in hover:scale-105 transition-all duration-500" style={{
         animationDelay: '0.3s'
       }}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 lg:pb-4">
