@@ -1,6 +1,7 @@
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
 import { Button } from '@/components/ui/button';
+import { RippleButton } from '@/components/ui/ripple-button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Link, useNavigate } from 'react-router-dom';
 import { WelcomeMessage } from '@/components/WelcomeMessage';
@@ -188,17 +189,31 @@ const Index = () => {
             </p>
             
             <div className="mobile-stack max-w-md mx-auto sm:max-w-none sm:flex-row sm:justify-center">
-              <Button asChild size="lg" className="btn-mobile text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 bg-background text-primary hover:bg-background/90 shadow-glow">
+              <RippleButton 
+                asChild 
+                variant="premium" 
+                size="lg" 
+                className="btn-mobile text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 shadow-glow animate-float"
+                rippleColor="hsl(var(--primary-glow) / 0.4)"
+              >
                 <Link to="/auth">
                   {language === 'khmer' ? 'ចាប់ផ្តើមប្រើប្រាស់ឥតគិតថ្លៃ' : 'Start Free'}
-                  <span className="ml-2 animate-bounce">→</span>
+                  <span className="ml-2 animate-bounce group-hover:translate-x-1 transition-transform duration-300">→</span>
                 </Link>
-              </Button>
-              <Button variant="outline" asChild size="lg" className="btn-mobile text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+              </RippleButton>
+              <RippleButton 
+                variant="outline" 
+                asChild 
+                size="lg" 
+                className="btn-mobile text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 animate-float"
+                style={{ animationDelay: '0.2s' }}
+                rippleColor="hsl(var(--primary-foreground) / 0.3)"
+              >
                 <Link to="/dashboard/assistant">
-                  {language === 'khmer' ? '🤖 AI ជួយណែនាំ' : '🤖 AI Guide'}
+                  <span className="animate-pulse group-hover:animate-bounce transition-all duration-300">🤖</span>
+                  {language === 'khmer' ? ' AI ជួយណែនាំ' : ' AI Guide'}
                 </Link>
-              </Button>
+              </RippleButton>
             </div>
           </div>
         </div>

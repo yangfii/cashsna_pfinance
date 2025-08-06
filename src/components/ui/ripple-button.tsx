@@ -15,7 +15,7 @@ interface RippleButtonProps extends ButtonProps {
 export const RippleButton: React.FC<RippleButtonProps> = ({ 
   children, 
   className, 
-  rippleColor = 'rgba(255, 255, 255, 0.5)',
+  rippleColor = 'hsl(var(--primary-foreground) / 0.4)',
   onClick,
   ...props 
 }) => {
@@ -51,9 +51,10 @@ export const RippleButton: React.FC<RippleButtonProps> = ({
     <Button
       ref={buttonRef}
       className={cn(
-        'relative overflow-hidden',
-        'hover:scale-105 transition-all duration-300',
+        'relative overflow-hidden group',
+        'hover:scale-105 transition-all duration-300 transform-gpu',
         'active:scale-95',
+        'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         className
       )}
       onClick={handleClick}
@@ -65,16 +66,15 @@ export const RippleButton: React.FC<RippleButtonProps> = ({
       {ripples.map(ripple => (
         <span
           key={ripple.id}
-          className="absolute animate-ripple pointer-events-none"
+          className="absolute pointer-events-none rounded-full"
           style={{
             left: ripple.x - 10,
             top: ripple.y - 10,
             width: 20,
             height: 20,
             backgroundColor: rippleColor,
-            borderRadius: '50%',
             transform: 'scale(0)',
-            animation: 'ripple 0.6s linear'
+            animation: 'ripple 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
           }}
         />
       ))}
