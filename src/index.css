@@ -72,6 +72,14 @@
   /* Border Radius System */
   --radius: 0.75rem;
 
+  /* Chart Colors */
+  --chart-1: 160 100% 75%; /* Aquamarine */
+  --chart-2: 0 84% 60%;   /* Red */
+  --chart-3: 202 100% 50%; /* Blue */
+  --chart-4: 283 100% 60%; /* Purple */
+  --chart-5: 45 100% 60%;  /* Orange */
+  --chart-6: 120 100% 50%; /* Green */
+
   /* Sidebar specific colors */
   --sidebar-background: 210 15% 98%;
   --sidebar-foreground: 210 15% 15%;
@@ -136,6 +144,14 @@
   /* Dark Mode Enhanced Shadows */
   --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.4);
   --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.4);
+
+  /* Chart Colors - Dark Mode */
+  --chart-1: 160 100% 75%; /* Aquamarine */
+  --chart-2: 0 84% 60%;   /* Red */
+  --chart-3: 202 100% 50%; /* Blue */
+  --chart-4: 283 100% 60%; /* Purple */
+  --chart-5: 45 100% 60%;  /* Orange */
+  --chart-6: 120 100% 50%; /* Green */
 
   /* Dark Sidebar colors */
   --sidebar-background: 210 15% 8%;
