@@ -6,21 +6,33 @@ interface ActionIconProps extends Omit<AnimatedIconProps, 'src'> {
   variant?: 'button' | 'inline';
 }
 
-// Icon URLs from Lordicon
+// Lordicon Wired/Outline Icon URLs for Financial App
 const ICON_URLS = {
-  add: 'https://cdn.lordicon.com/jgnvfzqg.json',
-  delete: 'https://cdn.lordicon.com/skkahier.json', 
-  success: 'https://cdn.lordicon.com/oqdmuxru.json',
-  loading: 'https://cdn.lordicon.com/msoeawqm.json',
-  edit: 'https://cdn.lordicon.com/gwlusjdu.json',
-  save: 'https://cdn.lordicon.com/jjoolpwc.json',
-  search: 'https://cdn.lordicon.com/xfftupfv.json',
-  settings: 'https://cdn.lordicon.com/dxjqoygy.json',
-  chart: 'https://cdn.lordicon.com/qhviklyi.json',
-  wallet: 'https://cdn.lordicon.com/qjbqpyxk.json',
-  portfolio: 'https://cdn.lordicon.com/gqzfzudq.json',
-  money: 'https://cdn.lordicon.com/qudvreay.json',
-  notification: 'https://cdn.lordicon.com/lznlxwtc.json',
+  // Basic Actions (Wired/Outline style)
+  add: 'https://cdn.lordicon.com/wired/outline/186-plus.json',
+  delete: 'https://cdn.lordicon.com/wired/outline/498-trash-2.json', 
+  success: 'https://cdn.lordicon.com/wired/outline/1103-check.json',
+  loading: 'https://cdn.lordicon.com/wired/outline/1469-refresh.json',
+  edit: 'https://cdn.lordicon.com/wired/outline/1891-edit.json',
+  save: 'https://cdn.lordicon.com/wired/outline/433-save.json',
+  search: 'https://cdn.lordicon.com/wired/outline/1498-search.json',
+  settings: 'https://cdn.lordicon.com/wired/outline/1640-settings.json',
+  
+  // Financial Icons (Wired/Outline style)
+  bitcoin: 'https://cdn.lordicon.com/wired/outline/2665-logo-circle-bitcoin.json',
+  coin: 'https://cdn.lordicon.com/wired/outline/290-coin.json',
+  wallet: 'https://cdn.lordicon.com/wired/outline/421-wallet-purse.json',
+  creditCard: 'https://cdn.lordicon.com/wired/outline/799-credit-card.json',
+  bank: 'https://cdn.lordicon.com/wired/outline/1022-business-bank.json',
+  chart: 'https://cdn.lordicon.com/wired/outline/1143-analytics-pie-chart.json',
+  dashboard: 'https://cdn.lordicon.com/wired/outline/1141-analytics.json',
+  trendingUp: 'https://cdn.lordicon.com/wired/outline/1152-trending-up.json',
+  trendingDown: 'https://cdn.lordicon.com/wired/outline/1153-trending-down.json',
+  portfolio: 'https://cdn.lordicon.com/wired/outline/1144-analytics-bar-chart.json',
+  money: 'https://cdn.lordicon.com/wired/outline/346-money-dollar.json',
+  notification: 'https://cdn.lordicon.com/wired/outline/371-notification.json',
+  calendar: 'https://cdn.lordicon.com/wired/outline/258-calendar.json',
+  transactions: 'https://cdn.lordicon.com/wired/outline/397-exchange.json',
 };
 
 const baseIconProps: Partial<AnimatedIconProps> = {
@@ -173,6 +185,105 @@ export const NotificationIcon: React.FC<ActionIconProps> = ({ variant = 'button'
     {...baseIconProps}
     trigger="click"
     className={cn('transition-transform duration-200 hover:scale-110 cursor-pointer', className)}
+    {...props}
+  />
+);
+
+// New Financial Icon Components (Wired/Outline style)
+export const BitcoinIcon: React.FC<ActionIconProps> = ({ variant = 'inline', className, ...props }) => (
+  <AnimatedIcon
+    src={ICON_URLS.bitcoin}
+    {...baseIconProps}
+    {...(variant === 'button' ? buttonVariantProps : inlineVariantProps)}
+    colors="primary:hsl(var(--income)),secondary:hsl(var(--muted-foreground))"
+    className={cn(variant === 'button' ? buttonVariantProps.className : inlineVariantProps.className, className)}
+    {...props}
+  />
+);
+
+export const CoinIcon: React.FC<ActionIconProps> = ({ variant = 'inline', className, ...props }) => (
+  <AnimatedIcon
+    src={ICON_URLS.coin}
+    {...baseIconProps}
+    {...(variant === 'button' ? buttonVariantProps : inlineVariantProps)}
+    colors="primary:hsl(var(--income)),secondary:hsl(var(--expense))"
+    className={cn(variant === 'button' ? buttonVariantProps.className : inlineVariantProps.className, className)}
+    {...props}
+  />
+);
+
+export const CreditCardIcon: React.FC<ActionIconProps> = ({ variant = 'inline', className, ...props }) => (
+  <AnimatedIcon
+    src={ICON_URLS.creditCard}
+    {...baseIconProps}
+    {...(variant === 'button' ? buttonVariantProps : inlineVariantProps)}
+    colors="primary:hsl(var(--balance)),secondary:hsl(var(--muted-foreground))"
+    className={cn(variant === 'button' ? buttonVariantProps.className : inlineVariantProps.className, className)}
+    {...props}
+  />
+);
+
+export const BankIcon: React.FC<ActionIconProps> = ({ variant = 'inline', className, ...props }) => (
+  <AnimatedIcon
+    src={ICON_URLS.bank}
+    {...baseIconProps}
+    {...(variant === 'button' ? buttonVariantProps : inlineVariantProps)}
+    colors="primary:hsl(var(--primary)),secondary:hsl(var(--muted-foreground))"
+    className={cn(variant === 'button' ? buttonVariantProps.className : inlineVariantProps.className, className)}
+    {...props}
+  />
+);
+
+export const DashboardIcon: React.FC<ActionIconProps> = ({ variant = 'inline', className, ...props }) => (
+  <AnimatedIcon
+    src={ICON_URLS.dashboard}
+    {...baseIconProps}
+    {...(variant === 'button' ? buttonVariantProps : inlineVariantProps)}
+    colors="primary:hsl(var(--primary)),secondary:hsl(var(--primary-glow))"
+    className={cn(variant === 'button' ? buttonVariantProps.className : inlineVariantProps.className, className)}
+    {...props}
+  />
+);
+
+export const TrendingUpIcon: React.FC<ActionIconProps> = ({ variant = 'inline', className, ...props }) => (
+  <AnimatedIcon
+    src={ICON_URLS.trendingUp}
+    {...baseIconProps}
+    {...(variant === 'button' ? buttonVariantProps : inlineVariantProps)}
+    colors="primary:hsl(var(--income)),secondary:hsl(var(--muted-foreground))"
+    className={cn(variant === 'button' ? buttonVariantProps.className : inlineVariantProps.className, className)}
+    {...props}
+  />
+);
+
+export const TrendingDownIcon: React.FC<ActionIconProps> = ({ variant = 'inline', className, ...props }) => (
+  <AnimatedIcon
+    src={ICON_URLS.trendingDown}
+    {...baseIconProps}
+    {...(variant === 'button' ? buttonVariantProps : inlineVariantProps)}
+    colors="primary:hsl(var(--expense)),secondary:hsl(var(--muted-foreground))"
+    className={cn(variant === 'button' ? buttonVariantProps.className : inlineVariantProps.className, className)}
+    {...props}
+  />
+);
+
+export const CalendarIcon: React.FC<ActionIconProps> = ({ variant = 'button', className, ...props }) => (
+  <AnimatedIcon
+    src={ICON_URLS.calendar}
+    {...baseIconProps}
+    {...(variant === 'button' ? buttonVariantProps : inlineVariantProps)}
+    className={cn(variant === 'button' ? buttonVariantProps.className : inlineVariantProps.className, className)}
+    {...props}
+  />
+);
+
+export const TransactionsIcon: React.FC<ActionIconProps> = ({ variant = 'inline', className, ...props }) => (
+  <AnimatedIcon
+    src={ICON_URLS.transactions}
+    {...baseIconProps}
+    {...(variant === 'button' ? buttonVariantProps : inlineVariantProps)}
+    colors="primary:hsl(var(--primary)),secondary:hsl(var(--accent))"
+    className={cn(variant === 'button' ? buttonVariantProps.className : inlineVariantProps.className, className)}
     {...props}
   />
 );

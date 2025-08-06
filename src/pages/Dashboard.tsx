@@ -4,7 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { DollarSign, TrendingUp, TrendingDown, Wallet, Plus, Calendar, CalendarIcon } from "lucide-react";
+import { Plus } from "lucide-react";
+import { 
+  TrendingUpIcon, 
+  TrendingDownIcon, 
+  WalletIcon, 
+  CalendarIcon, 
+  AddIcon, 
+  DashboardIcon,
+  CoinIcon,
+  TransactionsIcon 
+} from "@/components/ui/action-icons";
 import { cn } from "@/lib/utils";
 import { WelcomeMessage } from '@/components/WelcomeMessage';
 import { ProfileCard } from '@/components/ProfileCard';
@@ -112,7 +122,7 @@ export default function Dashboard() {
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" size="sm" className={cn("gap-3 w-full sm:w-auto h-12 lg:h-14 px-6 lg:px-8", !selectedDate && "text-muted-foreground")}>
-                <CalendarIcon className="h-5 w-5 lg:h-6 lg:w-6" />
+                <CalendarIcon size="lg" variant="button" />
                 <span className="text-sm lg:text-base">
                   {selectedDate ? format(selectedDate, "PPP") : "ពិនិត្យប្រតិបត្តិការ"}
                 </span>
@@ -123,7 +133,7 @@ export default function Dashboard() {
             </PopoverContent>
           </Popover>
           <Button className="gap-3 bg-gradient-primary border-0 hover:shadow-glow transition-smooth w-full sm:w-auto h-12 lg:h-14 px-6 lg:px-8" onClick={() => navigate('/dashboard/transactions')}>
-            <Plus className="h-5 w-5 lg:h-6 lg:w-6" />
+            <AddIcon size="lg" variant="button" />
             <span className="text-sm lg:text-base">{t("dashboard.addTransaction")}</span>
           </Button>
         </div>
@@ -137,7 +147,7 @@ export default function Dashboard() {
             <CardTitle className="text-sm lg:text-base font-medium text-muted-foreground">
               {t("dashboard.totalIncome")}
             </CardTitle>
-            <TrendingUp className="h-5 w-5 lg:h-6 lg:w-6 text-emerald-600" />
+            <TrendingUpIcon size="lg" variant="inline" />
           </CardHeader>
           <CardContent className="pt-0">
             <div className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-emerald-800 dark:text-emerald-300">
@@ -157,7 +167,7 @@ export default function Dashboard() {
             <CardTitle className="text-sm lg:text-base font-medium text-muted-foreground">
               {t("dashboard.totalExpenses")}
             </CardTitle>
-            <TrendingDown className="h-5 w-5 lg:h-6 lg:w-6 text-red-600" />
+            <TrendingDownIcon size="lg" variant="inline" />
           </CardHeader>
           <CardContent className="pt-0">
             <div className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-red-800 dark:text-red-300">
@@ -177,7 +187,7 @@ export default function Dashboard() {
             <CardTitle className="text-sm lg:text-base font-medium text-muted-foreground">
               {t("dashboard.currentBalance")}
             </CardTitle>
-            <Wallet className="h-5 w-5 lg:h-6 lg:w-6 text-blue-600" />
+            <WalletIcon size="lg" variant="inline" />
           </CardHeader>
           <CardContent className="pt-0">
             <div className={cn("text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold", netBalance >= 0 ? "text-blue-800 dark:text-blue-300" : "text-red-800 dark:text-red-300")}>
@@ -197,7 +207,7 @@ export default function Dashboard() {
             <CardTitle className="text-sm lg:text-base font-medium text-muted-foreground">
               ប្រតិបត្តិការខែនេះ
             </CardTitle>
-            <DollarSign className="h-5 w-5 lg:h-6 lg:w-6 text-muted-foreground" />
+            <TransactionsIcon size="lg" variant="inline" />
           </CardHeader>
           <CardContent className="pt-0">
             <div className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold">
@@ -261,7 +271,7 @@ export default function Dashboard() {
               <CardContent className="p-8 lg:p-10">
                 <div className="flex items-center space-x-4 lg:space-x-6">
                   <div className="p-4 lg:p-5 bg-gradient-income rounded-xl flex-shrink-0 group-hover:scale-125 group-hover:rotate-3 transition-all duration-300 group-active:scale-90">
-                    <TrendingUp className="h-6 w-6 lg:h-8 lg:w-8 text-constructive-foreground transition-all duration-300 group-hover:rotate-6 group-hover:animate-pulse" />
+                    <TrendingUpIcon size="xl" variant="button" className="transition-all duration-300 group-hover:rotate-6 group-hover:animate-pulse" />
                   </div>
                    <div className="min-w-0 flex-1">
                      <h3 className="text-lg lg:text-xl xl:text-2xl font-semibold group-hover:text-constructive transition-colors duration-300">បន្ថែមចំណូល</h3>
@@ -275,7 +285,7 @@ export default function Dashboard() {
               <CardContent className="p-8 lg:p-10">
                 <div className="flex items-center space-x-4 lg:space-x-6">
                   <div className="p-4 lg:p-5 bg-gradient-expense rounded-xl flex-shrink-0 group-hover:scale-125 group-hover:rotate-3 transition-all duration-300 group-active:scale-90">
-                    <TrendingDown className="h-6 w-6 lg:h-8 lg:w-6 text-destructive-foreground transition-all duration-300 group-hover:rotate-6 group-hover:animate-pulse" />
+                    <TrendingDownIcon size="xl" variant="button" className="transition-all duration-300 group-hover:rotate-6 group-hover:animate-pulse" />
                   </div>
                    <div className="min-w-0 flex-1">
                      <h3 className="text-lg lg:text-xl xl:text-2xl font-semibold group-hover:text-destructive transition-colors duration-300">បន្ថែមចំណាយ</h3>
