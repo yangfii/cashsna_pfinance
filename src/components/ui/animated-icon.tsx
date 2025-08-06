@@ -45,46 +45,75 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
   const iconRef = useRef<any>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [scriptError, setScriptError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   const iconSize = typeof size === 'number' ? size : sizeMap[size];
 
   useEffect(() => {
-    // Check if script already exists
-    const existingScript = document.querySelector('script[src="https://cdn.lordicon.com/lordicon.js"]');
-    
-    if (existingScript) {
-      setIsLoaded(true);
-      return;
-    }
+    const loadScript = () => {
+      // Check if script already exists
+      const existingScript = document.querySelector('script[src="https://cdn.lordicon.com/lordicon.js"]');
+      
+      if (existingScript && (window as any).lordicon) {
+        setIsLoaded(true);
+        setScriptError(false);
+        return;
+      }
 
-    // Load Lordicon script dynamically
-    const script = document.createElement('script');
-    script.src = 'https://cdn.lordicon.com/lordicon.js';
-    script.async = true;
-    script.defer = true;
-    
-    const handleLoad = () => {
-      console.log('Lordicon script loaded successfully');
-      setIsLoaded(true);
-      setScriptError(false);
-    };
-    
-    const handleError = (error: Event) => {
-      console.warn('Lordicon script failed to load:', error);
-      setScriptError(true);
-      setIsLoaded(true); // Show fallback
-    };
-    
-    script.addEventListener('load', handleLoad);
-    script.addEventListener('error', handleError);
-    
-    document.head.appendChild(script);
+      // Remove any broken scripts
+      if (existingScript) {
+        existingScript.remove();
+      }
 
-    return () => {
-      script.removeEventListener('load', handleLoad);
-      script.removeEventListener('error', handleError);
+      // Load Lordicon script dynamically
+      const script = document.createElement('script');
+      script.src = 'https://cdn.lordicon.com/lordicon.js';
+      script.async = true;
+      script.defer = true;
+      
+      const handleLoad = () => {
+        console.log('Lordicon script loaded successfully');
+        setIsLoaded(true);
+        setScriptError(false);
+        
+        // Force icon refresh after script load
+        setTimeout(() => {
+          if (iconRef.current && (window as any).lordicon) {
+            try {
+              (window as any).lordicon.refresh();
+            } catch (error) {
+              console.warn('Failed to refresh lordicon:', error);
+            }
+          }
+        }, 100);
+      };
+      
+      const handleError = (error: Event) => {
+        console.warn('Lordicon script failed to load:', error);
+        setScriptError(true);
+        
+        // Retry loading up to 3 times
+        if (retryCount < 3) {
+          setTimeout(() => {
+            setRetryCount(prev => prev + 1);
+            loadScript();
+          }, 1000 * (retryCount + 1));
+        }
+      };
+      
+      script.addEventListener('load', handleLoad);
+      script.addEventListener('error', handleError);
+      
+      document.head.appendChild(script);
+
+      return () => {
+        script.removeEventListener('load', handleLoad);
+        script.removeEventListener('error', handleError);
+      };
     };
-  }, []);
+
+    loadScript();
+  }, [retryCount]);
 
   const handleClick = () => {
     if (onClick) {
@@ -92,7 +121,7 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
     }
     
     // Force animation trigger
-    if (iconRef.current) {
+    if (iconRef.current && (window as any).lordicon) {
       try {
         iconRef.current.playerInstance?.play();
       } catch (error) {
@@ -102,7 +131,7 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
   };
 
   const handleMouseEnter = () => {
-    if (iconRef.current && trigger === 'hover') {
+    if (iconRef.current && trigger === 'hover' && (window as any).lordicon) {
       try {
         iconRef.current.playerInstance?.play();
       } catch (error) {
@@ -111,24 +140,28 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
     }
   };
 
-  // Show fallback if script failed to load
-  if (scriptError) {
+  // Show fallback if script failed to load after retries
+  if (scriptError && retryCount >= 3) {
     return (
       <div 
         className={cn(
-          "inline-flex items-center justify-center bg-muted/50 rounded-md animate-pulse",
+          "inline-flex items-center justify-center bg-muted/50 rounded-md",
           "transition-colors hover:bg-muted cursor-pointer",
+          "border border-border",
           className
         )}
         style={{ width: iconSize, height: iconSize }}
         onClick={onClick}
         role="button"
         tabIndex={0}
-      />
+        title="Icon failed to load"
+      >
+        <div className="w-3 h-3 bg-muted-foreground/50 rounded-sm" />
+      </div>
     );
   }
 
-  if (!isLoaded) {
+  if (!isLoaded || !src) {
     return (
       <div 
         className={cn(
@@ -140,36 +173,23 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
     );
   }
 
-  try {
-    return (
-      <lord-icon
-        ref={iconRef}
-        src={src}
-        trigger={trigger}
-        colors={colors}
-        delay={delay}
-        speed={speed}
-        style={{ width: iconSize, height: iconSize }}
-        className={cn("inline-block cursor-pointer", className)}
-        onClick={handleClick}
-        onMouseEnter={handleMouseEnter}
-        loading={loading}
-      />
-    );
-  } catch (error) {
-    console.warn('Failed to render lord-icon:', error);
-    return (
-      <div 
-        className={cn(
-          "inline-flex items-center justify-center bg-muted/50 rounded-md",
-          "transition-colors hover:bg-muted cursor-pointer animate-pulse",
-          className
-        )}
-        style={{ width: iconSize, height: iconSize }}
-        onClick={onClick}
-        role="button"
-        tabIndex={0}
-      />
-    );
-  }
+  return (
+    <lord-icon
+      ref={iconRef}
+      src={src}
+      trigger={trigger}
+      colors={colors}
+      delay={delay}
+      speed={speed}
+      style={{ 
+        width: iconSize, 
+        height: iconSize,
+        display: 'inline-block'
+      }}
+      className={cn("cursor-pointer", className)}
+      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      loading={loading}
+    />
+  );
 };
