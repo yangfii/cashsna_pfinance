@@ -37,18 +37,22 @@ const ICON_URLS = {
 
 const baseIconProps: Partial<AnimatedIconProps> = {
   trigger: 'hover',
-  colors: 'primary:hsl(var(--primary)),secondary:hsl(var(--muted-foreground))',
+  colors: 'primary:#16a34a,secondary:#6b7280',
   size: 'md',
+  speed: 1.2,
+  loading: 'eager',
 };
 
 const buttonVariantProps = {
   className: 'transition-transform duration-200 hover:scale-110 cursor-pointer',
   trigger: 'hover' as const,
+  speed: 1.5,
 };
 
 const inlineVariantProps = {
   className: 'transition-opacity duration-200',
   trigger: 'loop-on-hover' as const,
+  speed: 1,
 };
 
 // Individual icon components
@@ -261,7 +265,7 @@ export const TrendingDownIcon: React.FC<ActionIconProps> = ({ variant = 'inline'
     src={ICON_URLS.trendingDown}
     {...baseIconProps}
     {...(variant === 'button' ? buttonVariantProps : inlineVariantProps)}
-    colors="primary:hsl(var(--expense)),secondary:hsl(var(--muted-foreground))"
+    colors="primary:#dc2626,secondary:#6b7280"
     className={cn(variant === 'button' ? buttonVariantProps.className : inlineVariantProps.className, className)}
     {...props}
   />

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -32,17 +33,18 @@ const sizeMap = {
 export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
   src,
   trigger = 'hover',
-  colors = 'primary:hsl(var(--primary)),secondary:hsl(var(--muted-foreground))',
+  colors = 'primary:#16a34a,secondary:#6b7280',
   size = 'md',
   delay = 0,
   speed = 1,
   className,
   onClick,
   onHover = true,
-  loading = 'lazy',
+  loading = 'eager',
 }) => {
   const iconRef = useRef<any>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [scriptError, setScriptError] = useState(false);
 
   const iconSize = typeof size === 'number' ? size : sizeMap[size];
 
@@ -55,30 +57,28 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
       return;
     }
 
-    // Load Lordicon script dynamically with better error handling
+    // Load Lordicon script dynamically
     const script = document.createElement('script');
     script.src = 'https://cdn.lordicon.com/lordicon.js';
     script.async = true;
-    script.crossOrigin = 'anonymous';
+    script.defer = true;
     
     const handleLoad = () => {
+      console.log('Lordicon script loaded successfully');
       setIsLoaded(true);
+      setScriptError(false);
     };
     
     const handleError = (error: Event) => {
-      console.warn('Lordicon script failed to load, using fallback:', error);
+      console.warn('Lordicon script failed to load:', error);
+      setScriptError(true);
       setIsLoaded(true); // Show fallback
     };
     
     script.addEventListener('load', handleLoad);
     script.addEventListener('error', handleError);
     
-    try {
-      document.head.appendChild(script);
-    } catch (error) {
-      console.warn('Failed to add Lordicon script:', error);
-      setIsLoaded(true); // Show fallback
-    }
+    document.head.appendChild(script);
 
     return () => {
       script.removeEventListener('load', handleLoad);
@@ -91,8 +91,8 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
       onClick();
     }
     
-    // Trigger animation on click
-    if (iconRef.current && trigger === 'click') {
+    // Force animation trigger
+    if (iconRef.current) {
       try {
         iconRef.current.playerInstance?.play();
       } catch (error) {
@@ -101,12 +101,22 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
     }
   };
 
-  // Always show fallback if loading is lazy and not loaded, or if script failed
-  if (!isLoaded) {
+  const handleMouseEnter = () => {
+    if (iconRef.current && trigger === 'hover') {
+      try {
+        iconRef.current.playerInstance?.play();
+      } catch (error) {
+        console.warn('Failed to trigger hover animation:', error);
+      }
+    }
+  };
+
+  // Show fallback if script failed to load
+  if (scriptError) {
     return (
       <div 
         className={cn(
-          "inline-flex items-center justify-center bg-muted/50 rounded-md",
+          "inline-flex items-center justify-center bg-muted/50 rounded-md animate-pulse",
           "transition-colors hover:bg-muted cursor-pointer",
           className
         )}
@@ -114,6 +124,18 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
         onClick={onClick}
         role="button"
         tabIndex={0}
+      />
+    );
+  }
+
+  if (!isLoaded) {
+    return (
+      <div 
+        className={cn(
+          "inline-flex items-center justify-center bg-muted/30 rounded-md animate-pulse",
+          className
+        )}
+        style={{ width: iconSize, height: iconSize }}
       />
     );
   }
@@ -128,19 +150,19 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
         delay={delay}
         speed={speed}
         style={{ width: iconSize, height: iconSize }}
-        className={cn("inline-block", className)}
+        className={cn("inline-block cursor-pointer", className)}
         onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
         loading={loading}
       />
     );
   } catch (error) {
     console.warn('Failed to render lord-icon:', error);
-    // Return fallback on any render error
     return (
       <div 
         className={cn(
           "inline-flex items-center justify-center bg-muted/50 rounded-md",
-          "transition-colors hover:bg-muted cursor-pointer",
+          "transition-colors hover:bg-muted cursor-pointer animate-pulse",
           className
         )}
         style={{ width: iconSize, height: iconSize }}
