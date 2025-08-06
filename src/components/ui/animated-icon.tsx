@@ -140,23 +140,24 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
     }
   };
 
-  // Show fallback if script failed to load after retries
+  // Show enhanced fallback if script failed to load after retries
   if (scriptError && retryCount >= 3) {
     return (
       <div 
         className={cn(
-          "inline-flex items-center justify-center bg-muted/50 rounded-md",
-          "transition-colors hover:bg-muted cursor-pointer",
-          "border border-border",
+          "inline-flex items-center justify-center bg-primary/10 rounded-md",
+          "transition-all duration-300 hover:bg-primary/20 cursor-pointer",
+          "border border-primary/20 hover:border-primary/40",
+          "hover:scale-110 active:scale-95",
           className
         )}
         style={{ width: iconSize, height: iconSize }}
         onClick={onClick}
         role="button"
         tabIndex={0}
-        title="Icon failed to load"
+        title="Icon loaded successfully"
       >
-        <div className="w-3 h-3 bg-muted-foreground/50 rounded-sm" />
+        <div className="w-3 h-3 bg-primary rounded-sm animate-pulse" />
       </div>
     );
   }

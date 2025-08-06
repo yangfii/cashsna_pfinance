@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { RippleButton } from "@/components/ui/ripple-button";
+import { AnimatedCard } from "@/components/ui/animated-card";
+import { FocusTimer } from "@/components/ui/focus-timer";
+import { ScrollReveal, StaggeredReveal } from "@/components/ui/scroll-reveal";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -267,14 +271,14 @@ export default function Planning() {
           </div>
           
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setActiveTab("customization")} className="gap-2 glass-effect hover:scale-105 transition-all duration-300">
+            <RippleButton variant="outline" onClick={() => setActiveTab("customization")} className="gap-2 glass-effect">
               <Palette className="h-4 w-4" />
               ការកំណត់រូបរាង
-            </Button>
-            <Button onClick={() => setShowAddForm(true)} className="gap-2 glass-effect hover:scale-105 transition-all duration-300">
+            </RippleButton>
+            <RippleButton onClick={() => setShowAddForm(true)} className="gap-2 glass-effect" variant="premium">
               <Plus className="h-4 w-4" />
               បន្ថែមគោលដៅថ្មី
-            </Button>
+            </RippleButton>
           </div>
         </div>
       </div>
@@ -309,7 +313,7 @@ export default function Planning() {
 
           <TabsContent value="goals" className="mt-6 space-y-6">
             {/* Add/Edit Goal Form */}
-            {showAddForm && <div className="glass-panel p-6 animate-slide-down">
+            {showAddForm && <AnimatedCard animation="scale" className="glass-panel p-6">
                 <div className="mb-6">
                   <h3 className="text-xl font-semibold text-foreground">{editingGoal ? 'កែប្រែគោលដៅ' : 'បន្ថែមគោលដៅថ្មី'}</h3>
                 </div>
@@ -391,26 +395,27 @@ export default function Planning() {
                 </div>
 
                 <div className="flex gap-2 pt-4">
-                  <Button onClick={handleSaveGoal} className="flex-1">
+                  <RippleButton onClick={handleSaveGoal} className="flex-1" variant="premium">
                     {editingGoal ? 'រក្សាទុក' : 'រក្សាទុក'}
-                  </Button>
-                  <Button variant="outline" onClick={resetForm}>
+                  </RippleButton>
+                  <RippleButton variant="outline" onClick={resetForm}>
                     បោះបង់
-                  </Button>
+                  </RippleButton>
                 </div>
-                </div>
-              </div>}
+                 </div>
+               </AnimatedCard>}
 
           {/* Goals Display */}
           <div className="space-y-8">
             {/* Weekly Goals */}
-            {weeklyGoals.length > 0 && <div>
+            {weeklyGoals.length > 0 && <ScrollReveal animation="fade-up">
                 <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                   <CalendarIcon className="h-5 w-5" />
                   គោលដៅប្រចាំសប្តាហ៍
                 </h2>
-                 <div className="grid gap-4">
-                  {weeklyGoals.map(goal => <div key={goal.id} className="glass-card p-6 hover:scale-[1.02] transition-all duration-300">
+                 <StaggeredReveal staggerDelay={150} className="grid gap-4">
+                  {weeklyGoals.map(goal => (
+                    <AnimatedCard key={goal.id} hover="glow" className="glass-card p-6">
                       <div className="pb-3">
                         <div className="flex items-start justify-between">
                           <div className="space-y-2">
@@ -459,19 +464,22 @@ export default function Planning() {
                       <div>
                         <div className="space-y-2">
                           <h4 className="font-medium text-sm">ជំហានដែលត្រូវអនុវត្ត:</h4>
-                          {goal.steps.map(step => <div key={step.id} className="flex items-center gap-2">
+                          {goal.steps.map(step => (
+                            <div key={step.id} className="flex items-center gap-2">
                               <button onClick={() => handleToggleStepCompletion(goal.id, step.id)} className="flex-shrink-0">
                                 {step.completed ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <Circle className="h-4 w-4 text-muted-foreground" />}
                               </button>
                               <span className={`text-sm ${step.completed ? 'line-through text-muted-foreground' : ''}`}>
                                 {step.text}
                               </span>
-                            </div>)}
+                            </div>
+                          ))}
                         </div>
                       </div>
-                    </div>)}
-                </div>
-              </div>}
+                    </AnimatedCard>
+                  ))}
+                </StaggeredReveal>
+              </ScrollReveal>}
 
             {/* Monthly Goals */}
             {monthlyGoals.length > 0 && <div>
