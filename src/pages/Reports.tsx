@@ -466,8 +466,8 @@ export default function Reports() {
                       </span>
                     </div>
                   </div>
-                  <div className="w-full bg-muted rounded-full h-2">
-                    <div className="bg-gradient-expense h-2 rounded-full transition-all duration-500" style={{
+                  <div className="w-full bg-muted rounded-full h-2 animate-scale-in">
+                    <div className="bg-gradient-expense h-2 rounded-full transition-all duration-500 delay-200" style={{
                   width: `${category.percentage}%`
                 }} />
                   </div>
