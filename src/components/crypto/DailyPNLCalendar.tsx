@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, BarChart3, Calendar, Edit3, Check, X } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -58,10 +58,21 @@ export default function DailyPNLCalendar({
   positiveBgColor = "bg-emerald-500/10 border-emerald-500/20",
   negativeBgColor = "bg-rose-500/10 border-rose-500/20"
 }: DailyPNLCalendarProps = {}) {
-  const [currentDate, setCurrentDate] = useState(new Date()); // Current date
+  // Fixed date: August 7th, 2025
+  const [currentDate, setCurrentDate] = useState(new Date(2025, 7, 7)); // August 7th, 2025 (month is 0-indexed)
   const [pnlData, setPnlData] = useState<DailyPNLData[]>(mockPNLData);
   const [editingCell, setEditingCell] = useState<string | null>(null);
   const [editValue, setEditValue] = useState<string>('');
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Update time every second for real-time clock
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   const updatePNL = (date: string, value: number) => {
     setPnlData(prev => {
@@ -145,6 +156,9 @@ export default function DailyPNLCalendar({
       const dayData = pnlData.find(d => d.date === dateStr);
       const pnl = dayData?.pnl || 0;
       const isEditing = editingCell === dateStr;
+      
+      // Check if this is "today" (August 7th, 2025)
+      const isToday = dateStr === '2025-08-07';
 
       days.push(
         <div
@@ -152,11 +166,12 @@ export default function DailyPNLCalendar({
           className={cn(
             "h-20 border rounded-lg p-2 flex flex-col justify-between text-center transition-all duration-200 hover:scale-105 cursor-pointer relative group",
             getPNLBackground(pnl),
-            isEditing && "ring-2 ring-primary"
+            isEditing && "ring-2 ring-primary",
+            isToday && "ring-2 ring-blue-500 bg-blue-500/10"
           )}
           onClick={() => !isEditing && startEditing(dateStr, pnl)}
         >
-          <div className="text-foreground font-medium text-lg">{day}</div>
+          <div className={cn("font-medium text-lg", isToday ? "text-blue-600 font-bold" : "text-foreground")}>{day}</div>
           
           {isEditing ? (
             <div className="flex items-center gap-1 text-xs">
@@ -218,14 +233,15 @@ export default function DailyPNLCalendar({
     month: '2-digit' 
   });
 
-  const today = new Date();
-  const todayString = today.toLocaleDateString('en-US', {
+  // Fixed "today" as August 7th, 2025 with real-time clock
+  const fixedToday = new Date(2025, 7, 7); // August 7th, 2025
+  const todayString = fixedToday.toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric', 
     month: 'long', 
     day: 'numeric'
   });
-  const currentTime = today.toLocaleTimeString('en-US', {
+  const timeString = currentTime.toLocaleTimeString('en-US', {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit'
@@ -237,7 +253,7 @@ export default function DailyPNLCalendar({
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-foreground">Daily PNL</h2>
-            <p className="text-sm text-muted-foreground">Today: {todayString} • {currentTime}</p>
+            <p className="text-sm text-muted-foreground">Today: {todayString} • {timeString}</p>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
