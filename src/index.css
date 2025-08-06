@@ -533,16 +533,16 @@
   /* Dreamy glassmorphism sidebar */
   .glass-sidebar {
     background: linear-gradient(135deg, 
-      hsla(var(--background) / 0.85) 0%,
-      hsla(var(--muted) / 0.7) 50%,
-      hsla(var(--background) / 0.85) 100%);
+      hsla(var(--background) / 0.95) 0%,
+      hsla(var(--muted) / 0.85) 50%,
+      hsla(var(--background) / 0.95) 100%);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid hsla(var(--border) / 0.2);
+    border: 1px solid hsla(var(--border) / 0.4);
     box-shadow: 
-      0 8px 32px hsla(var(--foreground) / 0.08),
-      inset 0 1px 0 hsla(255, 255, 255, 0.1),
-      inset 0 -1px 0 hsla(var(--border) / 0.1);
+      0 8px 32px hsla(var(--foreground) / 0.12),
+      inset 0 1px 0 hsla(255, 255, 255, 0.15),
+      inset 0 -1px 0 hsla(var(--border) / 0.2);
     position: relative;
   }
 
