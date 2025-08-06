@@ -16,9 +16,9 @@
   --popover-foreground: 210 15% 15%;
 
   /* Enhanced Border and Input Colors */
-  --primary: 142 76% 36%;
+  --primary: 174 100% 29%;
   --primary-foreground: 210 20% 98%;
-  --primary-glow: 142 69% 58%;
+  --primary-glow: 174 80% 50%;
 
   --secondary: 210 15% 91%;
   --secondary-foreground: 210 15% 25%;
@@ -26,32 +26,32 @@
   --muted: 210 15% 94%;
   --muted-foreground: 210 15% 40%;
 
-  --accent: 142 70% 50%;
+  --accent: 174 70% 40%;
   --accent-foreground: 210 20% 98%;
 
   /* Enhanced Border System */
   --border: 210 15% 89%;
   --input: 210 15% 89%;
-  --ring: 142 76% 36%;
+  --ring: 174 100% 29%;
 
   /* Enhanced Finance-Specific Colors */
-  --constructive: 142 76% 36%;
-  --constructive-foreground: 138 100% 98%;
+  --constructive: 174 100% 29%;
+  --constructive-foreground: 174 100% 95%;
 
   --destructive: 0 72% 51%;
   --destructive-foreground: 0 85% 97%;
 
   /* Custom Finance Colors */
-  --income: 142 76% 36%;
-  --income-foreground: 138 100% 98%;
+  --income: 174 100% 29%;
+  --income-foreground: 174 100% 95%;
   --expense: 0 72% 51%;
   --expense-foreground: 0 85% 97%;
-  --balance: 142 76% 36%;
+  --balance: 174 100% 29%;
   --balance-foreground: 210 20% 98%;
 
   /* Professional Gradients */
   --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-  --gradient-income: linear-gradient(135deg, hsl(var(--income)), hsl(142 60% 50%));
+  --gradient-income: linear-gradient(135deg, hsl(var(--income)), hsl(174 60% 50%));
   --gradient-expense: linear-gradient(135deg, hsl(var(--expense)), hsl(0 60% 60%));
   --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-glow)) 100%);
   --gradient-card: linear-gradient(135deg, 
@@ -75,12 +75,12 @@
   /* Sidebar specific colors */
   --sidebar-background: 210 15% 98%;
   --sidebar-foreground: 210 15% 15%;
-  --sidebar-primary: 142 76% 36%;
+  --sidebar-primary: 174 100% 29%;
   --sidebar-primary-foreground: 210 20% 98%;
   --sidebar-accent: 210 15% 91%;
   --sidebar-accent-foreground: 210 15% 25%;
   --sidebar-border: 210 15% 89%;
-  --sidebar-ring: 142 76% 36%;
+  --sidebar-ring: 174 100% 29%;
 }
 
 .dark {
@@ -92,9 +92,9 @@
   --popover: 210 15% 9%;
   --popover-foreground: 210 15% 85%;
 
-  --primary: 142 76% 46%;
+  --primary: 174 100% 39%;
   --primary-foreground: 210 15% 7%;
-  --primary-glow: 142 69% 68%;
+  --primary-glow: 174 80% 60%;
 
   --secondary: 210 15% 15%;
   --secondary-foreground: 210 15% 75%;
@@ -102,30 +102,30 @@
   --muted: 210 15% 12%;
   --muted-foreground: 210 15% 55%;
 
-  --accent: 142 70% 60%;
+  --accent: 174 70% 50%;
   --accent-foreground: 210 15% 7%;
 
   --border: 210 15% 18%;
   --input: 210 15% 18%;
-  --ring: 142 76% 46%;
+  --ring: 174 100% 39%;
 
   /* Dark Mode Finance Colors */
-  --constructive: 142 76% 46%;
-  --constructive-foreground: 138 100% 5%;
+  --constructive: 174 100% 39%;
+  --constructive-foreground: 174 100% 5%;
 
   --destructive: 0 72% 61%;
   --destructive-foreground: 0 85% 5%;
 
-  --income: 142 76% 46%;
-  --income-foreground: 138 100% 5%;
+  --income: 174 100% 39%;
+  --income-foreground: 174 100% 5%;
   --expense: 0 72% 61%;
   --expense-foreground: 0 85% 5%;
-  --balance: 142 76% 46%;
+  --balance: 174 100% 39%;
   --balance-foreground: 210 15% 7%;
 
   /* Dark Mode Gradients */
   --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-  --gradient-income: linear-gradient(135deg, hsl(var(--income)), hsl(142 60% 60%));
+  --gradient-income: linear-gradient(135deg, hsl(var(--income)), hsl(174 60% 60%));
   --gradient-expense: linear-gradient(135deg, hsl(var(--expense)), hsl(0 60% 70%));
   --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-glow)) 100%);
   --gradient-card: linear-gradient(135deg, 
@@ -140,12 +140,12 @@
   /* Dark Sidebar colors */
   --sidebar-background: 210 15% 8%;
   --sidebar-foreground: 210 15% 85%;
-  --sidebar-primary: 142 76% 46%;
+  --sidebar-primary: 174 100% 39%;
   --sidebar-primary-foreground: 210 15% 7%;
   --sidebar-accent: 210 15% 15%;
   --sidebar-accent-foreground: 210 15% 75%;
   --sidebar-border: 210 15% 18%;
-  --sidebar-ring: 142 76% 46%;
+  --sidebar-ring: 174 100% 39%;
 }
 
 @layer base {
@@ -208,7 +208,7 @@
   }
 
   .income-card {
-    @apply bg-gradient-to-br from-emerald-50/80 to-emerald-100/60 dark:from-emerald-950/40 dark:to-emerald-900/30 backdrop-blur-md border border-emerald-200/40 dark:border-emerald-800/40 rounded-lg sm:rounded-xl shadow-lg hover:shadow-emerald-200/50 dark:hover:shadow-emerald-900/40 transition-all duration-300;
+    @apply bg-gradient-to-br from-cyan-50/80 to-cyan-100/60 dark:from-cyan-950/40 dark:to-cyan-900/30 backdrop-blur-md border border-cyan-200/40 dark:border-cyan-800/40 rounded-lg sm:rounded-xl shadow-lg hover:shadow-cyan-200/50 dark:hover:shadow-cyan-900/40 transition-all duration-300;
     /* Mobile touch optimization */
     padding: 1rem;
     min-height: 80px;
@@ -224,7 +224,7 @@
   }
 
   .balance-card {
-    @apply bg-gradient-to-br from-green-50/80 to-green-100/60 dark:from-green-950/40 dark:to-green-900/30 backdrop-blur-md border border-green-200/40 dark:border-green-800/40 rounded-lg sm:rounded-xl shadow-lg hover:shadow-green-200/50 dark:hover:shadow-green-900/40 transition-all duration-300;
+    @apply bg-gradient-to-br from-cyan-50/80 to-cyan-100/60 dark:from-cyan-950/40 dark:to-cyan-900/30 backdrop-blur-md border border-cyan-200/40 dark:border-cyan-800/40 rounded-lg sm:rounded-xl shadow-lg hover:shadow-cyan-200/50 dark:hover:shadow-cyan-900/40 transition-all duration-300;
     /* Mobile touch optimization */
     padding: 1rem;
     min-height: 80px;
