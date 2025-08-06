@@ -4,6 +4,9 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from 'sonner';
 
 interface DailyPNLData {
   date: string;
@@ -58,12 +61,21 @@ export default function DailyPNLCalendar({
   positiveBgColor = "bg-emerald-500/10 border-emerald-500/20",
   negativeBgColor = "bg-rose-500/10 border-rose-500/20"
 }: DailyPNLCalendarProps = {}) {
+  const { user } = useAuth();
   // Fixed date: August 7th, 2025
   const [currentDate, setCurrentDate] = useState(new Date(2025, 7, 7)); // August 7th, 2025 (month is 0-indexed)
-  const [pnlData, setPnlData] = useState<DailyPNLData[]>(mockPNLData);
+  const [pnlData, setPnlData] = useState<DailyPNLData[]>([]);
   const [editingCell, setEditingCell] = useState<string | null>(null);
   const [editValue, setEditValue] = useState<string>('');
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load PNL data from database
+  useEffect(() => {
+    if (user) {
+      loadPNLData();
+    }
+  }, [user, currentDate]);
 
   // Update time every second for real-time clock
   useEffect(() => {
@@ -74,15 +86,63 @@ export default function DailyPNLCalendar({
     return () => clearInterval(timer);
   }, []);
 
-  const updatePNL = (date: string, value: number) => {
-    setPnlData(prev => {
-      const existing = prev.find(d => d.date === date);
-      if (existing) {
-        return prev.map(d => d.date === date ? { ...d, pnl: value } : d);
-      } else {
-        return [...prev, { date, pnl: value }];
-      }
-    });
+  const loadPNLData = async () => {
+    if (!user) return;
+    
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('daily_pnl')
+        .select('*')
+        .eq('user_id', user.id)
+        .gte('date', `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-01`)
+        .lte('date', `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-31`);
+
+      if (error) throw error;
+
+      const formattedData = data.map(item => ({
+        date: item.date,
+        pnl: parseFloat(item.pnl.toString())
+      }));
+
+      setPnlData(formattedData);
+    } catch (error) {
+      console.error('Error loading PNL data:', error);
+      toast.error('Failed to load PNL data');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const updatePNL = async (date: string, value: number) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('daily_pnl')
+        .upsert({
+          user_id: user.id,
+          date,
+          pnl: value
+        });
+
+      if (error) throw error;
+
+      // Update local state
+      setPnlData(prev => {
+        const existing = prev.find(d => d.date === date);
+        if (existing) {
+          return prev.map(d => d.date === date ? { ...d, pnl: value } : d);
+        } else {
+          return [...prev, { date, pnl: value }];
+        }
+      });
+
+      toast.success('PNL data saved successfully');
+    } catch (error) {
+      console.error('Error saving PNL data:', error);
+      toast.error('Failed to save PNL data');
+    }
   };
 
   const startEditing = (date: string, currentValue: number) => {
@@ -90,9 +150,9 @@ export default function DailyPNLCalendar({
     setEditValue(currentValue.toString());
   };
 
-  const saveEdit = (date: string) => {
+  const saveEdit = async (date: string) => {
     const numValue = parseFloat(editValue) || 0;
-    updatePNL(date, numValue);
+    await updatePNL(date, numValue);
     setEditingCell(null);
     setEditValue('');
   };
