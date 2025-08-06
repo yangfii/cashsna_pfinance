@@ -348,7 +348,7 @@ export default function Reports() {
             </div>
           </div>
         </CardHeader>
-        <CardContent className="p-6 bg-gradient-to-b from-emerald-100/30 to-red-100/30 dark:from-emerald-900/20 dark:to-red-900/20">
+        <CardContent className="p-6 bg-gradient-to-b from-transparent to-muted/20">
           <div className="h-96 relative">
             <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 rounded-lg -z-10"></div>
             {chartType === "bar" ? <ResponsiveContainer width="100%" height="100%">
