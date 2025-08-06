@@ -232,24 +232,24 @@ export default function Dashboard() {
           "group cursor-pointer relative overflow-hidden"
         )} style={{ animationDelay: '0.5s' }}>
           {/* Animated background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute inset-0 bg-gradient-to-br from-green-400/10 to-green-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 lg:pb-4 relative z-10">
-            <CardTitle className="text-sm lg:text-base font-medium text-muted-foreground group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors duration-300">
+            <CardTitle className="text-sm lg:text-base font-medium text-muted-foreground group-hover:text-green-700 dark:group-hover:text-green-300 transition-colors duration-300">
               {t("dashboard.currentBalance")}
             </CardTitle>
-            <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
+            <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
               <WalletIcon size="lg" variant="inline" />
             </div>
           </CardHeader>
           <CardContent className="pt-0 relative z-10">
             <div className={cn(
               "text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold group-hover:scale-105 transition-transform duration-300",
-              netBalance >= 0 ? "text-blue-800 dark:text-blue-300" : "text-red-800 dark:text-red-300"
+              netBalance >= 0 ? "text-green-800 dark:text-green-300" : "text-red-800 dark:text-red-300"
             )}>
               {formatCurrency(netBalance)}
             </div>
-            <p className="text-xs lg:text-sm text-blue-600 dark:text-blue-500 mt-2 lg:mt-3 group-hover:translate-x-1 transition-transform duration-300">
+            <p className="text-xs lg:text-sm text-green-600 dark:text-green-500 mt-2 lg:mt-3 group-hover:translate-x-1 transition-transform duration-300">
               គោលដៅពីរខែ: $2,000
             </p>
           </CardContent>

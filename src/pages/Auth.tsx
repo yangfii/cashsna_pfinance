@@ -275,7 +275,7 @@ export default function Auth() {
       <div className="relative z-10 w-full max-w-md space-y-8">
         {/* Professional Header */}
         <div className="text-center space-y-3">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-white/90 to-blue-100 bg-clip-text text-transparent drop-shadow-lg">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-white/90 to-green-100 bg-clip-text text-transparent drop-shadow-lg">
             សូមស្វាគមន៍!
           </h1>
           <p className="text-base text-white/90 font-medium drop-shadow-md">

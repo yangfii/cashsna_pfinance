@@ -245,7 +245,7 @@ export default function Reports() {
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>អត្រាសន្សំ:</span>
-                    <span className="font-bold text-blue-600">{savingsRate.toFixed(1)}%</span>
+                    <span className="font-bold text-green-600">{savingsRate.toFixed(1)}%</span>
                   </div>
                   <div className="flex justify-between">
                     <span>ចំណាយប្រចាំថ្ងៃ:</span>
@@ -303,16 +303,16 @@ export default function Reports() {
         animationDelay: '0.2s'
       }}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-400">
+            <CardTitle className="text-sm font-medium text-green-700 dark:text-green-400">
               អត្រាសន្សំ
             </CardTitle>
-            <BarChart3 className="h-4 w-4 text-blue-600" />
+            <BarChart3 className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-800 dark:text-blue-300">
+            <div className="text-2xl font-bold text-green-800 dark:text-green-300">
               {savingsRate.toFixed(1)}%
             </div>
-            <p className="text-xs text-blue-600 dark:text-blue-500 mt-1">
+            <p className="text-xs text-green-600 dark:text-green-500 mt-1">
               គោលដៅ: 30%
             </p>
           </CardContent>

@@ -32,7 +32,7 @@ export default function Categories() {
   const [formData, setFormData] = useState({
     name: "",
     type: "expense",
-    color: "blue"
+    color: "green"
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -212,7 +212,7 @@ export default function Categories() {
   };
 
   const resetForm = () => {
-    setFormData({ name: "", type: "expense", color: "blue" });
+    setFormData({ name: "", type: "expense", color: "green" });
     setEditingCategory(null);
     setDialogOpen(false);
   };
@@ -249,7 +249,7 @@ export default function Categories() {
       pink: "bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-400",
       rose: "bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400"
     };
-    return colorMap[color] || colorMap.blue;
+    return colorMap[color] || colorMap.green;
   };
 
   return (
