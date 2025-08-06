@@ -203,6 +203,33 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_pnl: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          pnl: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          pnl?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          pnl?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       exchange_accounts: {
         Row: {
           account_name: string
