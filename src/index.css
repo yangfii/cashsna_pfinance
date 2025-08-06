@@ -16,9 +16,9 @@
   --popover-foreground: 210 15% 15%;
 
   /* Enhanced Border and Input Colors */
-  --primary: 220 70% 50%;
+  --primary: 270 70% 60%;
   --primary-foreground: 210 20% 98%;
-  --primary-glow: 220 80% 65%;
+  --primary-glow: 280 80% 70%;
 
   --secondary: 210 15% 91%;
   --secondary-foreground: 210 15% 25%;
@@ -26,13 +26,13 @@
   --muted: 210 15% 94%;
   --muted-foreground: 210 15% 40%;
 
-  --accent: 220 60% 50%;
+  --accent: 270 60% 55%;
   --accent-foreground: 210 20% 98%;
 
   /* Enhanced Border System */
   --border: 210 15% 89%;
   --input: 210 15% 89%;
-  --ring: 220 70% 50%;
+  --ring: 270 70% 60%;
 
   /* Enhanced Finance-Specific Colors */
   --constructive: 142 76% 36%;
@@ -46,7 +46,7 @@
   --income-foreground: 138 100% 98%;
   --expense: 0 72% 51%;
   --expense-foreground: 0 85% 97%;
-  --balance: 217 91% 60%;
+  --balance: 270 75% 65%;
   --balance-foreground: 210 20% 98%;
 
   /* Professional Gradients */
@@ -75,12 +75,12 @@
   /* Sidebar specific colors */
   --sidebar-background: 210 15% 98%;
   --sidebar-foreground: 210 15% 15%;
-  --sidebar-primary: 220 70% 50%;
+  --sidebar-primary: 270 70% 60%;
   --sidebar-primary-foreground: 210 20% 98%;
   --sidebar-accent: 210 15% 91%;
   --sidebar-accent-foreground: 210 15% 25%;
   --sidebar-border: 210 15% 89%;
-  --sidebar-ring: 220 70% 50%;
+  --sidebar-ring: 270 70% 60%;
 }
 
 .dark {
@@ -92,9 +92,9 @@
   --popover: 210 15% 9%;
   --popover-foreground: 210 15% 85%;
 
-  --primary: 220 70% 60%;
+  --primary: 270 70% 65%;
   --primary-foreground: 210 15% 7%;
-  --primary-glow: 220 80% 75%;
+  --primary-glow: 280 80% 75%;
 
   --secondary: 210 15% 15%;
   --secondary-foreground: 210 15% 75%;
@@ -102,12 +102,12 @@
   --muted: 210 15% 12%;
   --muted-foreground: 210 15% 55%;
 
-  --accent: 220 60% 60%;
+  --accent: 270 60% 60%;
   --accent-foreground: 210 15% 7%;
 
   --border: 210 15% 18%;
   --input: 210 15% 18%;
-  --ring: 220 70% 60%;
+  --ring: 270 70% 65%;
 
   /* Dark Mode Finance Colors */
   --constructive: 142 76% 46%;
@@ -120,7 +120,7 @@
   --income-foreground: 138 100% 5%;
   --expense: 0 72% 61%;
   --expense-foreground: 0 85% 5%;
-  --balance: 217 91% 70%;
+  --balance: 270 75% 70%;
   --balance-foreground: 210 15% 7%;
 
   /* Dark Mode Gradients */
@@ -140,12 +140,12 @@
   /* Dark Sidebar colors */
   --sidebar-background: 210 15% 8%;
   --sidebar-foreground: 210 15% 85%;
-  --sidebar-primary: 220 70% 60%;
+  --sidebar-primary: 270 70% 65%;
   --sidebar-primary-foreground: 210 15% 7%;
   --sidebar-accent: 210 15% 15%;
   --sidebar-accent-foreground: 210 15% 75%;
   --sidebar-border: 210 15% 18%;
-  --sidebar-ring: 220 70% 60%;
+  --sidebar-ring: 270 70% 65%;
 }
 
 @layer base {
@@ -224,7 +224,7 @@
   }
 
   .balance-card {
-    @apply bg-gradient-to-br from-blue-50/80 to-blue-100/60 dark:from-blue-950/40 dark:to-blue-900/30 backdrop-blur-md border border-blue-200/40 dark:border-blue-800/40 rounded-lg sm:rounded-xl shadow-lg hover:shadow-blue-200/50 dark:hover:shadow-blue-900/40 transition-all duration-300;
+    @apply bg-gradient-to-br from-purple-50/80 to-purple-100/60 dark:from-purple-950/40 dark:to-purple-900/30 backdrop-blur-md border border-purple-200/40 dark:border-purple-800/40 rounded-lg sm:rounded-xl shadow-lg hover:shadow-purple-200/50 dark:hover:shadow-purple-900/40 transition-all duration-300;
     /* Mobile touch optimization */
     padding: 1rem;
     min-height: 80px;
