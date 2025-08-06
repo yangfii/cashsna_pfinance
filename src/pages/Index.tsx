@@ -14,9 +14,7 @@ import { Globe } from 'lucide-react';
 import heroBackground from '@/assets/hero-background.jpg';
 import backgroundImage from '@/assets/background-image.jpg';
 import overlayBackground from '@/assets/overlay-background.jpg';
-import awardBadge from '/public/lovable-uploads/bd670881-e313-41b8-b0eb-23f2fe1fe109.png';
-import cryptoIcon from '/public/lovable-uploads/16656344-5528-4c46-a596-3ee4d36e4613.png';
-import cashsnapLogo from '/public/lovable-uploads/1e812cad-f8c5-4fa8-a00d-8e4affed926c.png';
+const awardBadge = "/public/lovable-uploads/bd670881-e313-41b8-b0eb-23f2fe1fe109.png";
 const Index = () => {
   const {
     user
@@ -300,7 +298,7 @@ const Index = () => {
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-accent-foreground transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 animate-bounce hover:animate-pulse group-hover:shadow-lg group-hover:shadow-accent/20">
-                    <img src={cryptoIcon} alt="Money bag" className="w-6 h-6 animate-pulse group-hover:animate-bounce transition-transform duration-300 group-hover:scale-125" />
+                    <img src="/lovable-uploads/16656344-5528-4c46-a596-3ee4d36e4613.png" alt="Money bag" className="w-6 h-6 animate-pulse group-hover:animate-bounce transition-transform duration-300 group-hover:scale-125" />
                   </div>
                   <h3 className="text-lg font-semibold group-hover:text-accent transition-colors">
                     {language === 'khmer' ? 'គ្រប់គ្រង Crypto' : 'Crypto Portfolio'}

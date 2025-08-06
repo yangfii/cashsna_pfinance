@@ -348,7 +348,7 @@ export default function Reports() {
             </div>
           </div>
         </CardHeader>
-        <CardContent className="p-6 bg-card/95 backdrop-blur-sm border-t border-border/20">
+        <CardContent className="p-6 bg-gradient-to-b from-transparent to-muted/20">
           <div className="h-96 relative">
             <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 rounded-lg -z-10"></div>
             {chartType === "bar" ? <ResponsiveContainer width="100%" height="100%">
@@ -466,8 +466,8 @@ export default function Reports() {
                       </span>
                     </div>
                   </div>
-                  <div className="w-full bg-muted rounded-full h-2 animate-scale-in">
-                    <div className="bg-gradient-expense h-2 rounded-full transition-all duration-500 delay-200" style={{
+                  <div className="w-full bg-muted rounded-full h-2">
+                    <div className="bg-gradient-expense h-2 rounded-full transition-all duration-500" style={{
                   width: `${category.percentage}%`
                 }} />
                   </div>

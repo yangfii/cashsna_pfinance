@@ -32,7 +32,7 @@ const sizeMap = {
 export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
   src,
   trigger = 'hover',
-  colors = 'primary:#22c55e,secondary:#16a34a',
+  colors = 'primary:hsl(var(--primary)),secondary:hsl(var(--muted-foreground))',
   size = 'md',
   delay = 0,
   speed = 1,
