@@ -45,7 +45,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
     variant,
     size
   }), className)} ref={ref} {...props}>
-        <span className="truncate overflow-hidden text-ellipsis my-0 mx-[6px] px-[14px] py-0">{children}</span>
+        <span className="truncate overflow-hidden text-ellipsis my-0 py-0 mx-0 px-0">{children}</span>
       </Comp>;
 });
 Button.displayName = "Button";
