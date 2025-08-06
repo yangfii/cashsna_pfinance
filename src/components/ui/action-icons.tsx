@@ -6,33 +6,33 @@ interface ActionIconProps extends Omit<AnimatedIconProps, 'src'> {
   variant?: 'button' | 'inline';
 }
 
-// Lordicon Wired/Outline Icon URLs for Financial App
+// Working Lordicon URLs for Financial App
 const ICON_URLS = {
-  // Basic Actions (Wired/Outline style)
-  add: 'https://cdn.lordicon.com/wired/outline/186-plus.json',
-  delete: 'https://cdn.lordicon.com/wired/outline/498-trash-2.json', 
-  success: 'https://cdn.lordicon.com/wired/outline/1103-check.json',
-  loading: 'https://cdn.lordicon.com/wired/outline/1469-refresh.json',
-  edit: 'https://cdn.lordicon.com/wired/outline/1891-edit.json',
-  save: 'https://cdn.lordicon.com/wired/outline/433-save.json',
-  search: 'https://cdn.lordicon.com/wired/outline/1498-search.json',
-  settings: 'https://cdn.lordicon.com/wired/outline/1640-settings.json',
+  // Basic Actions (Working URLs)
+  add: 'https://cdn.lordicon.com/zfzufsk2.json',
+  delete: 'https://cdn.lordicon.com/skkahier.json', 
+  success: 'https://cdn.lordicon.com/oqdmuxru.json',
+  loading: 'https://cdn.lordicon.com/xjovhxra.json',
+  edit: 'https://cdn.lordicon.com/gwlusjdu.json',
+  save: 'https://cdn.lordicon.com/jgnvfzqg.json',
+  search: 'https://cdn.lordicon.com/xfftupfv.json',
+  settings: 'https://cdn.lordicon.com/lecprnjb.json',
   
-  // Financial Icons (Wired/Outline style)
-  bitcoin: 'https://cdn.lordicon.com/wired/outline/2665-logo-circle-bitcoin.json',
-  coin: 'https://cdn.lordicon.com/wired/outline/290-coin.json',
-  wallet: 'https://cdn.lordicon.com/wired/outline/421-wallet-purse.json',
-  creditCard: 'https://cdn.lordicon.com/wired/outline/799-credit-card.json',
-  bank: 'https://cdn.lordicon.com/wired/outline/1022-business-bank.json',
-  chart: 'https://cdn.lordicon.com/wired/outline/1143-analytics-pie-chart.json',
-  dashboard: 'https://cdn.lordicon.com/wired/outline/1141-analytics.json',
-  trendingUp: 'https://cdn.lordicon.com/wired/outline/1152-trending-up.json',
-  trendingDown: 'https://cdn.lordicon.com/wired/outline/1153-trending-down.json',
-  portfolio: 'https://cdn.lordicon.com/wired/outline/1144-analytics-bar-chart.json',
-  money: 'https://cdn.lordicon.com/wired/outline/346-money-dollar.json',
-  notification: 'https://cdn.lordicon.com/wired/outline/371-notification.json',
-  calendar: 'https://cdn.lordicon.com/wired/outline/258-calendar.json',
-  transactions: 'https://cdn.lordicon.com/wired/outline/397-exchange.json',
+  // Financial Icons (Working URLs)
+  bitcoin: 'https://cdn.lordicon.com/qhgmphtg.json',
+  coin: 'https://cdn.lordicon.com/qhgmphtg.json',
+  wallet: 'https://cdn.lordicon.com/qhviklyi.json',
+  creditCard: 'https://cdn.lordicon.com/qhgmphtg.json',
+  bank: 'https://cdn.lordicon.com/slkvcfos.json',
+  chart: 'https://cdn.lordicon.com/gqdnbnwt.json',
+  dashboard: 'https://cdn.lordicon.com/wmlleaaf.json',
+  trendingUp: 'https://cdn.lordicon.com/nlkqgmyx.json',
+  trendingDown: 'https://cdn.lordicon.com/wxnxiano.json',
+  portfolio: 'https://cdn.lordicon.com/wmlleaaf.json',
+  money: 'https://cdn.lordicon.com/qhgmphtg.json',
+  notification: 'https://cdn.lordicon.com/vspbqszr.json',
+  calendar: 'https://cdn.lordicon.com/abfverha.json',
+  transactions: 'https://cdn.lordicon.com/rjzlnunf.json',
 };
 
 const baseIconProps: Partial<AnimatedIconProps> = {
