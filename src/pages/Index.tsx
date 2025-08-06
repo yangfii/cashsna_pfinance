@@ -145,51 +145,56 @@ const Index = () => {
           </div>
         </div>
         
-        {/* Language and Theme Controls */}
-        <div className="relative z-10 flex justify-end p-4">
-          <div className="flex items-center gap-2">
-            <span className="text-white text-sm font-medium animate-bounce">កូនខ្មែរ</span>
+        {/* Language and Theme Controls - Mobile Optimized */}
+        <div className="relative z-10 flex justify-end p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <span className="text-white text-xs sm:text-sm font-medium animate-bounce hidden sm:inline">កូនខ្មែរ</span>
             <Button onClick={() => {
             console.log('Current language:', language);
             const newLanguage = language === 'english' ? 'khmer' : 'english';
             console.log('Switching to:', newLanguage);
             setLanguage(newLanguage);
-          }} variant="ghost" size="sm" className="h-10 w-10 p-0 bg-white/10 border border-white/20 text-white hover:bg-white/20 dark:bg-white/10 dark:border-white/20 dark:text-white dark:hover:bg-white/20 backdrop-blur-sm transition-transform duration-200 hover:scale-110" title={language === 'english' ? 'Switch to Khmer' : 'Switch to English'}>
+          }} variant="ghost" size="sm" className="touch-target bg-white/10 border border-white/20 text-white hover:bg-white/20 dark:bg-white/10 dark:border-white/20 dark:text-white dark:hover:bg-white/20 backdrop-blur-sm transition-transform duration-200 hover:scale-110" title={language === 'english' ? 'Switch to Khmer' : 'Switch to English'}>
               <Globe className="h-4 w-4" />
             </Button>
             <ThemeToggle />
           </div>
         </div>
         
-        <div className="relative container mx-auto px-4 py-16 md:py-24 text-center">
+        <div className="relative container-content py-12 sm:py-16 md:py-20 lg:py-24 text-center">
           <div className="animate-fade-in">
-            <div className="mb-6">
-              <span className="inline-flex items-center px-4 py-2 rounded-full bg-primary-foreground/20 text-primary-foreground text-sm font-medium backdrop-blur-sm border border-primary-foreground/30">
+            <div className="mb-4 sm:mb-6">
+              <span className="inline-flex items-center px-3 sm:px-4 py-2 rounded-full bg-primary-foreground/20 text-primary-foreground text-xs sm:text-sm font-medium backdrop-blur-sm border border-primary-foreground/30">
                 <span className="mr-2">✨</span>
-                {language === 'khmer' ? 'គ្រប់គ្រងហិរញ្ញវត្ថុដ៏ទំនើបសម្រាប់អ្នក' : 'AI-Powered Finance Management'}
+                <span className="hidden xs:inline">
+                  {language === 'khmer' ? 'គ្រប់គ្រងហិរញ្ញវត្ថុដ៏ទំនើបសម្រាប់អ្នក' : 'AI-Powered Finance Management'}
+                </span>
+                <span className="xs:hidden">
+                  {language === 'khmer' ? 'គ្រប់គ្រងហិរញ្ញវត្ថុ' : 'AI Finance'}
+                </span>
               </span>
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold text-primary-foreground mb-6 drop-shadow-lg">
+            <h1 className="text-h1 text-primary-foreground mb-4 sm:mb-6 drop-shadow-lg">
               CashSnap <span className="text-primary-glow">Finance</span>
             </h1>
             
-            <h2 className="text-2xl md:text-3xl font-semibold text-primary-foreground/90 mb-6">
+            <h2 className="text-h3 text-primary-foreground/90 mb-4 sm:mb-6">
               {language === 'khmer' ? 'គ្រប់គ្រងហិរញ្ញវត្ថុប្រចាំថ្ងៃ' : 'Daily Financial Management'}
             </h2>
             
-            <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-body text-primary-foreground/80 mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed px-4">
               {language === 'khmer' ? 'ដំណោះស្រាយគ្រប់គ្រងលុយកាក់ពេញលេញសម្រាប់ប្រជាជនកម្ពុជា ជាមួយនឹងបច្ចេកវិទ្យា AI ទំនើប' : 'Complete money management solution for Cambodians with modern AI technology'}
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="text-lg px-8 py-6 bg-background text-primary hover:bg-background/90 shadow-glow">
+            <div className="mobile-stack max-w-md mx-auto sm:max-w-none sm:flex-row sm:justify-center">
+              <Button asChild size="lg" className="btn-mobile text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 bg-background text-primary hover:bg-background/90 shadow-glow">
                 <Link to="/auth">
                   {language === 'khmer' ? 'ចាប់ផ្តើមប្រើប្រាស់ឥតគិតថ្លៃ' : 'Start Free'}
                   <span className="ml-2 animate-bounce">→</span>
                 </Link>
               </Button>
-              <Button variant="outline" asChild size="lg" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+              <Button variant="outline" asChild size="lg" className="btn-mobile text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
                 <Link to="/dashboard/assistant">
                   {language === 'khmer' ? '🤖 AI ជួយណែនាំ' : '🤖 AI Guide'}
                 </Link>
@@ -228,7 +233,7 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="mobile-grid">
             {/* Feature 1 - Smart Expense Tracking */}
             <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 animate-fade-in border border-white/20 bg-white/20 backdrop-blur-md rounded-xl shadow-lg hover:shadow-2xl hover:shadow-primary/20" style={{
             animationDelay: '0.1s'
