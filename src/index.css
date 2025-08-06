@@ -49,6 +49,10 @@
   --balance: 270 75% 65%;
   --balance-foreground: 210 20% 98%;
 
+  /* Chart Colors */
+  --chart-1: 142 76% 36%; /* Green for income */
+  --chart-2: 0 72% 51%;   /* Red for expense */
+
   /* Professional Gradients */
   --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
   --gradient-income: linear-gradient(135deg, hsl(var(--income)), hsl(142 60% 50%));
@@ -122,6 +126,10 @@
   --expense-foreground: 0 85% 5%;
   --balance: 270 75% 70%;
   --balance-foreground: 210 15% 7%;
+
+  /* Chart Colors - Dark Mode */
+  --chart-1: 142 76% 46%; /* Green for income - brighter for dark mode */
+  --chart-2: 0 72% 61%;   /* Red for expense - brighter for dark mode */
 
   /* Dark Mode Gradients */
   --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
