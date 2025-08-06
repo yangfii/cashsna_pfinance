@@ -19,36 +19,37 @@ interface DailyPNLCalendarProps {
 
 // Mock data for demonstration - in real app this would come from props or API
 const mockPNLData: DailyPNLData[] = [
-  { date: '2025-04-01', pnl: 0.00 },
-  { date: '2025-04-02', pnl: -1.50 },
-  { date: '2025-04-03', pnl: -0.00 },
-  { date: '2025-04-04', pnl: -0.00 },
-  { date: '2025-04-05', pnl: 0.00 },
-  { date: '2025-04-06', pnl: -0.00 },
-  { date: '2025-04-07', pnl: 17.21 },
-  { date: '2025-04-08', pnl: -17.12 },
-  { date: '2025-04-09', pnl: 3.55 },
-  { date: '2025-04-10', pnl: -63.69 },
-  { date: '2025-04-11', pnl: 0.00 },
-  { date: '2025-04-12', pnl: 0.00 },
-  { date: '2025-04-13', pnl: 0.00 },
-  { date: '2025-04-14', pnl: -4.22 },
-  { date: '2025-04-15', pnl: -11.52 },
-  { date: '2025-04-16', pnl: -13.54 },
-  { date: '2025-04-17', pnl: -25.01 },
-  { date: '2025-04-18', pnl: 109.37 },
-  { date: '2025-04-19', pnl: 70.03 },
-  { date: '2025-04-20', pnl: 4.57 },
-  { date: '2025-04-21', pnl: -352.53 },
-  { date: '2025-04-22', pnl: 0.00 },
-  { date: '2025-04-23', pnl: 85.88 },
-  { date: '2025-04-24', pnl: -181.21 },
-  { date: '2025-04-25', pnl: 0.00 },
-  { date: '2025-04-26', pnl: 0.00 },
-  { date: '2025-04-27', pnl: 0.00 },
-  { date: '2025-04-28', pnl: 0.00 },
-  { date: '2025-04-29', pnl: 0.00 },
-  { date: '2025-04-30', pnl: 0.00 },
+  { date: '2025-08-01', pnl: 0.00 },
+  { date: '2025-08-02', pnl: -1.50 },
+  { date: '2025-08-03', pnl: -0.00 },
+  { date: '2025-08-04', pnl: -0.00 },
+  { date: '2025-08-05', pnl: 0.00 },
+  { date: '2025-08-06', pnl: 25.43 },
+  { date: '2025-08-07', pnl: 17.21 },
+  { date: '2025-08-08', pnl: -17.12 },
+  { date: '2025-08-09', pnl: 3.55 },
+  { date: '2025-08-10', pnl: -63.69 },
+  { date: '2025-08-11', pnl: 0.00 },
+  { date: '2025-08-12', pnl: 0.00 },
+  { date: '2025-08-13', pnl: 0.00 },
+  { date: '2025-08-14', pnl: -4.22 },
+  { date: '2025-08-15', pnl: -11.52 },
+  { date: '2025-08-16', pnl: -13.54 },
+  { date: '2025-08-17', pnl: -25.01 },
+  { date: '2025-08-18', pnl: 109.37 },
+  { date: '2025-08-19', pnl: 70.03 },
+  { date: '2025-08-20', pnl: 4.57 },
+  { date: '2025-08-21', pnl: -352.53 },
+  { date: '2025-08-22', pnl: 0.00 },
+  { date: '2025-08-23', pnl: 85.88 },
+  { date: '2025-08-24', pnl: -181.21 },
+  { date: '2025-08-25', pnl: 0.00 },
+  { date: '2025-08-26', pnl: 0.00 },
+  { date: '2025-08-27', pnl: 0.00 },
+  { date: '2025-08-28', pnl: 0.00 },
+  { date: '2025-08-29', pnl: 0.00 },
+  { date: '2025-08-30', pnl: 0.00 },
+  { date: '2025-08-31', pnl: 0.00 },
 ];
 
 export default function DailyPNLCalendar({
@@ -57,7 +58,7 @@ export default function DailyPNLCalendar({
   positiveBgColor = "bg-emerald-500/10 border-emerald-500/20",
   negativeBgColor = "bg-rose-500/10 border-rose-500/20"
 }: DailyPNLCalendarProps = {}) {
-  const [currentDate, setCurrentDate] = useState(new Date(2025, 3, 1)); // April 2025
+  const [currentDate, setCurrentDate] = useState(new Date()); // Current date
   const [pnlData, setPnlData] = useState<DailyPNLData[]>(mockPNLData);
   const [editingCell, setEditingCell] = useState<string | null>(null);
   const [editValue, setEditValue] = useState<string>('');
@@ -135,7 +136,7 @@ export default function DailyPNLCalendar({
 
     // Empty cells for days before the first day of the month
     for (let i = 0; i < firstDay; i++) {
-      days.push(<div key={`empty-${i}`} className="h-20" />);
+      days.push(<div key={`empty-start-${i}`} className="h-20" />);
     }
 
     // Days of the month
