@@ -1,3 +1,5 @@
+import backgroundImage from '/public/lovable-uploads/a5ad6ef9-79f1-492c-8698-f22960973926.png';
+
 interface MainContainerProps {
   children: React.ReactNode;
 }
@@ -7,7 +9,7 @@ export default function MainContainer({ children }: MainContainerProps) {
     <div
       className="min-h-screen bg-cover bg-center bg-no-repeat relative"
       style={{
-        backgroundImage: `url('/lovable-uploads/a5ad6ef9-79f1-492c-8698-f22960973926.png')`,
+        backgroundImage: `url(${backgroundImage})`,
       }}
     >
       {/* Dark overlay with gradient for professional look */}
