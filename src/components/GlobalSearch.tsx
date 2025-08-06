@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Search, Brain, Coins, BarChart3, Target, FolderOpen, ArrowLeftRight, Settings, LayoutDashboard, TrendingUp, Calculator, PieChart, Zap, FileText, Bell, Globe } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -29,8 +29,8 @@ export function GlobalSearch() {
   const [query, setQuery] = useState('');
   const [filteredItems, setFilteredItems] = useState<SearchItem[]>([]);
 
-  // Navigation and function items
-  const navigationItems: SearchItem[] = [
+  // Memoize navigation items to prevent infinite re-renders
+  const navigationItems: SearchItem[] = useMemo(() => [
     {
       id: 'dashboard',
       title: t('nav.dashboard'),
@@ -152,10 +152,10 @@ export function GlobalSearch() {
       keywords: ['chart', 'distribution', 'breakdown', 'visual', 'pie'],
       type: 'function'
     }
-  ];
+  ], [t]);
 
-  // Dynamic content items (notes, etc.)
-  const contentItems: SearchItem[] = [
+  // Memoize content items to prevent infinite re-renders
+  const contentItems: SearchItem[] = useMemo(() => [
     ...notes.map(note => ({
       id: `note-${note.id}`,
       title: note.title,
@@ -167,10 +167,10 @@ export function GlobalSearch() {
       content: note.content,
       type: 'content' as const
     }))
-  ];
+  ], [notes]);
 
   // Combine all searchable items
-  const searchItems = [...navigationItems, ...contentItems];
+  const searchItems = useMemo(() => [...navigationItems, ...contentItems], [navigationItems, contentItems]);
 
   useEffect(() => {
     if (query.trim() === '') {

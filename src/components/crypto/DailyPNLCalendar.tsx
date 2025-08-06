@@ -218,11 +218,27 @@ export default function DailyPNLCalendar({
     month: '2-digit' 
   });
 
+  const today = new Date();
+  const todayString = today.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric'
+  });
+  const currentTime = today.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+
   return (
     <Card className="w-full">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-foreground">Daily PNL</h2>
+          <div>
+            <h2 className="text-2xl font-bold text-foreground">Daily PNL</h2>
+            <p className="text-sm text-muted-foreground">Today: {todayString} • {currentTime}</p>
+          </div>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
               <BarChart3 className="h-5 w-5" />
