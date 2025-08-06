@@ -188,7 +188,7 @@ const Index = () => {
               {language === 'khmer' ? 'ដំណោះស្រាយគ្រប់គ្រងលុយកាក់ពេញលេញសម្រាប់ប្រជាជនកម្ពុជា ជាមួយនឹងបច្ចេកវិទ្យា AI ទំនើប' : 'Complete money management solution for Cambodians with modern AI technology'}
             </p>
             
-            <div className="mobile-stack max-w-md mx-auto sm:max-w-none sm:flex-row sm:justify-center">
+            <div className="flex justify-center">
               <RippleButton 
                 asChild 
                 variant="premium" 
@@ -199,19 +199,6 @@ const Index = () => {
                 <Link to="/auth">
                   {language === 'khmer' ? 'ចាប់ផ្តើមប្រើប្រាស់ឥតគិតថ្លៃ' : 'Start Free'}
                   <span className="ml-2 animate-bounce group-hover:translate-x-1 transition-transform duration-300">→</span>
-                </Link>
-              </RippleButton>
-              <RippleButton 
-                variant="outline" 
-                asChild 
-                size="lg" 
-                className="btn-mobile text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 animate-float"
-                style={{ animationDelay: '0.2s' }}
-                rippleColor="hsl(var(--primary-foreground) / 0.3)"
-              >
-                <Link to="/dashboard/assistant">
-                  <span className="animate-pulse group-hover:animate-bounce transition-all duration-300">🤖</span>
-                  {language === 'khmer' ? ' AI ជួយណែនាំ' : ' AI Guide'}
                 </Link>
               </RippleButton>
             </div>
