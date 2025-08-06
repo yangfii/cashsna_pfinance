@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Search, Brain, Coins, BarChart3, Target, FolderOpen, ArrowLeftRight, Settings, LayoutDashboard, TrendingUp, Calculator, PieChart, Zap } from 'lucide-react';
+import { Search, Brain, Coins, BarChart3, Target, FolderOpen, ArrowLeftRight, Settings, LayoutDashboard, TrendingUp, Calculator, PieChart, Zap, FileText, Bell, Globe } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useNotes } from '@/hooks/useNotes';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -16,16 +17,20 @@ interface SearchItem {
   route: string;
   icon: any;
   keywords: string[];
+  content?: string; // For searchable content like notes
+  type?: 'navigation' | 'content' | 'function';
 }
 
 export function GlobalSearch() {
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const { notes } = useNotes();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [filteredItems, setFilteredItems] = useState<SearchItem[]>([]);
 
-  const searchItems: SearchItem[] = [
+  // Navigation and function items
+  const navigationItems: SearchItem[] = [
     {
       id: 'dashboard',
       title: t('nav.dashboard'),
@@ -33,7 +38,8 @@ export function GlobalSearch() {
       category: 'Navigation',
       route: '/dashboard',
       icon: LayoutDashboard,
-      keywords: ['home', 'overview', 'main', 'summary']
+      keywords: ['home', 'overview', 'main', 'summary'],
+      type: 'navigation'
     },
     {
       id: 'portfolio',
@@ -42,7 +48,8 @@ export function GlobalSearch() {
       category: 'Crypto',
       route: '/dashboard/portfolio',
       icon: Coins,
-      keywords: ['crypto', 'investments', 'holdings', 'coins', 'bitcoin', 'ethereum']
+      keywords: ['crypto', 'investments', 'holdings', 'coins', 'bitcoin', 'ethereum'],
+      type: 'navigation'
     },
     {
       id: 'transactions',
@@ -51,7 +58,8 @@ export function GlobalSearch() {
       category: 'Finance',
       route: '/dashboard/transactions',
       icon: ArrowLeftRight,
-      keywords: ['payments', 'transfers', 'history', 'money']
+      keywords: ['payments', 'transfers', 'history', 'money'],
+      type: 'navigation'
     },
     {
       id: 'categories',
@@ -60,7 +68,8 @@ export function GlobalSearch() {
       category: 'Finance',
       route: '/dashboard/categories',
       icon: FolderOpen,
-      keywords: ['organize', 'tags', 'groups', 'budget']
+      keywords: ['organize', 'tags', 'groups', 'budget'],
+      type: 'navigation'
     },
     {
       id: 'assistant',
@@ -69,7 +78,8 @@ export function GlobalSearch() {
       category: 'AI',
       route: '/dashboard/assistant',
       icon: Brain,
-      keywords: ['ai', 'help', 'advice', 'chat', 'support']
+      keywords: ['ai', 'help', 'advice', 'chat', 'support'],
+      type: 'navigation'
     },
     {
       id: 'planning',
@@ -78,7 +88,8 @@ export function GlobalSearch() {
       category: 'Planning',
       route: '/dashboard/planning',
       icon: Target,
-      keywords: ['goals', 'budget', 'planning', 'future', 'savings']
+      keywords: ['goals', 'budget', 'planning', 'future', 'savings'],
+      type: 'navigation'
     },
     {
       id: 'reports',
@@ -87,7 +98,8 @@ export function GlobalSearch() {
       category: 'Analytics',
       route: '/dashboard/reports',
       icon: BarChart3,
-      keywords: ['analytics', 'charts', 'data', 'insights', 'performance']
+      keywords: ['analytics', 'charts', 'data', 'insights', 'performance'],
+      type: 'navigation'
     },
     {
       id: 'settings',
@@ -96,46 +108,69 @@ export function GlobalSearch() {
       category: 'Settings',
       route: '/dashboard/settings',
       icon: Settings,
-      keywords: ['preferences', 'config', 'profile', 'account']
+      keywords: ['preferences', 'config', 'profile', 'account'],
+      type: 'navigation'
     },
     // Crypto functions
     {
       id: 'price-alerts',
       title: 'Price Alerts',
       description: 'Set up cryptocurrency price notifications',
-      category: 'Crypto',
+      category: 'Crypto Tools',
       route: '/dashboard/portfolio',
       icon: Zap,
-      keywords: ['alerts', 'notifications', 'price', 'crypto', 'notify']
+      keywords: ['alerts', 'notifications', 'price', 'crypto', 'notify'],
+      type: 'function'
     },
     {
       id: 'portfolio-analytics',
       title: 'Portfolio Analytics',
       description: 'Detailed analysis of your investments',
-      category: 'Analytics',
+      category: 'Analytics Tools',
       route: '/dashboard/portfolio',
       icon: TrendingUp,
-      keywords: ['analysis', 'performance', 'roi', 'profit', 'loss']
+      keywords: ['analysis', 'performance', 'roi', 'profit', 'loss'],
+      type: 'function'
     },
     {
       id: 'profit-calculator',
       title: 'Profit Calculator',
       description: 'Calculate potential profits and losses',
-      category: 'Tools',
+      category: 'Financial Tools',
       route: '/dashboard/portfolio',
       icon: Calculator,
-      keywords: ['calculator', 'profit', 'loss', 'calculate', 'math']
+      keywords: ['calculator', 'profit', 'loss', 'calculate', 'math'],
+      type: 'function'
     },
     {
       id: 'donut-chart',
       title: 'Portfolio Distribution',
       description: 'Visual breakdown of your holdings',
-      category: 'Analytics',
+      category: 'Analytics Tools',
       route: '/dashboard/portfolio',
       icon: PieChart,
-      keywords: ['chart', 'distribution', 'breakdown', 'visual', 'pie']
+      keywords: ['chart', 'distribution', 'breakdown', 'visual', 'pie'],
+      type: 'function'
     }
   ];
+
+  // Dynamic content items (notes, etc.)
+  const contentItems: SearchItem[] = [
+    ...notes.map(note => ({
+      id: `note-${note.id}`,
+      title: note.title,
+      description: note.content.length > 100 ? `${note.content.substring(0, 100)}...` : note.content,
+      category: 'Notes',
+      route: '/dashboard/planning',
+      icon: FileText,
+      keywords: ['note', 'document', 'text', note.title.toLowerCase()],
+      content: note.content,
+      type: 'content' as const
+    }))
+  ];
+
+  // Combine all searchable items
+  const searchItems = [...navigationItems, ...contentItems];
 
   useEffect(() => {
     if (query.trim() === '') {
@@ -149,12 +184,13 @@ export function GlobalSearch() {
         item.title.toLowerCase().includes(searchText) ||
         item.description.toLowerCase().includes(searchText) ||
         item.category.toLowerCase().includes(searchText) ||
-        item.keywords.some(keyword => keyword.toLowerCase().includes(searchText))
+        item.keywords.some(keyword => keyword.toLowerCase().includes(searchText)) ||
+        (item.content && item.content.toLowerCase().includes(searchText))
       );
     });
 
     setFilteredItems(filtered);
-  }, [query]);
+  }, [query, searchItems]);
 
   const handleItemSelect = (item: SearchItem) => {
     navigate(item.route);
@@ -168,9 +204,9 @@ export function GlobalSearch() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <div className="flex items-center gap-2 px-3 py-2 bg-muted/50 rounded-lg cursor-pointer hover:bg-muted transition-colors group">
-          <Search className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+          <Globe className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
           <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
-            Search functions...
+            Search all in web...
           </span>
           <Badge variant="outline" className="ml-auto text-xs">
             ⌘K
@@ -184,7 +220,7 @@ export function GlobalSearch() {
         <div className="flex items-center border-b px-3">
           <Search className="size-4 text-muted-foreground mr-2" />
           <Input
-            placeholder="Search all functions..."
+            placeholder="Search everything in your web app..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -225,9 +261,9 @@ export function GlobalSearch() {
             })}
             {filteredItems.length === 0 && (
               <div className="text-center py-6 text-muted-foreground">
-                <Search className="size-8 mx-auto mb-2 opacity-50" />
-                <p>No functions found</p>
-                <p className="text-xs">Try a different search term</p>
+                <Globe className="size-8 mx-auto mb-2 opacity-50" />
+                <p>No content found</p>
+                <p className="text-xs">Try searching for pages, notes, or functions</p>
               </div>
             )}
           </div>
