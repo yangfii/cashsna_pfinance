@@ -339,9 +339,14 @@ export default function Auth() {
             >
               <Globe className="h-4 w-4" />
             </Button>
-            <CardTitle className="text-xl font-bold text-white drop-shadow-lg">
-              Cashsnap Finances Tracking
-            </CardTitle>
+            
+            <div className="flex items-center justify-center gap-2">
+              <QrCode className="h-6 w-6 text-white/80" />
+              <CardTitle className="text-xl font-bold text-white drop-shadow-lg">
+                Cashsnap Finances Tracking
+              </CardTitle>
+            </div>
+            
             <CardDescription className="text-white/80 drop-shadow-md">
               Access your personal finance dashboard
             </CardDescription>
