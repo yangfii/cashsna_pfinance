@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
     console.log('QR signin session created successfully:', data.id);
 
     // Generate QR code URL - this will point to the confirmation page
-    const qrUrl = `${Deno.env.get('SUPABASE_URL')?.replace('https://', 'https://').replace('.supabase.co', '.lovableproject.com')}/qr-confirm?token=${sessionToken}`;
+    const qrUrl = `https://278e182f-afc6-4757-af0a-3189c9074b82.lovableproject.com/qr-confirm?token=${sessionToken}`;
 
     return new Response(
       JSON.stringify({

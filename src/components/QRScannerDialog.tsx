@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Camera, X, Upload, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import jsQR from "jsqr";
 
 interface QRScannerDialogProps {
   open: boolean;
@@ -101,71 +102,69 @@ export function QRScannerDialog({ open, onOpenChange }: QRScannerDialogProps) {
   };
 
   const detectQRCode = (imageData: ImageData) => {
-    // This is a simplified QR detection - in production you'd use a library like jsQR
-    // For now, we'll simulate detection by looking for high contrast patterns
-    const data = imageData.data;
-    let blackPixels = 0;
-    let whitePixels = 0;
-    
-    // Sample pixels to detect high contrast (characteristic of QR codes)
-    for (let i = 0; i < data.length; i += 16) { // Sample every 4th pixel
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
-      const brightness = (r + g + b) / 3;
-      
-      if (brightness < 128) blackPixels++;
-      else whitePixels++;
-    }
-    
-    const contrastRatio = Math.min(blackPixels, whitePixels) / Math.max(blackPixels, whitePixels);
-    
-    // If we detect high contrast patterns (potential QR code)
-    if (contrastRatio > 0.3 && Math.abs(blackPixels - whitePixels) > 100) {
-      // In a real implementation, you'd decode the actual QR data here
-      // For demo purposes, we'll show processing state
-      if (!isProcessing) {
+    try {
+      const qrCode = jsQR(imageData.data, imageData.width, imageData.height);
+      if (qrCode && !isProcessing) {
+        console.log('QR Code detected:', qrCode.data);
         setIsProcessing(true);
-        setTimeout(() => {
-          setIsProcessing(false);
-          // Simulate QR detection - you'd replace this with actual QR decoding
-          toast({
-            title: "QR Code Detected",
-            description: "Processing QR code for sign-in...",
-          });
-        }, 1000);
+        processQRCode(qrCode.data);
       }
+    } catch (error) {
+      console.error('Error detecting QR code:', error);
     }
   };
 
-  const processQRCode = (qrData: string) => {
+  const processQRCode = async (qrData: string) => {
     try {
+      console.log('Processing QR code data:', qrData);
+      
+      // Check if it's a valid QR confirm URL
+      if (!qrData.includes('/qr-confirm') || !qrData.includes('token=')) {
+        toast({
+          title: "Invalid QR Code",
+          description: "This is not a valid sign-in QR code.",
+          variant: "destructive",
+        });
+        setIsProcessing(false);
+        return;
+      }
+      
       // Extract token from QR code URL
       const url = new URL(qrData);
       const token = url.searchParams.get('token');
       
-      if (token && url.pathname.includes('/qr-confirm')) {
-        // Navigate to QR confirm page with the token
-        navigate(`/qr-confirm?token=${token}`);
-        onOpenChange(false);
-        
-        toast({
-          title: "QR Code Scanned",
-          description: "Redirecting to confirm sign-in...",
-        });
-      } else {
+      if (!token) {
         toast({
           title: "Invalid QR Code",
-          description: "This QR code is not for sign-in confirmation.",
+          description: "The QR code does not contain a valid token.",
           variant: "destructive",
         });
+        setIsProcessing(false);
+        return;
       }
+      
+      console.log('Extracted token:', token);
+      
+      // Stop camera and close dialog
+      stopCamera();
+      onOpenChange(false);
+      
+      // Navigate to confirmation page with token
+      navigate(`/qr-confirm?token=${token}`);
+      
+      toast({
+        title: "QR Code Detected",
+        description: "Redirecting to confirmation page...",
+      });
+      
     } catch (error) {
+      console.error('Error processing QR code:', error);
       toast({
         title: "Invalid QR Code",
-        description: "Unable to process the QR code.",
+        description: "Unable to process the QR code. Please try again.",
         variant: "destructive",
       });
+      setIsProcessing(false);
     }
   };
 
@@ -187,14 +186,21 @@ export function QRScannerDialog({ open, onOpenChange }: QRScannerDialogProps) {
             canvas.height = img.height;
             ctx.drawImage(img, 0, 0);
             
-            // Simulate QR processing
+            // Get image data and detect QR code
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            detectQRCode(imageData);
+            
+            // If no QR code found, show error
             setTimeout(() => {
-              setIsProcessing(false);
-              toast({
-                title: "Image Processed",
-                description: "Please try scanning with camera or ensure QR code is clear.",
-              });
-            }, 2000);
+              if (isProcessing) {
+                setIsProcessing(false);
+                toast({
+                  title: "No QR Code Found",
+                  description: "Please try with a clearer image containing a QR code.",
+                  variant: "destructive",
+                });
+              }
+            }, 1000);
           }
         }
       };
