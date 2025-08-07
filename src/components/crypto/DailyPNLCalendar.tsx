@@ -124,6 +124,8 @@ export default function DailyPNLCalendar({
           user_id: user.id,
           date,
           pnl: value
+        }, {
+          onConflict: 'user_id,date'
         });
 
       if (error) throw error;
