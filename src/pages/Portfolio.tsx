@@ -1,13 +1,13 @@
 
 import CryptoPortfolio from "@/components/CryptoPortfolio";
-import { PortfolioIcon } from "@/components/ui/action-icons";
+import { TrendingUp } from "lucide-react";
 
 export default function Portfolio() {
   return (
     <div className="container-portfolio spacing-section">
       <div className="spacing-container">
         <div className="flex items-center gap-3 mb-3 lg:mb-4">
-          <PortfolioIcon size="lg" variant="inline" />
+          <TrendingUp className="size-6" />
           <h1 className="text-h1">
             Exchange Portfolio
           </h1>

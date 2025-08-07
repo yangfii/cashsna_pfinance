@@ -1,5 +1,5 @@
 import { toast } from "@/hooks/use-toast";
-import { SuccessIcon, LoadingIcon } from "@/components/ui/action-icons";
+import { CheckCircle, Loader2 } from "lucide-react";
 
 interface AnimatedToastOptions {
   title?: string;
@@ -14,7 +14,7 @@ export const useAnimatedToast = () => {
       title: options.title || "Success",
       description: (
         <div className="flex items-center gap-2">
-          <SuccessIcon size="sm" />
+          <CheckCircle className="size-4" />
           {options.description}
         </div>
       ),
@@ -28,7 +28,7 @@ export const useAnimatedToast = () => {
       title: options.title || "Loading...",
       description: (
         <div className="flex items-center gap-2">
-          <LoadingIcon size="sm" />
+          <Loader2 className="size-4 animate-spin" />
           {options.description}
         </div>
       ),

@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { Plus } from "lucide-react";
-import { TrendingUpIcon, TrendingDownIcon, WalletIcon, CalendarIcon, AddIcon, DashboardIcon, CoinIcon, TransactionsIcon } from "@/components/ui/action-icons";
+import { Plus, TrendingUp, TrendingDown, Wallet, Calendar, DollarSign, Target, Brain, BarChart3, LayoutDashboard, Coins, ArrowLeftRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { WelcomeMessage } from '@/components/WelcomeMessage';
 import { ProfileCard } from '@/components/ProfileCard';
@@ -115,7 +114,7 @@ export default function Dashboard() {
               <Button variant="outline" size="sm" className={cn("gap-3 w-full sm:w-auto h-12 lg:h-14 px-6 lg:px-8", "hover:scale-105 hover:shadow-lg transition-all duration-300", "border-2 hover:border-primary/50 hover:bg-primary/5", "animate-fade-in", !selectedDate && "text-muted-foreground")} style={{
               animationDelay: '0.1s'
             }}>
-                <CalendarIcon size="lg" variant="button" />
+                <Calendar className="size-5" />
                 <span className="text-sm lg:text-base font-medium">
                   {selectedDate ? format(selectedDate, "PPP") : "ពិនិត្យប្រតិបត្តិការ"}
                 </span>
@@ -131,7 +130,7 @@ export default function Dashboard() {
         }} onClick={() => navigate('/dashboard/transactions')}>
             {/* Ripple effect background */}
             <div className="absolute inset-0 bg-white/20 scale-0 group-hover:scale-100 transition-transform duration-500 rounded-lg" />
-            <AddIcon size="lg" variant="button" className="relative z-10 group-hover:rotate-90 transition-transform duration-300" />
+            <Plus className="size-5 relative z-10 group-hover:rotate-90 transition-transform duration-300" />
             <span className="text-sm lg:text-base font-semibold relative z-10">{t("dashboard.addTransaction")}</span>
           </Button>
         </div>
@@ -336,7 +335,7 @@ export default function Dashboard() {
               <CardContent className="p-8 lg:p-10 relative z-10">
                 <div className="flex items-center space-x-4 lg:space-x-6">
                   <div className="p-4 lg:p-5 bg-gradient-income rounded-xl flex-shrink-0 group-hover:scale-125 group-hover:rotate-6 transition-all duration-500 group-active:scale-90 shadow-lg">
-                    <TrendingUpIcon size="xl" variant="button" className="transition-all duration-300 group-hover:rotate-12" />
+                    <TrendingUp className="size-6 transition-all duration-300 group-hover:rotate-12" />
                   </div>
                    <div className="min-w-0 flex-1">
                      <h3 className="text-lg lg:text-xl xl:text-2xl font-semibold group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors duration-300 group-hover:translate-x-1">
@@ -357,7 +356,7 @@ export default function Dashboard() {
               <CardContent className="p-8 lg:p-10 relative z-10">
                 <div className="flex items-center space-x-4 lg:space-x-6">
                   <div className="p-4 lg:p-5 bg-gradient-expense rounded-xl flex-shrink-0 group-hover:scale-125 group-hover:rotate-6 transition-all duration-500 group-active:scale-90 shadow-lg">
-                    <TrendingDownIcon size="xl" variant="button" className="transition-all duration-300 group-hover:rotate-12" />
+                    <TrendingDown className="size-6 transition-all duration-300 group-hover:rotate-12" />
                   </div>
                    <div className="min-w-0 flex-1">
                      <h3 className="text-lg lg:text-xl xl:text-2xl font-semibold group-hover:text-red-700 dark:group-hover:text-red-300 transition-colors duration-300 group-hover:translate-x-1">
