@@ -414,10 +414,28 @@ export default function Planning() {
           <div className="space-y-8">
             {/* Weekly Goals */}
             {weeklyGoals.length > 0 && <ScrollReveal animation="fade-up">
-                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                  <CalendarIcon className="h-5 w-5" />
-                  គោលដៅប្រចាំសប្តាហ៍
-                </h2>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-semibold flex items-center gap-2">
+                    <CalendarIcon className="h-5 w-5" />
+                    គោលដៅប្រចាំសប្តាហ៍
+                  </h2>
+                  <RippleButton 
+                    variant="outline" 
+                    size="sm" 
+                    className="gap-2 glass-effect"
+                    onClick={() => {
+                      // Mark all weekly goals as complete
+                      weeklyGoals.forEach(goal => {
+                        if (!goal.is_completed) {
+                          toggleGoalCompletion(goal.id);
+                        }
+                      });
+                    }}
+                  >
+                    <CheckCircle2 className="h-4 w-4" />
+                    Complete
+                  </RippleButton>
+                </div>
                  <StaggeredReveal staggerDelay={150} className="grid gap-4">
                   {weeklyGoals.map(goal => (
                     <AnimatedCard key={goal.id} hover="glow" className="glass-card p-6">
