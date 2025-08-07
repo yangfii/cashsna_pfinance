@@ -341,7 +341,6 @@ export default function Auth() {
             </Button>
             
             <div className="flex items-center justify-center gap-2">
-              <QrCode className="h-6 w-6 text-white/80" />
               <CardTitle className="text-xl font-bold text-white drop-shadow-lg">
                 Cashsnap Finances Tracking
               </CardTitle>
