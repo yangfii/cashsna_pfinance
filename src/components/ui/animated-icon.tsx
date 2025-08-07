@@ -1,7 +1,5 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
-
 declare global {
   namespace JSX {
     interface IntrinsicElements {
@@ -9,7 +7,6 @@ declare global {
     }
   }
 }
-
 export interface AnimatedIconProps {
   src: string;
   trigger?: 'hover' | 'click' | 'loop' | 'loop-on-hover' | 'morph' | 'sequence';
@@ -22,14 +19,12 @@ export interface AnimatedIconProps {
   onHover?: boolean;
   loading?: 'eager' | 'lazy';
 }
-
 const sizeMap = {
   sm: 24,
   md: 32,
   lg: 48,
-  xl: 64,
+  xl: 64
 };
-
 export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
   src,
   trigger = 'hover',
@@ -40,20 +35,17 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
   className,
   onClick,
   onHover = true,
-  loading = 'eager',
+  loading = 'eager'
 }) => {
   const iconRef = useRef<any>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [scriptError, setScriptError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
-
   const iconSize = typeof size === 'number' ? size : sizeMap[size];
-
   useEffect(() => {
     const loadScript = () => {
       // Check if script already exists
       const existingScript = document.querySelector('script[src="https://cdn.lordicon.com/lordicon.js"]');
-      
       if (existingScript && (window as any).lordicon) {
         setIsLoaded(true);
         setScriptError(false);
@@ -70,12 +62,11 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
       script.src = 'https://cdn.lordicon.com/lordicon.js';
       script.async = true;
       script.defer = true;
-      
       const handleLoad = () => {
         console.log('Lordicon script loaded successfully');
         setIsLoaded(true);
         setScriptError(false);
-        
+
         // Force icon refresh after script load
         setTimeout(() => {
           if (iconRef.current && (window as any).lordicon) {
@@ -87,11 +78,10 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
           }
         }, 100);
       };
-      
       const handleError = (error: Event) => {
         console.warn('Lordicon script failed to load:', error);
         setScriptError(true);
-        
+
         // Retry loading up to 3 times
         if (retryCount < 3) {
           setTimeout(() => {
@@ -100,26 +90,21 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
           }, 1000 * (retryCount + 1));
         }
       };
-      
       script.addEventListener('load', handleLoad);
       script.addEventListener('error', handleError);
-      
       document.head.appendChild(script);
-
       return () => {
         script.removeEventListener('load', handleLoad);
         script.removeEventListener('error', handleError);
       };
     };
-
     loadScript();
   }, [retryCount]);
-
   const handleClick = () => {
     if (onClick) {
       onClick();
     }
-    
+
     // Force animation trigger
     if (iconRef.current && (window as any).lordicon) {
       try {
@@ -129,7 +114,6 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
       }
     }
   };
-
   const handleMouseEnter = () => {
     if (iconRef.current && trigger === 'hover' && (window as any).lordicon) {
       try {
@@ -142,55 +126,18 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
 
   // Show enhanced fallback if script failed to load after retries
   if (scriptError && retryCount >= 3) {
-    return (
-      <div 
-        className={cn(
-          "inline-flex items-center justify-center bg-primary/10 rounded-md",
-          "transition-all duration-300 hover:bg-primary/20 cursor-pointer",
-          "border border-primary/20 hover:border-primary/40",
-          "hover:scale-110 active:scale-95",
-          className
-        )}
-        style={{ width: iconSize, height: iconSize }}
-        onClick={onClick}
-        role="button"
-        tabIndex={0}
-        title="Icon loaded successfully"
-      >
+    return <div className={cn("inline-flex items-center justify-center bg-primary/10 rounded-md", "transition-all duration-300 hover:bg-primary/20 cursor-pointer", "border border-primary/20 hover:border-primary/40", "hover:scale-110 active:scale-95", className)} style={{
+      width: iconSize,
+      height: iconSize
+    }} onClick={onClick} role="button" tabIndex={0} title="Icon loaded successfully">
         <div className="w-3 h-3 bg-primary rounded-sm animate-pulse" />
-      </div>
-    );
+      </div>;
   }
-
   if (!isLoaded || !src) {
-    return (
-      <div 
-        className={cn(
-          "inline-flex items-center justify-center bg-muted/30 rounded-md animate-pulse",
-          className
-        )}
-        style={{ width: iconSize, height: iconSize }}
-      />
-    );
+    return <div className={cn("inline-flex items-center justify-center bg-muted/30 rounded-md animate-pulse", className)} style={{
+      width: iconSize,
+      height: iconSize
+    }} />;
   }
-
-  return (
-    <lord-icon
-      ref={iconRef}
-      src={src}
-      trigger={trigger}
-      colors={colors}
-      delay={delay}
-      speed={speed}
-      style={{ 
-        width: iconSize, 
-        height: iconSize,
-        display: 'inline-block'
-      }}
-      className={cn("cursor-pointer", className)}
-      onClick={handleClick}
-      onMouseEnter={handleMouseEnter}
-      loading={loading}
-    />
-  );
+  return;
 };
