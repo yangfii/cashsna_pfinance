@@ -18,7 +18,7 @@ import { AddReminderDialog } from "@/components/reminders/AddReminderDialog";
 import { RemindersList } from "@/components/reminders/RemindersList";
 import { useReminders } from "@/hooks/useReminders";
 import { useGoals } from "@/hooks/useGoals";
-import { Plus, Calendar as CalendarIcon, Target, CheckCircle2, Circle, Edit, Trash2, CalendarDays, TrendingUp, Brain, Clock, Play, Pause, Square, Timer, Bell, Palette, Upload, Image, StickyNote } from "lucide-react";
+import { Plus, Calendar as CalendarIcon, Target, CheckCircle2, Circle, Edit, Trash2, CalendarDays, TrendingUp, Brain, Clock, Play, Pause, Square, Timer, Bell, Palette, Upload, Image, StickyNote, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/hooks/useLanguage";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -46,6 +46,7 @@ export default function Planning() {
   const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("goals");
   const [showNote, setShowNote] = useState(false);
+  const [showCompletedOnly, setShowCompletedOnly] = useState(false);
   const {
     theme
   } = useTheme();
@@ -245,6 +246,17 @@ export default function Planning() {
   const monthlyGoals = goals.filter(g => g.goal_type === 'monthly');
   const yearlyGoals = goals.filter(g => g.goal_type === 'yearly');
 
+  // Filter goals based on completion status
+  const filteredWeeklyGoals = showCompletedOnly 
+    ? weeklyGoals.filter(g => g.is_completed)
+    : weeklyGoals;
+  const filteredMonthlyGoals = showCompletedOnly 
+    ? monthlyGoals.filter(g => g.is_completed)
+    : monthlyGoals;
+  const filteredYearlyGoals = showCompletedOnly 
+    ? yearlyGoals.filter(g => g.is_completed)
+    : yearlyGoals;
+
   // Load background image from localStorage
   useEffect(() => {
     const savedBackground = localStorage.getItem('planning-background');
@@ -252,6 +264,10 @@ export default function Planning() {
       setBackgroundImage(savedBackground);
     }
   }, []);
+
+  const handleToggleCompletedView = () => {
+    setShowCompletedOnly(!showCompletedOnly);
+  };
 
   const handleCompleteAllWeeklyGoals = async () => {
     const incompleteWeeklyGoals = weeklyGoals.filter(goal => !goal.is_completed);
@@ -436,7 +452,7 @@ export default function Planning() {
           {/* Goals Display */}
           <div className="space-y-8">
             {/* Weekly Goals */}
-            {weeklyGoals.length > 0 && <ScrollReveal animation="fade-up">
+            {filteredWeeklyGoals.length > 0 && <ScrollReveal animation="fade-up">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold flex items-center gap-2">
                     <CalendarIcon className="h-5 w-5" />
@@ -446,14 +462,23 @@ export default function Planning() {
                     variant="outline" 
                     size="sm" 
                     className="gap-2 glass-effect"
-                    onClick={handleCompleteAllWeeklyGoals}
+                    onClick={handleToggleCompletedView}
                   >
-                    <CheckCircle2 className="h-4 w-4" />
-                    Complete
+                    {showCompletedOnly ? (
+                      <>
+                        <Eye className="h-4 w-4" />
+                        Show All
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="h-4 w-4" />
+                        Show Completed
+                      </>
+                    )}
                   </RippleButton>
                 </div>
                  <StaggeredReveal staggerDelay={150} className="grid gap-4">
-                  {weeklyGoals.map(goal => (
+                  {filteredWeeklyGoals.map(goal => (
                     <AnimatedCard key={goal.id} hover="glow" className="glass-card p-6">
                       <div className="pb-3">
                         <div className="flex items-start justify-between">
@@ -521,13 +546,13 @@ export default function Planning() {
               </ScrollReveal>}
 
             {/* Monthly Goals */}
-            {monthlyGoals.length > 0 && <div>
+            {filteredMonthlyGoals.length > 0 && <div>
                 <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                   <CalendarDays className="h-5 w-5" />
                   គោលដៅប្រចាំខែ
                 </h2>
                 <div className="grid gap-4">
-                  {monthlyGoals.map(goal => <div key={goal.id} className="glass-card p-6 hover:scale-[1.02] transition-all duration-300">
+                  {filteredMonthlyGoals.map(goal => <div key={goal.id} className="glass-card p-6 hover:scale-[1.02] transition-all duration-300">
                       <div className="pb-3">
                         <div className="flex items-start justify-between">
                           <div className="space-y-2">
@@ -594,13 +619,13 @@ export default function Planning() {
               </div>}
 
             {/* Yearly Goals */}
-            {yearlyGoals.length > 0 && <div>
+            {filteredYearlyGoals.length > 0 && <div>
                 <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                   <TrendingUp className="h-5 w-5" />
                   គោលដៅប្រចាំឆ្នាំ
                 </h2>
                  <div className="grid gap-4">
-                  {yearlyGoals.map(goal => <div key={goal.id} className="glass-card p-6 hover:scale-[1.02] transition-all duration-300">
+                  {filteredYearlyGoals.map(goal => <div key={goal.id} className="glass-card p-6 hover:scale-[1.02] transition-all duration-300">
                       <div className="pb-3">
                         <div className="flex items-start justify-between">
                           <div className="space-y-2">
@@ -664,18 +689,28 @@ export default function Planning() {
               </div>}
 
             {/* Empty State */}
-            {goals.length === 0 && <div className="glass-panel text-center py-12">
+            {(showCompletedOnly 
+              ? (filteredWeeklyGoals.length === 0 && filteredMonthlyGoals.length === 0 && filteredYearlyGoals.length === 0)
+              : goals.length === 0
+            ) && <div className="glass-panel text-center py-12">
                 <Target className="h-12 w-12 mx-auto mb-4 animate-pulse text-primary transition-colors duration-1000" style={{
                 animation: 'pulse 2s ease-in-out infinite, colorShift 3s ease-in-out infinite'
               }} />
-                <h3 className="text-lg font-medium mb-2">មិនទាន់មានគោលដៅ</h3>
+                <h3 className="text-lg font-medium mb-2">
+                  {showCompletedOnly ? 'គ្មានគោលដៅដែលបានបញ្ចប់' : 'មិនទាន់មានគោលដៅ'}
+                </h3>
                 <p className="text-muted-foreground mb-4">
-                  ចាប់ផ្តើមដោយការបន្ថែមគោលដៅប្រចាំសប្តាហ៍ ខែ ឬឆ្នាំរបស់អ្នក
+                  {showCompletedOnly 
+                    ? 'អ្នកមិនទាន់បានបញ្ចប់គោលដៅណាមួយនៅឡើយទេ'
+                    : 'ចាប់ផ្តើមដោយការបន្ថែមគោលដៅប្រចាំសប្តាហ៍ ខែ ឬឆ្នាំរបស់អ្នក'
+                  }
                 </p>
-                <Button onClick={() => setShowAddForm(true)} className="gap-2">
-                  <Plus className="h-4 w-4" />
-                  បន្ថែមគោលដៅដំបូង
-                </Button>
+                {!showCompletedOnly && (
+                  <Button onClick={() => setShowAddForm(true)} className="gap-2">
+                    <Plus className="h-4 w-4" />
+                    បន្ថែមគោលដៅដំបូង
+                  </Button>
+                )}
               </div>}
           </div>
 
