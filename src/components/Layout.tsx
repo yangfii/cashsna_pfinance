@@ -5,6 +5,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { QRScannerDialog } from "@/components/QRScannerDialog";
+import { MotivationalPopup } from "@/components/MotivationalPopup";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -53,7 +54,7 @@ const getNavItems = (t: (key: string) => string) => [{
   key: "reports"
 }];
 
-function AppSidebar() {
+function AppSidebar({ onPortfolioClick }: { onPortfolioClick?: () => void }) {
   const {
     user,
     signOut
@@ -116,12 +117,24 @@ function AppSidebar() {
             <SidebarMenu>
               {navItems.map(item => <SidebarMenuItem key={item.key}>
                   <SidebarMenuButton asChild isActive={location.pathname === item.to} tooltip={item.label}>
-                    <NavLink to={item.to} className="group">
-                      <item.icon className="size-5 transition-all duration-300 group-hover:scale-125 group-hover:rotate-3 hover:animate-pulse active:scale-90 active:rotate-6" />
-                      <span className="text-base transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
-                        {item.label}
-                      </span>
-                    </NavLink>
+                    {item.key === "portfolio" ? (
+                      <button 
+                        onClick={onPortfolioClick} 
+                        className="group flex items-center gap-2 w-full text-left"
+                      >
+                        <item.icon className="size-5 transition-all duration-300 group-hover:scale-125 group-hover:rotate-3 hover:animate-pulse active:scale-90 active:rotate-6" />
+                        <span className="text-base transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
+                          {item.label}
+                        </span>
+                      </button>
+                    ) : (
+                      <NavLink to={item.to} className="group">
+                        <item.icon className="size-5 transition-all duration-300 group-hover:scale-125 group-hover:rotate-3 hover:animate-pulse active:scale-90 active:rotate-6" />
+                        <span className="text-base transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
+                          {item.label}
+                        </span>
+                      </NavLink>
+                    )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>)}
             </SidebarMenu>
@@ -169,6 +182,14 @@ export default function Layout() {
   const { user, loading } = useAuth();
   const { profile } = useProfile();
   const [qrScannerOpen, setQrScannerOpen] = useState(false);
+  const [motivationalPopupOpen, setMotivationalPopupOpen] = useState(false);
+
+  const handlePortfolioClick = () => {
+    setMotivationalPopupOpen(true);
+    setTimeout(() => {
+      navigate('/dashboard/portfolio');
+    }, 5000);
+  };
 
   useEffect(() => {
     if (!loading && !user) {
@@ -191,7 +212,7 @@ export default function Layout() {
 
   return <SidebarProvider>
       <div className="min-h-screen flex w-full">
-        <AppSidebar />
+        <AppSidebar onPortfolioClick={handlePortfolioClick} />
         
         {/* Header */}
         <div className="flex-1 flex flex-col">
@@ -233,5 +254,9 @@ export default function Layout() {
       </div>
       
       <QRScannerDialog open={qrScannerOpen} onOpenChange={setQrScannerOpen} />
+      <MotivationalPopup 
+        open={motivationalPopupOpen} 
+        onOpenChange={setMotivationalPopupOpen} 
+      />
     </SidebarProvider>;
 }
