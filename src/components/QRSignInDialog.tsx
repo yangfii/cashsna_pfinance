@@ -112,23 +112,24 @@ export function QRSignInDialog({ open, onOpenChange, onSignInSuccess }: QRSignIn
       } catch (error) {
         console.error('Error checking QR status:', error);
       }
-    }, 2000); // Poll every 2 seconds
+    }, 5000); // Poll every 5 seconds to reduce load
   };
 
-  // Update countdown timer
+  // Update countdown timer with better performance
   useEffect(() => {
-    if (timeLeft > 0) {
+    if (timeLeft > 0 && open) {
       timeoutRef.current = setTimeout(() => {
-        setTimeLeft(timeLeft - 1);
+        setTimeLeft(prev => prev - 1);
       }, 1000);
     }
 
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
       }
     };
-  }, [timeLeft]);
+  }, [timeLeft, open]);
 
   // Generate QR code when dialog opens
   useEffect(() => {
@@ -174,7 +175,7 @@ export function QRSignInDialog({ open, onOpenChange, onSignInSuccess }: QRSignIn
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" aria-describedby="qr-signin-description">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Smartphone className="h-5 w-5" />
@@ -182,7 +183,7 @@ export function QRSignInDialog({ open, onOpenChange, onSignInSuccess }: QRSignIn
           </DialogTitle>
         </DialogHeader>
         
-        <div className="flex flex-col items-center space-y-4">
+        <div id="qr-signin-description" className="flex flex-col items-center space-y-4">
           {isGenerating ? (
             <div className="flex flex-col items-center space-y-4">
               <Loader2 className="h-8 w-8 animate-spin" />
