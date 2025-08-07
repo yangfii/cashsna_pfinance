@@ -465,8 +465,8 @@ export default function Transactions() {
             </div> : <div className="space-y-3">
                 {filteredTransactions.length === 0 ? <div className="text-center py-8 text-muted-foreground">
                   <p>រកមិនឃើញប្រតិបត្តិការ</p>
-                </div> : filteredTransactions.map((transaction, index) => <div key={transaction.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-smooth animate-slide-up gap-3" style={{
-            animationDelay: `${index * 0.05}s`
+                </div> : filteredTransactions.map((transaction, index) => <div key={transaction.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 rounded-lg bg-muted/30 hover:bg-muted/50 hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 ease-out animate-fade-in gap-3" style={{
+            animationDelay: `${index * 0.1}s`
           }}>
                      <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
                        <div className={cn("w-3 h-8 sm:h-10 rounded-full flex-shrink-0", transaction.type === "income" ? "bg-gradient-income" : "bg-gradient-expense")} />
