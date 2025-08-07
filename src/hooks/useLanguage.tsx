@@ -254,6 +254,7 @@ const translations = {
     
     // Planning
     'planning.title': 'Financial Planning',
+    'planning.subtitle': 'Plan and track your financial goals and objectives',
     'planning.budgetGoals': 'Budget Goals',
     'planning.monthlyBudget': 'Monthly Budget',
     'planning.savingsGoals': 'Savings Goals',
