@@ -37,8 +37,14 @@ export default function QRConfirm() {
       setIsLoading(true);
       setError("");
 
+      // Get the current session to pass auth headers
+      const { data: { session } } = await supabase.auth.getSession();
+      
       const { data, error } = await supabase.functions.invoke('confirm-qr-signin', {
-        body: { sessionToken: token }
+        body: { sessionToken: token },
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`,
+        }
       });
 
       if (error) throw error;
