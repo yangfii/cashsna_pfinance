@@ -10,7 +10,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { toast } from 'sonner';
-import { Eye, EyeOff, Globe, Mail, CheckCircle, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, Globe, Mail, CheckCircle, AlertCircle, QrCode } from 'lucide-react';
+import { QRSignInDialog } from "@/components/QRSignInDialog";
 
 export default function Auth() {
   const [email, setEmail] = useState('');
@@ -21,6 +22,7 @@ export default function Auth() {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
+  const [showQRDialog, setShowQRDialog] = useState(false);
   const { signIn, signUp, signInWithGoogle, resetPassword, resendConfirmation, user } = useAuth();
   const { t, language, setLanguage } = useLanguage();
   const navigate = useNavigate();
@@ -236,6 +238,10 @@ export default function Auth() {
     }
   };
 
+  const handleQRSignInSuccess = (session: any, user: any) => {
+    toast.success("Welcome back! Successfully signed in with QR code.");
+  };
+
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) {
@@ -356,6 +362,17 @@ export default function Auth() {
                 disabled={loading}
               >
                 Continue with Google
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowQRDialog(true)}
+                disabled={loading}
+                className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm"
+              >
+                <QrCode className="mr-2 h-4 w-4" />
+                Sign in with QR Code
               </Button>
               
               <div className="relative my-6">
@@ -607,6 +624,12 @@ export default function Auth() {
         </CardContent>
         </Card>
       </div>
+
+      <QRSignInDialog
+        open={showQRDialog}
+        onOpenChange={setShowQRDialog}
+        onSignInSuccess={handleQRSignInSuccess}
+      />
     </div>
   );
 }

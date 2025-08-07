@@ -1,6 +1,8 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './App.tsx';
+import QRConfirm from './pages/QRConfirm.tsx';
 import './index.css';
 
 import { injectSpeedInsights } from '@vercel/speed-insights';
@@ -19,5 +21,12 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-createRoot(document.getElementById("root")!).render(<App />);
+createRoot(document.getElementById("root")!).render(
+  <BrowserRouter>
+    <Routes>
+      <Route path="/qr-confirm" element={<QRConfirm />} />
+      <Route path="/*" element={<App />} />
+    </Routes>
+  </BrowserRouter>
+);
 
