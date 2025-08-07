@@ -311,6 +311,24 @@ export default function Planning() {
           </div>
           
           <div className="flex gap-2">
+            <RippleButton 
+              variant="outline" 
+              size="sm" 
+              className="gap-2 glass-effect"
+              onClick={handleToggleCompletedView}
+            >
+              {showCompletedOnly ? (
+                <>
+                  <Eye className="h-4 w-4" />
+                  Show All
+                </>
+              ) : (
+                <>
+                  <EyeOff className="h-4 w-4" />
+                  Show Completed
+                </>
+              )}
+            </RippleButton>
             <RippleButton variant="outline" onClick={() => setActiveTab("customization")} className="gap-2 glass-effect">
               <Palette className="h-4 w-4" />
               ការកំណត់រូបរាង
@@ -458,24 +476,6 @@ export default function Planning() {
                     <CalendarIcon className="h-5 w-5" />
                     គោលដៅប្រចាំសប្តាហ៍
                   </h2>
-                  <RippleButton 
-                    variant="outline" 
-                    size="sm" 
-                    className="gap-2 glass-effect"
-                    onClick={handleToggleCompletedView}
-                  >
-                    {showCompletedOnly ? (
-                      <>
-                        <Eye className="h-4 w-4" />
-                        Show All
-                      </>
-                    ) : (
-                      <>
-                        <EyeOff className="h-4 w-4" />
-                        Show Completed
-                      </>
-                    )}
-                  </RippleButton>
                 </div>
                  <StaggeredReveal staggerDelay={150} className="grid gap-4">
                   {filteredWeeklyGoals.map(goal => (
