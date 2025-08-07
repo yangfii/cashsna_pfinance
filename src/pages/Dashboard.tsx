@@ -255,21 +255,63 @@ export default function Dashboard() {
               </div> : transactions.length === 0 ? <div className="text-center py-12 lg:py-16 text-muted-foreground">
                 <p className="text-base lg:text-lg">{t("dashboard.noTransactions")}</p>
               </div> : <div className="space-y-4 lg:space-y-6">
-                {transactions.slice(0, 5).map(transaction => <div key={transaction.id} className="flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:justify-between p-6 lg:p-8 transaction-item-glass hover:scale-[1.02] transition-all duration-300">
-                  <div className="flex items-center space-x-4 lg:space-x-6 min-w-0 flex-1">
-                    <div className={cn("w-2 h-10 lg:h-12 rounded-full flex-shrink-0", transaction.type === "income" ? "bg-gradient-income" : "bg-gradient-expense")} />
-                     <div className="min-w-0 flex-1">
-                       <p className="text-base lg:text-lg xl:text-xl font-semibold truncate">{transaction.category}</p>
-                       <p className="text-sm lg:text-base text-muted-foreground truncate">{transaction.note}</p>
+               {transactions.slice(0, 5).map((transaction, index) => (
+                 <div 
+                   key={transaction.id} 
+                   className="group relative bg-card/50 backdrop-blur-sm border border-border/40 rounded-xl p-6 hover:bg-card/70 hover:border-border/60 transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px]"
+                   style={{ animationDelay: `${0.1 * index}s` }}
+                 >
+                   {/* Enhanced left border indicator */}
+                   <div className={cn(
+                     "absolute left-0 top-0 bottom-0 w-1 rounded-l-xl transition-all duration-300 group-hover:w-2",
+                     transaction.type === "income" 
+                       ? "bg-gradient-to-b from-emerald-400 to-emerald-600" 
+                       : "bg-gradient-to-b from-rose-400 to-rose-600"
+                   )} />
+                   
+                   <div className="flex items-center justify-between">
+                     <div className="flex items-center space-x-4 min-w-0 flex-1">
+                       {/* Icon container */}
+                       <div className={cn(
+                         "flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 group-hover:scale-110",
+                         transaction.type === "income" 
+                           ? "bg-emerald-50 border border-emerald-200 dark:bg-emerald-950/50 dark:border-emerald-800/50" 
+                           : "bg-rose-50 border border-rose-200 dark:bg-rose-950/50 dark:border-rose-800/50"
+                       )}>
+                         <div className={cn(
+                           "w-2 h-2 rounded-full",
+                           transaction.type === "income" ? "bg-emerald-500" : "bg-rose-500"
+                         )} />
+                       </div>
+                       
+                       {/* Transaction details */}
+                       <div className="min-w-0 flex-1">
+                         <h3 className="font-semibold text-foreground text-lg truncate group-hover:text-primary transition-colors duration-300">
+                           {transaction.category}
+                         </h3>
+                         <p className="text-muted-foreground text-sm truncate mt-1">
+                           {transaction.note}
+                         </p>
+                       </div>
                      </div>
-                  </div>
-                  <div className="flex items-center justify-between lg:flex-col lg:items-end lg:text-right lg:space-y-2">
-                    <Badge variant={transaction.type === "income" ? "secondary" : "destructive"} className={cn("text-sm lg:text-base px-3 py-1 lg:px-4 lg:py-2", transaction.type === "income" ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400")}>
-                      {transaction.type === "income" ? "+" : "-"}{formatCurrency(transaction.amount)}
-                    </Badge>
-                    <p className="text-xs lg:text-sm text-muted-foreground mt-0 lg:mt-1">{transaction.date}</p>
-                  </div>
-                </div>)}
+                     
+                     {/* Amount and date */}
+                     <div className="text-right ml-4 flex-shrink-0">
+                       <div className={cn(
+                         "font-bold text-lg transition-colors duration-300",
+                         transaction.type === "income" 
+                           ? "text-emerald-600 dark:text-emerald-400" 
+                           : "text-rose-600 dark:text-rose-400"
+                       )}>
+                         {transaction.type === "income" ? "+" : "-"}{formatCurrency(transaction.amount)}
+                       </div>
+                       <p className="text-muted-foreground text-xs mt-1 font-medium">
+                         {transaction.date}
+                       </p>
+                     </div>
+                   </div>
+                 </div>
+               ))}
               </div>}
           </CardContent>
         </Card>
