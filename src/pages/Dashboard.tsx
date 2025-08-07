@@ -138,7 +138,7 @@ export default function Dashboard() {
       </div>
 
       {/* Enhanced Stats Cards with staggered animations */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 px-2 sm:px-4 lg:px-6 relative z-10">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 px-2 sm:px-4 lg:px-6 relative z-10">
         {/* Total Income */}
         <Card className={cn("income-card stat-card hover:scale-105 transition-all duration-500", "animate-fade-in hover:shadow-2xl hover:-translate-y-2", "group cursor-pointer relative overflow-hidden")} style={{
         animationDelay: '0.3s'
