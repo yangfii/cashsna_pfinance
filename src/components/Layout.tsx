@@ -4,16 +4,18 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { GlobalSearch } from "@/components/GlobalSearch";
+import { QRScannerDialog } from "@/components/QRScannerDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useLanguage } from "@/hooks/useLanguage";
 import { toast } from "sonner";
-import { LayoutDashboard, ArrowLeftRight, FolderOpen, BarChart3, Settings, LogOut, User, Target, Coins, Brain, Bug } from "lucide-react";
+import { LayoutDashboard, ArrowLeftRight, FolderOpen, BarChart3, Settings, LogOut, User, Target, Coins, Brain, Bug, QrCode } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ReportDialog } from "@/components/ReportDialog";
+
 const getNavItems = (t: (key: string) => string) => [{
   to: "/dashboard",
   icon: LayoutDashboard,
@@ -50,6 +52,7 @@ const getNavItems = (t: (key: string) => string) => [{
   label: t("nav.reports"),
   key: "reports"
 }];
+
 function AppSidebar() {
   const {
     user,
@@ -68,6 +71,7 @@ function AppSidebar() {
     toggleSidebar
   } = useSidebar();
   const navItems = getNavItems(t);
+
   const handleSignOut = async () => {
     try {
       console.log('Starting sign out process...');
@@ -87,6 +91,7 @@ function AppSidebar() {
       toast.error('Unexpected error during sign out');
     }
   };
+
   return <Sidebar variant="inset" collapsible="icon" className="py-0 my-0 mx-px px-0">
       <SidebarHeader className="mx-0 px-0 py-[7px] my-0">
         <div className="flex items-center gap-2 py-1 my-0 mx-[4px] px-[12px]">
@@ -156,24 +161,21 @@ function AppSidebar() {
       </SidebarFooter>
     </Sidebar>;
 }
+
 export default function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
-  const {
-    t
-  } = useLanguage();
-  const {
-    user,
-    loading
-  } = useAuth();
-  const {
-    profile
-  } = useProfile();
+  const { t } = useLanguage();
+  const { user, loading } = useAuth();
+  const { profile } = useProfile();
+  const [qrScannerOpen, setQrScannerOpen] = useState(false);
+
   useEffect(() => {
     if (!loading && !user) {
       navigate('/auth');
     }
   }, [user, loading, navigate]);
+
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5">
         <div className="text-center">
@@ -182,9 +184,11 @@ export default function Layout() {
         </div>
       </div>;
   }
+
   if (!user) {
     return null;
   }
+
   return <SidebarProvider>
       <div className="min-h-screen flex w-full">
         <AppSidebar />
@@ -195,6 +199,18 @@ export default function Layout() {
             <SidebarTrigger />
             <GlobalSearch />
             <div className="flex-1" />
+            
+            {/* QR Scanner Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setQrScannerOpen(true)}
+              className="hover:bg-accent"
+              title="Scan QR Code for Sign-In"
+            >
+              <QrCode className="h-5 w-5" />
+            </Button>
+            
             <NavLink to="/dashboard/settings" className={cn("flex items-center gap-2 p-2 rounded-lg group hover:bg-accent transition-colors", location.pathname === "/dashboard/settings" ? "bg-accent" : "")}>
               <Avatar className="size-8 transition-all duration-300 group-hover:scale-110 group-hover:rotate-2 hover:animate-pulse active:scale-95 ring-2 ring-primary/20">
                 <AvatarImage src={profile?.avatar_url || undefined} alt="Profile picture" />
@@ -215,5 +231,7 @@ export default function Layout() {
           </main>
         </div>
       </div>
+      
+      <QRScannerDialog open={qrScannerOpen} onOpenChange={setQrScannerOpen} />
     </SidebarProvider>;
 }
