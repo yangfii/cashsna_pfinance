@@ -26,6 +26,7 @@ import Index from "@/pages/Index";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
 import NotFound from "./pages/NotFound";
+import QRConfirm from "./pages/QRConfirm";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -73,6 +74,7 @@ const App = () => {
                     <ErrorBoundary>
                       <Routes>
                         <Route path="/auth" element={<Auth />} />
+                        <Route path="/qr-confirm" element={<QRConfirm />} />
                         <Route path="/profile-setup" element={<ProfileSetup />} />
                         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                         <Route path="/terms-of-service" element={<TermsOfService />} />
