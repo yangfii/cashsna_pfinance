@@ -360,25 +360,28 @@ export default function Auth() {
             </TabsList>
             
             <div className="mt-6">
-              <Button 
-                onClick={handleGoogleSignIn}
-                variant="google" 
-                className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm"
-                disabled={loading}
-              >
-                Continue with Google
-              </Button>
+              <div className="flex gap-2">
+                <Button 
+                  onClick={handleGoogleSignIn}
+                  variant="google" 
+                  className="flex-1 bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm"
+                  disabled={loading}
+                >
+                  Continue with Google
+                </Button>
 
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setShowQRDialog(true)}
-                disabled={loading}
-                className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm"
-              >
-                <QrCode className="mr-2 h-4 w-4" />
-                Sign in with QR Code
-              </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setShowQRDialog(true)}
+                  disabled={loading}
+                  className="bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm"
+                  title="Sign in with QR Code"
+                >
+                  <QrCode className="h-4 w-4" />
+                </Button>
+              </div>
               
               <div className="relative my-6">
                 <div className="absolute inset-0 flex items-center">
