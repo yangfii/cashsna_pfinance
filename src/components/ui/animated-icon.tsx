@@ -139,5 +139,22 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
       height: iconSize
     }} />;
   }
-  return;
+  return (
+    <lord-icon
+      ref={iconRef}
+      src={src}
+      trigger={trigger}
+      colors={colors}
+      style={{
+        width: `${iconSize}px`,
+        height: `${iconSize}px`
+      }}
+      delay={delay}
+      speed={speed}
+      loading={loading}
+      className={cn("inline-block", className)}
+      onClick={handleClick}
+      onMouseEnter={onHover ? handleMouseEnter : undefined}
+    />
+  );
 };
