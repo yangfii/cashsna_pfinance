@@ -9,6 +9,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { useLanguage } from "@/hooks/useLanguage";
 import { toast } from "sonner";
 import { LayoutDashboard, ArrowLeftRight, FolderOpen, BarChart3, Settings, LogOut, User, Target, Coins, Brain, Bug } from "lucide-react";
+import { AnimatedIcon } from "@/components/ui/animated-icon";
 import { cn } from "@/lib/utils";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -111,7 +112,16 @@ function AppSidebar() {
               {navItems.map(item => <SidebarMenuItem key={item.key}>
                   <SidebarMenuButton asChild isActive={location.pathname === item.to} tooltip={item.label}>
                     <NavLink to={item.to} className="group">
-                      <item.icon className="size-5 transition-all duration-300 group-hover:scale-125 group-hover:rotate-3 hover:animate-pulse active:scale-90 active:rotate-6" />
+                      {item.key === 'dashboard' ? (
+                        <AnimatedIcon 
+                          src="https://cdn.lordicon.com/9cf966a0-228a-4996-972b-2bbd9cc83c3a.json"
+                          size={20}
+                          trigger="hover"
+                          className="transition-all duration-300 group-hover:scale-125 group-hover:rotate-3 hover:animate-pulse active:scale-90 active:rotate-6"
+                        />
+                      ) : (
+                        <item.icon className="size-5 transition-all duration-300 group-hover:scale-125 group-hover:rotate-3 hover:animate-pulse active:scale-90 active:rotate-6" />
+                      )}
                       <span className="text-base transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
                         {item.label}
                       </span>
