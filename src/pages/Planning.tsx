@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "next-themes";
 import type { Goal, Step } from "@/hooks/useGoals";
+
 export default function Planning() {
   const { t } = useLanguage();
   const {
@@ -287,24 +288,28 @@ export default function Planning() {
       <div className="relative z-10">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="glass-overlay p-2 rounded-xl mb-6">
-            {/* iPhone Note Button */}
-            
-            
-            {showNote}
-            
             <TabsList className="grid w-full grid-cols-3 bg-transparent border-0">
-              <TabsTrigger value="goals" className="flex items-center gap-2 glass-card data-[state=active]:glass-strong">
+              <TabsTrigger 
+                value="goals" 
+                className="flex items-center gap-2 glass-card data-[state=active]:glass-strong hover:scale-110 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 hover:bg-primary/10 hover:border-primary/30"
+              >
                 <Target className="h-4 w-4" />
                 គោលដៅ
               </TabsTrigger>
-              <TabsTrigger value="reminders" className="flex items-center gap-2 glass-card data-[state=active]:glass-strong">
+              <TabsTrigger 
+                value="reminders" 
+                className="flex items-center gap-2 glass-card data-[state=active]:glass-strong hover:scale-110 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 hover:bg-primary/10 hover:border-primary/30"
+              >
                 <StickyNote className="h-4 w-4" />
                 note
                 {getUpcomingReminders().length > 0 && <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 text-xs">
                     {getUpcomingReminders().length}
                   </Badge>}
               </TabsTrigger>
-              <TabsTrigger value="ai-assistant" className="flex items-center gap-2 glass-card data-[state=active]:glass-strong">
+              <TabsTrigger 
+                value="ai-assistant" 
+                className="flex items-center gap-2 glass-card data-[state=active]:glass-strong hover:scale-110 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 hover:bg-primary/10 hover:border-primary/30"
+              >
                 <Brain className="h-4 w-4" />
                 AI
               </TabsTrigger>
@@ -767,7 +772,6 @@ export default function Planning() {
             </div>
           </div>
         </TabsContent>
-
 
         <TabsContent value="focus" className="mt-6 space-y-6">
           {/* Focus Timer Section */}
