@@ -84,6 +84,7 @@ const translations = {
     
     // Planning
     'planning.title': 'ការរៀបចំគំរោង',
+    'planning.subtitle': 'រៀបចំ និងតាមដានគោលដៅហិរញ្ញវត្ថុរបស់អ្នក',
     'planning.budgetGoals': 'គោលដៅថវិកា',
     'planning.monthlyBudget': 'ថវិកាប្រចាំខែ',
     'planning.savingsGoals': 'គោលដៅសន្សំប្រាក់',
