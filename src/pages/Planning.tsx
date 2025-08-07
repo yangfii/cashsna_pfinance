@@ -252,6 +252,29 @@ export default function Planning() {
       setBackgroundImage(savedBackground);
     }
   }, []);
+
+  const handleCompleteAllWeeklyGoals = async () => {
+    const incompleteWeeklyGoals = weeklyGoals.filter(goal => !goal.is_completed);
+    
+    if (incompleteWeeklyGoals.length === 0) {
+      toast({
+        title: "គ្មានគោលដៅដែលត្រូវបញ្ចប់",
+        description: "គោលដៅប្រចាំសប្តាហ៍ទាំងអស់បានបញ្ចប់រួចហើយ។"
+      });
+      return;
+    }
+
+    // Mark all incomplete weekly goals as complete
+    for (const goal of incompleteWeeklyGoals) {
+      await toggleGoalCompletion(goal.id);
+    }
+
+    toast({
+      title: "បានបញ្ចប់គោលដៅទាំងអស់!",
+      description: `គោលដៅប្រចាំសប្តាហ៍ចំនួន ${incompleteWeeklyGoals.length} បានបញ្ចប់ដោយជោគជ័យ។`
+    });
+  };
+
   return <div className="min-h-screen space-y-6 animate-fade-in relative" style={{
     backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--primary) / 0.05) 50%, hsl(var(--secondary) / 0.08) 100%)',
     backgroundSize: 'cover',
@@ -423,14 +446,7 @@ export default function Planning() {
                     variant="outline" 
                     size="sm" 
                     className="gap-2 glass-effect"
-                    onClick={() => {
-                      // Mark all weekly goals as complete
-                      weeklyGoals.forEach(goal => {
-                        if (!goal.is_completed) {
-                          toggleGoalCompletion(goal.id);
-                        }
-                      });
-                    }}
+                    onClick={handleCompleteAllWeeklyGoals}
                   >
                     <CheckCircle2 className="h-4 w-4" />
                     Complete
