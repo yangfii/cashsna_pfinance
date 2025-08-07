@@ -1,3 +1,4 @@
+
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.3'
 import { corsHeaders } from '../_shared/cors.ts'
 
@@ -13,8 +14,18 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const url = new URL(req.url);
-    const sessionToken = url.searchParams.get('sessionToken');
+    let sessionToken: string | null = null;
+
+    // Try to get session token from URL parameters first (for GET requests)
+    if (req.method === 'GET') {
+      const url = new URL(req.url);
+      sessionToken = url.searchParams.get('sessionToken');
+    } 
+    // Then try to get it from request body (for POST requests)
+    else if (req.method === 'POST') {
+      const body = await req.json();
+      sessionToken = body.sessionToken;
+    }
 
     if (!sessionToken) {
       return new Response(
@@ -112,7 +123,7 @@ Deno.serve(async (req) => {
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
+      status: 200,
       }
     );
 
