@@ -179,7 +179,7 @@ export default function DailyPNLCalendar({
   const getPNLBackground = (value: number) => {
     if (value > 0) return positiveBgColor;
     if (value < 0) return negativeBgColor;
-    return 'bg-muted/50 border-border';
+    return 'bg-muted/80 border-border/60';
   };
 
   const getDaysInMonth = (date: Date) => {
@@ -219,14 +219,18 @@ export default function DailyPNLCalendar({
       const pnl = dayData?.pnl || 0;
       const isEditing = editingCell === dateStr;
       
-      // Check if this is "today" (August 7th, 2025)
-      const isToday = dateStr === '2025-08-07';
+      // Check if this is today's date
+      const now = new Date();
+      const isToday =
+        now.getFullYear() === currentDate.getFullYear() &&
+        now.getMonth() === currentDate.getMonth() &&
+        now.getDate() === day;
 
       days.push(
         <div
           key={day}
           className={cn(
-            "h-20 border rounded-lg p-2 flex flex-col justify-between text-center transition-all duration-200 hover:scale-105 cursor-pointer relative group",
+            "h-20 border rounded-lg p-2 flex flex-col justify-between text-center transition-all duration-200 cursor-pointer relative group",
             getPNLBackground(pnl),
             isEditing && "ring-2 ring-primary",
             isToday && "ring-2 ring-blue-500 bg-blue-500/10"
@@ -287,17 +291,28 @@ export default function DailyPNLCalendar({
       );
     }
 
+    // Fill the remaining cells to complete the last week
+    while (days.length % 7 !== 0) {
+      const idx = days.length;
+      days.push(<div key={`empty-end-${idx}`} className="h-20" />);
+    }
+    // Ensure a full 6x7 grid (42 cells)
+    while (days.length < 42) {
+      const idx = days.length;
+      days.push(<div key={`empty-end-${idx}`} className="h-20" />);
+    }
+
     return days;
   };
 
   const monthYear = currentDate.toLocaleDateString('en-US', { 
     year: 'numeric', 
-    month: '2-digit' 
+    month: 'long' 
   });
 
-  // Fixed "today" as August 7th, 2025 with real-time clock
-  const fixedToday = new Date(2025, 7, 7); // August 7th, 2025
-  const todayString = fixedToday.toLocaleDateString('en-US', {
+  // Dynamic "today" with real-time clock
+  const todayDate = new Date();
+  const todayString = todayDate.toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric', 
     month: 'long', 
