@@ -25,8 +25,8 @@ export function MotivationalPopup({ open, onOpenChange }: MotivationalPopupProps
       >
         <div className="relative w-full h-full flex items-center justify-center">
           <img
-            src="/lovable-uploads/d0e8aaa3-fb91-4594-981a-5a387e9bd236.png"
-            alt="Motivational message in Khmer with mountain landscape"
+            src="/lovable-uploads/41cdbd63-54fa-41a2-831e-3f1ea144e80f.png"
+            alt="Cashsnap Finance motivational banner in Khmer"
             className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
             id="motivational-image"
           />
