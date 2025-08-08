@@ -8,6 +8,7 @@ import { use2FA } from '@/hooks/use2FA';
 import { useTrustedDevices } from '@/hooks/useTrustedDevices';
 import { DeviceVerification } from './DeviceVerification';
 import { toast } from 'sonner';
+import { useInactivityLogout } from '@/hooks/useInactivityLogout';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -20,13 +21,23 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { isCurrentDeviceTrusted, loading: deviceLoading } = useTrustedDevices();
   const navigate = useNavigate();
   const [deviceVerified, setDeviceVerified] = useState(false);
+  
+  // Auto sign-out after 7 days of inactivity
+  useInactivityLogout({ enabled: !!user });
 
   useEffect(() => {
     if (!loading && !user) {
+      // Check if this was an automatic inactivity logout before clearing
+      const autoSignedOut = sessionStorage.getItem('autoSignedOut') === '1';
+
       // Clear any potentially stored sensitive data
       localStorage.removeItem('rememberMe');
       sessionStorage.clear();
-      toast.error('Please sign in to access this page');
+
+      if (!autoSignedOut) {
+        toast.error('Please sign in to access this page');
+      }
+      
       navigate('/auth');
     }
   }, [user, loading, navigate]);
