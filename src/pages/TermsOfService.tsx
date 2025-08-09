@@ -2,10 +2,8 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
-
 export default function TermsOfService() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 p-4">
+  return <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 p-4">
       <div className="max-w-4xl mx-auto py-8">
         <div className="mb-6">
           <Link to="/auth">
@@ -105,13 +103,10 @@ export default function TermsOfService() {
 
             <section>
               <h2 className="text-lg font-semibold mb-3">12. Contact</h2>
-              <p className="text-muted-foreground">
-                For Terms‑related inquiries, email: legal@[yangfi1502@gmail.com].com.
-              </p>
+              <p className="text-muted-foreground">For Terms‑related inquiries, email:yangfi1502@gmail.com</p>
             </section>
           </CardContent>
         </Card>
       </div>
-    </div>
-  );
+    </div>;
 }
