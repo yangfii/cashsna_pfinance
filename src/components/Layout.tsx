@@ -184,6 +184,10 @@ export default function Layout() {
   const [qrScannerOpen, setQrScannerOpen] = useState(false);
   const [motivationalPopupOpen, setMotivationalPopupOpen] = useState(false);
 
+  const fullName = (profile?.first_name || profile?.last_name)
+    ? `${profile?.first_name ?? ''} ${profile?.last_name ?? ''}`.trim()
+    : (user?.email?.split('@')[0] ?? 'User');
+
   const handlePortfolioClick = () => {
     setMotivationalPopupOpen(true);
     setTimeout(() => {
@@ -239,6 +243,7 @@ export default function Layout() {
                   <User className="size-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3" />
                 </AvatarFallback>
               </Avatar>
+              <span className="hidden sm:inline text-sm text-foreground max-w-[12rem] truncate">{fullName}</span>
             </NavLink>
             <LanguageSelector />
             <ThemeToggle />
