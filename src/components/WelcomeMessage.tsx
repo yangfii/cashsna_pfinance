@@ -2,11 +2,11 @@ import { useProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-
+import { useLanguage } from '@/hooks/useLanguage';
 export function WelcomeMessage() {
   const { user } = useAuth();
   const { profile } = useProfile();
-
+  const { t } = useLanguage();
   console.log('Profile data:', profile);
   console.log('User data:', user);
 
@@ -33,10 +33,10 @@ export function WelcomeMessage() {
           </Avatar>
           <div>
             <h2 className="text-h4 text-foreground">
-              Hello, {profile?.first_name || displayName}
+              {t('welcome.hello')}, {profile?.first_name || displayName}
             </h2>
             <p className="text-sm text-muted-foreground">
-              Welcome back
+              {t('welcome.welcomeBack')}
             </p>
           </div>
         </div>

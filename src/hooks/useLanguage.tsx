@@ -3,6 +3,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 
 interface LanguageContextType {
   language: string;
+  locale: string;
   setLanguage: (lang: string) => void;
   t: (key: string) => string;
 }
@@ -179,7 +180,25 @@ const translations = {
     'settings.current': 'បច្ចុប្បន្ន',
     'settings.saveChanges': 'រក្សាទុកការកែប្រែ',
     'settings.saved': 'ការកំណត់ត្រូវបានរក្សាទុក',
-    'settings.savedDesc': 'ការកែប្រែរបស់អ្នកត្រូវបានអនុវត្តដោយជោគជ័យ។'
+    'settings.savedDesc': 'ការកែប្រែរបស់អ្នកត្រូវបានអនុវត្តដោយជោគជ័យ។',
+
+    // Welcome
+    'welcome.hello': 'សួស្តី',
+    'welcome.welcomeBack': 'សូមស្វាគមន៍ត្រឡប់មកវិញ',
+
+    // Dashboard extras
+    'dashboard.monthSubtitle': 'ស្ថានភាពហិរញ្ញវត្ថុរបស់អ្នកសម្រាប់ខែ {month}',
+    'dashboard.checkTransactions': 'ពិនិត្យប្រតិបត្តិការ',
+
+    // Common
+    'common.viewAll': 'មើលទាំងអស់',
+
+    // Auth extras
+    'auth.welcome': 'សូមស្វាគមន៍!',
+    'auth.subtitle': 'ចូលគណនីរបស់អ្នកដើម្បីបន្ត',
+    'auth.continueWithGoogle': 'បន្តជាមួយ Google',
+    'auth.orContinueWithEmail': 'ឬបន្តជាមួយអ៊ីមែល',
+    'auth.signInWithQRCode': 'ចូលដោយកូដ QR'
   },
   english: {
     // Navigation
@@ -350,7 +369,25 @@ const translations = {
     'settings.current': 'Current',
     'settings.saveChanges': 'Save Changes',
     'settings.saved': 'Settings Saved',
-    'settings.savedDesc': 'Your changes have been applied successfully.'
+    'settings.savedDesc': 'Your changes have been applied successfully.',
+
+    // Welcome
+    'welcome.hello': 'Hello',
+    'welcome.welcomeBack': 'Welcome back',
+
+    // Dashboard extras
+    'dashboard.monthSubtitle': 'Your financial status for {month}',
+    'dashboard.checkTransactions': 'View transactions',
+
+    // Common
+    'common.viewAll': 'View all',
+
+    // Auth extras
+    'auth.welcome': 'Welcome!',
+    'auth.subtitle': 'Sign in to your account to continue',
+    'auth.continueWithGoogle': 'Continue with Google',
+    'auth.orContinueWithEmail': 'or continue with email',
+    'auth.signInWithQRCode': 'Sign in with QR Code'
   }
 };
 
@@ -371,6 +408,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     setLanguageState(lang);
   };
 
+  const locale = language === 'khmer' ? 'km-KH' : 'en-US';
+
   const t = (key: string): string => {
     const translation = translations[language as keyof typeof translations]?.[key];
     if (!translation) {
@@ -381,7 +420,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language, locale, setLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );

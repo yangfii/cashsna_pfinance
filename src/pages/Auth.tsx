@@ -282,10 +282,10 @@ export default function Auth() {
         {/* Professional Header */}
         <div className="text-center space-y-3">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-white/90 to-green-100 bg-clip-text text-transparent drop-shadow-lg">
-            សូមស្វាគមន៍!
+            {t('auth.welcome')}
           </h1>
           <p className="text-base text-white/90 font-medium drop-shadow-md">
-            Sign in to your account to continue
+            {t('auth.subtitle')}
           </p>
         </div>
 
@@ -366,7 +366,7 @@ export default function Auth() {
                   className="flex-1 bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm"
                   disabled={loading}
                 >
-                  Continue with Google
+                  {t("auth.continueWithGoogle")}
                 </Button>
 
                 <Button
@@ -376,7 +376,7 @@ export default function Auth() {
                   onClick={() => setShowQRDialog(true)}
                   disabled={loading}
                   className="bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm"
-                  title="Sign in with QR Code"
+                  title={t("auth.signInWithQRCode")}
                 >
                   <QrCode className="h-4 w-4" />
                 </Button>
@@ -388,7 +388,7 @@ export default function Auth() {
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span className="bg-white/5 backdrop-blur-md px-4 py-1 text-white/70 rounded-lg border border-white/10 font-medium tracking-wide">
-                    or continue with email
+                    {t("auth.orContinueWithEmail")}
                   </span>
                 </div>
               </div>

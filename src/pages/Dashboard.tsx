@@ -27,21 +27,15 @@ type Transaction = {
   updated_at: string;
 };
 export default function Dashboard() {
-  const [currentMonth] = useState("កក្កដា ២០២៥");
+  const { t, locale } = useLanguage();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date>();
-  const {
-    user
-  } = useAuth();
-  const {
-    toast
-  } = useToast();
-  const {
-    t
-  } = useLanguage();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const currentMonth = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(new Date());
 
   // Fetch transactions on mount
   useEffect(() => {
@@ -81,7 +75,7 @@ export default function Dashboard() {
   const totalExpense = transactions.filter(t => t.type === "expense").reduce((sum, t) => sum + t.amount, 0);
   const netBalance = totalIncome - totalExpense;
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('km-KH', {
+    return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0
@@ -103,7 +97,7 @@ export default function Dashboard() {
             {t("dashboard.title")}
           </h1>
           <p className="text-sm sm:text-base lg:text-lg xl:text-xl text-muted-foreground">
-            ស្ថានភាពហិរញ្ញវត្ថុរបស់អ្នកសម្រាប់ខែ {currentMonth}
+            {t('dashboard.monthSubtitle').replace('{month}', currentMonth)}
           </p>
         </div>
         
@@ -116,7 +110,7 @@ export default function Dashboard() {
             }}>
                 <Calendar className="size-5" />
                 <span className="text-sm lg:text-base font-medium">
-                  {selectedDate ? format(selectedDate, "PPP") : "ពិនិត្យប្រតិបត្តិការ"}
+                  {selectedDate ? format(selectedDate, "PPP") : t("dashboard.checkTransactions")}
                 </span>
               </Button>
             </PopoverTrigger>
@@ -244,7 +238,7 @@ export default function Dashboard() {
               <Button variant="outline" size="sm" className={cn("w-full lg:w-auto h-10 lg:h-12 px-4 lg:px-6", "hover:scale-105 hover:shadow-md transition-all duration-300", "border-2 hover:border-primary/50 hover:bg-primary/5", "animate-fade-in")} style={{
               animationDelay: '0.8s'
             }}>
-                <span className="text-sm lg:text-base font-medium">មើលទាំងអស់</span>
+                <span className="text-sm lg:text-base font-medium">{t("common.viewAll")}</span>
               </Button>
             </div>
           </CardHeader>
