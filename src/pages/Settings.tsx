@@ -26,6 +26,7 @@ import { useNavigate } from "react-router-dom";
 import { ProfileCard } from "@/components/ProfileCard";
 import { TwoFactorSetup } from "@/components/TwoFactorSetup";
 import { TrustedDevicesManager } from "@/components/TrustedDevicesManager";
+import { VersionHistoryDialog } from "@/components/VersionHistoryDialog";
 import { 
   AlertDialog,
   AlertDialogAction,
@@ -446,7 +447,10 @@ export default function Settings() {
               <p className="font-medium">{t('settings.appVersion')}</p>
               <p className="text-sm text-muted-foreground">v1.2.0</p>
             </div>
-            <Badge variant="secondary">{t('settings.current')}</Badge>
+            <div className="flex items-center gap-2">
+              <VersionHistoryDialog currentVersion="v1.2.0" />
+              <Badge variant="secondary">{t('settings.current')}</Badge>
+            </div>
           </div>
         </CardContent>
       </Card>
