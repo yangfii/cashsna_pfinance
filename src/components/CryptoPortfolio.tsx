@@ -524,6 +524,36 @@ export default function CryptoPortfolio() {
             <Card className="mx-1 sm:mx-2">
               <CardContent className="p-8 lg:p-10">
                 <h3 className="font-semibold mb-6 text-lg lg:text-xl">Trading Performance</h3>
+                <div className="mb-6 rounded-md border p-4 text-sm text-muted-foreground">
+                  <div className="flex items-start gap-2">
+                    <AlertCircle className="h-4 w-4 mt-0.5 text-muted-foreground" aria-hidden="true" />
+                    <div>
+                      <p className="font-medium text-foreground mb-2">How to read this section</p>
+                      <ol className="list-decimal pl-5 space-y-1.5">
+                        <li>
+                          <span className="font-medium text-foreground">Total P&L (USD)</span> shows total profit/loss over the selected period. A minus sign (-) means a loss; a plus sign (+) means a profit.
+                        </li>
+                        <li>
+                          <span className="font-medium text-foreground">Trading Volume (USD)</span> is the total traded amount (sum of all buys and sells, long + short) within the period. It is not profit/loss.
+                        </li>
+                        <li>
+                          <span className="font-medium text-foreground">Timeframe</span> options: 7d, 30d, 60d, 90d, 180d, Custom. Select the period to view P&L; in the screenshot, 180d is selected.
+                        </li>
+                        <li>
+                          <span className="font-medium text-foreground">P&L Chart</span> displays your trend over time:
+                          <ul className="list-disc pl-5 mt-1 space-y-1">
+                            <li><span className="text-foreground">Total P&L (red line)</span> – cumulative profit/loss movement.</li>
+                            <li><span className="text-foreground">Daily P&L</span> – profit or loss for each day.</li>
+                          </ul>
+                          <div className="mt-1">On the right: cumulative P&L from a specific date to now, and profit/loss in the last day.</div>
+                        </li>
+                        <li>
+                          <span className="font-medium text-foreground">P&L Ranking</span> shows profit/loss by Futures contract (red = loss, green = profit), e.g., ADAUSDT, SUIUSDT, TAOUSDT, SOLUSDT, ETHUSDT.
+                        </li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
                 <div className="h-96 lg:h-[500px]">
                   <CryptoChart holdings={holdings} prices={prices} />
                 </div>
