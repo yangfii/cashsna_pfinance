@@ -309,7 +309,7 @@ export default function CryptoPortfolio() {
                   <SelectItem value="portfolio">PORTFOLIO</SelectItem>
                   <SelectItem value="holdings">HOLDINGS BY CHAIN</SelectItem>
                   <SelectItem value="archive">PORTFOLIO ARCHIVE</SelectItem>
-                  <SelectItem value="balances">BALANCES HISTORY</SelectItem>
+                  <SelectItem value="balances">TRADING PERFORMANCE</SelectItem>
                   <SelectItem value="tokens">TOKEN BALANCES HISTORY</SelectItem>
                   <SelectItem value="profit">PROFIT & LOSS</SelectItem>
                   <SelectItem value="swing-trade">SWING TRADE LOG</SelectItem>
@@ -329,8 +329,8 @@ export default function CryptoPortfolio() {
                     <span className="lg:hidden truncate">ARCHIVE</span>
                   </TabsTrigger>
                   <TabsTrigger value="balances" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
-                    <span className="hidden lg:inline truncate">Training Performances</span>
-                    <span className="lg:hidden truncate">BALANCES</span>
+                    <span className="hidden lg:inline truncate">TRADING PERFORMANCE</span>
+                    <span className="lg:hidden truncate">TRADING</span>
                   </TabsTrigger>
                   <TabsTrigger value="tokens" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
                     <span className="hidden lg:inline truncate">TOKEN BALANCES HISTORY</span>
@@ -523,7 +523,7 @@ export default function CryptoPortfolio() {
           <TabsContent value="balances">
             <Card className="mx-1 sm:mx-2">
               <CardContent className="p-8 lg:p-10">
-                <h3 className="font-semibold mb-6 text-lg lg:text-xl">Balance History</h3>
+                <h3 className="font-semibold mb-6 text-lg lg:text-xl">Trading Performance</h3>
                 <div className="h-96 lg:h-[500px]">
                   <CryptoChart holdings={holdings} prices={prices} />
                 </div>
