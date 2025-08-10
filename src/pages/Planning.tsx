@@ -418,6 +418,26 @@ export default function Planning() {
                     }} initialFocus className={cn("p-3 pointer-events-auto")} />
                     </PopoverContent>
                   </Popover>
+                  {/* Manual date entry option */}
+                  <div className="mt-2">
+                    <Input
+                      type="date"
+                      value={selectedDate ? format(selectedDate, "yyyy-MM-dd") : ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        if (v) {
+                          const d = new Date(`${v}T00:00:00`);
+                          setSelectedDate(d);
+                          setNewGoal({ ...newGoal, period: format(d, "PPP") });
+                        } else {
+                          setSelectedDate(undefined);
+                          setNewGoal({ ...newGoal, period: "" });
+                        }
+                      }}
+                      placeholder="បញ្ចូលកាលបរិច្ឆេទ"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">អ្នកអាចជ្រើសពីប្រតិទិន ឬ បញ្ចូលកាលបរិច្ឆេទដោយដៃ</p>
+                  </div>
                 </div>
 
                 <div>
