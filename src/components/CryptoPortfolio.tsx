@@ -329,7 +329,7 @@ export default function CryptoPortfolio() {
                     <span className="lg:hidden truncate">ARCHIVE</span>
                   </TabsTrigger>
                   <TabsTrigger value="balances" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
-                    <span className="hidden lg:inline truncate">BALANCES HISTORY</span>
+                    <span className="hidden lg:inline truncate">Training Performances</span>
                     <span className="lg:hidden truncate">BALANCES</span>
                   </TabsTrigger>
                   <TabsTrigger value="tokens" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
@@ -370,23 +370,18 @@ export default function CryptoPortfolio() {
                         </div>}
                     </div>
                     
-                    {isMobile ? (
-                      // Mobile card layout
-                      <div className="space-y-3">
-                        {filteredAndSortedHoldings.length === 0 ? (
-                          <Card className="p-6 text-center text-muted-foreground">
+                    {isMobile ?
+                // Mobile card layout
+                <div className="space-y-3">
+                        {filteredAndSortedHoldings.length === 0 ? <Card className="p-6 text-center text-muted-foreground">
                             No assets match your current filters
-                          </Card>
-                        ) : (
-                          filteredAndSortedHoldings.map((holding, index) => {
-                            const currentPrice = prices[holding.symbol.toLowerCase()]?.usd || 0;
-                            const currentValue = getHoldingCurrentValue(holding);
-                            const gainLoss = getHoldingGainLoss(holding);
-                            const percentChange = getHoldingPercentChange(holding);
-                            const isGain = gainLoss >= 0;
-
-                            return (
-                              <Card key={holding.id} className="p-4">
+                          </Card> : filteredAndSortedHoldings.map((holding, index) => {
+                    const currentPrice = prices[holding.symbol.toLowerCase()]?.usd || 0;
+                    const currentValue = getHoldingCurrentValue(holding);
+                    const gainLoss = getHoldingGainLoss(holding);
+                    const percentChange = getHoldingPercentChange(holding);
+                    const isGain = gainLoss >= 0;
+                    return <Card key={holding.id} className="p-4">
                                 <div className="flex items-center justify-between mb-3">
                                   <div className="flex items-center gap-3">
                                     <span className="text-muted-foreground text-sm">#{index + 1}</span>
@@ -395,17 +390,10 @@ export default function CryptoPortfolio() {
                                     </div>
                                     <div>
                                       <div className="font-semibold text-sm">{holding.symbol}</div>
-                                      {holding.wallet_type && (
-                                        <div className="text-xs text-muted-foreground capitalize">{holding.wallet_type}</div>
-                                      )}
+                                      {holding.wallet_type && <div className="text-xs text-muted-foreground capitalize">{holding.wallet_type}</div>}
                                     </div>
                                   </div>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => deleteHolding(holding.id)}
-                                    className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                                  >
+                                  <Button variant="ghost" size="sm" onClick={() => deleteHolding(holding.id)} className="h-8 w-8 p-0 text-destructive hover:text-destructive">
                                     <Trash2 className="h-4 w-4" />
                                   </Button>
                                 </div>
@@ -431,14 +419,11 @@ export default function CryptoPortfolio() {
                                     </div>
                                   </div>
                                 </div>
-                              </Card>
-                            );
-                          })
-                        )}
-                      </div>
-                    ) : (
-                      // Desktop table layout
-                      <div className="overflow-x-auto">
+                              </Card>;
+                  })}
+                      </div> :
+                // Desktop table layout
+                <div className="overflow-x-auto">
                         <Table>
                           <TableHeader>
                             <TableRow>
@@ -506,8 +491,7 @@ export default function CryptoPortfolio() {
                       })}
                           </TableBody>
                         </Table>
-                      </div>
-                    )}
+                      </div>}
                   </CardContent>
                 </Card>
               </div>
