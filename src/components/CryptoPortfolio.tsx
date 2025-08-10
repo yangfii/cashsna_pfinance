@@ -309,7 +309,7 @@ export default function CryptoPortfolio() {
                   <SelectItem value="portfolio">PORTFOLIO</SelectItem>
                   <SelectItem value="holdings">HOLDINGS BY CHAIN</SelectItem>
                   <SelectItem value="archive">PORTFOLIO ARCHIVE</SelectItem>
-                  <SelectItem value="balances">TRADING PERFORMANCE</SelectItem>
+                  <SelectItem value="balances">BALANCES HISTORY</SelectItem>
                   <SelectItem value="tokens">TOKEN BALANCES HISTORY</SelectItem>
                   <SelectItem value="profit">PROFIT & LOSS</SelectItem>
                   <SelectItem value="swing-trade">SWING TRADE LOG</SelectItem>
@@ -329,13 +329,10 @@ export default function CryptoPortfolio() {
                     <span className="lg:hidden truncate">ARCHIVE</span>
                   </TabsTrigger>
                   <TabsTrigger value="balances" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
-                    <span className="hidden lg:inline truncate">TRADING PERFORMANCE</span>
-                    <span className="lg:hidden truncate">TRADING</span>
+                    <span className="hidden lg:inline truncate">Training Performances</span>
+                    <span className="lg:hidden truncate">BALANCES</span>
                   </TabsTrigger>
-                  <TabsTrigger value="tokens" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
-                    <span className="hidden lg:inline truncate">TOKEN BALANCES HISTORY</span>
-                    <span className="lg:hidden truncate">TOKENS</span>
-                  </TabsTrigger>
+                  
                   <TabsTrigger value="profit" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
                     <span className="hidden lg:inline truncate">PROFIT & LOSS</span>
                     <span className="lg:hidden truncate">P&L</span>
@@ -523,37 +520,7 @@ export default function CryptoPortfolio() {
           <TabsContent value="balances">
             <Card className="mx-1 sm:mx-2">
               <CardContent className="p-8 lg:p-10">
-                <h3 className="font-semibold mb-6 text-lg lg:text-xl">Trading Performance</h3>
-                <div className="mb-6 rounded-md border p-4 text-sm text-muted-foreground">
-                  <div className="flex items-start gap-2">
-                    <AlertCircle className="h-4 w-4 mt-0.5 text-muted-foreground" aria-hidden="true" />
-                    <div>
-                      <p className="font-medium text-foreground mb-2">How to read this section</p>
-                      <ol className="list-decimal pl-5 space-y-1.5">
-                        <li>
-                          <span className="font-medium text-foreground">Total P&L (USD)</span> shows total profit/loss over the selected period. A minus sign (-) means a loss; a plus sign (+) means a profit.
-                        </li>
-                        <li>
-                          <span className="font-medium text-foreground">Trading Volume (USD)</span> is the total traded amount (sum of all buys and sells, long + short) within the period. It is not profit/loss.
-                        </li>
-                        <li>
-                          <span className="font-medium text-foreground">Timeframe</span> options: 7d, 30d, 60d, 90d, 180d, Custom. Select the period to view P&L; in the screenshot, 180d is selected.
-                        </li>
-                        <li>
-                          <span className="font-medium text-foreground">P&L Chart</span> displays your trend over time:
-                          <ul className="list-disc pl-5 mt-1 space-y-1">
-                            <li><span className="text-foreground">Total P&L (red line)</span> – cumulative profit/loss movement.</li>
-                            <li><span className="text-foreground">Daily P&L</span> – profit or loss for each day.</li>
-                          </ul>
-                          <div className="mt-1">On the right: cumulative P&L from a specific date to now, and profit/loss in the last day.</div>
-                        </li>
-                        <li>
-                          <span className="font-medium text-foreground">P&L Ranking</span> shows profit/loss by Futures contract (red = loss, green = profit), e.g., ADAUSDT, SUIUSDT, TAOUSDT, SOLUSDT, ETHUSDT.
-                        </li>
-                      </ol>
-                    </div>
-                  </div>
-                </div>
+                <h3 className="font-semibold mb-6 text-lg lg:text-xl">Balance History</h3>
                 <div className="h-96 lg:h-[500px]">
                   <CryptoChart holdings={holdings} prices={prices} />
                 </div>
