@@ -18,7 +18,7 @@ export function MotivationalPopup({ open, onOpenChange }: MotivationalPopupProps
   }, [open, onOpenChange]);
 
   return (
-    <Dialog open={open} onOpenChange={() => {}} modal>
+    <Dialog open={open} onOpenChange={onOpenChange} modal>
       <DialogContent 
         className="max-w-4xl w-[90vw] h-[90vh] p-0 border-none bg-transparent shadow-none"
         aria-describedby="motivational-image"

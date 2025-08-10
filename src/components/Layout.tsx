@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ReportDialog } from "@/components/ReportDialog";
+import { useWelcomeBack } from "@/hooks/useWelcomeBack";
 
 const getNavItems = (t: (key: string) => string) => [{
   to: "/dashboard",
@@ -194,6 +195,12 @@ export default function Layout() {
       navigate('/dashboard/portfolio');
     }, 5000);
   };
+
+  useWelcomeBack(() => setMotivationalPopupOpen(true), {
+    enableBrowserNotification: true,
+    cooldownHours: 6,
+    minAwayMinutes: 10,
+  });
 
   useEffect(() => {
     if (!loading && !user) {
