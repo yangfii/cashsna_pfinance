@@ -367,8 +367,8 @@ export default function DailyPNLCalendar({
 
       <CardContent>
         <div className="grid grid-cols-7 gap-2 mb-4">
-          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day) => (
-            <div key={day} className="text-center text-muted-foreground font-medium py-2">
+          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, idx) => (
+            <div key={`dow-${idx}`} className="text-center text-muted-foreground font-medium py-2">
               {day}
             </div>
           ))}
