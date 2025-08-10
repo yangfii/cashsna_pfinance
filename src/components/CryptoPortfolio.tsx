@@ -23,6 +23,7 @@ import AdvancedSorting, { SortOption } from "@/components/crypto/AdvancedSorting
 import RealTimePriceMonitor from "@/components/crypto/RealTimePriceMonitor";
 import SwingTradeLog from "@/components/crypto/SwingTradeLog";
 import ProfitLossSection from "@/components/crypto/ProfitLossSection";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 export default function CryptoPortfolio() {
   const {
     user
@@ -315,29 +316,59 @@ export default function CryptoPortfolio() {
                   <SelectItem value="swing-trade">SWING TRADE LOG</SelectItem>
                 </SelectContent>
               </Select> : <>
-                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 lg:gap-3 flex-1 h-12 lg:h-14">
-                  <TabsTrigger value="portfolio" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
-                    <span className="hidden sm:inline truncate">PORTFOLIO</span>
-                    <span className="sm:hidden truncate">PORT</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="holdings" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
-                    <span className="hidden lg:inline truncate">HOLDINGS BY CHAIN</span>
-                    <span className="lg:hidden truncate">HOLDINGS</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="archive" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
-                    <span className="hidden lg:inline truncate">PORTFOLIO ARCHIVE</span>
-                    <span className="lg:hidden truncate">ARCHIVE</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="balances" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
-                    <span className="hidden lg:inline truncate">Training Performances</span>
-                    <span className="lg:hidden truncate">BALANCES</span>
-                  </TabsTrigger>
-                  
-                  <TabsTrigger value="profit" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
-                    <span className="hidden lg:inline truncate">PROFIT & LOSS</span>
-                    <span className="lg:hidden truncate">P&L</span>
-                  </TabsTrigger>
-                </TabsList>
+                <TooltipProvider delayDuration={200}>
+                  <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 lg:gap-3 flex-1 h-12 lg:h-14">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <TabsTrigger value="portfolio" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
+                          <span className="hidden sm:inline truncate">PORTFOLIO</span>
+                          <span className="sm:hidden truncate">PORT</span>
+                        </TabsTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">Portfolio</TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <TabsTrigger value="holdings" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
+                          <span className="hidden lg:inline truncate">HOLDINGS BY CHAIN</span>
+                          <span className="lg:hidden truncate">HOLDINGS</span>
+                        </TabsTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">Holdings by Chain</TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <TabsTrigger value="archive" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
+                          <span className="hidden lg:inline truncate">PORTFOLIO ARCHIVE</span>
+                          <span className="lg:hidden truncate">ARCHIVE</span>
+                        </TabsTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">Portfolio Archive</TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <TabsTrigger value="balances" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
+                          <span className="hidden lg:inline truncate">Training Performances</span>
+                          <span className="lg:hidden truncate">BALANCES</span>
+                        </TabsTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">Trading Performance</TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <TabsTrigger value="profit" className="text-xs sm:text-sm lg:text-base px-3 py-3 overflow-hidden">
+                          <span className="hidden lg:inline truncate">PROFIT & LOSS</span>
+                          <span className="lg:hidden truncate">P&L</span>
+                        </TabsTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">Profit & Loss</TooltipContent>
+                    </Tooltip>
+                  </TabsList>
+                </TooltipProvider>
               </>}
           </div>
 
