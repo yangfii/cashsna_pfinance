@@ -320,7 +320,7 @@ export default function CryptoPortfolio() {
                   <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 lg:gap-3 flex-1 items-stretch auto-rows-[2.5rem] lg:auto-rows-[3rem]">
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <TabsTrigger value="portfolio" className="text-xs sm:text-sm lg:text-base h-full px-3 py-0 overflow-hidden">
+                        <TabsTrigger value="portfolio" className="text-sm h-full px-3 py-0 overflow-hidden">
                           <span className="hidden sm:inline truncate">PORTFOLIO</span>
                           <span className="sm:hidden truncate">PORT</span>
                         </TabsTrigger>
@@ -330,7 +330,7 @@ export default function CryptoPortfolio() {
 
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <TabsTrigger value="holdings" className="text-xs sm:text-sm lg:text-base h-full px-3 py-0 overflow-hidden">
+                        <TabsTrigger value="holdings" className="text-sm h-full px-3 py-0 overflow-hidden">
                           <span className="hidden lg:inline truncate">HOLDINGS BY CHAIN</span>
                           <span className="lg:hidden truncate">HOLDINGS</span>
                         </TabsTrigger>
@@ -340,7 +340,7 @@ export default function CryptoPortfolio() {
 
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <TabsTrigger value="archive" className="text-xs sm:text-sm lg:text-base h-full px-3 py-0 overflow-hidden">
+                        <TabsTrigger value="archive" className="text-sm h-full px-3 py-0 overflow-hidden">
                           <span className="hidden lg:inline truncate">PORTFOLIO ARCHIVE</span>
                           <span className="lg:hidden truncate">ARCHIVE</span>
                         </TabsTrigger>
@@ -350,7 +350,7 @@ export default function CryptoPortfolio() {
 
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <TabsTrigger value="balances" className="text-xs sm:text-sm lg:text-base h-full px-3 py-0 overflow-hidden">
+                        <TabsTrigger value="balances" className="text-sm h-full px-3 py-0 overflow-hidden">
                           <span className="hidden lg:inline truncate">Training Performances</span>
                           <span className="lg:hidden truncate">BALANCES</span>
                         </TabsTrigger>
@@ -360,7 +360,7 @@ export default function CryptoPortfolio() {
 
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <TabsTrigger value="profit" className="text-xs sm:text-sm lg:text-base h-full px-3 py-0 overflow-hidden">
+                        <TabsTrigger value="profit" className="text-sm h-full px-3 py-0 overflow-hidden">
                           <span className="hidden lg:inline truncate">PROFIT & LOSS</span>
                           <span className="lg:hidden truncate">P&L</span>
                         </TabsTrigger>
