@@ -176,7 +176,7 @@ const Index = () => {
               </span>
             </div>
             
-            <h1 className="text-h1 text-primary-foreground mb-4 sm:mb-6 drop-shadow-lg">
+            <h1 className="text-h1 text-white mb-4 sm:mb-6 drop-shadow-lg">
               CashSnap <span className="text-primary-glow">Finance</span>
             </h1>
             
