@@ -62,16 +62,35 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
+      // Encrypt sensitive data before storing
+      const [apiKeyResult, apiSecretResult] = await Promise.all([
+        supabase.functions.invoke('crypto-encryption', {
+          body: { action: 'encrypt', plaintext: apiKey }
+        }),
+        supabase.functions.invoke('crypto-encryption', {
+          body: { action: 'encrypt', plaintext: apiSecret }
+        })
+      ]);
+
+      if (apiKeyResult.error || apiSecretResult.error) {
+        throw new Error('Failed to encrypt credentials');
+      }
+
+      const encryptedData = {
+        user_id: user.id,
+        exchange_name: exchangeName,
+        account_name: accountName,
+        api_key: null, // Clear plaintext
+        api_secret: null, // Clear plaintext  
+        api_key_enc: apiKeyResult.data.encrypted,
+        api_secret_enc: apiSecretResult.data.encrypted,
+        enc_iv: apiKeyResult.data.iv, // Same IV for both (they're related)
+        is_active: true
+      };
+
       const { data, error } = await supabase
         .from('exchange_accounts')
-        .insert({
-          user_id: user.id,
-          exchange_name: exchangeName,
-          account_name: accountName,
-          api_key: apiKey,
-          api_secret: apiSecret,
-          is_active: true
-        })
+        .insert(encryptedData)
         .select()
         .single();
 
@@ -225,12 +244,30 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
   const syncAccount = async (account: ExchangeAccount) => {
     setIsSyncing(true);
     try {
+      // Decrypt credentials before using them
+      if (!account.api_key_enc || !account.api_secret_enc || !account.enc_iv) {
+        throw new Error('Account credentials are not properly encrypted');
+      }
+
+      const [apiKeyResult, apiSecretResult] = await Promise.all([
+        supabase.functions.invoke('crypto-encryption', {
+          body: { action: 'decrypt', encryptedData: account.api_key_enc, iv: account.enc_iv }
+        }),
+        supabase.functions.invoke('crypto-encryption', {
+          body: { action: 'decrypt', encryptedData: account.api_secret_enc, iv: account.enc_iv }
+        })
+      ]);
+
+      if (apiKeyResult.error || apiSecretResult.error) {
+        throw new Error('Failed to decrypt credentials');
+      }
+
       const functionName = account.exchange_name === 'binance' ? 'binance-integration' : 'bybit-integration';
       const { data, error } = await supabase.functions.invoke(functionName, {
         body: {
           action: 'connect',
-          apiKey: account.api_key,
-          secret: account.api_secret
+          apiKey: apiKeyResult.data.plaintext,
+          secret: apiSecretResult.data.plaintext
         }
       });
       

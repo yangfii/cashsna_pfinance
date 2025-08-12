@@ -233,9 +233,12 @@ export type Database = {
       exchange_accounts: {
         Row: {
           account_name: string
-          api_key: string
-          api_secret: string
+          api_key: string | null
+          api_key_enc: string | null
+          api_secret: string | null
+          api_secret_enc: string | null
           created_at: string
+          enc_iv: string | null
           exchange_name: string
           id: string
           is_active: boolean
@@ -245,9 +248,12 @@ export type Database = {
         }
         Insert: {
           account_name: string
-          api_key: string
-          api_secret: string
+          api_key?: string | null
+          api_key_enc?: string | null
+          api_secret?: string | null
+          api_secret_enc?: string | null
           created_at?: string
+          enc_iv?: string | null
           exchange_name: string
           id?: string
           is_active?: boolean
@@ -257,9 +263,12 @@ export type Database = {
         }
         Update: {
           account_name?: string
-          api_key?: string
-          api_secret?: string
+          api_key?: string | null
+          api_key_enc?: string | null
+          api_secret?: string | null
+          api_secret_enc?: string | null
           created_at?: string
+          enc_iv?: string | null
           exchange_name?: string
           id?: string
           is_active?: boolean
