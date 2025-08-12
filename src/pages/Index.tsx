@@ -16,6 +16,7 @@ import heroBackground from '@/assets/hero-background.jpg';
 import backgroundImage from '@/assets/background-image.jpg';
 import overlayBackground from '@/assets/overlay-background.jpg';
 const awardBadge = "/public/lovable-uploads/bd670881-e313-41b8-b0eb-23f2fe1fe109.png";
+
 const Index = () => {
   const {
     user
@@ -50,6 +51,7 @@ const Index = () => {
       }
     }
   }, [user, profile, profileLoading, navigate]);
+
   if (user) {
     return <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
         <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -124,6 +126,7 @@ const Index = () => {
         </div>
       </div>;
   }
+
   return <div className="min-h-screen">
       {/* Hero Section with Professional Gradient */}
       <section className="relative overflow-hidden bg-gradient-hero">
@@ -180,7 +183,7 @@ const Index = () => {
               CashSnap <span className="text-primary-glow">Finance</span>
             </h1>
             
-            <h2 className="text-h3 text-primary-foreground/90 mb-4 sm:mb-6">
+            <h2 className="text-h3 text-white mb-4 sm:mb-6">
               {language === 'khmer' ? 'គ្រប់គ្រងហិរញ្ញវត្ថុប្រចាំថ្ងៃ' : 'Daily Financial Management'}
             </h2>
             
@@ -544,4 +547,5 @@ const Index = () => {
       </section>
     </div>;
 };
+
 export default Index;
