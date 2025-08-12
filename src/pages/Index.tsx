@@ -152,7 +152,7 @@ const Index = () => {
         {/* Language and Theme Controls - Mobile Optimized */}
         <div className="relative z-10 flex justify-end p-3 sm:p-4">
           <div className="flex items-center gap-2 sm:gap-3">
-            <span className="text-white text-xs sm:text-sm font-medium animate-bounce hidden sm:inline">កូនខ្មែរ</span>
+            <span className="text-white text-xs sm:text-sm font-medium animate-float hover:animate-glow transition-all duration-300 transform hover:scale-110 cursor-default hidden sm:inline">កូនខ្មែរ</span>
             <Button onClick={() => {
             console.log('Current language:', language);
             const newLanguage = language === 'english' ? 'khmer' : 'english';
@@ -379,7 +379,7 @@ const Index = () => {
               <CardContent className="p-8">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="p-4 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 group-hover:scale-110">
-                    <span className="text-2xl animate-pulse group-hover:shadow-glow group-hover:text-primary transition-all duration-300">🤖</span>
+                    <span className="text-2xl animate-pulse group-hover/item:animate-bounce group-hover:text-primary transition-all duration-300">🤖</span>
                   </div>
                   <h3 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
                     {language === 'khmer' ? 'ជំនួយដោយបញ្ញាសិប្បនិម្មិត (AI Assistance)' : 'AI-Powered Financial Assistant'}
