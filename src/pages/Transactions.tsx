@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useSearchParams } from "react-router-dom";
 type Transaction = {
   id: string;
   user_id: string;
@@ -33,12 +34,14 @@ export default function Transactions() {
   const {
     user
   } = useAuth();
+  const [searchParams] = useSearchParams();
+  const categoryFilter = searchParams.get('category');
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date>();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(categoryFilter || "");
   const [filterType, setFilterType] = useState("all");
   const [formData, setFormData] = useState({
     type: "expense",

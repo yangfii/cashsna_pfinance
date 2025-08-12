@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 interface Category {
   id: string;
@@ -39,6 +40,7 @@ export default function Categories() {
   const [transactionCounts, setTransactionCounts] = useState<Record<string, number>>({});
   const { toast } = useToast();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const colors = [
     "red", "orange", "amber", "yellow", "lime", "green", 
@@ -359,8 +361,9 @@ export default function Categories() {
             {categories.income.map((category, index) => (
               <div
                 key={category.id}
-                className="p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-smooth animate-bounce-in"
+                className="p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-smooth animate-bounce-in cursor-pointer"
                 style={{animationDelay: `${index * 0.1}s`}}
+                onClick={() => navigate(`/dashboard/transactions?category=${encodeURIComponent(category.name)}`)}
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
@@ -419,8 +422,9 @@ export default function Categories() {
             {categories.expense.map((category, index) => (
               <div
                 key={category.id}
-                className="p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-smooth animate-bounce-in"
+                className="p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-smooth animate-bounce-in cursor-pointer"
                 style={{animationDelay: `${index * 0.1}s`}}
+                onClick={() => navigate(`/dashboard/transactions?category=${encodeURIComponent(category.name)}`)}
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
