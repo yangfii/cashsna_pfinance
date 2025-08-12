@@ -340,10 +340,7 @@ export default function CryptoPortfolio() {
 
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <TabsTrigger value="archive" className="text-sm h-full px-3 py-0 overflow-hidden">
-                          <span className="hidden lg:inline truncate">PORTFOLIO ARCHIVE</span>
-                          <span className="lg:hidden truncate">ARCHIVE</span>
-                        </TabsTrigger>
+                        
                       </TooltipTrigger>
                       <TooltipContent side="bottom">Portfolio Archive</TooltipContent>
                     </Tooltip>
