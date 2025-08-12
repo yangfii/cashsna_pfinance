@@ -168,7 +168,7 @@ const Index = () => {
         <div className="relative container-content py-12 sm:py-16 md:py-20 lg:py-24 text-center">
           <div className="animate-fade-in">
             <div className="mb-4 sm:mb-6">
-              <span className="inline-flex items-center px-3 sm:px-4 py-2 rounded-full bg-primary-foreground/20 text-primary-foreground text-xs sm:text-sm font-medium backdrop-blur-sm border border-primary-foreground/30">
+              <span className="inline-flex items-center px-3 sm:px-4 py-2 rounded-full bg-primary-foreground/20 text-white text-xs sm:text-sm font-medium backdrop-blur-sm border border-primary-foreground/30">
                 <span className="mr-2">✨</span>
                 <span className="hidden xs:inline">
                   {language === 'khmer' ? 'គ្រប់គ្រងហិរញ្ញវត្ថុដ៏ទំនើបសម្រាប់អ្នក' : 'AI-Powered Finance Management'}
