@@ -184,7 +184,7 @@ const Index = () => {
               {language === 'khmer' ? 'គ្រប់គ្រងហិរញ្ញវត្ថុប្រចាំថ្ងៃ' : 'Daily Financial Management'}
             </h2>
             
-            <p className="text-body text-primary-foreground/80 mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed px-4">
+            <p className="text-body text-white/80 mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed px-4">
               {language === 'khmer' ? 'ដំណោះស្រាយគ្រប់គ្រងលុយកាក់ពេញលេញសម្រាប់ប្រជាជនកម្ពុជា ជាមួយនឹងបច្ចេកវិទ្យា AI ទំនើប' : 'Complete money management solution for Cambodians with modern AI technology'}
             </p>
             
