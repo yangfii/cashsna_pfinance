@@ -317,20 +317,26 @@ export default function CryptoPortfolio() {
                 </SelectContent>
               </Select> : <>
                 <TooltipProvider delayDuration={200}>
-                  <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 lg:gap-3 flex-1 items-stretch auto-rows-[2.5rem] lg:auto-rows-[3rem]">
+                  <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1.5 lg:gap-2 flex-1 items-stretch auto-rows-[3rem] lg:auto-rows-[3.5rem] bg-muted/30 p-1.5 rounded-lg">
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <TabsTrigger value="portfolio" className="text-sm h-full px-3 py-0 overflow-hidden">
+                        <TabsTrigger 
+                          value="portfolio" 
+                          className="text-sm font-medium h-full px-4 py-2 rounded-md transition-all duration-200 hover:bg-background/80 data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border border-border/50 overflow-hidden"
+                        >
                           <span className="hidden sm:inline truncate">PORTFOLIO</span>
                           <span className="sm:hidden truncate">PORT</span>
                         </TabsTrigger>
                       </TooltipTrigger>
-                      <TooltipContent side="bottom">Portfolio</TooltipContent>
+                      <TooltipContent side="bottom">Portfolio Overview</TooltipContent>
                     </Tooltip>
 
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <TabsTrigger value="holdings" className="text-sm h-full px-3 py-0 overflow-hidden">
+                        <TabsTrigger 
+                          value="holdings" 
+                          className="text-sm font-medium h-full px-4 py-2 rounded-md transition-all duration-200 hover:bg-background/80 data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border border-border/50 overflow-hidden"
+                        >
                           <span className="hidden lg:inline truncate">HOLDINGS BY CHAIN</span>
                           <span className="lg:hidden truncate">HOLDINGS</span>
                         </TabsTrigger>
@@ -340,15 +346,24 @@ export default function CryptoPortfolio() {
 
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        
+                        <TabsTrigger 
+                          value="archive" 
+                          className="text-sm font-medium h-full px-4 py-2 rounded-md transition-all duration-200 hover:bg-background/80 data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border border-border/50 overflow-hidden"
+                        >
+                          <span className="hidden lg:inline truncate">PORTFOLIO ARCHIVE</span>
+                          <span className="lg:hidden truncate">ARCHIVE</span>
+                        </TabsTrigger>
                       </TooltipTrigger>
                       <TooltipContent side="bottom">Portfolio Archive</TooltipContent>
                     </Tooltip>
 
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <TabsTrigger value="balances" className="text-sm h-full px-3 py-0 overflow-hidden">
-                          <span className="hidden lg:inline truncate">Training Performances</span>
+                        <TabsTrigger 
+                          value="balances" 
+                          className="text-sm font-medium h-full px-4 py-2 rounded-md transition-all duration-200 hover:bg-background/80 data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border border-border/50 overflow-hidden"
+                        >
+                          <span className="hidden lg:inline truncate">TRADING PERFORMANCE</span>
                           <span className="lg:hidden truncate">BALANCES</span>
                         </TabsTrigger>
                       </TooltipTrigger>
@@ -357,12 +372,28 @@ export default function CryptoPortfolio() {
 
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <TabsTrigger value="profit" className="text-sm h-full px-3 py-0 overflow-hidden">
+                        <TabsTrigger 
+                          value="tokens" 
+                          className="text-sm font-medium h-full px-4 py-2 rounded-md transition-all duration-200 hover:bg-background/80 data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border border-border/50 overflow-hidden"
+                        >
+                          <span className="hidden lg:inline truncate">TOKEN BALANCES</span>
+                          <span className="lg:hidden truncate">TOKENS</span>
+                        </TabsTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">Token Balances History</TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <TabsTrigger 
+                          value="profit" 
+                          className="text-sm font-medium h-full px-4 py-2 rounded-md transition-all duration-200 hover:bg-background/80 data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border border-border/50 overflow-hidden"
+                        >
                           <span className="hidden lg:inline truncate">PROFIT & LOSS</span>
                           <span className="lg:hidden truncate">P&L</span>
                         </TabsTrigger>
                       </TooltipTrigger>
-                      <TooltipContent side="bottom">Profit & Loss</TooltipContent>
+                      <TooltipContent side="bottom">Profit & Loss Analysis</TooltipContent>
                     </Tooltip>
                   </TabsList>
                 </TooltipProvider>
