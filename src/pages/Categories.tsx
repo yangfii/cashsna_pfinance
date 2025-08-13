@@ -48,7 +48,6 @@ export default function Categories() {
     "violet", "purple", "fuchsia", "pink", "rose"
   ];
 
-  // Fetch transaction counts for categories
   const fetchTransactionCounts = async () => {
     try {
       const { data, error } = await supabase
@@ -126,18 +125,39 @@ export default function Categories() {
 
     try {
       if (editingCategory) {
-        // Edit existing category
-        const { error } = await supabase
+        // Edit existing category - update transactions if name changed
+        const oldCategoryName = editingCategory.name;
+        const newCategoryName = formData.name.trim();
+        
+        const { error: categoryError } = await supabase
           .from('categories')
           .update({
-            name: formData.name.trim(),
+            name: newCategoryName,
             color: formData.color,
             updated_at: new Date().toISOString()
           })
           .eq('id', editingCategory.id)
-          .eq('user_id', user.id); // Ensure user can only edit their own categories
+          .eq('user_id', user.id);
 
-        if (error) throw error;
+        if (categoryError) throw categoryError;
+
+        // Update all transactions with the old category name to use the new name
+        if (oldCategoryName !== newCategoryName) {
+          const { error: transactionError } = await supabase
+            .from('transactions')
+            .update({ category: newCategoryName })
+            .eq('category', oldCategoryName)
+            .eq('user_id', user.id);
+
+          if (transactionError) {
+            console.error('Error updating transactions:', transactionError);
+            toast({
+              title: "Warning",
+              description: "Category updated but some transactions may not be synced",
+              variant: "destructive"
+            });
+          }
+        }
 
         toast({
           title: "Success",
@@ -188,13 +208,61 @@ export default function Categories() {
   };
 
   const handleDeleteCategory = async (categoryId: string) => {
+    if (!user?.id) {
+      toast({
+        title: "Error",
+        description: "User not authenticated",
+        variant: "destructive"
+      });
+      return;
+    }
+
     try {
-      const { error } = await supabase
+      // First, get the category name before deletion
+      const { data: categoryData, error: fetchError } = await supabase
+        .from('categories')
+        .select('name')
+        .eq('id', categoryId)
+        .eq('user_id', user.id)
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      const categoryName = categoryData.name;
+
+      // Check if there are transactions using this category
+      const { data: transactionData, error: transactionCheckError } = await supabase
+        .from('transactions')
+        .select('id')
+        .eq('category', categoryName)
+        .eq('user_id', user.id);
+
+      if (transactionCheckError) throw transactionCheckError;
+
+      // If there are transactions, update them to "Uncategorized"
+      if (transactionData && transactionData.length > 0) {
+        const { error: updateError } = await supabase
+          .from('transactions')
+          .update({ category: 'Uncategorized' })
+          .eq('category', categoryName)
+          .eq('user_id', user.id);
+
+        if (updateError) throw updateError;
+
+        toast({
+          title: "Info",
+          description: `${transactionData.length} transactions moved to "Uncategorized"`,
+        });
+      }
+
+      // Delete the category
+      const { error: deleteError } = await supabase
         .from('categories')
         .delete()
-        .eq('id', categoryId);
+        .eq('id', categoryId)
+        .eq('user_id', user.id);
 
-      if (error) throw error;
+      if (deleteError) throw deleteError;
 
       toast({
         title: "Success",
@@ -203,11 +271,11 @@ export default function Categories() {
 
       // Refresh data to ensure accuracy
       await Promise.all([fetchCategories(), fetchTransactionCounts()]);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting category:', error);
       toast({
         title: "Error",
-        description: "Failed to delete category",
+        description: error.message || "Failed to delete category",
         variant: "destructive"
       });
     }
@@ -375,7 +443,10 @@ export default function Categories() {
                       variant="ghost" 
                       size="sm" 
                       className="h-7 w-7 p-0"
-                      onClick={() => handleEditCategory(category)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditCategory(category);
+                      }}
                     >
                       <Edit className="h-3 w-3" />
                     </Button>
@@ -383,7 +454,10 @@ export default function Categories() {
                       variant="ghost" 
                       size="sm" 
                       className="h-7 w-7 p-0 text-destructive hover:text-destructive"
-                      onClick={() => handleDeleteCategory(category.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteCategory(category.id);
+                      }}
                     >
                       <Trash2 className="h-3 w-3" />
                     </Button>
@@ -436,7 +510,10 @@ export default function Categories() {
                       variant="ghost" 
                       size="sm" 
                       className="h-7 w-7 p-0"
-                      onClick={() => handleEditCategory(category)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditCategory(category);
+                      }}
                     >
                       <Edit className="h-3 w-3" />
                     </Button>
@@ -444,7 +521,10 @@ export default function Categories() {
                       variant="ghost" 
                       size="sm" 
                       className="h-7 w-7 p-0 text-destructive hover:text-destructive"
-                      onClick={() => handleDeleteCategory(category.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteCategory(category.id);
+                      }}
                     >
                       <Trash2 className="h-3 w-3" />
                     </Button>
