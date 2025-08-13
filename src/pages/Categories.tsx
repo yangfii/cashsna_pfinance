@@ -176,10 +176,48 @@ export default function Categories() {
 
         if (error) throw error;
 
-        toast({
-          title: "Success", 
-          description: "Category created successfully"
-        });
+        // Auto-categorize uncategorized transactions when creating new category
+        const { data: uncategorizedTransactions, error: fetchError } = await supabase
+          .from('transactions')
+          .select('id, note')
+          .eq('user_id', user.id)
+          .eq('category', 'Uncategorized');
+
+        if (!fetchError && uncategorizedTransactions && uncategorizedTransactions.length > 0) {
+          // Simple keyword matching: if transaction note contains category name, auto-categorize it
+          const transactionsToUpdate = uncategorizedTransactions.filter(transaction => 
+            transaction.note?.toLowerCase().includes(formData.name.toLowerCase())
+          );
+
+          if (transactionsToUpdate.length > 0) {
+            const { error: updateError } = await supabase
+              .from('transactions')
+              .update({ category: formData.name.trim() })
+              .in('id', transactionsToUpdate.map(t => t.id));
+
+            if (!updateError) {
+              toast({
+                title: "Success",
+                description: `Category created and ${transactionsToUpdate.length} uncategorized transactions auto-updated`
+              });
+            } else {
+              toast({
+                title: "Success",
+                description: "Category created successfully"
+              });
+            }
+          } else {
+            toast({
+              title: "Success",
+              description: "Category created successfully"
+            });
+          }
+        } else {
+          toast({
+            title: "Success", 
+            description: "Category created successfully"
+          });
+        }
       }
 
       // Refresh data to ensure accuracy
