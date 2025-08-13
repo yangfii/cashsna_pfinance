@@ -14,21 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      "2FA cashsnap": {
-        Row: {
-          created_at: string
-          id: number
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-        }
-        Update: {
-          created_at?: string
-          id?: number
-        }
-        Relationships: []
-      }
       bug_reports: {
         Row: {
           created_at: string
