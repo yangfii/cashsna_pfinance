@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { AlertTriangle, ExternalLink, Key, RefreshCw, CheckCircle, XCircle, Trash2 } from "lucide-react";
+import ExchangeSecurityDialog from "./ExchangeSecurityDialog";
 import { toast } from "sonner";
 import { useAnimatedToast } from "@/hooks/useAnimatedToast";
 import { supabase } from "@/integrations/supabase/client";
@@ -244,6 +245,27 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
   const syncAccount = async (account: ExchangeAccount) => {
     setIsSyncing(true);
     try {
+      // Get user's IP address (simplified for demo - in production use proper IP detection)
+      const clientIp = '127.0.0.1'; // In real app, get from request headers
+      
+      // Validate access before syncing
+      const { data: accessValidation, error: validationError } = await supabase.rpc('validate_exchange_access', {
+        account_id: account.id,
+        client_ip: clientIp,
+        user_agent_string: navigator.userAgent
+      });
+
+      if (validationError) throw validationError;
+      
+      if (!accessValidation[0]?.allowed) {
+        if (accessValidation[0]?.requires_auth) {
+          toast.error('Re-authentication required. Please authenticate in Security settings.');
+        } else {
+          toast.error(`Access denied: ${accessValidation[0]?.reason}`);
+        }
+        return;
+      }
+
       // Decrypt credentials before using them
       if (!account.api_key_enc || !account.api_secret_enc || !account.enc_iv) {
         throw new Error('Account credentials are not properly encrypted');
@@ -274,7 +296,9 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
       if (error) throw error;
       
       if (data?.success) {
-        await updateLastSync(account.id);
+        // Increment sync counter
+        await supabase.rpc('increment_sync_counter', { account_id: account.id });
+        await loadConnectedAccounts(); // Refresh to show updated counts
 
         if (data.holdings && data.holdings.length > 0) {
           onImportHoldings(data.holdings);
@@ -403,6 +427,10 @@ export default function ExchangeIntegration({ onImportHoldings }: ExchangeIntegr
                             </div>
                             
                             <div className="flex gap-2">
+                              <ExchangeSecurityDialog 
+                                account={account} 
+                                onUpdate={loadConnectedAccounts}
+                              />
                               <Button
                                 variant="outline"
                                 size="sm"
