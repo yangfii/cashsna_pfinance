@@ -7,7 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Shield, Smartphone, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { use2FA } from '@/hooks/use2FA';
+import { useEncrypted2FA } from '@/hooks/useEncrypted2FA';
 import { useTrustedDevices } from '@/hooks/useTrustedDevices';
 import { toast } from 'sonner';
 
@@ -17,7 +17,7 @@ interface DeviceVerificationProps {
 
 export function DeviceVerification({ onVerificationComplete }: DeviceVerificationProps) {
   const { user } = useAuth();
-  const { verify2FA } = use2FA();
+  const { verify2FA } = useEncrypted2FA();
   const { trustCurrentDevice } = useTrustedDevices();
   
   const [verificationCode, setVerificationCode] = useState('');

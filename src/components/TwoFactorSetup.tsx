@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Shield, ShieldCheck, QrCode, Download, AlertTriangle, Copy } from 'lucide-react';
-import { use2FA } from '@/hooks/use2FA';
+import { useEncrypted2FA } from '@/hooks/useEncrypted2FA';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -26,7 +26,7 @@ export function TwoFactorSetup() {
     enable2FA,
     disable2FA,
     generateNewBackupCodes
-  } = use2FA();
+  } = useEncrypted2FA();
 
   console.log('2FA Setup - User:', user?.email);
   console.log('2FA Setup - Settings:', twoFASettings);

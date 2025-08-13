@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
-import { use2FA } from '@/hooks/use2FA';
+import { useEncrypted2FA } from '@/hooks/useEncrypted2FA';
 import { useTrustedDevices } from '@/hooks/useTrustedDevices';
 import { DeviceVerification } from './DeviceVerification';
 import { toast } from 'sonner';
@@ -17,7 +17,7 @@ interface ProtectedRouteProps {
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { user, loading } = useAuth();
   const { t } = useLanguage();
-  const { twoFASettings, loading: twoFALoading } = use2FA();
+  const { twoFASettings, loading: twoFALoading } = useEncrypted2FA();
   const { isCurrentDeviceTrusted, loading: deviceLoading } = useTrustedDevices();
   const navigate = useNavigate();
   const [deviceVerified, setDeviceVerified] = useState(false);

@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Shield, AlertTriangle } from 'lucide-react';
-import { use2FA } from '@/hooks/use2FA';
+import { useEncrypted2FA } from '@/hooks/useEncrypted2FA';
 import { toast } from 'sonner';
 
 interface TwoFactorVerificationProps {
@@ -15,7 +15,7 @@ interface TwoFactorVerificationProps {
 }
 
 export function TwoFactorVerification({ onVerificationSuccess, onCancel }: TwoFactorVerificationProps) {
-  const { verify2FA } = use2FA();
+  const { verify2FA } = useEncrypted2FA();
   const [verificationCode, setVerificationCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [useBackupCode, setUseBackupCode] = useState(false);
