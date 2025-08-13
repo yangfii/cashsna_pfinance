@@ -6,12 +6,14 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Edit, Trash2, FolderOpen, TrendingUp, TrendingDown } from "lucide-react";
+import { Plus, Edit, Trash2, FolderOpen, TrendingUp, TrendingDown, Wifi, WifiOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useOfflineSync } from "@/hooks/useOfflineSync";
 
 interface Category {
   id: string;
@@ -24,10 +26,15 @@ interface Category {
 }
 
 export default function Categories() {
-  const [categories, setCategories] = useState<{ income: Category[]; expense: Category[] }>({
+  // Local storage for categories and transaction counts
+  const [categoriesCache, setCategoriesCache] = useLocalStorage<{ income: Category[]; expense: Category[] }>('cashsnap_categories', {
     income: [],
     expense: []
   });
+  const [transactionCountsCache, setTransactionCountsCache] = useLocalStorage<Record<string, number>>('cashsnap_transaction_counts', {});
+  
+  // UI state
+  const [categories, setCategories] = useState<{ income: Category[]; expense: Category[] }>(categoriesCache);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [formData, setFormData] = useState({
@@ -37,10 +44,13 @@ export default function Categories() {
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [transactionCounts, setTransactionCounts] = useState<Record<string, number>>({});
+  const [transactionCounts, setTransactionCounts] = useState<Record<string, number>>(transactionCountsCache);
+  
+  // Hooks
   const { toast } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { isOnline, addToSyncQueue } = useOfflineSync();
 
   const colors = [
     "red", "orange", "amber", "yellow", "lime", "green", 
@@ -50,21 +60,62 @@ export default function Categories() {
 
   const fetchTransactionCounts = async () => {
     try {
-      const { data, error } = await supabase
-        .from('transactions')
-        .select('category, id')
-        .order('category');
+      if (isOnline) {
+        const { data, error } = await supabase
+          .from('transactions')
+          .select('category, id')
+          .order('category');
 
-      if (error) throw error;
+        if (error) throw error;
 
-      const counts: Record<string, number> = {};
-      data?.forEach(transaction => {
-        counts[transaction.category] = (counts[transaction.category] || 0) + 1;
-      });
-      
-      setTransactionCounts(counts);
+        const counts: Record<string, number> = {};
+        data?.forEach(transaction => {
+          counts[transaction.category] = (counts[transaction.category] || 0) + 1;
+        });
+        
+        setTransactionCounts(counts);
+        setTransactionCountsCache(counts);
+      } else {
+        // Use cached data when offline
+        setTransactionCounts(transactionCountsCache);
+      }
     } catch (error) {
       console.error('Error fetching transaction counts:', error);
+      // Fallback to cached data on error
+      setTransactionCounts(transactionCountsCache);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      if (isOnline) {
+        const { data, error } = await supabase
+          .from('categories')
+          .select('*')
+          .order('created_at', { ascending: true });
+
+        if (error) throw error;
+
+        const categorizedData = {
+          income: (data?.filter(cat => cat.type === 'income') || []) as Category[],
+          expense: (data?.filter(cat => cat.type === 'expense') || []) as Category[]
+        };
+
+        setCategories(categorizedData);
+        setCategoriesCache(categorizedData);
+      } else {
+        // Use cached data when offline
+        setCategories(categoriesCache);
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      // Fallback to cached data on error
+      setCategories(categoriesCache);
+      toast({
+        title: "Offline Mode",
+        description: "Using cached data. Changes will sync when online.",
+        variant: "default"
+      });
     }
   };
 
@@ -75,32 +126,7 @@ export default function Categories() {
       setLoading(false);
     };
     loadData();
-  }, []);
-
-  const fetchCategories = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('categories')
-        .select('*')
-        .order('created_at', { ascending: true });
-
-      if (error) throw error;
-
-      const categorizedData = {
-        income: (data?.filter(cat => cat.type === 'income') || []) as Category[],
-        expense: (data?.filter(cat => cat.type === 'expense') || []) as Category[]
-      };
-
-      setCategories(categorizedData);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load categories",
-        variant: "destructive"
-      });
-    }
-  };
+  }, [isOnline]);
 
   const handleSaveCategory = async () => {
     if (!formData.name.trim()) {
@@ -124,82 +150,99 @@ export default function Categories() {
     setSaving(true);
 
     try {
-      if (editingCategory) {
-        // Edit existing category - update transactions if name changed
-        const oldCategoryName = editingCategory.name;
-        const newCategoryName = formData.name.trim();
-        
-        const { error: categoryError } = await supabase
-          .from('categories')
-          .update({
-            name: newCategoryName,
-            color: formData.color,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', editingCategory.id)
-          .eq('user_id', user.id);
+      const categoryData = {
+        name: formData.name.trim(),
+        type: formData.type as 'income' | 'expense',
+        color: formData.color,
+        user_id: user.id,
+        id: editingCategory?.id || crypto.randomUUID(),
+        created_at: editingCategory?.created_at || new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
 
-        if (categoryError) throw categoryError;
-
-        // Update all transactions with the old category name to use the new name
-        if (oldCategoryName !== newCategoryName) {
-          const { error: transactionError } = await supabase
-            .from('transactions')
-            .update({ category: newCategoryName })
-            .eq('category', oldCategoryName)
+      if (isOnline) {
+        if (editingCategory) {
+          // Edit existing category - update transactions if name changed
+          const oldCategoryName = editingCategory.name;
+          const newCategoryName = formData.name.trim();
+          
+          const { error: categoryError } = await supabase
+            .from('categories')
+            .update({
+              name: newCategoryName,
+              color: formData.color,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', editingCategory.id)
             .eq('user_id', user.id);
 
-          if (transactionError) {
-            console.error('Error updating transactions:', transactionError);
-            toast({
-              title: "Warning",
-              description: "Category updated but some transactions may not be synced",
-              variant: "destructive"
-            });
-          }
-        }
+          if (categoryError) throw categoryError;
 
-        toast({
-          title: "Success",
-          description: "Category updated successfully"
-        });
-      } else {
-        // Add new category
-        const { error } = await supabase
-          .from('categories')
-          .insert({
-            name: formData.name.trim(),
-            type: formData.type as 'income' | 'expense',
-            color: formData.color,
-            user_id: user.id
-          });
-
-        if (error) throw error;
-
-        // Auto-categorize uncategorized transactions when creating new category
-        const { data: uncategorizedTransactions, error: fetchError } = await supabase
-          .from('transactions')
-          .select('id, note')
-          .eq('user_id', user.id)
-          .eq('category', 'Uncategorized');
-
-        if (!fetchError && uncategorizedTransactions && uncategorizedTransactions.length > 0) {
-          // Simple keyword matching: if transaction note contains category name, auto-categorize it
-          const transactionsToUpdate = uncategorizedTransactions.filter(transaction => 
-            transaction.note?.toLowerCase().includes(formData.name.toLowerCase())
-          );
-
-          if (transactionsToUpdate.length > 0) {
-            const { error: updateError } = await supabase
+          // Update all transactions with the old category name to use the new name
+          if (oldCategoryName !== newCategoryName) {
+            const { error: transactionError } = await supabase
               .from('transactions')
-              .update({ category: formData.name.trim() })
-              .in('id', transactionsToUpdate.map(t => t.id));
+              .update({ category: newCategoryName })
+              .eq('category', oldCategoryName)
+              .eq('user_id', user.id);
 
-            if (!updateError) {
+            if (transactionError) {
+              console.error('Error updating transactions:', transactionError);
               toast({
-                title: "Success",
-                description: `Category created and ${transactionsToUpdate.length} uncategorized transactions auto-updated`
+                title: "Warning",
+                description: "Category updated but some transactions may not be synced",
+                variant: "destructive"
               });
+            }
+          }
+
+          toast({
+            title: "Success",
+            description: "Category updated successfully"
+          });
+        } else {
+          // Add new category
+          const { error } = await supabase
+            .from('categories')
+            .insert({
+              name: formData.name.trim(),
+              type: formData.type as 'income' | 'expense',
+              color: formData.color,
+              user_id: user.id
+            });
+
+          if (error) throw error;
+
+          // Auto-categorize uncategorized transactions when creating new category
+          const { data: uncategorizedTransactions, error: fetchError } = await supabase
+            .from('transactions')
+            .select('id, note')
+            .eq('user_id', user.id)
+            .eq('category', 'Uncategorized');
+
+          if (!fetchError && uncategorizedTransactions && uncategorizedTransactions.length > 0) {
+            // Simple keyword matching: if transaction note contains category name, auto-categorize it
+            const transactionsToUpdate = uncategorizedTransactions.filter(transaction => 
+              transaction.note?.toLowerCase().includes(formData.name.toLowerCase())
+            );
+
+            if (transactionsToUpdate.length > 0) {
+              const { error: updateError } = await supabase
+                .from('transactions')
+                .update({ category: formData.name.trim() })
+                .in('id', transactionsToUpdate.map(t => t.id));
+
+              if (!updateError) {
+                toast({
+                  title: "Success",
+                  description: `Category created and ${transactionsToUpdate.length} uncategorized transactions auto-updated`
+                });
+              } else {
+                toast({
+                  title: "Success",
+                  description: "Category created successfully"
+                });
+              }
             } else {
               toast({
                 title: "Success",
@@ -208,20 +251,45 @@ export default function Categories() {
             }
           } else {
             toast({
-              title: "Success",
+              title: "Success", 
               description: "Category created successfully"
             });
           }
-        } else {
-          toast({
-            title: "Success", 
-            description: "Category created successfully"
-          });
         }
+
+        // Refresh data from server
+        await Promise.all([fetchCategories(), fetchTransactionCounts()]);
+      } else {
+        // Offline mode - update local storage and add to sync queue
+        const action = editingCategory ? 'update' : 'insert';
+        
+        // Update local categories cache
+        const updatedCategories = { ...categories };
+        if (editingCategory) {
+          // Update existing category in cache
+          const categoryType = editingCategory.type;
+          updatedCategories[categoryType] = updatedCategories[categoryType].map(cat => 
+            cat.id === editingCategory.id ? { ...cat, ...categoryData } : cat
+          );
+        } else {
+          // Add new category to cache
+          const categoryType = formData.type as 'income' | 'expense';
+          updatedCategories[categoryType] = [...updatedCategories[categoryType], categoryData as Category];
+        }
+        
+        setCategories(updatedCategories);
+        setCategoriesCache(updatedCategories);
+        
+        // Add to sync queue
+        addToSyncQueue('categories', action, categoryData);
+        
+        toast({
+          title: "Saved Offline",
+          description: `Category ${editingCategory ? 'updated' : 'created'} locally. Will sync when online.`,
+          variant: "default"
+        });
       }
 
-      // Refresh data to ensure accuracy
-      await Promise.all([fetchCategories(), fetchTransactionCounts()]);
       resetForm();
     } catch (error: any) {
       console.error('Error saving category:', error);
@@ -364,9 +432,24 @@ export default function Categories() {
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">ប្រភេទចំណូល/ចំណាយ</h1>
-          <p className="text-muted-foreground">គ្រប់គ្រងប្រភេទនៃប្រតិបត្តិការរបស់អ្នក</p>
+        <div className="flex items-center gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground mb-2">ប្រភេទចំណូល/ចំណាយ</h1>
+            <p className="text-muted-foreground">គ្រប់គ្រងប្រភេទនៃប្រតិបត្តិការរបស់អ្នក</p>
+          </div>
+          <div className="flex items-center gap-2">
+            {isOnline ? (
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                <Wifi className="h-4 w-4" />
+                <span className="text-sm">Online</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400">
+                <WifiOff className="h-4 w-4" />
+                <span className="text-sm">Offline</span>
+              </div>
+            )}
+          </div>
         </div>
         
         <Dialog open={dialogOpen} onOpenChange={(open) => {
