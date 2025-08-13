@@ -333,30 +333,25 @@ export default function Transactions() {
           if (open) {
             // Refresh categories when dialog opens to get latest categories
             fetchCategories();
-            // Reset form data for new transaction if not editing
-            if (!editingTransaction) {
-              setFormData({
-                type: "expense",
-                amount: "",
-                category: "",
-                note: "",
-                date: new Date(),
-                imageUrl: null
-              });
-            }
           }
         }}>
           <DialogTrigger asChild>
-            <Button className="gap-2 bg-gradient-primary border-0 hover:shadow-glow transition-smooth">
+            <Button className="gap-2 bg-gradient-primary border-0 hover:shadow-glow transition-smooth" onClick={() => {
+            setEditingTransaction(null);
+            setFormData({
+              type: "expense",
+              amount: "",
+              category: "",
+              note: "",
+              date: new Date(),
+              imageUrl: null
+            });
+          }}>
               <Plus className="h-4 w-4" />
               បន្ថែមប្រតិបត្តិការ
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-md relative overflow-hidden group">
-            {/* Growing light effect background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/10 to-transparent opacity-0 animate-pulse group-hover:opacity-100 transition-opacity duration-1000 rounded-lg" />
-            <div className="absolute inset-0 bg-gradient-radial from-primary/30 via-transparent to-transparent opacity-0 animate-[pulse_3s_ease-in-out_infinite] rounded-lg" />
-            <div className="relative z-10">
+          <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>
                 {editingTransaction ? 'កែប្រែប្រតិបត្តិការ' : 'បន្ថែមប្រតិបត្តិការថ្មី'}
@@ -471,7 +466,6 @@ export default function Transactions() {
                 <Save className="h-4 w-4" />
                 {editingTransaction ? 'កែប្រែ' : 'រក្សា'}
               </Button>
-            </div>
             </div>
           </DialogContent>
         </Dialog>
