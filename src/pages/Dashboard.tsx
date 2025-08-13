@@ -117,11 +117,19 @@ export default function Dashboard() {
         <div className="flex flex-col sm:flex-row gap-3 lg:gap-4">
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" className={cn("gap-3 w-full sm:w-auto h-12 lg:h-14 px-6 lg:px-8", "hover:scale-105 hover:shadow-lg transition-all duration-300", "border-2 hover:border-primary/50 hover:bg-primary/5", "animate-fade-in", !selectedDate && "text-muted-foreground")} style={{
-              animationDelay: '0.1s'
-            }}>
-                <Calendar className="size-5" />
-                <span className="text-sm lg:text-base font-medium">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className={cn(
+                  "gap-2 w-full sm:w-auto h-11 px-4 lg:px-6", 
+                  "hover:bg-primary/5 hover:border-primary/50 transition-all duration-200", 
+                  "animate-fade-in font-medium",
+                  !selectedDate && "text-muted-foreground"
+                )} 
+                style={{ animationDelay: '0.1s' }}
+              >
+                <Calendar className="h-4 w-4" />
+                <span className="text-sm">
                   {selectedDate ? format(selectedDate, "PPP") : t("dashboard.checkTransactions")}
                 </span>
               </Button>
@@ -131,13 +139,19 @@ export default function Dashboard() {
             </PopoverContent>
           </Popover>
           
-          <Button className={cn("gap-3 bg-gradient-primary border-0 hover:shadow-glow transition-all duration-500", "w-full sm:w-auto h-12 lg:h-14 px-6 lg:px-8", "hover:scale-105 hover:-translate-y-1 active:scale-95", "animate-fade-in shadow-elegant", "group overflow-hidden relative")} style={{
-          animationDelay: '0.2s'
-        }} onClick={() => navigate('/dashboard/transactions')}>
-            {/* Ripple effect background */}
-            <div className="absolute inset-0 bg-white/20 scale-0 group-hover:scale-100 transition-transform duration-500 rounded-lg" />
-            <Plus className="size-5 relative z-10 group-hover:rotate-90 transition-transform duration-300" />
-            <span className="text-sm lg:text-base font-semibold relative z-10">{t("dashboard.addTransaction")}</span>
+          <Button 
+            className={cn(
+              "gap-2 bg-gradient-primary border-0 hover:bg-gradient-primary/90", 
+              "w-full sm:w-auto h-11 px-4 lg:px-6", 
+              "hover:shadow-lg transition-all duration-200", 
+              "animate-fade-in font-semibold",
+              "group"
+            )} 
+            style={{ animationDelay: '0.2s' }} 
+            onClick={() => navigate('/dashboard/transactions')}
+          >
+            <Plus className="h-4 w-4 transition-transform duration-200 group-hover:rotate-45" />
+            <span className="text-sm">{t("dashboard.addTransaction")}</span>
           </Button>
         </div>
       </div>
@@ -247,10 +261,17 @@ export default function Dashboard() {
             }}>
                 {t("dashboard.recentTransactions")}
               </CardTitle>
-              <Button variant="outline" size="sm" className={cn("w-full lg:w-auto h-10 lg:h-12 px-4 lg:px-6", "hover:scale-105 hover:shadow-md transition-all duration-300", "border-2 hover:border-primary/50 hover:bg-primary/5", "animate-fade-in")} style={{
-              animationDelay: '0.8s'
-            }}>
-                <span className="text-sm lg:text-base font-medium">{t("common.viewAll")}</span>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className={cn(
+                  "w-full lg:w-auto h-10 px-4 font-medium", 
+                  "hover:bg-primary/5 hover:border-primary/50 transition-all duration-200", 
+                  "animate-fade-in"
+                )} 
+                style={{ animationDelay: '0.8s' }}
+              >
+                <span className="text-sm">{t("common.viewAll")}</span>
               </Button>
             </div>
           </CardHeader>
