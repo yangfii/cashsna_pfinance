@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Edit, Trash2, FolderOpen, TrendingUp, TrendingDown, Wifi, WifiOff } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -65,6 +65,7 @@ export default function Categories() {
         const { data, error } = await supabase
           .from('transactions')
           .select('category, id')
+          .eq('user_id', user?.id)
           .order('category');
 
         if (error) throw error;
@@ -486,6 +487,9 @@ export default function Categories() {
                 <DialogTitle>
                   {editingCategory ? "កែសម្រួលប្រភេទ" : "បន្ថែមប្រភេទថ្មី"}
                 </DialogTitle>
+                <DialogDescription>
+                  {editingCategory ? "កែសម្រួលប្រភេទចំណូល ឬ ចំណាយ" : "បង្កើតប្រភេទថ្មីសម្រាប់ចំណូល ឬ ចំណាយ"}
+                </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div className="space-y-2">
