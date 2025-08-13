@@ -28,15 +28,18 @@ type Transaction = {
   updated_at: string;
   image_url: string | null;
 };
-const incomeCategories = ["ប្រាក់ខែ", "បន្ថែម", "លក់របស់", "ការដាក់វិនិយោគ", "Crypto investment"];
-const expenseCategories = ["អាហារ", "Research Costs", "ដឹកជញ្ជូន", "សុខភាព", "កម្សាន្ត", "សំលៀកបំពាក់", "គ្រួសារ", "ថ្លៃអុីនធ័រណេត"];
+// Categories will be fetched dynamically from the database
 export default function Transactions() {
-  const {
-    user
-  } = useAuth();
+  const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const categoryFilter = searchParams.get('category');
+  
+  // States
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [categories, setCategories] = useState<{income: string[], expense: string[]}>({
+    income: [],
+    expense: []
+  });
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
@@ -54,10 +57,42 @@ export default function Transactions() {
   const [isProcessingImage, setIsProcessingImage] = useState(false);
   const [viewingImage, setViewingImage] = useState<string | null>(null);
 
-  // Fetch transactions on mount
+  // Fetch data on mount
   useEffect(() => {
-    fetchTransactions();
+    if (user) {
+      fetchTransactions();
+      fetchCategories();
+    }
   }, [user]);
+
+  // Fetch categories from database
+  const fetchCategories = async () => {
+    if (!user) return;
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('name, type')
+        .eq('user_id', user.id)
+        .order('name');
+
+      if (error) throw error;
+
+      const incomeCategories = data?.filter(cat => cat.type === 'income').map(cat => cat.name) || [];
+      const expenseCategories = data?.filter(cat => cat.type === 'expense').map(cat => cat.name) || [];
+      
+      setCategories({
+        income: incomeCategories,
+        expense: expenseCategories
+      });
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      // Set fallback categories if fetch fails
+      setCategories({
+        income: ["ប្រាក់ខែ", "បន្ថែម", "លក់របស់"],
+        expense: ["អាហារ", "ដឹកជញ្ជូន", "សុខភាព", "កម្សាន្ត"]
+      });
+    }
+  };
   const fetchTransactions = async () => {
     if (!user) return;
     try {
@@ -293,7 +328,13 @@ export default function Transactions() {
           <p className="text-muted-foreground">គ្រប់គ្រងចំណូលនិងចំណាយរបស់អ្នក</p>
         </div>
         
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <Dialog open={dialogOpen} onOpenChange={(open) => {
+          setDialogOpen(open);
+          if (open) {
+            // Refresh categories when dialog opens to get latest categories
+            fetchCategories();
+          }
+        }}>
           <DialogTrigger asChild>
             <Button className="gap-2 bg-gradient-primary border-0 hover:shadow-glow transition-smooth" onClick={() => {
             setEditingTransaction(null);
@@ -379,7 +420,7 @@ export default function Transactions() {
                     <SelectValue placeholder="ជ្រើសរើសប្រភេទ" />
                   </SelectTrigger>
                   <SelectContent>
-                    {(formData.type === "income" ? incomeCategories : expenseCategories).map(category => <SelectItem key={category} value={category}>{category}</SelectItem>)}
+                    {(formData.type === "income" ? categories.income : categories.expense).map(category => <SelectItem key={category} value={category}>{category}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
