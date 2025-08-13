@@ -14,6 +14,21 @@ export type Database = {
   }
   public: {
     Tables: {
+      "2FA cashsnap": {
+        Row: {
+          created_at: string
+          id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+        }
+        Relationships: []
+      }
       bug_reports: {
         Row: {
           created_at: string
@@ -230,49 +245,106 @@ export type Database = {
         }
         Relationships: []
       }
+      exchange_access_logs: {
+        Row: {
+          action: string
+          created_at: string
+          exchange_account_id: string
+          failure_reason: string | null
+          id: string
+          ip_address: unknown
+          success: boolean
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          exchange_account_id: string
+          failure_reason?: string | null
+          id?: string
+          ip_address: unknown
+          success?: boolean
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          exchange_account_id?: string
+          failure_reason?: string | null
+          id?: string
+          ip_address?: unknown
+          success?: boolean
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       exchange_accounts: {
         Row: {
           account_name: string
+          allowed_ips: unknown[] | null
           api_key: string | null
           api_key_enc: string | null
           api_secret: string | null
           api_secret_enc: string | null
+          auth_expires_at: string | null
           created_at: string
+          daily_sync_count: number | null
           enc_iv: string | null
           exchange_name: string
           id: string
           is_active: boolean
+          last_auth_at: string | null
+          last_sync_date: string | null
           last_synced_at: string | null
+          max_daily_syncs: number | null
+          requires_reauth: boolean | null
           updated_at: string
           user_id: string
         }
         Insert: {
           account_name: string
+          allowed_ips?: unknown[] | null
           api_key?: string | null
           api_key_enc?: string | null
           api_secret?: string | null
           api_secret_enc?: string | null
+          auth_expires_at?: string | null
           created_at?: string
+          daily_sync_count?: number | null
           enc_iv?: string | null
           exchange_name: string
           id?: string
           is_active?: boolean
+          last_auth_at?: string | null
+          last_sync_date?: string | null
           last_synced_at?: string | null
+          max_daily_syncs?: number | null
+          requires_reauth?: boolean | null
           updated_at?: string
           user_id: string
         }
         Update: {
           account_name?: string
+          allowed_ips?: unknown[] | null
           api_key?: string | null
           api_key_enc?: string | null
           api_secret?: string | null
           api_secret_enc?: string | null
+          auth_expires_at?: string | null
           created_at?: string
+          daily_sync_count?: number | null
           enc_iv?: string | null
           exchange_name?: string
           id?: string
           is_active?: boolean
+          last_auth_at?: string | null
+          last_sync_date?: string | null
           last_synced_at?: string | null
+          max_daily_syncs?: number | null
+          requires_reauth?: boolean | null
           updated_at?: string
           user_id?: string
         }
@@ -738,6 +810,26 @@ export type Database = {
           volume_24h: number
           market_cap: number
           last_updated: string
+        }[]
+      }
+      increment_sync_counter: {
+        Args: { account_id: string }
+        Returns: boolean
+      }
+      update_exchange_auth: {
+        Args: { account_id: string; auth_duration_hours?: number }
+        Returns: boolean
+      }
+      validate_exchange_access: {
+        Args: {
+          account_id: string
+          client_ip: unknown
+          user_agent_string?: string
+        }
+        Returns: {
+          allowed: boolean
+          reason: string
+          requires_auth: boolean
         }[]
       }
     }
