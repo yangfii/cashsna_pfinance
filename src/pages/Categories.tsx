@@ -92,9 +92,13 @@ export default function Categories() {
         const { data, error } = await supabase
           .from('categories')
           .select('*')
+          .eq('user_id', user?.id)
           .order('created_at', { ascending: true });
 
-        if (error) throw error;
+        if (error) {
+          console.error('Error fetching categories:', error);
+          throw error;
+        }
 
         const categorizedData = {
           income: (data?.filter(cat => cat.type === 'income') || []) as Category[],
@@ -111,22 +115,33 @@ export default function Categories() {
       console.error('Error fetching categories:', error);
       // Fallback to cached data on error
       setCategories(categoriesCache);
-      toast({
-        title: "Offline Mode",
-        description: "Using cached data. Changes will sync when online.",
-        variant: "default"
-      });
+      
+      if (isOnline) {
+        toast({
+          title: "Error",
+          description: "Failed to load categories. Please check your connection.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Offline Mode",
+          description: "Using cached data. Changes will sync when online.",
+          variant: "default"
+        });
+      }
     }
   };
 
   useEffect(() => {
     const loadData = async () => {
+      if (!user?.id) return;
+      
       setLoading(true);
       await Promise.all([fetchCategories(), fetchTransactionCounts()]);
       setLoading(false);
     };
     loadData();
-  }, [isOnline]);
+  }, [user?.id, isOnline]);
 
   const handleSaveCategory = async () => {
     if (!formData.name.trim()) {
