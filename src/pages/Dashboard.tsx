@@ -47,12 +47,24 @@ export default function Dashboard() {
       return;
     }
     try {
+      // Get current month's start and end dates
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      
       const {
         data,
         error
-      } = await supabase.from('transactions').select('*').eq('user_id', user.id).order('date', {
-        ascending: false
-      });
+      } = await supabase
+        .from('transactions')
+        .select('*')
+        .eq('user_id', user.id)
+        .gte('date', startOfMonth.toISOString().split('T')[0])
+        .lte('date', endOfMonth.toISOString().split('T')[0])
+        .order('date', {
+          ascending: false
+        });
+      
       if (error) throw error;
       setTransactions((data || []).map(item => ({
         ...item,
