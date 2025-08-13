@@ -333,20 +333,21 @@ export default function Transactions() {
           if (open) {
             // Refresh categories when dialog opens to get latest categories
             fetchCategories();
+            // Reset form data for new transaction if not editing
+            if (!editingTransaction) {
+              setFormData({
+                type: "expense",
+                amount: "",
+                category: "",
+                note: "",
+                date: new Date(),
+                imageUrl: null
+              });
+            }
           }
         }}>
           <DialogTrigger asChild>
-            <Button className="gap-2 bg-gradient-primary border-0 hover:shadow-glow transition-smooth" onClick={() => {
-            setEditingTransaction(null);
-            setFormData({
-              type: "expense",
-              amount: "",
-              category: "",
-              note: "",
-              date: new Date(),
-              imageUrl: null
-            });
-          }}>
+            <Button className="gap-2 bg-gradient-primary border-0 hover:shadow-glow transition-smooth">
               <Plus className="h-4 w-4" />
               បន្ថែមប្រតិបត្តិការ
             </Button>
