@@ -14,7 +14,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useOfflineSync } from "@/hooks/useOfflineSync";
-import { LanguageSelector } from "@/components/LanguageSelector";
 
 interface Category {
   id: string;
@@ -469,87 +468,83 @@ export default function Categories() {
           </div>
         </div>
         
-        <div className="flex items-center gap-3">
-          <LanguageSelector />
-          
-          <Dialog open={dialogOpen} onOpenChange={(open) => {
-            setDialogOpen(open);
-            if (!open) resetForm();
-          }}>
-            <DialogTrigger asChild>
-              <Button className="gap-2 bg-gradient-primary border-0 hover:shadow-glow transition-smooth">
-                <Plus className="h-4 w-4" />
-                បន្ថែមប្រភេទ
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-md">
-              <DialogHeader>
-                <DialogTitle>
-                  {editingCategory ? "កែសម្រួលប្រភេទ" : "បន្ថែមប្រភេទថ្មី"}
-                </DialogTitle>
-                <DialogDescription>
-                  {editingCategory ? "កែសម្រួលប្រភេទចំណូល ឬ ចំណាយ" : "បង្កើតប្រភេទថ្មីសម្រាប់ចំណូល ឬ ចំណាយ"}
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label>ឈ្មោះប្រភេទ</Label>
-                  <Input
-                    placeholder="បញ្ចូលឈ្មោះប្រភេទ"
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    disabled={saving}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>ប្រភេទ</Label>
-                  <Select 
-                    value={formData.type} 
-                    onValueChange={(value) => setFormData({...formData, type: value})}
-                    disabled={!!editingCategory || saving}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="ជ្រើសរើសប្រភេទ" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="income">ចំណូល</SelectItem>
-                      <SelectItem value="expense">ចំណាយ</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>ពណ៌</Label>
-                  <div className="grid grid-cols-6 gap-2">
-                    {colors.map((color) => (
-                      <button
-                        key={color}
-                        type="button"
-                        onClick={() => setFormData({...formData, color})}
-                        disabled={saving}
-                        className={cn(
-                          "w-8 h-8 rounded-full border-2 transition-smooth",
-                          formData.color === color ? "border-foreground" : "border-transparent",
-                          saving ? "opacity-50 cursor-not-allowed" : "",
-                          `bg-${color}-500`
-                        )}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                <Button 
-                  onClick={handleSaveCategory} 
-                  className="w-full bg-gradient-primary border-0" 
+        <Dialog open={dialogOpen} onOpenChange={(open) => {
+          setDialogOpen(open);
+          if (!open) resetForm();
+        }}>
+          <DialogTrigger asChild>
+            <Button className="gap-2 bg-gradient-primary border-0 hover:shadow-glow transition-smooth">
+              <Plus className="h-4 w-4" />
+              បន្ថែមប្រភេទ
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>
+                {editingCategory ? "កែសម្រួលប្រភេទ" : "បន្ថែមប្រភេទថ្មី"}
+              </DialogTitle>
+              <DialogDescription>
+                {editingCategory ? "កែសម្រួលប្រភេទចំណូល ឬ ចំណាយ" : "បង្កើតប្រភេទថ្មីសម្រាប់ចំណូល ឬ ចំណាយ"}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>ឈ្មោះប្រភេទ</Label>
+                <Input
+                  placeholder="បញ្ចូលឈ្មោះប្រភេទ"
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
                   disabled={saving}
-                >
-                  {saving ? "កំពុងរក្សាទុក..." : editingCategory ? "រក្សាទុកការកែប្រែ" : "បន្ថែមប្រភេទ"}
-                </Button>
+                />
               </div>
-            </DialogContent>
-          </Dialog>
-        </div>
+
+              <div className="space-y-2">
+                <Label>ប្រភេទ</Label>
+                <Select 
+                  value={formData.type} 
+                  onValueChange={(value) => setFormData({...formData, type: value})}
+                  disabled={!!editingCategory || saving}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="ជ្រើសរើសប្រភេទ" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="income">ចំណូល</SelectItem>
+                    <SelectItem value="expense">ចំណាយ</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>ពណ៌</Label>
+                <div className="grid grid-cols-6 gap-2">
+                  {colors.map((color) => (
+                    <button
+                      key={color}
+                      type="button"
+                      onClick={() => setFormData({...formData, color})}
+                      disabled={saving}
+                      className={cn(
+                        "w-8 h-8 rounded-full border-2 transition-smooth",
+                        formData.color === color ? "border-foreground" : "border-transparent",
+                        saving ? "opacity-50 cursor-not-allowed" : "",
+                        `bg-${color}-500`
+                      )}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <Button 
+                onClick={handleSaveCategory} 
+                className="w-full bg-gradient-primary border-0" 
+                disabled={saving}
+              >
+                {saving ? "កំពុងរក្សាទុក..." : editingCategory ? "រក្សាទុកការកែប្រែ" : "បន្ថែមប្រភេទ"}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Income Categories */}
