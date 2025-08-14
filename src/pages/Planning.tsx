@@ -340,46 +340,6 @@ export default function Planning() {
           </div>
           
           <div className="flex gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <RippleButton 
-                  variant="outline" 
-                  size="sm" 
-                  className="gap-2 glass-effect"
-                >
-                  {showCompletedOnly ? (
-                    <>
-                      <Eye className="h-4 w-4" />
-                    </>
-                  ) : (
-                    <>
-                      <EyeOff className="h-4 w-4" />
-                    </>
-                  )}
-                  <ChevronDown className="h-3 w-3 ml-1" />
-                </RippleButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="glass-panel">
-                <DropdownMenuItem onClick={handleToggleCompletedView}>
-                  {showCompletedOnly ? (
-                    <>
-                      <Eye className="h-4 w-4 mr-2" />
-                      Show All Goals
-                    </>
-                  ) : (
-                    <>
-                      <EyeOff className="h-4 w-4 mr-2" />
-                      Show Completed Only
-                    </>
-                  )}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleCompleteAllVisible}>
-                  <CheckCircle className="h-4 w-4 mr-2" />
-                  Complete All Visible
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
             <RippleButton variant="outline" onClick={() => setActiveTab("customization")} className="gap-2 glass-effect">
               <Palette className="h-4 w-4" />
               ការកំណត់រូបរាង
