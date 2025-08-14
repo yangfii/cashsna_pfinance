@@ -340,11 +340,29 @@ export default function Planning() {
           </div>
           
           <div className="flex gap-2">
-            <RippleButton variant="outline" onClick={() => setActiveTab("customization")} className="gap-2 glass-effect">
+            <RippleButton 
+              variant="outline" 
+              onClick={() => setActiveTab("customization")} 
+              className="gap-2 glass-effect"
+            >
               <Palette className="h-4 w-4" />
               ការកំណត់រូបរាង
             </RippleButton>
-            <RippleButton onClick={() => setShowAddForm(true)} className="gap-2 glass-effect" variant="premium">
+            
+            <RippleButton 
+              onClick={handleCompleteAllWeeklyGoals}
+              variant="premium"
+              className="gap-2 glass-effect bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            >
+              <CheckCircle className="h-4 w-4" />
+              Complete Success
+            </RippleButton>
+            
+            <RippleButton 
+              onClick={() => setShowAddForm(true)} 
+              className="gap-2 glass-effect" 
+              variant="premium"
+            >
               <Plus className="h-4 w-4" />
               បន្ថែមគោលដៅថ្មី
             </RippleButton>
