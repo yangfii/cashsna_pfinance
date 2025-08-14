@@ -18,7 +18,8 @@ import { AddReminderDialog } from "@/components/reminders/AddReminderDialog";
 import { RemindersList } from "@/components/reminders/RemindersList";
 import { useReminders } from "@/hooks/useReminders";
 import { useGoals } from "@/hooks/useGoals";
-import { Plus, Calendar as CalendarIcon, Target, CheckCircle2, Circle, Edit, Trash2, CalendarDays, TrendingUp, Brain, Clock, Play, Pause, Square, Timer, Bell, Palette, Upload, Image, StickyNote, Eye, EyeOff } from "lucide-react";
+import { Plus, Calendar as CalendarIcon, Target, CheckCircle2, Circle, Edit, Trash2, CalendarDays, TrendingUp, Brain, Clock, Play, Pause, Square, Timer, Bell, Palette, Upload, Image, StickyNote, Eye, EyeOff, ChevronDown, CheckCircle } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/hooks/useLanguage";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -269,6 +270,34 @@ export default function Planning() {
     setShowCompletedOnly(!showCompletedOnly);
   };
 
+  const handleCompleteAllVisible = async () => {
+    const visibleGoals = showCompletedOnly 
+      ? [] // If showing completed only, no incomplete goals are visible
+      : goals.filter(g => !g.is_completed); // If showing all, get incomplete goals
+    
+    if (visibleGoals.length === 0) {
+      toast({
+        title: "No incomplete goals to complete",
+        description: "All visible goals are already completed or you're viewing completed goals only."
+      });
+      return;
+    }
+
+    try {
+      await Promise.all(visibleGoals.map(goal => updateGoal(goal.id, { is_completed: true })));
+      toast({
+        title: "All goals completed!",
+        description: `Successfully marked ${visibleGoals.length} goals as completed.`
+      });
+    } catch (error) {
+      toast({
+        title: "Error completing goals",
+        description: "Failed to complete some goals. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleCompleteAllWeeklyGoals = async () => {
     const incompleteWeeklyGoals = weeklyGoals.filter(goal => !goal.is_completed);
     
@@ -311,24 +340,48 @@ export default function Planning() {
           </div>
           
           <div className="flex gap-2">
-            <RippleButton 
-              variant="outline" 
-              size="sm" 
-              className="gap-2 glass-effect"
-              onClick={handleToggleCompletedView}
-            >
-              {showCompletedOnly ? (
-                <>
-                  <Eye className="h-4 w-4" />
-                  Show All
-                </>
-              ) : (
-                <>
-                  <EyeOff className="h-4 w-4" />
-                  Show Completed
-                </>
-              )}
-            </RippleButton>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <RippleButton 
+                  variant="outline" 
+                  size="sm" 
+                  className="gap-2 glass-effect"
+                >
+                  {showCompletedOnly ? (
+                    <>
+                      <Eye className="h-4 w-4" />
+                      Show All
+                    </>
+                  ) : (
+                    <>
+                      <EyeOff className="h-4 w-4" />
+                      Show Completed
+                    </>
+                  )}
+                  <ChevronDown className="h-3 w-3 ml-1" />
+                </RippleButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="glass-panel">
+                <DropdownMenuItem onClick={handleToggleCompletedView}>
+                  {showCompletedOnly ? (
+                    <>
+                      <Eye className="h-4 w-4 mr-2" />
+                      Show All Goals
+                    </>
+                  ) : (
+                    <>
+                      <EyeOff className="h-4 w-4 mr-2" />
+                      Show Completed Only
+                    </>
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleCompleteAllVisible}>
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Complete All Visible
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <RippleButton variant="outline" onClick={() => setActiveTab("customization")} className="gap-2 glass-effect">
               <Palette className="h-4 w-4" />
               ការកំណត់រូបរាង
