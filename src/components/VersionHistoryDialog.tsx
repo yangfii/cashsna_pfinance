@@ -23,6 +23,17 @@ const VERSION_HISTORY: Array<{
   changes: string[];
 }> = [
   {
+    version: "v1.3.0",
+    date: "2025-08-14",
+    changes: [
+      "Comprehensive security vulnerability fixes",
+      "Database security hardening with audit logging",
+      "Enhanced API key and 2FA validation",
+      "Improved input validation and sanitization",
+      "Added Security Dashboard for monitoring",
+    ],
+  },
+  {
     version: "v1.2.0",
     date: "2025-08-01",
     changes: [
