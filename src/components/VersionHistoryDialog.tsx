@@ -12,9 +12,10 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { History } from "lucide-react";
+import packageJson from "../../package.json";
 
 interface VersionHistoryDialogProps {
-  currentVersion: string;
+  currentVersion?: string;
 }
 
 const VERSION_HISTORY: Array<{
@@ -58,6 +59,7 @@ const VERSION_HISTORY: Array<{
 ];
 
 export function VersionHistoryDialog({ currentVersion }: VersionHistoryDialogProps) {
+  const appVersion = currentVersion || `v${packageJson.version}`;
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -84,7 +86,7 @@ export function VersionHistoryDialog({ currentVersion }: VersionHistoryDialogPro
                   <li key={idx}>{c}</li>
                 ))}
               </ul>
-              {entry.version === currentVersion && (
+              {entry.version === appVersion && (
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary">Current</Badge>
                 </div>
