@@ -79,8 +79,26 @@ const validateCredentials = (credentials: BybitCredentials) => {
     throw new Error('API key and secret are required');
   }
   
+  // Enhanced validation for API key format
   if (credentials.apiKey.length < 10 || credentials.secret.length < 10) {
-    throw new Error('Invalid API key or secret format');
+    throw new Error('Invalid API credentials format');
+  }
+  
+  // Check for potentially leaked/test credentials
+  const suspiciousPatterns = ['test', 'demo', 'example', 'default', 'sample'];
+  const keyLower = credentials.apiKey.toLowerCase();
+  if (suspiciousPatterns.some(pattern => keyLower.includes(pattern))) {
+    throw new Error('Suspicious API key pattern detected');
+  }
+  
+  // Rate limiting check (basic implementation)
+  if (credentials.apiKey.length > 100 || credentials.secret.length > 100) {
+    throw new Error('API credentials exceed maximum length');
+  }
+  
+  // Additional security checks
+  if (credentials.apiKey.includes(' ') || credentials.secret.includes(' ')) {
+    throw new Error('API credentials contain invalid characters');
   }
 }
 

@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -789,12 +789,12 @@ export type Database = {
       get_latest_crypto_price: {
         Args: { crypto_symbol: string }
         Returns: {
-          symbol: string
+          last_updated: string
+          market_cap: number
           price: number
           price_change_24h: number
+          symbol: string
           volume_24h: number
-          market_cap: number
-          last_updated: string
         }[]
       }
       increment_sync_counter: {

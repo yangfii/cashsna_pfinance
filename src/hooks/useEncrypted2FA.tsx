@@ -102,12 +102,19 @@ export function useEncrypted2FA() {
   }, [decryptData]);
 
   const generate2FASecret = useCallback(() => {
-    const secret = new Secret();
+    // Generate cryptographically secure secret with sufficient entropy
+    const secret = new Secret({ size: 32 }); // 32 bytes = 256 bits for better security
+    
+    // Validate secret generation
+    if (!secret.base32 || secret.base32.length < 32) {
+      throw new Error('Failed to generate secure 2FA secret');
+    }
+    
     const totp = new TOTP({
-      issuer: 'CashSnap Finance',
+      issuer: 'Secure Finance App',
       label: user?.email || 'User',
       secret: secret,
-      algorithm: 'SHA1',
+      algorithm: 'SHA256', // More secure than SHA1
       digits: 6,
       period: 30,
     });
@@ -222,11 +229,28 @@ export function useEncrypted2FA() {
     if (!user || !twoFASettings) return { verified: false, error: 'No 2FA settings found' };
 
     try {
+      // Enhanced token validation and sanitization
+      const cleanToken = token.replace(/\s/g, '').replace(/[^0-9a-zA-Z]/g, '');
+      
+      if (!cleanToken) {
+        return { verified: false, error: 'No token provided' };
+      }
+      
+      // Validate token format (6 digits for TOTP, or longer for backup codes)
+      if (cleanToken.length < 6) {
+        return { verified: false, error: 'Invalid token format' };
+      }
+      
+      // Check for suspicious patterns
+      if (/^(\d)\1+$/.test(cleanToken)) { // All same digits
+        return { verified: false, error: 'Invalid token pattern' };
+      }
+
       // Get decrypted backup codes
       const backupCodes = await getDecryptedBackupCodes(twoFASettings);
       
       // Check if it's a backup code
-      if (backupCodes.includes(token.toUpperCase())) {
+      if (backupCodes.includes(cleanToken.toUpperCase())) {
         // Remove used backup code
         const updatedBackupCodes = backupCodes.filter(
           code => code !== token.toUpperCase()
@@ -257,7 +281,7 @@ export function useEncrypted2FA() {
         period: 30,
       });
 
-      const delta = totp.validate({ token, window: 2 });
+      const delta = totp.validate({ token: cleanToken, window: 2 });
       const verified = delta !== null;
 
       return { verified, usedBackupCode: false };
