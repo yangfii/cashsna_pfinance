@@ -352,7 +352,7 @@ export default function Planning() {
             <RippleButton 
               onClick={handleCompleteAllWeeklyGoals}
               variant="premium"
-              className="gap-2 glass-effect bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+              className="gap-2 glass-effect bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-primary-foreground border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
             >
               <CheckCircle className="h-4 w-4" />
               Complete Success
