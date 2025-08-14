@@ -36,11 +36,43 @@ export function NotificationCenter() {
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
+  // Show toast notification for new updates
+  useEffect(() => {
+    const unreadNotifications = notifications.filter(n => !n.read);
+    if (unreadNotifications.length > 0) {
+      unreadNotifications.forEach(notification => {
+        toast.info(
+          `${notification.title}: ${notification.message}`,
+          {
+            duration: 5000,
+            position: "top-right"
+          }
+        );
+      });
+    }
+  }, [notifications]);
+
   useEffect(() => {
     // Check for new notifications periodically
     const checkForUpdates = () => {
       // This would typically fetch from an API
       // For now, we'll simulate new notifications
+      const hasNewUpdate = Math.random() > 0.9; // 10% chance of new notification
+      
+      if (hasNewUpdate) {
+        const newNotification: Notification = {
+          id: Date.now().toString(),
+          type: Math.random() > 0.5 ? 'update' : 'bug_fix',
+          title: Math.random() > 0.5 ? 'New Feature Released' : 'Bug Fixed',
+          message: Math.random() > 0.5 
+            ? 'A new feature has been added to improve your experience.'
+            : 'A critical bug has been resolved.',
+          timestamp: new Date(),
+          read: false
+        };
+        
+        setNotifications(prev => [newNotification, ...prev]);
+      }
     };
 
     const interval = setInterval(checkForUpdates, 30000); // Check every 30 seconds
