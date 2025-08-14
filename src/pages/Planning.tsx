@@ -350,12 +350,10 @@ export default function Planning() {
                   {showCompletedOnly ? (
                     <>
                       <Eye className="h-4 w-4" />
-                      Show All
                     </>
                   ) : (
                     <>
                       <EyeOff className="h-4 w-4" />
-                      Show Completed
                     </>
                   )}
                   <ChevronDown className="h-3 w-3 ml-1" />
