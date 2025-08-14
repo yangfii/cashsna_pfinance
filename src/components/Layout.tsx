@@ -6,6 +6,7 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { QRScannerDialog } from "@/components/QRScannerDialog";
 import { MotivationalPopup } from "@/components/MotivationalPopup";
+import { NotificationCenter } from "@/components/NotificationCenter";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -231,6 +232,9 @@ export default function Layout() {
             <SidebarTrigger />
             <GlobalSearch />
             <div className="flex-1" />
+            
+            {/* Notifications */}
+            <NotificationCenter />
             
             {/* QR Scanner Button */}
             <Button
