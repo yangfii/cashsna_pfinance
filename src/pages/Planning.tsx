@@ -350,12 +350,12 @@ export default function Planning() {
             </RippleButton>
             
             <RippleButton 
-              onClick={handleCompleteAllWeeklyGoals}
+              onClick={handleToggleCompletedView}
               variant="premium"
               className="gap-2 glass-effect bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-primary-foreground border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
             >
               <CheckCircle className="h-4 w-4" />
-              Complete Success
+              {showCompletedOnly ? "Show All" : "Complete Success"}
             </RippleButton>
             
             <RippleButton 
