@@ -3,9 +3,10 @@ import { useState, useRef, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Camera, X, Upload, Loader2 } from "lucide-react";
+import { Camera, X, Upload, Loader2, QrCode } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import jsQR from "jsqr";
+import { supabase } from "@/integrations/supabase/client";
 
 interface QRScannerDialogProps {
   open: boolean;
@@ -16,6 +17,8 @@ export function QRScannerDialog({ open, onOpenChange }: QRScannerDialogProps) {
   const [isScanning, setIsScanning] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
+  const [qrCodeUrl, setQrCodeUrl] = useState<string>("");
+  const [isGenerating, setIsGenerating] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -168,6 +171,41 @@ export function QRScannerDialog({ open, onOpenChange }: QRScannerDialogProps) {
     }
   };
 
+  const generateMyQRCode = async () => {
+    try {
+      setIsGenerating(true);
+      
+      const { data, error } = await supabase.functions.invoke('generate-qr-signin');
+      
+      if (error) {
+        console.error('Error generating QR code:', error);
+        toast({
+          title: "Error",
+          description: "Failed to generate QR code. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (data?.qrUrl) {
+        setQrCodeUrl(data.qrUrl);
+        toast({
+          title: "QR Code Generated",
+          description: "Your sign-in QR code is ready to share!",
+        });
+      }
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate QR code. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -274,16 +312,33 @@ export function QRScannerDialog({ open, onOpenChange }: QRScannerDialogProps) {
           ) : (
             <>
               <div className="w-full max-w-sm h-64 bg-muted rounded-lg flex items-center justify-center">
-                <div className="text-center">
-                  <Camera className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">Camera not active</p>
-                </div>
+                {qrCodeUrl ? (
+                  <div className="text-center p-4">
+                    <iframe
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeUrl)}`}
+                      width="200"
+                      height="200"
+                      className="border-0 rounded-lg mx-auto"
+                      title="Your QR Code"
+                    />
+                    <p className="text-sm text-muted-foreground mt-2">Scan this QR code to sign in</p>
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <Camera className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground">Camera not active</p>
+                  </div>
+                )}
               </div>
               
               <div className="flex gap-2 w-full">
-                <Button onClick={startCamera} className="flex-1">
-                  <Camera className="h-4 w-4 mr-2" />
-                  Start Auto Scan
+                <Button onClick={generateMyQRCode} className="flex-1" disabled={isGenerating}>
+                  {isGenerating ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <QrCode className="h-4 w-4 mr-2" />
+                  )}
+                  Show My QR Code
                 </Button>
                 
                 <Button
