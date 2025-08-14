@@ -355,7 +355,6 @@ export default function Planning() {
                   ) : (
                     <>
                       <EyeOff className="h-4 w-4" />
-                      Show Completed
                     </>
                   )}
                   <ChevronDown className="h-3 w-3 ml-1" />
