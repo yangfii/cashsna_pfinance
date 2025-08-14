@@ -801,6 +801,10 @@ export type Database = {
         Args: { account_id: string }
         Returns: boolean
       }
+      log_security_event: {
+        Args: { event_details?: Json; event_type: string; severity?: string }
+        Returns: string
+      }
       update_exchange_auth: {
         Args: { account_id: string; auth_duration_hours?: number }
         Returns: boolean
