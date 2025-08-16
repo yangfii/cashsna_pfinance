@@ -313,7 +313,7 @@ export default function Settings() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            {t('settings.securityBackup')}
+            សុវត្ថិភាព និងការបម្រុងទុក
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
