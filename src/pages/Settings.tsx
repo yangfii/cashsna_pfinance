@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -349,7 +350,7 @@ export default function Settings() {
 
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <Label className="text-base">{t('settings.cloudSync')}</Label>
+              <Label className="text-base">បម្រុងទុកនៅលើ​ Google Drive</Label>
               <p className="text-sm text-muted-foreground">
                 {t('settings.cloudSyncDesc')}
               </p>
