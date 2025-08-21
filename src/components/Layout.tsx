@@ -12,13 +12,11 @@ import { useProfile } from "@/hooks/useProfile";
 import { useLanguage } from "@/hooks/useLanguage";
 import { toast } from "sonner";
 import { LayoutDashboard, ArrowLeftRight, FolderOpen, BarChart3, Settings, LogOut, User, Target, Coins, Brain, Bug, QrCode } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ReportDialog } from "@/components/ReportDialog";
 import { useWelcomeBack } from "@/hooks/useWelcomeBack";
-
 const getNavItems = (t: (key: string) => string) => [{
   to: "/dashboard",
   icon: LayoutDashboard,
@@ -55,8 +53,11 @@ const getNavItems = (t: (key: string) => string) => [{
   label: t("nav.reports"),
   key: "reports"
 }];
-
-function AppSidebar({ onPortfolioClick }: { onPortfolioClick?: () => void }) {
+function AppSidebar({
+  onPortfolioClick
+}: {
+  onPortfolioClick?: () => void;
+}) {
   const {
     user,
     signOut
@@ -74,7 +75,6 @@ function AppSidebar({ onPortfolioClick }: { onPortfolioClick?: () => void }) {
     toggleSidebar
   } = useSidebar();
   const navItems = getNavItems(t);
-
   const handleSignOut = async () => {
     try {
       console.log('Starting sign out process...');
@@ -94,11 +94,13 @@ function AppSidebar({ onPortfolioClick }: { onPortfolioClick?: () => void }) {
       toast.error('Unexpected error during sign out');
     }
   };
-
   return <Sidebar variant="inset" collapsible="icon" className="py-0 my-0 mx-px px-0">
       <SidebarHeader className="mx-0 px-0 py-[7px] my-0">
         <div className="flex items-center gap-2 py-1 my-0 mx-[4px] px-[12px]">
-          <button onClick={() => { navigate('/dashboard'); toggleSidebar(); }} className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 cursor-pointer group">
+          <button onClick={() => {
+          navigate('/dashboard');
+          toggleSidebar();
+        }} className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 cursor-pointer group">
             <LayoutDashboard className="size-5 transition-all duration-300 group-hover:scale-125 group-hover:rotate-3 hover:animate-pulse active:scale-90 active:rotate-6" />
           </button>
           <div className="grid flex-1 text-left text-sm leading-tight">
@@ -119,24 +121,17 @@ function AppSidebar({ onPortfolioClick }: { onPortfolioClick?: () => void }) {
             <SidebarMenu>
               {navItems.map(item => <SidebarMenuItem key={item.key}>
                   <SidebarMenuButton asChild isActive={location.pathname === item.to} tooltip={item.label}>
-                    {item.key === "portfolio" ? (
-                      <button 
-                        onClick={onPortfolioClick} 
-                        className="group flex items-center gap-2 w-full text-left"
-                      >
+                    {item.key === "portfolio" ? <button onClick={onPortfolioClick} className="group flex items-center gap-2 w-full text-left">
                         <item.icon className="size-5 transition-all duration-300 group-hover:scale-125 group-hover:rotate-3 hover:animate-pulse active:scale-90 active:rotate-6" />
                         <span className="text-base transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
                           {item.label}
                         </span>
-                      </button>
-                    ) : (
-                      <NavLink to={item.to} className="group">
+                      </button> : <NavLink to={item.to} className="group">
                         <item.icon className="size-5 transition-all duration-300 group-hover:scale-125 group-hover:rotate-3 hover:animate-pulse active:scale-90 active:rotate-6" />
                         <span className="text-base transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
                           {item.label}
                         </span>
-                      </NavLink>
-                    )}
+                      </NavLink>}
                   </SidebarMenuButton>
                 </SidebarMenuItem>)}
             </SidebarMenu>
@@ -157,12 +152,7 @@ function AppSidebar({ onPortfolioClick }: { onPortfolioClick?: () => void }) {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <ReportDialog trigger={<SidebarMenuButton tooltip={t('layout.reportToDevelopers')} className="group">
-                  
-                  <span className="text-base transition-all duration-300 transform group-hover:tracking-wide group-hover:font-medium">
-                    {t('layout.reportToDevelopers')}
-                  </span>
-                </SidebarMenuButton>} />
+            
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={handleSignOut} tooltip={t("nav.signOut")} className="group">
@@ -176,39 +166,38 @@ function AppSidebar({ onPortfolioClick }: { onPortfolioClick?: () => void }) {
       </SidebarFooter>
     </Sidebar>;
 }
-
 export default function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useLanguage();
-  const { user, loading } = useAuth();
-  const { profile } = useProfile();
+  const {
+    t
+  } = useLanguage();
+  const {
+    user,
+    loading
+  } = useAuth();
+  const {
+    profile
+  } = useProfile();
   const [qrScannerOpen, setQrScannerOpen] = useState(false);
   const [motivationalPopupOpen, setMotivationalPopupOpen] = useState(false);
-
-  const fullName = (profile?.first_name || profile?.last_name)
-    ? `${profile?.first_name ?? ''} ${profile?.last_name ?? ''}`.trim()
-    : (user?.email?.split('@')[0] ?? 'User');
-
+  const fullName = profile?.first_name || profile?.last_name ? `${profile?.first_name ?? ''} ${profile?.last_name ?? ''}`.trim() : user?.email?.split('@')[0] ?? 'User';
   const handlePortfolioClick = () => {
     setMotivationalPopupOpen(true);
     setTimeout(() => {
       navigate('/dashboard/portfolio');
     }, 5000);
   };
-
   useWelcomeBack(() => setMotivationalPopupOpen(true), {
     enableBrowserNotification: true,
     cooldownHours: 6,
-    minAwayMinutes: 10,
+    minAwayMinutes: 10
   });
-
   useEffect(() => {
     if (!loading && !user) {
       navigate('/auth');
     }
   }, [user, loading, navigate]);
-
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5">
         <div className="text-center">
@@ -217,11 +206,9 @@ export default function Layout() {
         </div>
       </div>;
   }
-
   if (!user) {
     return null;
   }
-
   return <SidebarProvider>
       <div className="min-h-screen flex w-full">
         <AppSidebar onPortfolioClick={handlePortfolioClick} />
@@ -237,13 +224,7 @@ export default function Layout() {
             <NotificationCenter />
             
             {/* QR Scanner Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setQrScannerOpen(true)}
-              className="hover:bg-accent"
-              title="Scan QR Code for Sign-In"
-            >
+            <Button variant="ghost" size="icon" onClick={() => setQrScannerOpen(true)} className="hover:bg-accent" title="Scan QR Code for Sign-In">
               <QrCode className="h-5 w-5" />
             </Button>
             
@@ -270,9 +251,6 @@ export default function Layout() {
       </div>
       
       <QRScannerDialog open={qrScannerOpen} onOpenChange={setQrScannerOpen} />
-      <MotivationalPopup 
-        open={motivationalPopupOpen} 
-        onOpenChange={setMotivationalPopupOpen} 
-      />
+      <MotivationalPopup open={motivationalPopupOpen} onOpenChange={setMotivationalPopupOpen} />
     </SidebarProvider>;
 }
