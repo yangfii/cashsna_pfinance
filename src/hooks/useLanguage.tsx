@@ -186,6 +186,9 @@ const translations = {
     'welcome.hello': 'សួស្តី',
     'welcome.welcomeBack': 'សូមស្វាគមន៍ត្រឡប់មកវិញ',
 
+    // Support
+    'support.telegramSupport': 'ជំនួយតេឡេក្រាម',
+
     // Dashboard extras
     'dashboard.monthSubtitle': 'ស្ថានភាពហិរញ្ញវត្ថុរបស់អ្នកសម្រាប់ខែ {month}',
     'dashboard.checkTransactions': 'ពិនិត្យប្រតិបត្តិការ',
@@ -387,7 +390,10 @@ const translations = {
     'auth.subtitle': 'Sign in to your account to continue',
     'auth.continueWithGoogle': 'Continue with Google',
     'auth.orContinueWithEmail': 'or continue with email',
-    'auth.signInWithQRCode': 'Sign in with QR Code'
+    'auth.signInWithQRCode': 'Sign in with QR Code',
+
+    // Support
+    'support.telegramSupport': 'Telegram Support',
   }
 };
 

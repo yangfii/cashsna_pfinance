@@ -11,7 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useLanguage } from "@/hooks/useLanguage";
 import { toast } from "sonner";
-import { LayoutDashboard, ArrowLeftRight, FolderOpen, BarChart3, Settings, LogOut, User, Target, Coins, Brain, Bug, QrCode } from "lucide-react";
+import { LayoutDashboard, ArrowLeftRight, FolderOpen, BarChart3, Settings, LogOut, User, Target, Coins, Brain, Bug, QrCode, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -222,6 +222,17 @@ export default function Layout() {
             
             {/* Notifications */}
             <NotificationCenter />
+            
+            {/* Telegram Support Button */}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => window.open('https://t.me/cashsnapfinance', '_blank')} 
+              className="hover:bg-accent" 
+              title={t('support.telegramSupport')}
+            >
+              <MessageCircle className="h-5 w-5" />
+            </Button>
             
             {/* QR Scanner Button */}
             <Button variant="ghost" size="icon" onClick={() => setQrScannerOpen(true)} className="hover:bg-accent" title="Scan QR Code for Sign-In">
