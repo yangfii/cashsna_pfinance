@@ -11,7 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useLanguage } from "@/hooks/useLanguage";
 import { toast } from "sonner";
-import { LayoutDashboard, ArrowLeftRight, FolderOpen, BarChart3, Settings, LogOut, User, Target, Coins, Brain, Bug, QrCode, MessageCircle } from "lucide-react";
+import { LayoutDashboard, ArrowLeftRight, FolderOpen, BarChart3, Settings, LogOut, User, Target, Coins, Brain, Bug, QrCode, MessageCircle, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
