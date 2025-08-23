@@ -374,6 +374,95 @@ export type Database = {
         }
         Relationships: []
       }
+      habit_entries: {
+        Row: {
+          completed_count: number
+          created_at: string
+          date: string
+          habit_id: string
+          id: string
+          notes: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_count?: number
+          created_at?: string
+          date: string
+          habit_id: string
+          id?: string
+          notes?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_count?: number
+          created_at?: string
+          date?: string
+          habit_id?: string
+          id?: string
+          notes?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "habit_entries_habit_id_fkey"
+            columns: ["habit_id"]
+            isOneToOne: false
+            referencedRelation: "habits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      habits: {
+        Row: {
+          best_streak: number
+          color: string | null
+          created_at: string
+          description: string | null
+          frequency: string
+          icon: string | null
+          id: string
+          is_active: boolean
+          name: string
+          streak_count: number
+          target_count: number
+          total_completions: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          best_streak?: number
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          frequency?: string
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          streak_count?: number
+          target_count?: number
+          total_completions?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          best_streak?: number
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          frequency?: string
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          streak_count?: number
+          target_count?: number
+          total_completions?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       note_folders: {
         Row: {
           color: string | null
@@ -576,6 +665,42 @@ export type Database = {
         }
         Relationships: []
       }
+      projects: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          status: string
+          target_date: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          status?: string
+          target_date?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          status?: string
+          target_date?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       qr_signin_sessions: {
         Row: {
           created_at: string
@@ -665,6 +790,128 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      tasks: {
+        Row: {
+          actual_duration: number | null
+          completed_at: string | null
+          created_at: string
+          description: string | null
+          due_date: string | null
+          estimated_duration: number | null
+          id: string
+          parent_task_id: string | null
+          priority: string
+          project_id: string | null
+          status: string
+          tags: string[] | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          actual_duration?: number | null
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          estimated_duration?: number | null
+          id?: string
+          parent_task_id?: string | null
+          priority?: string
+          project_id?: string | null
+          status?: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          actual_duration?: number | null
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          estimated_duration?: number | null
+          id?: string
+          parent_task_id?: string | null
+          priority?: string
+          project_id?: string | null
+          status?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_tasks_parent_task_id"
+            columns: ["parent_task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_tasks_project_id"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      time_blocks: {
+        Row: {
+          block_type: string
+          color: string | null
+          created_at: string
+          description: string | null
+          end_time: string
+          id: string
+          is_completed: boolean
+          start_time: string
+          task_id: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          block_type?: string
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          end_time: string
+          id?: string
+          is_completed?: boolean
+          start_time: string
+          task_id?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          block_type?: string
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          end_time?: string
+          id?: string
+          is_completed?: boolean
+          start_time?: string
+          task_id?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "time_blocks_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       transactions: {
         Row: {
