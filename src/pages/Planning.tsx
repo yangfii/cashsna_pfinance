@@ -340,16 +340,7 @@ export default function Planning() {
           </div>
           
           <div className="flex gap-2">
-            <RippleButton 
-              variant="outline" 
-              onClick={() => setActiveTab("customization")} 
-              className="gap-2 glass-effect"
-            >
-              <Palette className="h-4 w-4" />
-              ការកំណត់រូបរាង
-            </RippleButton>
-            
-            <RippleButton 
+            <RippleButton
               onClick={handleToggleCompletedView}
               variant="premium"
               className="gap-2 glass-effect bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-primary-foreground border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
