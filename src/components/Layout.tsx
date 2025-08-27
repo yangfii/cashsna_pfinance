@@ -39,6 +39,11 @@ const getNavItems = (t: (key: string) => string) => [{
   label: t("nav.portfolio"),
   key: "portfolio"
 }, {
+  to: "/dashboard/workflow",
+  icon: Zap,
+  label: t("nav.workflow"),
+  key: "workflow"
+}, {
   to: "/dashboard/assistant",
   icon: Brain,
   label: t("nav.assistant"),
