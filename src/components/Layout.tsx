@@ -17,6 +17,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupConte
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ReportDialog } from "@/components/ReportDialog";
 import { useWelcomeBack } from "@/hooks/useWelcomeBack";
+import { OfflineIndicator } from "@/components/OfflineIndicator";
 const getNavItems = (t: (key: string) => string) => [{
   to: "/dashboard",
   icon: LayoutDashboard,
@@ -218,6 +219,7 @@ export default function Layout() {
           <header className="sticky top-0 z-50 flex h-14 sm:h-16 lg:h-18 items-center gap-2 sm:gap-3 lg:gap-4 border-b bg-card/90 backdrop-blur-md px-3 sm:px-4 lg:px-6 xl:px-8 border-border/50">
             <SidebarTrigger />
             <GlobalSearch />
+            <OfflineIndicator />
             <div className="flex-1" />
             
             {/* Notifications */}
