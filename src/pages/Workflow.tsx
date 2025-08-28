@@ -157,377 +157,524 @@ const Workflow = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-100 via-blue-50 to-cyan-100 dark:from-gray-900 dark:via-blue-900/20 dark:to-cyan-900/20">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-teal-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-teal-900/20">
       <div className="container mx-auto px-4 py-8">
-        {/* Header Section */}
-        <div className="mb-8 bg-gradient-to-r from-sky-300 to-cyan-300 dark:from-sky-700 dark:to-cyan-700 rounded-2xl p-8 text-gray-800 dark:text-white">
-          <h1 className="text-4xl font-bold mb-2">
-            Good morning, Alex! 👋
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+            Personal Workflow Dashboard
           </h1>
-          <p className="text-lg mb-6 opacity-90">
-            Ready to make today productive? Here's your personal workflow dashboard.
+          <p className="text-gray-600 dark:text-gray-300">
+            Manage your tasks, habits, and time blocks for maximum productivity
           </p>
-          <div className="flex gap-4">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2">
-              Start Focus Session
-            </Button>
-            <Button variant="outline" className="border-white/20 text-gray-800 dark:text-white hover:bg-white/10">
-              Review Goals
-            </Button>
-          </div>
         </div>
 
-        {/* Stats Cards Row */}
+        {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {/* Focus Time */}
-          <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow">
+          <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-blue-600" />
-                  <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Focus Time</span>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-blue-100 text-sm font-medium">Task Completion</p>
+                  <p className="text-3xl font-bold">{stats.taskCompletion}%</p>
                 </div>
-                <span className="text-sm font-medium text-green-600">+12%</span>
+                <CheckSquare className="h-8 w-8 text-blue-200" />
               </div>
-              <div className="mb-2">
-                <span className="text-3xl font-bold text-gray-900 dark:text-white">6h 32m</span>
-              </div>
-              <div className="mb-2">
-                <span className="text-sm text-gray-500">Progress</span>
-                <span className="text-sm font-medium text-gray-900 dark:text-white ml-auto block">75%</span>
-              </div>
-              <Progress value={75} className="h-2" />
+              <Progress value={stats.taskCompletion} className="mt-3 bg-blue-400/30" />
             </CardContent>
           </Card>
 
-          {/* Goals Achieved */}
-          <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow">
+          <Card className="bg-gradient-to-br from-teal-500 to-teal-600 text-white border-0">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <Target className="h-5 w-5 text-green-600" />
-                  <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Goals Achieved</span>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-teal-100 text-sm font-medium">Today's Habits</p>
+                  <p className="text-3xl font-bold">{stats.habitsCompleted}/{stats.totalActiveHabits}</p>
                 </div>
-                <span className="text-sm font-medium text-green-600">+3</span>
+                <Flame className="h-8 w-8 text-teal-200" />
               </div>
-              <div className="mb-2">
-                <span className="text-3xl font-bold text-gray-900 dark:text-white">8/12</span>
-              </div>
-              <div className="mb-2">
-                <span className="text-sm text-gray-500">Progress</span>
-                <span className="text-sm font-medium text-gray-900 dark:text-white ml-auto block">67%</span>
-              </div>
-              <Progress value={67} className="h-2" />
+              <Progress 
+                value={stats.totalActiveHabits > 0 ? (stats.habitsCompleted / stats.totalActiveHabits) * 100 : 0} 
+                className="mt-3 bg-teal-400/30" 
+              />
             </CardContent>
           </Card>
 
-          {/* Productivity Score */}
-          <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow">
+          <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-green-600" />
-                  <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Productivity Score</span>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-purple-100 text-sm font-medium">Time Blocks</p>
+                  <p className="text-3xl font-bold">{stats.timeBlockCompletion}%</p>
                 </div>
-                <span className="text-sm font-medium text-green-600">+8%</span>
+                <Timer className="h-8 w-8 text-purple-200" />
               </div>
-              <div className="mb-2">
-                <span className="text-3xl font-bold text-gray-900 dark:text-white">92%</span>
-              </div>
-              <div className="mb-2">
-                <span className="text-sm text-gray-500">Progress</span>
-                <span className="text-sm font-medium text-gray-900 dark:text-white ml-auto block">92%</span>
-              </div>
-              <Progress value={92} className="h-2" />
+              <Progress value={stats.timeBlockCompletion} className="mt-3 bg-purple-400/30" />
             </CardContent>
           </Card>
 
-          {/* Weekly Streak */}
-          <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow">
+          <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <Flame className="h-5 w-5 text-orange-600" />
-                  <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Weekly Streak</span>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-orange-100 text-sm font-medium">Total Tasks</p>
+                  <p className="text-3xl font-bold">{stats.totalTasks}</p>
                 </div>
-                <span className="text-orange-600">🔥</span>
+                <ListTodo className="h-8 w-8 text-orange-200" />
               </div>
-              <div className="mb-2">
-                <span className="text-3xl font-bold text-gray-900 dark:text-white">5 days</span>
+              <div className="mt-3 text-sm text-orange-100">
+                {stats.completedTasks} completed
               </div>
-              <div className="mb-2">
-                <span className="text-sm text-gray-500">Progress</span>
-                <span className="text-sm font-medium text-gray-900 dark:text-white ml-auto block">71%</span>
-              </div>
-              <Progress value={71} className="h-2" />
             </CardContent>
           </Card>
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Today's Tasks */}
-            <Card className="bg-white dark:bg-gray-800 shadow-lg">
-              <CardHeader className="border-b border-gray-100 dark:border-gray-700">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-xl font-bold">Today's Tasks</CardTitle>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-500">2 remaining</span>
-                    <Button size="sm" className="w-8 h-8 p-0">
-                      <Plus className="h-4 w-4" />
+        {/* Main Content */}
+        <Tabs defaultValue="tasks" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto">
+            <TabsTrigger value="tasks" className="flex items-center gap-2">
+              <CheckSquare className="h-4 w-4" />
+              Tasks
+            </TabsTrigger>
+            <TabsTrigger value="habits" className="flex items-center gap-2">
+              <Flame className="h-4 w-4" />
+              Habits
+            </TabsTrigger>
+            <TabsTrigger value="calendar" className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              Time Blocks
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Analytics
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Tasks Tab */}
+          <TabsContent value="tasks" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Task Management</h2>
+              <Dialog open={showTaskDialog} onOpenChange={setShowTaskDialog}>
+                <DialogTrigger asChild>
+                  <Button className="flex items-center gap-2">
+                    <Plus className="h-4 w-4" />
+                    Add Task
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Create New Task</DialogTitle>
+                    <DialogDescription>Add a new task to your workflow</DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="title">Title</Label>
+                      <Input
+                        id="title"
+                        value={newTask.title}
+                        onChange={(e) => setNewTask({...newTask, title: e.target.value})}
+                        placeholder="Enter task title"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="description">Description</Label>
+                      <Textarea
+                        id="description"
+                        value={newTask.description}
+                        onChange={(e) => setNewTask({...newTask, description: e.target.value})}
+                        placeholder="Enter task description"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="priority">Priority</Label>
+                        <Select value={newTask.priority} onValueChange={(value) => setNewTask({...newTask, priority: value})}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="low">Low</SelectItem>
+                            <SelectItem value="medium">Medium</SelectItem>
+                            <SelectItem value="high">High</SelectItem>
+                            <SelectItem value="urgent">Urgent</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="duration">Duration (minutes)</Label>
+                        <Input
+                          id="duration"
+                          type="number"
+                          value={newTask.estimated_duration}
+                          onChange={(e) => setNewTask({...newTask, estimated_duration: parseInt(e.target.value)})}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="due_date">Due Date</Label>
+                      <Input
+                        id="due_date"
+                        type="datetime-local"
+                        value={newTask.due_date}
+                        onChange={(e) => setNewTask({...newTask, due_date: e.target.value})}
+                      />
+                    </div>
+                    <Button onClick={handleCreateTask} className="w-full">
+                      Create Task
                     </Button>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <input type="text" placeholder="Add a new task..." className="flex-1 px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <div className="grid gap-4">
+              {tasks.map((task) => (
+                <Card key={task.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start gap-3 flex-1">
+                        <button 
+                          onClick={() => handleTaskStatusChange(task.id, task.status === 'completed' ? 'todo' : 'completed')}
+                          className="mt-1"
+                        >
+                          {getStatusIcon(task.status)}
+                        </button>
+                        <div className="flex-1">
+                          <h3 className={`font-semibold ${task.status === 'completed' ? 'line-through text-gray-500' : ''}`}>
+                            {task.title}
+                          </h3>
+                          {task.description && (
+                            <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">
+                              {task.description}
+                            </p>
+                          )}
+                          <div className="flex items-center gap-2 mt-2">
+                            <Badge variant={getPriorityColor(task.priority) as any}>
+                              {task.priority}
+                            </Badge>
+                            {task.due_date && (
+                              <div className="flex items-center gap-1 text-sm text-gray-500">
+                                <Clock className="h-3 w-3" />
+                                {format(new Date(task.due_date), 'MMM d, HH:mm')}
+                              </div>
+                            )}
+                            {task.estimated_duration && (
+                              <div className="flex items-center gap-1 text-sm text-gray-500">
+                                <Timer className="h-3 w-3" />
+                                {task.estimated_duration}m
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          {/* Habits Tab */}
+          <TabsContent value="habits" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Habit Tracker</h2>
+              <Dialog open={showHabitDialog} onOpenChange={setShowHabitDialog}>
+                <DialogTrigger asChild>
+                  <Button className="flex items-center gap-2">
+                    <Plus className="h-4 w-4" />
+                    Add Habit
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Create New Habit</DialogTitle>
+                    <DialogDescription>Start tracking a new habit</DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="habit-name">Habit Name</Label>
+                      <Input
+                        id="habit-name"
+                        value={newHabit.name}
+                        onChange={(e) => setNewHabit({...newHabit, name: e.target.value})}
+                        placeholder="e.g., Drink 8 glasses of water"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="habit-description">Description</Label>
+                      <Textarea
+                        id="habit-description"
+                        value={newHabit.description}
+                        onChange={(e) => setNewHabit({...newHabit, description: e.target.value})}
+                        placeholder="Describe your habit"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="frequency">Frequency</Label>
+                        <Select value={newHabit.frequency} onValueChange={(value) => setNewHabit({...newHabit, frequency: value})}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="daily">Daily</SelectItem>
+                            <SelectItem value="weekly">Weekly</SelectItem>
+                            <SelectItem value="monthly">Monthly</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="target">Target Count</Label>
+                        <Input
+                          id="target"
+                          type="number"
+                          value={newHabit.target_count}
+                          onChange={(e) => setNewHabit({...newHabit, target_count: parseInt(e.target.value)})}
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={handleCreateHabit} className="w-full">
+                      Create Habit
+                    </Button>
                   </div>
-                  
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <div className="grid gap-4">
+              {habits.filter(habit => habit.is_active).map((habit) => {
+                const todayEntry = habitEntries.find(
+                  entry => entry.habit_id === habit.id && entry.date === todayDate
+                );
+                const completedToday = todayEntry?.completed_count || 0;
+                const progress = Math.min((completedToday / habit.target_count) * 100, 100);
+
+                return (
+                  <Card key={habit.id} className="hover:shadow-md transition-shadow">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-semibold">{habit.name}</h3>
+                          {habit.description && (
+                            <p className="text-gray-600 dark:text-gray-300 text-sm">
+                              {habit.description}
+                            </p>
+                          )}
+                          <div className="flex items-center gap-4 mt-2">
+                            <div className="text-sm text-gray-500">
+                              {completedToday}/{habit.target_count} today
+                            </div>
+                            <div className="flex items-center gap-1 text-sm text-orange-500">
+                              <Flame className="h-3 w-3" />
+                              {habit.streak_count} day streak
+                            </div>
+                          </div>
+                          <Progress value={progress} className="mt-2" />
+                        </div>
+                        <Button
+                          onClick={() => handleHabitComplete(habit.id)}
+                          disabled={completedToday >= habit.target_count}
+                          size="sm"
+                          className="ml-4"
+                        >
+                          {completedToday >= habit.target_count ? (
+                            <CheckCircle2 className="h-4 w-4" />
+                          ) : (
+                            <Plus className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </TabsContent>
+
+          {/* Time Blocks Tab */}
+          <TabsContent value="calendar" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Time Blocking</h2>
+              <Dialog open={showTimeBlockDialog} onOpenChange={setShowTimeBlockDialog}>
+                <DialogTrigger asChild>
+                  <Button className="flex items-center gap-2">
+                    <Plus className="h-4 w-4" />
+                    Add Time Block
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Create Time Block</DialogTitle>
+                    <DialogDescription>Schedule a focused work session</DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="block-title">Title</Label>
+                      <Input
+                        id="block-title"
+                        value={newTimeBlock.title}
+                        onChange={(e) => setNewTimeBlock({...newTimeBlock, title: e.target.value})}
+                        placeholder="Enter time block title"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="block-description">Description</Label>
+                      <Textarea
+                        id="block-description"
+                        value={newTimeBlock.description}
+                        onChange={(e) => setNewTimeBlock({...newTimeBlock, description: e.target.value})}
+                        placeholder="What will you work on?"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="start-time">Start Time</Label>
+                        <Input
+                          id="start-time"
+                          type="datetime-local"
+                          value={newTimeBlock.start_time}
+                          onChange={(e) => setNewTimeBlock({...newTimeBlock, start_time: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="end-time">End Time</Label>
+                        <Input
+                          id="end-time"
+                          type="datetime-local"
+                          value={newTimeBlock.end_time}
+                          onChange={(e) => setNewTimeBlock({...newTimeBlock, end_time: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="block-type">Type</Label>
+                      <Select value={newTimeBlock.block_type} onValueChange={(value) => setNewTimeBlock({...newTimeBlock, block_type: value})}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="work">Work</SelectItem>
+                          <SelectItem value="personal">Personal</SelectItem>
+                          <SelectItem value="break">Break</SelectItem>
+                          <SelectItem value="focus">Focus</SelectItem>
+                          <SelectItem value="meeting">Meeting</SelectItem>
+                          <SelectItem value="exercise">Exercise</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <Button onClick={handleCreateTimeBlock} className="w-full">
+                      Create Time Block
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <div className="grid gap-4">
+              {timeBlocks.slice(0, 10).map((block) => (
+                <Card key={block.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-semibold">{block.title}</h3>
+                          <Badge variant="outline">{block.block_type}</Badge>
+                          {block.is_completed && (
+                            <CheckCircle2 className="h-4 w-4 text-green-500" />
+                          )}
+                        </div>
+                        {block.description && (
+                          <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">
+                            {block.description}
+                          </p>
+                        )}
+                        <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
+                          <Clock className="h-3 w-3" />
+                          {format(new Date(block.start_time), 'MMM d, HH:mm')} - {format(new Date(block.end_time), 'HH:mm')}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Productivity Analytics</h2>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5" />
+                    Overview
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Total Tasks</span>
+                      <span className="font-semibold">{stats.totalTasks}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Completed Tasks</span>
+                      <span className="font-semibold text-green-600">{stats.completedTasks}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Active Habits</span>
+                      <span className="font-semibold">{stats.totalActiveHabits}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Habits Completed Today</span>
+                      <span className="font-semibold text-blue-600">{stats.habitsCompleted}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5" />
+                    Progress
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
                   <div className="space-y-3">
-                    <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                      <Circle className="h-5 w-5 text-gray-400" />
-                      <div className="flex-1">
-                        <span className="font-medium">Review quarterly reports</span>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Badge variant="destructive" className="text-xs">High</Badge>
-                          <span className="text-xs text-gray-500 flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            2:00 PM
-                          </span>
-                        </div>
+                    <div>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span>Task Completion Rate</span>
+                        <span>{stats.taskCompletion}%</span>
                       </div>
-                      <Button variant="ghost" size="sm">×</Button>
+                      <Progress value={stats.taskCompletion} />
                     </div>
-                    
-                    <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                      <Circle className="h-5 w-5 text-gray-400" />
-                      <div className="flex-1">
-                        <span className="font-medium">Call client about project update</span>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Badge variant="secondary" className="text-xs bg-orange-100 text-orange-800">Medium</Badge>
-                          <span className="text-xs text-gray-500 flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            3:30 PM
-                          </span>
-                        </div>
+                    <div>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span>Time Block Completion</span>
+                        <span>{stats.timeBlockCompletion}%</span>
                       </div>
-                      <Button variant="ghost" size="sm">×</Button>
+                      <Progress value={stats.timeBlockCompletion} />
                     </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Today's Schedule */}
-            <Card className="bg-white dark:bg-gray-800 shadow-lg">
-              <CardHeader className="border-b border-gray-100 dark:border-gray-700">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-5 w-5 text-blue-600" />
-                    <CardTitle className="text-xl font-bold">Today's Schedule</CardTitle>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-500">7 blocks</span>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  {/* Schedule Item */}
-                  <div className="flex items-start gap-4 p-4 border-l-4 border-green-500 bg-green-50 dark:bg-green-900/20 rounded-r-lg">
-                    <div className="text-sm text-gray-600 dark:text-gray-300 min-w-[80px]">
-                      9:00 AM - 9:30 AM
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium">Morning Planning</span>
-                        <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">Focus</Badge>
+                    <div>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span>Daily Habit Progress</span>
+                        <span>{stats.totalActiveHabits > 0 ? Math.round((stats.habitsCompleted / stats.totalActiveHabits) * 100) : 0}%</span>
                       </div>
-                      <div className="text-sm text-gray-500">Progress: 100%</div>
-                      <Progress value={100} className="h-1 mt-2" />
+                      <Progress 
+                        value={stats.totalActiveHabits > 0 ? (stats.habitsCompleted / stats.totalActiveHabits) * 100 : 0} 
+                      />
                     </div>
                   </div>
-
-                  <div className="flex items-start gap-4 p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900/20 rounded-r-lg">
-                    <div className="text-sm text-gray-600 dark:text-gray-300 min-w-[80px]">
-                      9:30 AM - 11:30 AM
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium">Deep Work Session</span>
-                        <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">Focus</Badge>
-                      </div>
-                      <div className="text-sm text-gray-500">Progress: 60%</div>
-                      <Progress value={60} className="h-1 mt-2" />
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4 p-4 border-l-4 border-orange-500 bg-orange-50 dark:bg-orange-900/20 rounded-r-lg">
-                    <div className="text-sm text-gray-600 dark:text-gray-300 min-w-[80px]">
-                      11:30 AM - 12:00 PM
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium">Team Standup</span>
-                        <Badge variant="secondary" className="text-xs bg-orange-100 text-orange-800">Meeting</Badge>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700 text-center">
-                  <div className="text-2xl font-bold mb-2">Keep up the great work! 🎯</div>
-                  <div className="text-gray-600 dark:text-gray-300 mb-4">
-                    You're on track to have your most productive day yet.
-                  </div>
-                  <div className="flex justify-center gap-4">
-                    <Button variant="outline" size="sm">View Analytics</Button>
-                    <Button variant="outline" size="sm">Export Data</Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Right Column */}
-          <div className="space-y-8">
-            {/* Daily Habits */}
-            <Card className="bg-white dark:bg-gray-800 shadow-lg">
-              <CardHeader className="border-b border-gray-100 dark:border-gray-700">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-green-600" />
-                    <CardTitle className="text-lg font-bold">Daily Habits</CardTitle>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Plus className="h-4 w-4 text-green-500" />
-                    <Badge variant="secondary" className="bg-green-100 text-green-800">50% Complete</Badge>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  {/* Habit Item */}
-                  <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                    <div className="flex items-center gap-3 mb-2">
-                      <CheckCircle2 className="h-5 w-5 text-green-600" />
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">💪</span>
-                        <span className="font-medium">Morning Exercise</span>
-                      </div>
-                      <div className="ml-auto flex items-center gap-1">
-                        <Flame className="h-4 w-4 text-orange-500" />
-                        <span className="text-sm font-medium">7</span>
-                      </div>
-                    </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-300">
-                      7 day streak • Target: 30 days
-                    </div>
-                  </div>
-
-                  <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <div className="flex items-center gap-3 mb-2">
-                      <Circle className="h-5 w-5 text-gray-400" />
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">📚</span>
-                        <span className="font-medium">Read for 30min</span>
-                      </div>
-                      <div className="ml-auto flex items-center gap-1">
-                        <Flame className="h-4 w-4 text-orange-500" />
-                        <span className="text-sm font-medium">12</span>
-                      </div>
-                    </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-300">
-                      12 day streak • Target: 365 days
-                    </div>
-                  </div>
-
-                  <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <div className="flex items-center gap-3 mb-2">
-                      <Circle className="h-5 w-5 text-gray-400" />
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">💧</span>
-                        <span className="font-medium">Drink 8 glasses of water</span>
-                      </div>
-                      <div className="ml-auto flex items-center gap-1">
-                        <Flame className="h-4 w-4 text-orange-500" />
-                        <span className="text-sm font-medium">5</span>
-                      </div>
-                    </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-300">
-                      5 day streak • Target: 30 days
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Today's Progress */}
-            <Card className="bg-white dark:bg-gray-800 shadow-lg">
-              <CardHeader className="border-b border-gray-100 dark:border-gray-700">
-                <CardTitle className="text-lg font-bold">Today's Progress</CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="text-center mb-4">
-                  <span className="text-2xl font-bold">2 of 4 completed</span>
-                </div>
-                <Progress value={50} className="h-3 mb-4" />
-                <div className="text-center text-gray-600 dark:text-gray-300">
-                  You're halfway there! Keep going! 💪
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Quick Notes */}
-            <Card className="bg-white dark:bg-gray-800 shadow-lg">
-              <CardHeader className="border-b border-gray-100 dark:border-gray-700">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg">📝</span>
-                    <CardTitle className="text-lg font-bold">Quick Notes</CardTitle>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-lg">📌</span>
-                    <span className="text-sm text-gray-500">2 notes</span>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6">
-                <textarea 
-                  placeholder="Jot down your thoughts, ideas, or reminders..."
-                  className="w-full h-20 p-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <div className="flex justify-between items-center mt-4">
-                  <Button variant="secondary" size="sm">Save Note</Button>
-                  <Button variant="ghost" size="sm">Cancel</Button>
-                </div>
-
-                {/* Recent Notes */}
-                <div className="mt-6 space-y-3">
-                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                    <div className="flex items-center justify-between mb-1">
-                      <Badge variant="secondary" className="bg-blue-100 text-blue-800 text-xs">work</Badge>
-                      <span className="text-xs text-gray-500">2h ago</span>
-                    </div>
-                    <p className="text-sm">Remember to follow up on the client proposal by Friday. They seemed interested in the advanced analytics package.</p>
-                  </div>
-
-                  <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-                    <div className="flex items-center justify-between mb-1">
-                      <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 text-xs">idea</Badge>
-                      <span className="text-xs text-gray-500">5h ago</span>
-                    </div>
-                    <p className="text-sm">Idea: Create a personal dashboard that shows all important metrics in one place. Could be a great side project.</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
