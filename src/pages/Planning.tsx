@@ -55,7 +55,8 @@ export default function Planning() {
     title: '',
     description: '',
     goal_type: 'weekly' as 'weekly' | 'monthly' | 'yearly',
-    period: ''
+    period: '',
+    color: '#3b82f6'
   });
   const [newStep, setNewStep] = useState('');
   const [steps, setSteps] = useState<Step[]>([]);
@@ -161,7 +162,8 @@ export default function Planning() {
       title: '',
       description: '',
       goal_type: 'weekly',
-      period: ''
+      period: '',
+      color: '#3b82f6'
     });
     setSteps([]);
     setSelectedDate(undefined);
@@ -181,7 +183,8 @@ export default function Planning() {
       title: goal.title,
       description: goal.description || '',
       goal_type: goal.goal_type,
-      period: goal.period
+      period: goal.period,
+      color: goal.color || '#3b82f6'
     });
     setSteps(goal.steps);
     setSelectedDate(undefined); // Reset date when editing
@@ -474,6 +477,19 @@ export default function Planning() {
                   ...newGoal,
                   description: e.target.value
                 })} />
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium mb-2 block">កូដពណ៌</label>
+                  <Input 
+                    type="color" 
+                    value={newGoal.color || '#3b82f6'} 
+                    onChange={e => setNewGoal({
+                      ...newGoal,
+                      color: e.target.value
+                    })} 
+                    className="w-full h-10 cursor-pointer"
+                  />
                 </div>
 
                 <div>

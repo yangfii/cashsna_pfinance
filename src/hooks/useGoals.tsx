@@ -20,6 +20,7 @@ export interface Goal {
   steps: Step[];
   is_completed: boolean;
   created_at: string;
+  color?: string;
   updated_at: string;
 }
 
