@@ -27,7 +27,9 @@ import {
   Circle,
   AlertCircle,
   PlayCircle,
-  PauseCircle
+  PauseCircle,
+  Edit,
+  Trash2
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -45,6 +47,7 @@ const Workflow = () => {
     createTimeBlock,
     createProject,
     updateTask,
+    deleteTask,
     logHabitEntry,
     getProductivityStats 
   } = useWorkflow();
@@ -53,6 +56,8 @@ const Workflow = () => {
   const [showHabitDialog, setShowHabitDialog] = useState(false);
   const [showTimeBlockDialog, setShowTimeBlockDialog] = useState(false);
   const [showProjectDialog, setShowProjectDialog] = useState(false);
+  const [showEditTaskDialog, setShowEditTaskDialog] = useState(false);
+  const [editingTask, setEditingTask] = useState<any>(null);
 
   const [newTask, setNewTask] = useState({
     title: '',
@@ -96,6 +101,28 @@ const Workflow = () => {
     await createTask(newTask);
     setNewTask({ title: '', description: '', priority: 'medium', due_date: '', estimated_duration: 60 });
     setShowTaskDialog(false);
+  };
+
+  const handleEditTask = (task: any) => {
+    setEditingTask({
+      ...task,
+      due_date: task.due_date ? new Date(task.due_date).toISOString().slice(0, 16) : ''
+    });
+    setShowEditTaskDialog(true);
+  };
+
+  const handleUpdateTask = async () => {
+    if (editingTask) {
+      await updateTask(editingTask.id, editingTask);
+      setEditingTask(null);
+      setShowEditTaskDialog(false);
+    }
+  };
+
+  const handleDeleteTask = async (taskId: string) => {
+    if (confirm('Are you sure you want to delete this task?')) {
+      await deleteTask(taskId);
+    }
   };
 
   const handleCreateHabit = async () => {
@@ -357,47 +384,136 @@ const Workflow = () => {
               {filteredTasks.map((task) => (
                 <Card key={task.id} className="hover:shadow-md transition-shadow">
                   <CardContent className="p-4">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start gap-3 flex-1">
-                        <button 
-                          onClick={() => handleTaskStatusChange(task.id, task.status === 'completed' ? 'todo' : 'completed')}
-                          className="mt-1"
-                        >
-                          {getStatusIcon(task.status)}
-                        </button>
-                        <div className="flex-1">
-                          <h3 className={`font-semibold ${task.status === 'completed' ? 'line-through text-gray-500' : ''}`}>
-                            {task.title}
-                          </h3>
-                          {task.description && (
-                            <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">
-                              {task.description}
-                            </p>
-                          )}
-                          <div className="flex items-center gap-2 mt-2">
-                            <Badge variant={getPriorityColor(task.priority) as any}>
-                              {task.priority}
-                            </Badge>
-                            {task.due_date && (
-                              <div className="flex items-center gap-1 text-sm text-gray-500">
-                                <Clock className="h-3 w-3" />
-                                {format(new Date(task.due_date), 'MMM d, HH:mm')}
-                              </div>
-                            )}
-                            {task.estimated_duration && (
-                              <div className="flex items-center gap-1 text-sm text-gray-500">
-                                <Timer className="h-3 w-3" />
-                                {task.estimated_duration}m
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                     <div className="flex items-start justify-between">
+                       <div className="flex items-start gap-3 flex-1">
+                         <button 
+                           onClick={() => handleTaskStatusChange(task.id, task.status === 'completed' ? 'todo' : 'completed')}
+                           className="mt-1"
+                         >
+                           {getStatusIcon(task.status)}
+                         </button>
+                         <div className="flex-1">
+                           <h3 className={`font-semibold ${task.status === 'completed' ? 'line-through text-gray-500' : ''}`}>
+                             {task.title}
+                           </h3>
+                           {task.description && (
+                             <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">
+                               {task.description}
+                             </p>
+                           )}
+                           <div className="flex items-center gap-2 mt-2">
+                             <Badge variant={getPriorityColor(task.priority) as any}>
+                               {task.priority}
+                             </Badge>
+                             {task.due_date && (
+                               <div className="flex items-center gap-1 text-sm text-gray-500">
+                                 <Clock className="h-3 w-3" />
+                                 {format(new Date(task.due_date), 'MMM d, HH:mm')}
+                               </div>
+                             )}
+                             {task.estimated_duration && (
+                               <div className="flex items-center gap-1 text-sm text-gray-500">
+                                 <Timer className="h-3 w-3" />
+                                 {task.estimated_duration}m
+                               </div>
+                             )}
+                           </div>
+                         </div>
+                       </div>
+                       <div className="flex items-center gap-2">
+                         <Button
+                           size="sm"
+                           variant="outline"
+                           onClick={() => handleEditTask(task)}
+                         >
+                           <Edit className="h-4 w-4" />
+                         </Button>
+                         <Button
+                           size="sm"
+                           variant="outline"
+                           onClick={() => handleDeleteTask(task.id)}
+                         >
+                           <Trash2 className="h-4 w-4" />
+                         </Button>
+                       </div>
+                     </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
+
+            {/* Edit Task Dialog */}
+            <Dialog open={showEditTaskDialog} onOpenChange={setShowEditTaskDialog}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Edit Task</DialogTitle>
+                  <DialogDescription>Update task details</DialogDescription>
+                </DialogHeader>
+                {editingTask && (
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="edit-title">Title</Label>
+                      <Input
+                        id="edit-title"
+                        value={editingTask.title}
+                        onChange={(e) => setEditingTask({...editingTask, title: e.target.value})}
+                        placeholder="Enter task title"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="edit-description">Description</Label>
+                      <Textarea
+                        id="edit-description"
+                        value={editingTask.description || ''}
+                        onChange={(e) => setEditingTask({...editingTask, description: e.target.value})}
+                        placeholder="Enter task description"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="edit-priority">Priority</Label>
+                        <Select 
+                          value={editingTask.priority} 
+                          onValueChange={(value) => setEditingTask({...editingTask, priority: value})}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="low">Low</SelectItem>
+                            <SelectItem value="medium">Medium</SelectItem>
+                            <SelectItem value="high">High</SelectItem>
+                            <SelectItem value="urgent">Urgent</SelectItem>
+                            <SelectItem value="important">Important</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="edit-duration">Duration (minutes)</Label>
+                        <Input
+                          id="edit-duration"
+                          type="number"
+                          value={editingTask.estimated_duration || ''}
+                          onChange={(e) => setEditingTask({...editingTask, estimated_duration: parseInt(e.target.value)})}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="edit-due_date">Due Date</Label>
+                      <Input
+                        id="edit-due_date"
+                        type="datetime-local"
+                        value={editingTask.due_date}
+                        onChange={(e) => setEditingTask({...editingTask, due_date: e.target.value})}
+                      />
+                    </div>
+                    <Button onClick={handleUpdateTask} className="w-full">
+                      Update Task
+                    </Button>
+                  </div>
+                )}
+              </DialogContent>
+            </Dialog>
           </TabsContent>
 
           {/* Habits Tab */}
