@@ -49,11 +49,6 @@ const getNavItems = (t: (key: string) => string) => [{
   label: t("nav.assistant"),
   key: "assistant"
 }, {
-  to: "/dashboard/planning",
-  icon: Target,
-  label: t("nav.planning"),
-  key: "planning"
-}, {
   to: "/dashboard/reports",
   icon: BarChart3,
   label: t("nav.reports"),

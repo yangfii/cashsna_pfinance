@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -9,13 +9,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useWorkflow } from '@/hooks/useWorkflow';
+import { useGoals } from '@/hooks/useGoals';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useToast } from '@/hooks/use-toast';
 import { 
   CheckCircle2, 
   Clock, 
   Target, 
-  Calendar, 
+  Calendar as CalendarIcon, 
   Plus, 
   BarChart3, 
   Flame, 
@@ -29,12 +34,17 @@ import {
   PlayCircle,
   PauseCircle,
   Edit,
-  Trash2
+  Trash2,
+  CalendarDays,
+  Brain
 } from 'lucide-react';
 import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+import type { Goal, Step } from '@/hooks/useGoals';
 
 const Workflow = () => {
   const { t } = useLanguage();
+  const { toast } = useToast();
   const { 
     tasks, 
     habits, 
@@ -52,12 +62,39 @@ const Workflow = () => {
     getProductivityStats 
   } = useWorkflow();
 
+  // Goals functionality
+  const {
+    goals,
+    loading: goalsLoading,
+    createGoal,
+    updateGoal,
+    deleteGoal: deleteGoalFromDB,
+    toggleGoalCompletion,
+    toggleStepCompletion: toggleStepCompletionDB,
+    addStep: addStepToDB,
+    removeStep: removeStepFromDB
+  } = useGoals();
+
   const [showTaskDialog, setShowTaskDialog] = useState(false);
   const [showHabitDialog, setShowHabitDialog] = useState(false);
   const [showTimeBlockDialog, setShowTimeBlockDialog] = useState(false);
   const [showProjectDialog, setShowProjectDialog] = useState(false);
   const [showEditTaskDialog, setShowEditTaskDialog] = useState(false);
   const [editingTask, setEditingTask] = useState<any>(null);
+
+  // Goals states
+  const [showGoalDialog, setShowGoalDialog] = useState(false);
+  const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
+  const [newGoal, setNewGoal] = useState({
+    title: '',
+    description: '',
+    goal_type: 'weekly' as 'weekly' | 'monthly' | 'yearly',
+    period: '',
+    color: '#3b82f6'
+  });
+  const [newStep, setNewStep] = useState('');
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [selectedDate, setSelectedDate] = useState<Date>();
 
   const [newTask, setNewTask] = useState({
     title: '',
@@ -173,6 +210,127 @@ const Workflow = () => {
     ? tasks 
     : tasks.filter(task => task.priority === priorityFilter);
 
+  // Goals helper functions
+  const getCurrentPeriod = (goal_type: string) => {
+    const now = new Date();
+    switch (goal_type) {
+      case 'weekly':
+        return `Week ${Math.ceil(now.getDate() / 7)} of ${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`;
+      case 'monthly':
+        return now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      case 'yearly':
+        return `Year ${now.getFullYear()}`;
+      default:
+        return '';
+    }
+  };
+
+  const addStep = () => {
+    if (newStep.trim()) {
+      const step: Step = {
+        id: Date.now().toString(),
+        text: newStep.trim(),
+        completed: false
+      };
+      setSteps([...steps, step]);
+      setNewStep('');
+    }
+  };
+
+  const removeStep = (stepId: string) => {
+    setSteps(steps.filter(s => s.id !== stepId));
+  };
+
+  const handleSaveGoal = async () => {
+    if (!newGoal.title.trim() || steps.length === 0) {
+      toast({
+        title: "Error",
+        description: "Please fill in the goal title and add at least one step",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const goalData = {
+      title: newGoal.title,
+      description: newGoal.description,
+      goal_type: newGoal.goal_type,
+      period: newGoal.period || getCurrentPeriod(newGoal.goal_type),
+      steps: steps,
+      is_completed: false,
+      color: newGoal.color
+    };
+
+    if (editingGoal) {
+      await updateGoal(editingGoal.id, goalData);
+    } else {
+      await createGoal(goalData);
+    }
+    resetGoalForm();
+  };
+
+  const resetGoalForm = () => {
+    setNewGoal({
+      title: '',
+      description: '',
+      goal_type: 'weekly',
+      period: '',
+      color: '#3b82f6'
+    });
+    setSteps([]);
+    setSelectedDate(undefined);
+    setShowGoalDialog(false);
+    setEditingGoal(null);
+  };
+
+  const handleDeleteGoal = async (goalId: string) => {
+    await deleteGoalFromDB(goalId);
+  };
+
+  const handleToggleStepCompletion = async (goalId: string, stepId: string) => {
+    await toggleStepCompletionDB(goalId, stepId);
+  };
+
+  const editGoal = (goal: Goal) => {
+    setEditingGoal(goal);
+    setNewGoal({
+      title: goal.title,
+      description: goal.description || '',
+      goal_type: goal.goal_type,
+      period: goal.period,
+      color: goal.color || '#3b82f6'
+    });
+    setSteps(goal.steps);
+    setSelectedDate(undefined);
+    setShowGoalDialog(true);
+  };
+
+  const getTypeIcon = (goal_type: string) => {
+    switch (goal_type) {
+      case 'weekly':
+        return <CalendarIcon className="h-4 w-4" />;
+      case 'monthly':
+        return <CalendarDays className="h-4 w-4" />;
+      case 'yearly':
+        return <TrendingUp className="h-4 w-4" />;
+      default:
+        return <Target className="h-4 w-4" />;
+    }
+  };
+
+  const getTypeBadgeColor = (goal_type: string) => {
+    switch (goal_type) {
+      case 'weekly':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
+      case 'monthly':
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+      case 'yearly':
+        return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300';
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
+    }
+  };
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'completed': return <CheckCircle2 className="h-4 w-4 text-green-500" />;
@@ -182,7 +340,7 @@ const Workflow = () => {
     }
   };
 
-  if (loading) {
+  if (loading || goalsLoading) {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
@@ -265,17 +423,21 @@ const Workflow = () => {
 
         {/* Main Content */}
         <Tabs defaultValue="tasks" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto">
+          <TabsList className="grid w-full grid-cols-5 lg:w-auto">
             <TabsTrigger value="tasks" className="flex items-center gap-2">
               <CheckSquare className="h-4 w-4" />
               Tasks
+            </TabsTrigger>
+            <TabsTrigger value="goals" className="flex items-center gap-2">
+              <Target className="h-4 w-4" />
+              Goals
             </TabsTrigger>
             <TabsTrigger value="habits" className="flex items-center gap-2">
               <Flame className="h-4 w-4" />
               Habits
             </TabsTrigger>
             <TabsTrigger value="calendar" className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
+              <CalendarIcon className="h-4 w-4" />
               Time Blocks
             </TabsTrigger>
             <TabsTrigger value="analytics" className="flex items-center gap-2">
@@ -514,6 +676,229 @@ const Workflow = () => {
                 )}
               </DialogContent>
             </Dialog>
+          </TabsContent>
+
+          {/* Goals Tab */}
+          <TabsContent value="goals" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Goal Management</h2>
+              <Dialog open={showGoalDialog} onOpenChange={setShowGoalDialog}>
+                <DialogTrigger asChild>
+                  <Button className="flex items-center gap-2">
+                    <Plus className="h-4 w-4" />
+                    Add Goal
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle>{editingGoal ? 'Edit Goal' : 'Create New Goal'}</DialogTitle>
+                    <DialogDescription>
+                      {editingGoal ? 'Update your goal details' : 'Add a new goal to track your progress'}
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="goal-type">Goal Type</Label>
+                      <Select 
+                        value={newGoal.goal_type} 
+                        onValueChange={(value: 'weekly' | 'monthly' | 'yearly') => setNewGoal({...newGoal, goal_type: value})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="weekly">Weekly Goal</SelectItem>
+                          <SelectItem value="monthly">Monthly Goal</SelectItem>
+                          <SelectItem value="yearly">Yearly Goal</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="goal-title">Title</Label>
+                      <Input
+                        id="goal-title"
+                        value={newGoal.title}
+                        onChange={(e) => setNewGoal({...newGoal, title: e.target.value})}
+                        placeholder="Enter goal title"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="goal-description">Description</Label>
+                      <Textarea
+                        id="goal-description"
+                        value={newGoal.description}
+                        onChange={(e) => setNewGoal({...newGoal, description: e.target.value})}
+                        placeholder="Describe your goal"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="goal-color">Color</Label>
+                      <Input
+                        id="goal-color"
+                        type="color"
+                        value={newGoal.color}
+                        onChange={(e) => setNewGoal({...newGoal, color: e.target.value})}
+                        className="w-full h-10"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="period">Period</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button 
+                            variant="outline" 
+                            className={cn("w-full justify-start text-left font-normal", !selectedDate && "text-muted-foreground")}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {selectedDate ? format(selectedDate, "PPP") : <span>Select date</span>}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar 
+                            mode="single" 
+                            selected={selectedDate} 
+                            onSelect={(date) => {
+                              setSelectedDate(date);
+                              if (date) {
+                                setNewGoal({...newGoal, period: format(date, "PPP")});
+                              }
+                            }} 
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+
+                    <div>
+                      <Label>Steps</Label>
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <Input
+                            value={newStep}
+                            onChange={(e) => setNewStep(e.target.value)}
+                            placeholder="Add a step"
+                            onKeyPress={(e) => e.key === 'Enter' && addStep()}
+                          />
+                          <Button type="button" onClick={addStep}>Add</Button>
+                        </div>
+                        <div className="space-y-1">
+                          {steps.map((step, index) => (
+                            <div key={step.id} className="flex items-center gap-2 p-2 bg-muted rounded">
+                              <span className="flex-1">{step.text}</span>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => removeStep(step.id)}
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <Button onClick={handleSaveGoal} className="w-full">
+                      {editingGoal ? 'Update Goal' : 'Create Goal'}
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <div className="grid gap-4">
+              {goals.map((goal) => (
+                <Card key={goal.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-start gap-3 flex-1">
+                        <button 
+                          onClick={() => toggleGoalCompletion(goal.id)}
+                          className="mt-1"
+                        >
+                          {goal.is_completed ? 
+                            <CheckCircle2 className="h-5 w-5 text-green-500" /> : 
+                            <Circle className="h-5 w-5 text-gray-400" />
+                          }
+                        </button>
+                        <div className="flex-1">
+                          <h3 className={`font-semibold ${goal.is_completed ? 'line-through text-gray-500' : ''}`}>
+                            {goal.title}
+                          </h3>
+                          {goal.description && (
+                            <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">
+                              {goal.description}
+                            </p>
+                          )}
+                          <div className="flex items-center gap-2 mt-2">
+                            <Badge variant="outline" className={getTypeBadgeColor(goal.goal_type)}>
+                              {getTypeIcon(goal.goal_type)}
+                              <span className="ml-1">{goal.goal_type}</span>
+                            </Badge>
+                            <span className="text-sm text-gray-500">{goal.period}</span>
+                          </div>
+                          
+                          {/* Steps */}
+                          {goal.steps && goal.steps.length > 0 && (
+                            <div className="mt-3 space-y-1">
+                              {goal.steps.map((step) => (
+                                <div key={step.id} className="flex items-center gap-2 text-sm">
+                                  <button
+                                    onClick={() => handleToggleStepCompletion(goal.id, step.id)}
+                                    className="flex-shrink-0"
+                                  >
+                                    {step.completed ? 
+                                      <CheckCircle2 className="h-4 w-4 text-green-500" /> : 
+                                      <Circle className="h-4 w-4 text-gray-400" />
+                                    }
+                                  </button>
+                                  <span className={step.completed ? 'line-through text-gray-500' : ''}>
+                                    {step.text}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => editGoal(goal)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button size="sm" variant="outline">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete Goal</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to delete "{goal.title}"? This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => handleDeleteGoal(goal.id)}>
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </TabsContent>
 
           {/* Habits Tab */}

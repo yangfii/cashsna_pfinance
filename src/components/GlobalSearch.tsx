@@ -82,13 +82,13 @@ export function GlobalSearch() {
       type: 'navigation'
     },
     {
-      id: 'planning',
-      title: t('nav.planning'),
-      description: 'Financial planning and goals',
+      id: 'workflow',
+      title: t('nav.workflow'),
+      description: 'Task management, goals, and workflow optimization',
       category: 'Planning',
-      route: '/dashboard/planning',
+      route: '/dashboard/workflow',
       icon: Target,
-      keywords: ['goals', 'budget', 'planning', 'future', 'savings'],
+      keywords: ['goals', 'tasks', 'planning', 'workflow', 'habits', 'productivity'],
       type: 'navigation'
     },
     {
@@ -161,7 +161,7 @@ export function GlobalSearch() {
       title: note.title,
       description: note.content.length > 100 ? `${note.content.substring(0, 100)}...` : note.content,
       category: 'Notes',
-      route: '/dashboard/planning',
+      route: '/dashboard/workflow',
       icon: FileText,
       keywords: ['note', 'document', 'text', note.title.toLowerCase()],
       content: note.content,
