@@ -62,6 +62,8 @@ const Workflow = () => {
     estimated_duration: 60
   });
 
+  const [priorityFilter, setPriorityFilter] = useState('all');
+
   const [newHabit, setNewHabit] = useState({
     name: '',
     description: '',
@@ -131,6 +133,7 @@ const Workflow = () => {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
+      case 'important': return 'destructive';
       case 'urgent': return 'destructive';
       case 'high': return 'orange';
       case 'medium': return 'yellow';
@@ -138,6 +141,10 @@ const Workflow = () => {
       default: return 'secondary';
     }
   };
+
+  const filteredTasks = priorityFilter === 'all' 
+    ? tasks 
+    : tasks.filter(task => task.priority === priorityFilter);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -253,7 +260,25 @@ const Workflow = () => {
           {/* Tasks Tab */}
           <TabsContent value="tasks" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Task Management</h2>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Task Management</h2>
+                <div className="flex items-center gap-2 mt-2">
+                  <Label className="text-sm">Filter by priority:</Label>
+                  <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="important">Important</SelectItem>
+                      <SelectItem value="urgent">Urgent</SelectItem>
+                      <SelectItem value="high">High</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="low">Low</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
               <Dialog open={showTaskDialog} onOpenChange={setShowTaskDialog}>
                 <DialogTrigger asChild>
                   <Button className="flex items-center gap-2">
@@ -297,6 +322,7 @@ const Workflow = () => {
                             <SelectItem value="medium">Medium</SelectItem>
                             <SelectItem value="high">High</SelectItem>
                             <SelectItem value="urgent">Urgent</SelectItem>
+                            <SelectItem value="important">Important</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -328,7 +354,7 @@ const Workflow = () => {
             </div>
 
             <div className="grid gap-4">
-              {tasks.map((task) => (
+              {filteredTasks.map((task) => (
                 <Card key={task.id} className="hover:shadow-md transition-shadow">
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between">
