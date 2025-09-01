@@ -18,6 +18,7 @@ type DbTask = {
   tags: string[];
   project_id?: string | null;
   parent_task_id?: string | null;
+  steps?: Array<{id: string, text: string, completed: boolean}> | null;
   created_at: string;
   updated_at: string;
 };
@@ -106,7 +107,10 @@ export const useWorkflow = () => {
       if (timeBlocksRes.error) throw timeBlocksRes.error;
       if (projectsRes.error) throw projectsRes.error;
 
-      setTasks(tasksRes.data || []);
+      setTasks((tasksRes.data || []).map(task => ({
+        ...task,
+        steps: task.steps ? JSON.parse(JSON.stringify(task.steps)) as Array<{id: string, text: string, completed: boolean}> : []
+      })));
       setHabits(habitsRes.data || []);
       setHabitEntries(habitEntriesRes.data || []);
       setTimeBlocks(timeBlocksRes.data || []);
@@ -133,6 +137,7 @@ export const useWorkflow = () => {
     estimated_duration?: number;
     tags?: string[];
     project_id?: string;
+    steps?: Array<{id: string, text: string, completed: boolean}>;
   }) => {
     if (!user) return;
 
@@ -145,7 +150,10 @@ export const useWorkflow = () => {
 
       if (error) throw error;
 
-      setTasks(prev => [data, ...prev]);
+      setTasks(prev => [{
+        ...data,
+        steps: data.steps ? JSON.parse(JSON.stringify(data.steps)) as Array<{id: string, text: string, completed: boolean}> : []
+      }, ...prev]);
       toast({
         title: "Success",
         description: "Task created successfully",
@@ -172,7 +180,10 @@ export const useWorkflow = () => {
 
       if (error) throw error;
 
-      setTasks(prev => prev.map(task => task.id === taskId ? data : task));
+      setTasks(prev => prev.map(task => task.id === taskId ? {
+        ...data,
+        steps: data.steps ? JSON.parse(JSON.stringify(data.steps)) as Array<{id: string, text: string, completed: boolean}> : []
+      } : task));
       toast({
         title: "Success",
         description: "Task updated successfully",

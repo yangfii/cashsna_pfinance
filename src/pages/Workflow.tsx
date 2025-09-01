@@ -101,8 +101,11 @@ const Workflow = () => {
     description: '',
     priority: 'medium',
     due_date: '',
-    estimated_duration: 60
+    estimated_duration: 60,
+    steps: [] as Array<{id: string, text: string, completed: boolean}>
   });
+
+  const [newTaskStep, setNewTaskStep] = useState('');
 
   const [priorityFilter, setPriorityFilter] = useState('all');
 
@@ -136,14 +139,16 @@ const Workflow = () => {
 
   const handleCreateTask = async () => {
     await createTask(newTask);
-    setNewTask({ title: '', description: '', priority: 'medium', due_date: '', estimated_duration: 60 });
+    setNewTask({ title: '', description: '', priority: 'medium', due_date: '', estimated_duration: 60, steps: [] });
+    setNewTaskStep('');
     setShowTaskDialog(false);
   };
 
   const handleEditTask = (task: any) => {
     setEditingTask({
       ...task,
-      due_date: task.due_date ? new Date(task.due_date).toISOString().slice(0, 16) : ''
+      due_date: task.due_date ? new Date(task.due_date).toISOString().slice(0, 16) : '',
+      steps: task.steps || []
     });
     setShowEditTaskDialog(true);
   };
@@ -153,6 +158,51 @@ const Workflow = () => {
       await updateTask(editingTask.id, editingTask);
       setEditingTask(null);
       setShowEditTaskDialog(false);
+    }
+  };
+
+  // Task step management functions
+  const addTaskStep = () => {
+    if (newTaskStep.trim()) {
+      const step = {
+        id: Date.now().toString(),
+        text: newTaskStep.trim(),
+        completed: false
+      };
+      setNewTask({...newTask, steps: [...newTask.steps, step]});
+      setNewTaskStep('');
+    }
+  };
+
+  const removeTaskStep = (stepId: string) => {
+    setNewTask({...newTask, steps: newTask.steps.filter(s => s.id !== stepId)});
+  };
+
+  const toggleTaskStepCompletion = async (taskId: string, stepId: string) => {
+    const task = tasks.find(t => t.id === taskId);
+    if (task) {
+      const updatedSteps = (task.steps || []).map((step: any) => 
+        step.id === stepId ? { ...step, completed: !step.completed } : step
+      );
+      await updateTask(taskId, { steps: updatedSteps });
+    }
+  };
+
+  const addEditTaskStep = () => {
+    if (editingTask && newTaskStep.trim()) {
+      const step = {
+        id: Date.now().toString(),
+        text: newTaskStep.trim(),
+        completed: false
+      };
+      setEditingTask({...editingTask, steps: [...(editingTask.steps || []), step]});
+      setNewTaskStep('');
+    }
+  };
+
+  const removeEditTaskStep = (stepId: string) => {
+    if (editingTask) {
+      setEditingTask({...editingTask, steps: (editingTask.steps || []).filter((s: any) => s.id !== stepId)});
     }
   };
 
@@ -534,6 +584,47 @@ const Workflow = () => {
                         onChange={(e) => setNewTask({...newTask, due_date: e.target.value})}
                       />
                     </div>
+                    
+                    {/* Steps section */}
+                    <div>
+                      <Label>Steps</Label>
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <Input
+                            value={newTaskStep}
+                            onChange={(e) => setNewTaskStep(e.target.value)}
+                            placeholder="Add a step..."
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                addTaskStep();
+                              }
+                            }}
+                          />
+                          <Button type="button" onClick={addTaskStep} size="sm">
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        {newTask.steps.length > 0 && (
+                          <div className="space-y-1 max-h-32 overflow-y-auto">
+                            {newTask.steps.map((step) => (
+                              <div key={step.id} className="flex items-center gap-2 p-2 bg-muted rounded">
+                                <span className="text-sm flex-1">{step.text}</span>
+                                <Button
+                                  type="button"
+                                  onClick={() => removeTaskStep(step.id)}
+                                  size="sm"
+                                  variant="ghost"
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    
                     <Button onClick={handleCreateTask} className="w-full">
                       Create Task
                     </Button>
@@ -579,10 +670,36 @@ const Workflow = () => {
                                  {task.estimated_duration}m
                                </div>
                              )}
-                           </div>
-                         </div>
-                       </div>
-                       <div className="flex items-center gap-2">
+                            </div>
+                            
+                            {/* Display steps if any */}
+                            {task.steps && task.steps.length > 0 && (
+                              <div className="mt-3">
+                                <div className="text-xs text-gray-500 mb-1">Steps:</div>
+                                <div className="space-y-1">
+                                  {task.steps.map((step: any) => (
+                                    <div key={step.id} className="flex items-center gap-2 text-sm">
+                                      <button 
+                                        onClick={() => toggleTaskStepCompletion(task.id, step.id)}
+                                        className="flex-shrink-0"
+                                      >
+                                        {step.completed ? (
+                                          <CheckCircle2 className="h-3 w-3 text-green-500" />
+                                        ) : (
+                                          <Circle className="h-3 w-3 text-gray-400" />
+                                        )}
+                                      </button>
+                                      <span className={`${step.completed ? 'line-through text-gray-500' : ''}`}>
+                                        {step.text}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
                          <Button
                            size="sm"
                            variant="outline"
@@ -668,10 +785,68 @@ const Workflow = () => {
                         value={editingTask.due_date}
                         onChange={(e) => setEditingTask({...editingTask, due_date: e.target.value})}
                       />
-                    </div>
-                    <Button onClick={handleUpdateTask} className="w-full">
-                      Update Task
-                    </Button>
+                     </div>
+                     
+                     {/* Steps section */}
+                     <div>
+                       <Label>Steps</Label>
+                       <div className="space-y-2">
+                         <div className="flex gap-2">
+                           <Input
+                             value={newTaskStep}
+                             onChange={(e) => setNewTaskStep(e.target.value)}
+                             placeholder="Add a step..."
+                             onKeyPress={(e) => {
+                               if (e.key === 'Enter') {
+                                 e.preventDefault();
+                                 addEditTaskStep();
+                               }
+                             }}
+                           />
+                           <Button type="button" onClick={addEditTaskStep} size="sm">
+                             <Plus className="h-4 w-4" />
+                           </Button>
+                         </div>
+                         {editingTask.steps && editingTask.steps.length > 0 && (
+                           <div className="space-y-1 max-h-32 overflow-y-auto">
+                             {editingTask.steps.map((step: any) => (
+                               <div key={step.id} className="flex items-center gap-2 p-2 bg-muted rounded">
+                                 <button 
+                                   onClick={() => {
+                                     const updatedSteps = editingTask.steps.map((s: any) => 
+                                       s.id === step.id ? { ...s, completed: !s.completed } : s
+                                     );
+                                     setEditingTask({...editingTask, steps: updatedSteps});
+                                   }}
+                                   className="flex-shrink-0"
+                                 >
+                                   {step.completed ? (
+                                     <CheckCircle2 className="h-3 w-3 text-green-500" />
+                                   ) : (
+                                     <Circle className="h-3 w-3 text-gray-400" />
+                                   )}
+                                 </button>
+                                 <span className={`text-sm flex-1 ${step.completed ? 'line-through text-gray-500' : ''}`}>
+                                   {step.text}
+                                 </span>
+                                 <Button
+                                   type="button"
+                                   onClick={() => removeEditTaskStep(step.id)}
+                                   size="sm"
+                                   variant="ghost"
+                                 >
+                                   <Trash2 className="h-3 w-3" />
+                                 </Button>
+                               </div>
+                             ))}
+                           </div>
+                         )}
+                       </div>
+                     </div>
+                     
+                     <Button onClick={handleUpdateTask} className="w-full">
+                       Update Task
+                     </Button>
                   </div>
                 )}
               </DialogContent>

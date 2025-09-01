@@ -804,6 +804,7 @@ export type Database = {
           priority: string
           project_id: string | null
           status: string
+          steps: Json | null
           tags: string[] | null
           title: string
           updated_at: string
@@ -821,6 +822,7 @@ export type Database = {
           priority?: string
           project_id?: string | null
           status?: string
+          steps?: Json | null
           tags?: string[] | null
           title: string
           updated_at?: string
@@ -838,6 +840,7 @@ export type Database = {
           priority?: string
           project_id?: string | null
           status?: string
+          steps?: Json | null
           tags?: string[] | null
           title?: string
           updated_at?: string
