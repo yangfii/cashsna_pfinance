@@ -50,20 +50,6 @@ type DbHabitEntry = {
   created_at: string;
 };
 
-type DbTimeBlock = {
-  id: string;
-  user_id: string;
-  title: string;
-  description?: string | null;
-  start_time: string;
-  end_time: string;
-  block_type: string;
-  color: string;
-  is_completed: boolean;
-  task_id?: string | null;
-  created_at: string;
-  updated_at: string;
-};
 
 type DbProject = {
   id: string;
@@ -82,7 +68,7 @@ export const useWorkflow = () => {
   const [tasks, setTasks] = useState<DbTask[]>([]);
   const [habits, setHabits] = useState<DbHabit[]>([]);
   const [habitEntries, setHabitEntries] = useState<DbHabitEntry[]>([]);
-  const [timeBlocks, setTimeBlocks] = useState<DbTimeBlock[]>([]);
+  
   const [projects, setProjects] = useState<DbProject[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -93,18 +79,16 @@ export const useWorkflow = () => {
     try {
       setLoading(true);
       
-      const [tasksRes, habitsRes, habitEntriesRes, timeBlocksRes, projectsRes] = await Promise.all([
+      const [tasksRes, habitsRes, habitEntriesRes, projectsRes] = await Promise.all([
         supabase.from('tasks').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
         supabase.from('habits').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
         supabase.from('habit_entries').select('*').eq('user_id', user.id).order('date', { ascending: false }),
-        supabase.from('time_blocks').select('*').eq('user_id', user.id).order('start_time', { ascending: false }),
         supabase.from('projects').select('*').eq('user_id', user.id).order('created_at', { ascending: false })
       ]);
 
       if (tasksRes.error) throw tasksRes.error;
       if (habitsRes.error) throw habitsRes.error;
       if (habitEntriesRes.error) throw habitEntriesRes.error;
-      if (timeBlocksRes.error) throw timeBlocksRes.error;
       if (projectsRes.error) throw projectsRes.error;
 
       setTasks((tasksRes.data || []).map(task => ({
@@ -113,7 +97,6 @@ export const useWorkflow = () => {
       })));
       setHabits(habitsRes.data || []);
       setHabitEntries(habitEntriesRes.data || []);
-      setTimeBlocks(timeBlocksRes.data || []);
       setProjects(projectsRes.data || []);
     } catch (error) {
       console.error('Error fetching workflow data:', error);
@@ -320,42 +303,6 @@ export const useWorkflow = () => {
     }
   };
 
-  // Time block operations
-  const createTimeBlock = async (timeBlockData: {
-    title: string;
-    description?: string;
-    start_time: string;
-    end_time: string;
-    block_type?: string;
-    color?: string;
-    task_id?: string;
-  }) => {
-    if (!user) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('time_blocks')
-        .insert([{ ...timeBlockData, user_id: user.id }])
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      setTimeBlocks(prev => [data, ...prev]);
-      toast({
-        title: "Success",
-        description: "Time block created successfully",
-      });
-      return data;
-    } catch (error) {
-      console.error('Error creating time block:', error);
-      toast({
-        title: "Error",
-        description: "Failed to create time block",
-        variant: "destructive",
-      });
-    }
-  };
 
   // Project operations
   const createProject = async (projectData: {
@@ -408,17 +355,11 @@ export const useWorkflow = () => {
     const todayEntries = habitEntries.filter(entry => entry.date === new Date().toISOString().split('T')[0]);
     const todayCompletedHabits = todayEntries.length;
 
-    const todayBlocks = timeBlocks.filter(block => 
-      new Date(block.start_time).toDateString() === new Date().toDateString()
-    );
-    const completedBlocks = todayBlocks.filter(block => block.is_completed).length;
-    const timeBlockRate = todayBlocks.length > 0 ? (completedBlocks / todayBlocks.length) * 100 : 0;
 
     return {
       taskCompletion: Math.round(completionRate),
       habitsCompleted: todayCompletedHabits,
       totalActiveHabits: activeHabits,
-      timeBlockCompletion: Math.round(timeBlockRate),
       totalTasks,
       completedTasks
     };
@@ -429,7 +370,6 @@ export const useWorkflow = () => {
     tasks,
     habits,
     habitEntries,
-    timeBlocks,
     projects,
     loading,
     
@@ -443,8 +383,6 @@ export const useWorkflow = () => {
     updateHabit,
     logHabitEntry,
     
-    // Time block operations
-    createTimeBlock,
     
     // Project operations
     createProject,

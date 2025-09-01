@@ -49,12 +49,10 @@ const Workflow = () => {
     tasks, 
     habits, 
     habitEntries, 
-    timeBlocks, 
     projects, 
     loading,
     createTask,
     createHabit,
-    createTimeBlock,
     createProject,
     updateTask,
     deleteTask,
@@ -77,7 +75,7 @@ const Workflow = () => {
 
   const [showTaskDialog, setShowTaskDialog] = useState(false);
   const [showHabitDialog, setShowHabitDialog] = useState(false);
-  const [showTimeBlockDialog, setShowTimeBlockDialog] = useState(false);
+  
   const [showProjectDialog, setShowProjectDialog] = useState(false);
   const [showEditTaskDialog, setShowEditTaskDialog] = useState(false);
   const [editingTask, setEditingTask] = useState<any>(null);
@@ -118,14 +116,6 @@ const Workflow = () => {
     icon: 'circle'
   });
 
-  const [newTimeBlock, setNewTimeBlock] = useState({
-    title: '',
-    description: '',
-    start_time: '',
-    end_time: '',
-    block_type: 'work',
-    color: 'blue'
-  });
 
   const [newProject, setNewProject] = useState({
     name: '',
@@ -218,11 +208,6 @@ const Workflow = () => {
     setShowHabitDialog(false);
   };
 
-  const handleCreateTimeBlock = async () => {
-    await createTimeBlock(newTimeBlock);
-    setNewTimeBlock({ title: '', description: '', start_time: '', end_time: '', block_type: 'work', color: 'blue' });
-    setShowTimeBlockDialog(false);
-  };
 
   const handleCreateProject = async () => {
     await createProject(newProject);
@@ -442,18 +427,6 @@ const Workflow = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-purple-100 text-sm font-medium">Time Blocks</p>
-                  <p className="text-3xl font-bold">{stats.timeBlockCompletion}%</p>
-                </div>
-                <Timer className="h-8 w-8 text-purple-200" />
-              </div>
-              <Progress value={stats.timeBlockCompletion} className="mt-3 bg-purple-400/30" />
-            </CardContent>
-          </Card>
 
           <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0">
             <CardContent className="p-6">
@@ -473,7 +446,7 @@ const Workflow = () => {
 
         {/* Main Content */}
         <Tabs defaultValue="tasks" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:w-auto">
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto">
             <TabsTrigger value="tasks" className="flex items-center gap-2">
               <CheckSquare className="h-4 w-4" />
               Tasks
@@ -485,10 +458,6 @@ const Workflow = () => {
             <TabsTrigger value="habits" className="flex items-center gap-2">
               <Flame className="h-4 w-4" />
               Habits
-            </TabsTrigger>
-            <TabsTrigger value="calendar" className="flex items-center gap-2">
-              <CalendarIcon className="h-4 w-4" />
-              Time Blocks
             </TabsTrigger>
             <TabsTrigger value="analytics" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
@@ -1193,115 +1162,6 @@ const Workflow = () => {
             </div>
           </TabsContent>
 
-          {/* Time Blocks Tab */}
-          <TabsContent value="calendar" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Time Blocking</h2>
-              <Dialog open={showTimeBlockDialog} onOpenChange={setShowTimeBlockDialog}>
-                <DialogTrigger asChild>
-                  <Button className="flex items-center gap-2">
-                    <Plus className="h-4 w-4" />
-                    Add Time Block
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Create Time Block</DialogTitle>
-                    <DialogDescription>Schedule a focused work session</DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="block-title">Title</Label>
-                      <Input
-                        id="block-title"
-                        value={newTimeBlock.title}
-                        onChange={(e) => setNewTimeBlock({...newTimeBlock, title: e.target.value})}
-                        placeholder="Enter time block title"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="block-description">Description</Label>
-                      <Textarea
-                        id="block-description"
-                        value={newTimeBlock.description}
-                        onChange={(e) => setNewTimeBlock({...newTimeBlock, description: e.target.value})}
-                        placeholder="What will you work on?"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="start-time">Start Time</Label>
-                        <Input
-                          id="start-time"
-                          type="datetime-local"
-                          value={newTimeBlock.start_time}
-                          onChange={(e) => setNewTimeBlock({...newTimeBlock, start_time: e.target.value})}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="end-time">End Time</Label>
-                        <Input
-                          id="end-time"
-                          type="datetime-local"
-                          value={newTimeBlock.end_time}
-                          onChange={(e) => setNewTimeBlock({...newTimeBlock, end_time: e.target.value})}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <Label htmlFor="block-type">Type</Label>
-                      <Select value={newTimeBlock.block_type} onValueChange={(value) => setNewTimeBlock({...newTimeBlock, block_type: value})}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="work">Work</SelectItem>
-                          <SelectItem value="personal">Personal</SelectItem>
-                          <SelectItem value="break">Break</SelectItem>
-                          <SelectItem value="focus">Focus</SelectItem>
-                          <SelectItem value="meeting">Meeting</SelectItem>
-                          <SelectItem value="exercise">Exercise</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <Button onClick={handleCreateTimeBlock} className="w-full">
-                      Create Time Block
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            </div>
-
-            <div className="grid gap-4">
-              {timeBlocks.slice(0, 10).map((block) => (
-                <Card key={block.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-semibold">{block.title}</h3>
-                          <Badge variant="outline">{block.block_type}</Badge>
-                          {block.is_completed && (
-                            <CheckCircle2 className="h-4 w-4 text-green-500" />
-                          )}
-                        </div>
-                        {block.description && (
-                          <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">
-                            {block.description}
-                          </p>
-                        )}
-                        <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
-                          <Clock className="h-3 w-3" />
-                          {format(new Date(block.start_time), 'MMM d, HH:mm')} - {format(new Date(block.end_time), 'HH:mm')}
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
 
           {/* Analytics Tab */}
           <TabsContent value="analytics" className="space-y-6">
@@ -1354,13 +1214,6 @@ const Workflow = () => {
                         <span>{stats.taskCompletion}%</span>
                       </div>
                       <Progress value={stats.taskCompletion} />
-                    </div>
-                    <div>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span>Time Block Completion</span>
-                        <span>{stats.timeBlockCompletion}%</span>
-                      </div>
-                      <Progress value={stats.timeBlockCompletion} />
                     </div>
                     <div>
                       <div className="flex justify-between text-sm mb-1">
