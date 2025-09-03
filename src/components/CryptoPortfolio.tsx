@@ -1,18 +1,15 @@
 import { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { TrendingUp, TrendingDown, RefreshCw, Trash2, Wifi, WifiOff, AlertCircle } from "lucide-react";
+import { TrendingUp, TrendingDown, RefreshCw, Trash2, Wifi, WifiOff } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useCryptoData } from "@/hooks/useCryptoData";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
-import CryptoChart from "@/components/crypto/CryptoChart";
 import AddHoldingDialog from "@/components/crypto/AddHoldingDialog";
 import PriceAlertsDialog from "@/components/crypto/PriceAlertsDialog";
 import ExchangeIntegration from "@/components/crypto/ExchangeIntegration";
@@ -21,9 +18,7 @@ import AdvancedSearch from "@/components/crypto/AdvancedSearch";
 import AdvancedFilters, { FilterOptions } from "@/components/crypto/AdvancedFilters";
 import AdvancedSorting, { SortOption } from "@/components/crypto/AdvancedSorting";
 import RealTimePriceMonitor from "@/components/crypto/RealTimePriceMonitor";
-import SwingTradeLog from "@/components/crypto/SwingTradeLog";
 import ProfitLossSection from "@/components/crypto/ProfitLossSection";
-import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 export default function CryptoPortfolio() {
   const {
     user
@@ -76,7 +71,7 @@ export default function CryptoPortfolio() {
       max: null
     }
   });
-  const [activeTab, setActiveTab] = useState('portfolio');
+  
   const formatCurrency = (amount: number) => {
     const convertedAmount = amount * (exchangeRates[selectedCurrency] || 1);
     return new Intl.NumberFormat('en-US', {
@@ -300,321 +295,174 @@ export default function CryptoPortfolio() {
               <AddHoldingDialog onAddHolding={addHolding} />
             </div>
           </CardContent>
-        </Card> : <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8 lg:space-y-10">
-          <div className="flex items-center gap-3 lg:gap-4 px-1 sm:px-2">
-            {isMobile ? <Select value={activeTab} onValueChange={setActiveTab}>
-                <SelectTrigger className="flex-1 h-12">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="portfolio">PORTFOLIO</SelectItem>
-                  <SelectItem value="holdings">HOLDINGS BY CHAIN</SelectItem>
-                  <SelectItem value="archive">PORTFOLIO ARCHIVE</SelectItem>
-                  <SelectItem value="balances">BALANCES HISTORY</SelectItem>
-                  <SelectItem value="tokens">TOKEN BALANCES HISTORY</SelectItem>
-                  <SelectItem value="profit">PROFIT & LOSS</SelectItem>
-                  <SelectItem value="swing-trade">SWING TRADE LOG</SelectItem>
-                </SelectContent>
-              </Select> : <>
-                <TooltipProvider delayDuration={200}>
-                  <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1.5 lg:gap-2 flex-1 items-stretch auto-rows-[3rem] lg:auto-rows-[3.5rem] bg-muted/30 p-1.5 rounded-lg">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <TabsTrigger 
-                          value="portfolio" 
-                          className="text-sm font-medium h-full px-4 py-2 rounded-md transition-all duration-200 hover:bg-background/80 data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border border-border/50 overflow-hidden"
-                        >
-                          <span className="hidden sm:inline truncate">PORTFOLIO</span>
-                          <span className="sm:hidden truncate">PORT</span>
-                        </TabsTrigger>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom">Portfolio Overview</TooltipContent>
-                    </Tooltip>
-
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <TabsTrigger 
-                          value="holdings" 
-                          className="text-sm font-medium h-full px-4 py-2 rounded-md transition-all duration-200 hover:bg-background/80 data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border border-border/50 overflow-hidden"
-                        >
-                          <span className="hidden lg:inline truncate">HOLDINGS BY CHAIN</span>
-                          <span className="lg:hidden truncate">HOLDINGS</span>
-                        </TabsTrigger>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom">Holdings by Chain</TooltipContent>
-                    </Tooltip>
-
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <TabsTrigger 
-                          value="archive" 
-                          className="text-sm font-medium h-full px-4 py-2 rounded-md transition-all duration-200 hover:bg-background/80 data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border border-border/50 overflow-hidden"
-                        >
-                          <span className="hidden lg:inline truncate">PORTFOLIO ARCHIVE</span>
-                          <span className="lg:hidden truncate">ARCHIVE</span>
-                        </TabsTrigger>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom">Portfolio Archive</TooltipContent>
-                    </Tooltip>
-
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <TabsTrigger 
-                          value="balances" 
-                          className="text-sm font-medium h-full px-4 py-2 rounded-md transition-all duration-200 hover:bg-background/80 data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border border-border/50 overflow-hidden"
-                        >
-                          <span className="hidden lg:inline truncate">TRADING PERFORMANCE</span>
-                          <span className="lg:hidden truncate">BALANCES</span>
-                        </TabsTrigger>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom">Trading Performance</TooltipContent>
-                    </Tooltip>
-
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <TabsTrigger 
-                          value="tokens" 
-                          className="text-sm font-medium h-full px-4 py-2 rounded-md transition-all duration-200 hover:bg-background/80 data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border border-border/50 overflow-hidden"
-                        >
-                          <span className="hidden lg:inline truncate">TOKEN BALANCES</span>
-                          <span className="lg:hidden truncate">TOKENS</span>
-                        </TabsTrigger>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom">Token Balances History</TooltipContent>
-                    </Tooltip>
-
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <TabsTrigger 
-                          value="profit" 
-                          className="text-sm font-medium h-full px-4 py-2 rounded-md transition-all duration-200 hover:bg-background/80 data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border border-border/50 overflow-hidden"
-                        >
-                          <span className="hidden lg:inline truncate">PROFIT & LOSS</span>
-                          <span className="lg:hidden truncate">P&L</span>
-                        </TabsTrigger>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom">Profit & Loss Analysis</TooltipContent>
-                    </Tooltip>
-                  </TabsList>
-                </TooltipProvider>
-              </>}
-          </div>
-
-          <TabsContent value="portfolio">
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 lg:gap-10">
-              <div className="xl:col-span-2">
-                <Card className="mx-1 sm:mx-2">
-                  <CardContent className="p-6 lg:p-8">
-                    <div className="space-y-6 lg:space-y-8 mb-8 lg:mb-10">
-                      <AdvancedSearch holdings={holdings} onSearch={setSearchTerm} searchTerm={searchTerm} />
-                      
-                      <div className="flex flex-col xl:flex-row gap-6 lg:gap-8 xl:items-start">
-                        <div className="flex-1">
-                          <AdvancedFilters filters={filters} onFiltersChange={setFilters} walletTypes={walletTypes} activeFiltersCount={activeFiltersCount} />
-                        </div>
-                        
-                        <div className="xl:w-auto">
-                          <AdvancedSorting sortBy={sortBy} sortDirection={sortDirection} onSortChange={(field, direction) => {
-                        setSortBy(field);
-                        setSortDirection(direction);
-                      }} secondarySort={secondarySort} onSecondarySortChange={setSecondarySort} />
-                        </div>
-                      </div>
-
-                      {filteredAndSortedHoldings.length !== holdings.length && <div className="text-sm lg:text-base text-muted-foreground">
-                          Showing {filteredAndSortedHoldings.length} of {holdings.length} assets
-                        </div>}
-                    </div>
+        </Card> : <div className="space-y-8 lg:space-y-10">
+          {/* Portfolio Overview */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 lg:gap-10">
+            <div className="xl:col-span-2">
+              <Card className="mx-1 sm:mx-2">
+                <CardContent className="p-6 lg:p-8">
+                  <div className="space-y-6 lg:space-y-8 mb-8 lg:mb-10">
+                    <AdvancedSearch holdings={holdings} onSearch={setSearchTerm} searchTerm={searchTerm} />
                     
-                    {isMobile ?
-                // Mobile card layout
-                <div className="space-y-3">
-                        {filteredAndSortedHoldings.length === 0 ? <Card className="p-6 text-center text-muted-foreground">
-                            No assets match your current filters
-                          </Card> : filteredAndSortedHoldings.map((holding, index) => {
-                    const currentPrice = prices[holding.symbol.toLowerCase()]?.usd || 0;
-                    const currentValue = getHoldingCurrentValue(holding);
-                    const gainLoss = getHoldingGainLoss(holding);
-                    const percentChange = getHoldingPercentChange(holding);
-                    const isGain = gainLoss >= 0;
-                    return <Card key={holding.id} className="p-4">
-                                <div className="flex items-center justify-between mb-3">
-                                  <div className="flex items-center gap-3">
-                                    <span className="text-muted-foreground text-sm">#{index + 1}</span>
-                                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                                      <span className="text-sm font-bold">{holding.symbol.charAt(0)}</span>
+                    <div className="flex flex-col xl:flex-row gap-6 lg:gap-8 xl:items-start">
+                      <div className="flex-1">
+                        <AdvancedFilters filters={filters} onFiltersChange={setFilters} walletTypes={walletTypes} activeFiltersCount={activeFiltersCount} />
+                      </div>
+                      
+                      <div className="xl:w-auto">
+                        <AdvancedSorting sortBy={sortBy} sortDirection={sortDirection} onSortChange={(field, direction) => {
+                      setSortBy(field);
+                      setSortDirection(direction);
+                    }} secondarySort={secondarySort} onSecondarySortChange={setSecondarySort} />
+                      </div>
+                    </div>
+
+                    {filteredAndSortedHoldings.length !== holdings.length && <div className="text-sm lg:text-base text-muted-foreground">
+                        Showing {filteredAndSortedHoldings.length} of {holdings.length} assets
+                      </div>}
+                  </div>
+                  
+                  {isMobile ?
+              // Mobile card layout
+              <div className="space-y-3">
+                      {filteredAndSortedHoldings.length === 0 ? <Card className="p-6 text-center text-muted-foreground">
+                          No assets match your current filters
+                        </Card> : filteredAndSortedHoldings.map((holding, index) => {
+                  const currentPrice = prices[holding.symbol.toLowerCase()]?.usd || 0;
+                  const currentValue = getHoldingCurrentValue(holding);
+                  const gainLoss = getHoldingGainLoss(holding);
+                  const percentChange = getHoldingPercentChange(holding);
+                  const isGain = gainLoss >= 0;
+                  return <Card key={holding.id} className="p-4">
+                              <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-3">
+                                  <span className="text-muted-foreground text-sm">#{index + 1}</span>
+                                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                                    <span className="text-sm font-bold">{holding.symbol.charAt(0)}</span>
+                                  </div>
+                                  <div>
+                                    <div className="font-semibold text-sm">{holding.symbol}</div>
+                                    {holding.wallet_type && <div className="text-xs text-muted-foreground capitalize">{holding.wallet_type}</div>}
+                                  </div>
+                                </div>
+                                <Button variant="ghost" size="sm" onClick={() => deleteHolding(holding.id)} className="h-8 w-8 p-0 text-destructive hover:text-destructive">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                              
+                              <div className="grid grid-cols-2 gap-3 text-sm">
+                                <div>
+                                  <div className="text-muted-foreground text-xs">Price</div>
+                                  <div className="font-medium">{formatCurrency(currentPrice)}</div>
+                                </div>
+                                <div>
+                                  <div className="text-muted-foreground text-xs">Holdings</div>
+                                  <div className="font-medium">{holding.amount.toFixed(4)}</div>
+                                </div>
+                                <div>
+                                  <div className="text-muted-foreground text-xs">Value</div>
+                                  <div className="font-medium">{formatCurrency(currentValue)}</div>
+                                </div>
+                                <div>
+                                  <div className="text-muted-foreground text-xs">P&L</div>
+                                  <div className={`font-medium flex items-center gap-1 ${isGain ? 'text-green-500' : 'text-red-500'}`}>
+                                    {isGain ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                                    {percentChange.toFixed(2)}%
+                                  </div>
+                                </div>
+                              </div>
+                            </Card>;
+                })}
+                    </div> :
+              // Desktop table layout
+              <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="w-8 sm:w-12 text-xs sm:text-sm lg:text-base">#</TableHead>
+                            <TableHead className="text-xs sm:text-sm lg:text-base">ASSET</TableHead>
+                            <TableHead className="text-xs sm:text-sm lg:text-base hidden sm:table-cell">PRICE</TableHead>
+                            <TableHead className="text-xs sm:text-sm lg:text-base">HOLDINGS</TableHead>
+                            <TableHead className="text-xs sm:text-sm lg:text-base">VALUE</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                      <TableBody>
+                        {filteredAndSortedHoldings.length === 0 ? <TableRow>
+                            <TableCell colSpan={5} className="text-center py-12 lg:py-16 text-muted-foreground text-base lg:text-lg">
+                              No assets match your current filters
+                            </TableCell>
+                          </TableRow> : filteredAndSortedHoldings.map((holding, index) => {
+                      const currentPrice = prices[holding.symbol.toLowerCase()]?.usd || 0;
+                      const currentValue = getHoldingCurrentValue(holding);
+                      const percentChange = getHoldingPercentChange(holding);
+                      const isPositive = percentChange >= 0;
+                      return <TableRow key={holding.id} className="hover:bg-muted/30">
+                                <TableCell className="font-medium text-xs sm:text-sm lg:text-base py-4 lg:py-6">
+                                  {index + 1}
+                                </TableCell>
+                                <TableCell className="py-4 lg:py-6">
+                                  <div className="flex items-center gap-2 lg:gap-3">
+                                    <div className="w-6 h-6 lg:w-8 lg:h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                                      <span className="text-xs lg:text-sm font-bold">
+                                        {holding.symbol.charAt(0)}
+                                      </span>
                                     </div>
                                     <div>
-                                      <div className="font-semibold text-sm">{holding.symbol}</div>
-                                      {holding.wallet_type && <div className="text-xs text-muted-foreground capitalize">{holding.wallet_type}</div>}
+                                      <span className="font-medium text-sm lg:text-base">{holding.symbol}</span>
+                                      {holding.wallet_type && <div className="text-xs lg:text-sm text-muted-foreground/80 capitalize">
+                                          {holding.wallet_type}
+                                        </div>}
                                     </div>
                                   </div>
-                                  <Button variant="ghost" size="sm" onClick={() => deleteHolding(holding.id)} className="h-8 w-8 p-0 text-destructive hover:text-destructive">
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                                
-                                <div className="grid grid-cols-2 gap-3 text-sm">
-                                  <div>
-                                    <div className="text-muted-foreground text-xs">Price</div>
-                                    <div className="font-medium">{formatCurrency(currentPrice)}</div>
+                                </TableCell>
+                                <TableCell className="hidden sm:table-cell py-4 lg:py-6">
+                                  <div className="flex flex-col lg:flex-row lg:items-center gap-1 lg:gap-2">
+                                    <span className="text-sm lg:text-base">{formatCurrency(currentPrice)}</span>
+                                    <span className={`text-xs lg:text-sm ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                                      {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
+                                    </span>
                                   </div>
-                                  <div>
-                                    <div className="text-muted-foreground text-xs">Holdings</div>
-                                    <div className="font-medium">{holding.amount.toFixed(4)}</div>
-                                  </div>
-                                  <div>
-                                    <div className="text-muted-foreground text-xs">Value</div>
-                                    <div className="font-medium">{formatCurrency(currentValue)}</div>
-                                  </div>
-                                  <div>
-                                    <div className="text-muted-foreground text-xs">P&L</div>
-                                    <div className={`font-medium flex items-center gap-1 ${isGain ? 'text-green-500' : 'text-red-500'}`}>
-                                      {isGain ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-                                      {percentChange.toFixed(2)}%
+                                </TableCell>
+                                <TableCell className="py-4 lg:py-6">
+                                  <div className="text-sm lg:text-base">
+                                    <div>{holding.amount.toFixed(4)}</div>
+                                    <div className="text-xs lg:text-sm text-muted-foreground/80 sm:hidden">
+                                      {formatCurrency(currentPrice)}
                                     </div>
                                   </div>
-                                </div>
-                              </Card>;
-                  })}
-                      </div> :
-                // Desktop table layout
-                <div className="overflow-x-auto">
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead className="w-8 sm:w-12 text-xs sm:text-sm lg:text-base">#</TableHead>
-                              <TableHead className="text-xs sm:text-sm lg:text-base">ASSET</TableHead>
-                              <TableHead className="text-xs sm:text-sm lg:text-base hidden sm:table-cell">PRICE</TableHead>
-                              <TableHead className="text-xs sm:text-sm lg:text-base">HOLDINGS</TableHead>
-                              <TableHead className="text-xs sm:text-sm lg:text-base">VALUE</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                        <TableBody>
-                          {filteredAndSortedHoldings.length === 0 ? <TableRow>
-                              <TableCell colSpan={5} className="text-center py-12 lg:py-16 text-muted-foreground text-base lg:text-lg">
-                                No assets match your current filters
-                              </TableCell>
-                            </TableRow> : filteredAndSortedHoldings.map((holding, index) => {
-                        const currentPrice = prices[holding.symbol.toLowerCase()]?.usd || 0;
-                        const currentValue = getHoldingCurrentValue(holding);
-                        const percentChange = getHoldingPercentChange(holding);
-                        const isPositive = percentChange >= 0;
-                        return <TableRow key={holding.id} className="hover:bg-muted/30">
-                                  <TableCell className="font-medium text-xs sm:text-sm lg:text-base py-4 lg:py-6">
-                                    {index + 1}
-                                  </TableCell>
-                                  <TableCell className="py-4 lg:py-6">
-                                    <div className="flex items-center gap-2 lg:gap-3">
-                                      <div className="w-6 h-6 lg:w-8 lg:h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                                        <span className="text-xs lg:text-sm font-bold">
-                                          {holding.symbol.charAt(0)}
-                                        </span>
-                                      </div>
-                                      <div>
-                                        <span className="font-medium text-sm lg:text-base">{holding.symbol}</span>
-                                        {holding.wallet_type && <div className="text-xs lg:text-sm text-muted-foreground/80 capitalize">
-                                            {holding.wallet_type}
-                                          </div>}
-                                      </div>
-                                    </div>
-                                  </TableCell>
-                                  <TableCell className="hidden sm:table-cell py-4 lg:py-6">
-                                    <div className="flex flex-col lg:flex-row lg:items-center gap-1 lg:gap-2">
-                                      <span className="text-sm lg:text-base">{formatCurrency(currentPrice)}</span>
-                                      <span className={`text-xs lg:text-sm ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
-                                        {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
-                                      </span>
-                                    </div>
-                                  </TableCell>
-                                  <TableCell className="py-4 lg:py-6">
-                                    <div className="text-sm lg:text-base">
-                                      <div>{holding.amount.toFixed(4)}</div>
-                                      <div className="text-xs lg:text-sm text-muted-foreground/80 sm:hidden">
-                                        {formatCurrency(currentPrice)}
-                                      </div>
-                                    </div>
-                                  </TableCell>
-                                  <TableCell className="py-4 lg:py-6">
-                                    <div className="flex flex-col gap-1">
-                                      <span className="text-sm lg:text-base font-medium">{formatCurrency(currentValue)}</span>
-                                      <span className={`text-xs lg:text-sm ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
-                                        {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
-                                      </span>
-                                    </div>
-                                  </TableCell>
-                                </TableRow>;
-                      })}
-                          </TableBody>
-                        </Table>
-                      </div>}
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="xl:col-span-1">
-                <RealTimePriceMonitor prices={prices} holdings={holdings} onRefresh={fetchCryptoPrices} lastUpdate={lastPriceUpdate} updateCount={priceUpdateCount} connectionStatus={connectionStatus} />
-              </div>
+                                </TableCell>
+                                <TableCell className="py-4 lg:py-6">
+                                  <div className="flex flex-col gap-1">
+                                    <span className="text-sm lg:text-base font-medium">{formatCurrency(currentValue)}</span>
+                                    <span className={`text-xs lg:text-sm ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                                      {isPositive ? '+' : ''}{percentChange.toFixed(1)}%
+                                    </span>
+                                  </div>
+                                </TableCell>
+                              </TableRow>;
+                    })}
+                        </TableBody>
+                      </Table>
+                    </div>}
+                </CardContent>
+              </Card>
             </div>
-          </TabsContent>
 
-          <TabsContent value="holdings">
-            <Card className="mx-1 sm:mx-2">
-              <CardContent className="p-8 lg:p-10">
-                <h3 className="font-semibold mb-6 text-lg lg:text-xl">Holdings by Chain</h3>
-                <p className="text-muted-foreground/80 text-base lg:text-lg">Chain-specific holdings view coming soon...</p>
-              </CardContent>
-            </Card>
-          </TabsContent>
+            <div className="xl:col-span-1">
+              <RealTimePriceMonitor prices={prices} holdings={holdings} onRefresh={fetchCryptoPrices} lastUpdate={lastPriceUpdate} updateCount={priceUpdateCount} connectionStatus={connectionStatus} />
+            </div>
+          </div>
 
-          <TabsContent value="archive">
-            <Card className="mx-1 sm:mx-2">
-              <CardContent className="p-8 lg:p-10">
-                <h3 className="font-semibold mb-6 text-lg lg:text-xl">Portfolio Archive</h3>
-                <p className="text-muted-foreground/80 text-base lg:text-lg">Historical portfolio snapshots coming soon...</p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="balances">
-            <Card className="mx-1 sm:mx-2">
-              <CardContent className="p-8 lg:p-10">
-                <h3 className="font-semibold mb-6 text-lg lg:text-xl">Balance History</h3>
-                <div className="h-96 lg:h-[500px]">
-                  <CryptoChart holdings={holdings} prices={prices} />
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="tokens">
-            <Card className="mx-1 sm:mx-2">
-              <CardContent className="p-8 lg:p-10">
-                <h3 className="font-semibold mb-6 text-lg lg:text-xl">Token Balance History</h3>
-                <p className="text-muted-foreground/80 text-base lg:text-lg">Individual token balance tracking coming soon...</p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="profit">
-            <Card className="mx-1 sm:mx-2">
-              <CardContent className="p-6 lg:p-8">
-                <ProfitLossSection holdings={holdings} prices={Object.entries(prices).map(([symbol, data]) => ({
-              symbol: symbol.toUpperCase(),
-              price: data.usd || 0,
-              price_change_24h: data.usd_24h_change || 0
-            }))} isLoading={loading} formatCurrency={formatCurrency} totalValue={portfolioValue} totalGainLoss={totalGainLoss} roi={portfolioPercentChange} onRefresh={updateCryptoPrices} lastUpdate={lastPriceUpdate} connectionStatus={connectionStatus} />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="swing-trade">
-            <Card className="mx-1 sm:mx-2">
-              <CardContent className="p-6 lg:p-8">
-                <SwingTradeLog formatCurrency={formatCurrency} />
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>}
+          {/* Daily PNL Section */}
+          <Card className="mx-1 sm:mx-2">
+            <CardContent className="p-6 lg:p-8">
+              <ProfitLossSection holdings={holdings} prices={Object.entries(prices).map(([symbol, data]) => ({
+            symbol: symbol.toUpperCase(),
+            price: data.usd || 0,
+            price_change_24h: data.usd_24h_change || 0
+          }))} isLoading={loading} formatCurrency={formatCurrency} totalValue={portfolioValue} totalGainLoss={totalGainLoss} roi={portfolioPercentChange} onRefresh={updateCryptoPrices} lastUpdate={lastPriceUpdate} connectionStatus={connectionStatus} />
+            </CardContent>
+          </Card>
+        </div>}
     </div>;
 }
